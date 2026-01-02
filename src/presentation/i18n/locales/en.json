@@ -1,0 +1,46 @@
+{
+  "app_name": "Anamnesis",
+  "welcome": "Welcome",
+  "start_anamnesis": "Start New Anamnesis",
+  "saved_anamnesis": "Saved Anamneses",
+  "privacy": "Privacy",
+  "privacy_info": "All data stays local on your device. AES-256 encryption. No external servers. GDPR compliant.",
+  "features": "Features",
+  "feature_languages": "19 Languages",
+  "feature_offline": "Offline-First",
+  "feature_voice": "Voice Recognition",
+  "feature_ocr": "OCR for Documents",
+  "feature_gdt": "GDT Export",
+  "sections": {
+    "personal": "Personal Information",
+    "general": "General Anamnesis",
+    "symptoms": "Current Symptoms",
+    "history": "Medical History",
+    "medications": "Medications",
+    "allergies": "Allergies",
+    "family": "Family History",
+    "lifestyle": "Lifestyle"
+  },
+  "questions": {
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "birthDate": "Date of Birth",
+    "gender": "Gender",
+    "insurance": "Health Insurance",
+    "insuranceNumber": "Insurance Number"
+  },
+  "buttons": {
+    "next": "Next",
+    "back": "Back",
+    "save": "Save",
+    "cancel": "Cancel",
+    "submit": "Submit",
+    "export": "Export"
+  },
+  "validation": {
+    "required": "This field is required",
+    "invalid_format": "Invalid format",
+    "min_length": "Minimum length: {{min}} characters",
+    "max_length": "Maximum length: {{max}} characters"
+  }
+}

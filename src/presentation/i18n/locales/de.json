@@ -1,0 +1,46 @@
+{
+  "app_name": "Anamnese",
+  "welcome": "Willkommen",
+  "start_anamnesis": "Neue Anamnese starten",
+  "saved_anamnesis": "Gespeicherte Anamnesen",
+  "privacy": "Datenschutz",
+  "privacy_info": "Alle Daten bleiben lokal auf Ihrem Gerät. AES-256 Verschlüsselung. Keine externen Server. DSGVO-konform.",
+  "features": "Features",
+  "feature_languages": "19 Sprachen",
+  "feature_offline": "Offline-First",
+  "feature_voice": "Spracherkennung",
+  "feature_ocr": "OCR für Dokumente",
+  "feature_gdt": "GDT Export",
+  "sections": {
+    "personal": "Persönliche Daten",
+    "general": "Allgemeine Anamnese",
+    "symptoms": "Aktuelle Beschwerden",
+    "history": "Vorerkrankungen",
+    "medications": "Medikamente",
+    "allergies": "Allergien",
+    "family": "Familienanamnese",
+    "lifestyle": "Lebensumstände"
+  },
+  "questions": {
+    "firstName": "Vorname",
+    "lastName": "Nachname",
+    "birthDate": "Geburtsdatum",
+    "gender": "Geschlecht",
+    "insurance": "Krankenkasse",
+    "insuranceNumber": "Versichertennummer"
+  },
+  "buttons": {
+    "next": "Weiter",
+    "back": "Zurück",
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "submit": "Absenden",
+    "export": "Exportieren"
+  },
+  "validation": {
+    "required": "Dieses Feld ist erforderlich",
+    "invalid_format": "Ungültiges Format",
+    "min_length": "Mindestlänge: {{min}} Zeichen",
+    "max_length": "Maximallänge: {{max}} Zeichen"
+  }
+}

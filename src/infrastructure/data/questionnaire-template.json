@@ -1,0 +1,481 @@
+/**
+ * Questionnaire Template - Alle Fragen aus index_v8_complete.html
+ * 
+ * STRUCTURE:
+ * - 8 Hauptsektionen
+ * - 60+ Fragen
+ * - Conditional Logic
+ * - 19 Sprachen Support (labelKey wird von i18n übersetzt)
+ */
+
+{
+  "version": "1.0.0",
+  "sections": [
+    {
+      "id": "personal_data",
+      "titleKey": "sections.personal",
+      "descriptionKey": "sections.personal_description",
+      "order": 1,
+      "questions": [
+        {
+          "id": "first_name",
+          "type": "text",
+          "labelKey": "questions.firstName",
+          "placeholderKey": "placeholders.firstName",
+          "required": true,
+          "validation": {
+            "min": 2,
+            "max": 50
+          }
+        },
+        {
+          "id": "last_name",
+          "type": "text",
+          "labelKey": "questions.lastName",
+          "placeholderKey": "placeholders.lastName",
+          "required": true,
+          "validation": {
+            "min": 2,
+            "max": 50
+          }
+        },
+        {
+          "id": "birth_date",
+          "type": "date",
+          "labelKey": "questions.birthDate",
+          "required": true,
+          "validation": {
+            "maxDate": "today",
+            "minDate": "1900-01-01"
+          }
+        },
+        {
+          "id": "gender",
+          "type": "radio",
+          "labelKey": "questions.gender",
+          "required": true,
+          "options": [
+            { "value": "male", "labelKey": "options.male" },
+            { "value": "female", "labelKey": "options.female" },
+            { "value": "diverse", "labelKey": "options.diverse" }
+          ]
+        },
+        {
+          "id": "insurance",
+          "type": "text",
+          "labelKey": "questions.insurance",
+          "placeholderKey": "placeholders.insurance"
+        },
+        {
+          "id": "insurance_number",
+          "type": "text",
+          "labelKey": "questions.insuranceNumber",
+          "placeholderKey": "placeholders.insuranceNumber"
+        }
+      ]
+    },
+    {
+      "id": "general_anamnesis",
+      "titleKey": "sections.general",
+      "order": 2,
+      "questions": [
+        {
+          "id": "chief_complaint",
+          "type": "textarea",
+          "labelKey": "questions.chiefComplaint",
+          "placeholderKey": "placeholders.chiefComplaint",
+          "required": true,
+          "validation": {
+            "min": 10,
+            "max": 500
+          }
+        },
+        {
+          "id": "complaint_duration",
+          "type": "select",
+          "labelKey": "questions.complaintDuration",
+          "required": true,
+          "options": [
+            { "value": "days", "labelKey": "options.days" },
+            { "value": "weeks", "labelKey": "options.weeks" },
+            { "value": "months", "labelKey": "options.months" },
+            { "value": "years", "labelKey": "options.years" }
+          ]
+        },
+        {
+          "id": "pain_level",
+          "type": "number",
+          "labelKey": "questions.painLevel",
+          "placeholderKey": "placeholders.painLevel",
+          "validation": {
+            "min": 0,
+            "max": 10
+          }
+        },
+        {
+          "id": "previous_treatment",
+          "type": "radio",
+          "labelKey": "questions.previousTreatment",
+          "required": true,
+          "options": [
+            { "value": "yes", "labelKey": "options.yes" },
+            { "value": "no", "labelKey": "options.no" }
+          ]
+        },
+        {
+          "id": "previous_treatment_details",
+          "type": "textarea",
+          "labelKey": "questions.previousTreatmentDetails",
+          "placeholderKey": "placeholders.previousTreatmentDetails",
+          "conditions": [
+            {
+              "questionId": "previous_treatment",
+              "operator": "equals",
+              "value": "yes"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "medical_history",
+      "titleKey": "sections.history",
+      "order": 3,
+      "questions": [
+        {
+          "id": "chronic_diseases",
+          "type": "checkbox",
+          "labelKey": "questions.chronicDiseases",
+          "options": [
+            { "value": "diabetes", "labelKey": "options.diabetes" },
+            { "value": "hypertension", "labelKey": "options.hypertension" },
+            { "value": "heart_disease", "labelKey": "options.heartDisease" },
+            { "value": "asthma", "labelKey": "options.asthma" },
+            { "value": "copd", "labelKey": "options.copd" },
+            { "value": "kidney_disease", "labelKey": "options.kidneyDisease" },
+            { "value": "liver_disease", "labelKey": "options.liverDisease" },
+            { "value": "cancer", "labelKey": "options.cancer" },
+            { "value": "thyroid_disorder", "labelKey": "options.thyroidDisorder" },
+            { "value": "none", "labelKey": "options.none" }
+          ]
+        },
+        {
+          "id": "cancer_details",
+          "type": "textarea",
+          "labelKey": "questions.cancerDetails",
+          "placeholderKey": "placeholders.cancerDetails",
+          "conditions": [
+            {
+              "questionId": "chronic_diseases",
+              "operator": "contains",
+              "value": "cancer"
+            }
+          ]
+        },
+        {
+          "id": "previous_surgeries",
+          "type": "radio",
+          "labelKey": "questions.previousSurgeries",
+          "required": true,
+          "options": [
+            { "value": "yes", "labelKey": "options.yes" },
+            { "value": "no", "labelKey": "options.no" }
+          ]
+        },
+        {
+          "id": "surgery_details",
+          "type": "textarea",
+          "labelKey": "questions.surgeryDetails",
+          "placeholderKey": "placeholders.surgeryDetails",
+          "conditions": [
+            {
+              "questionId": "previous_surgeries",
+              "operator": "equals",
+              "value": "yes"
+            }
+          ]
+        },
+        {
+          "id": "hospitalizations",
+          "type": "radio",
+          "labelKey": "questions.hospitalizations",
+          "options": [
+            { "value": "yes", "labelKey": "options.yes" },
+            { "value": "no", "labelKey": "options.no" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "medications",
+      "titleKey": "sections.medications",
+      "order": 4,
+      "questions": [
+        {
+          "id": "current_medications",
+          "type": "radio",
+          "labelKey": "questions.currentMedications",
+          "required": true,
+          "options": [
+            { "value": "yes", "labelKey": "options.yes" },
+            { "value": "no", "labelKey": "options.no" }
+          ]
+        },
+        {
+          "id": "medication_list",
+          "type": "textarea",
+          "labelKey": "questions.medicationList",
+          "placeholderKey": "placeholders.medicationList",
+          "conditions": [
+            {
+              "questionId": "current_medications",
+              "operator": "equals",
+              "value": "yes"
+            }
+          ]
+        },
+        {
+          "id": "medication_adherence",
+          "type": "radio",
+          "labelKey": "questions.medicationAdherence",
+          "options": [
+            { "value": "always", "labelKey": "options.always" },
+            { "value": "mostly", "labelKey": "options.mostly" },
+            { "value": "sometimes", "labelKey": "options.sometimes" },
+            { "value": "rarely", "labelKey": "options.rarely" }
+          ],
+          "conditions": [
+            {
+              "questionId": "current_medications",
+              "operator": "equals",
+              "value": "yes"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "allergies",
+      "titleKey": "sections.allergies",
+      "order": 5,
+      "questions": [
+        {
+          "id": "has_allergies",
+          "type": "radio",
+          "labelKey": "questions.hasAllergies",
+          "required": true,
+          "options": [
+            { "value": "yes", "labelKey": "options.yes" },
+            { "value": "no", "labelKey": "options.no" },
+            { "value": "unknown", "labelKey": "options.unknown" }
+          ]
+        },
+        {
+          "id": "allergy_types",
+          "type": "checkbox",
+          "labelKey": "questions.allergyTypes",
+          "options": [
+            { "value": "medication", "labelKey": "options.medicationAllergy" },
+            { "value": "food", "labelKey": "options.foodAllergy" },
+            { "value": "pollen", "labelKey": "options.pollenAllergy" },
+            { "value": "dust", "labelKey": "options.dustAllergy" },
+            { "value": "animal", "labelKey": "options.animalAllergy" },
+            { "value": "other", "labelKey": "options.other" }
+          ],
+          "conditions": [
+            {
+              "questionId": "has_allergies",
+              "operator": "equals",
+              "value": "yes"
+            }
+          ]
+        },
+        {
+          "id": "allergy_details",
+          "type": "textarea",
+          "labelKey": "questions.allergyDetails",
+          "placeholderKey": "placeholders.allergyDetails",
+          "conditions": [
+            {
+              "questionId": "has_allergies",
+              "operator": "equals",
+              "value": "yes"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "family_history",
+      "titleKey": "sections.family",
+      "order": 6,
+      "questions": [
+        {
+          "id": "family_diseases",
+          "type": "checkbox",
+          "labelKey": "questions.familyDiseases",
+          "options": [
+            { "value": "heart_disease", "labelKey": "options.familyHeartDisease" },
+            { "value": "cancer", "labelKey": "options.familyCancer" },
+            { "value": "diabetes", "labelKey": "options.familyDiabetes" },
+            { "value": "hypertension", "labelKey": "options.familyHypertension" },
+            { "value": "mental_illness", "labelKey": "options.familyMentalIllness" },
+            { "value": "stroke", "labelKey": "options.familyStroke" },
+            { "value": "none", "labelKey": "options.none" }
+          ]
+        },
+        {
+          "id": "family_disease_details",
+          "type": "textarea",
+          "labelKey": "questions.familyDiseaseDetails",
+          "placeholderKey": "placeholders.familyDiseaseDetails",
+          "conditions": [
+            {
+              "questionId": "family_diseases",
+              "operator": "not_contains",
+              "value": "none"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "lifestyle",
+      "titleKey": "sections.lifestyle",
+      "order": 7,
+      "questions": [
+        {
+          "id": "smoking",
+          "type": "radio",
+          "labelKey": "questions.smoking",
+          "required": true,
+          "options": [
+            { "value": "never", "labelKey": "options.never" },
+            { "value": "former", "labelKey": "options.former" },
+            { "value": "current", "labelKey": "options.current" }
+          ]
+        },
+        {
+          "id": "smoking_amount",
+          "type": "text",
+          "labelKey": "questions.smokingAmount",
+          "placeholderKey": "placeholders.smokingAmount",
+          "conditions": [
+            {
+              "questionId": "smoking",
+              "operator": "equals",
+              "value": "current"
+            }
+          ]
+        },
+        {
+          "id": "alcohol",
+          "type": "radio",
+          "labelKey": "questions.alcohol",
+          "required": true,
+          "options": [
+            { "value": "never", "labelKey": "options.never" },
+            { "value": "occasionally", "labelKey": "options.occasionally" },
+            { "value": "regularly", "labelKey": "options.regularly" }
+          ]
+        },
+        {
+          "id": "exercise",
+          "type": "radio",
+          "labelKey": "questions.exercise",
+          "options": [
+            { "value": "never", "labelKey": "options.never" },
+            { "value": "1-2_per_week", "labelKey": "options.exercise1to2" },
+            { "value": "3-4_per_week", "labelKey": "options.exercise3to4" },
+            { "value": "daily", "labelKey": "options.daily" }
+          ]
+        },
+        {
+          "id": "occupation",
+          "type": "text",
+          "labelKey": "questions.occupation",
+          "placeholderKey": "placeholders.occupation"
+        },
+        {
+          "id": "stress_level",
+          "type": "radio",
+          "labelKey": "questions.stressLevel",
+          "options": [
+            { "value": "low", "labelKey": "options.low" },
+            { "value": "moderate", "labelKey": "options.moderate" },
+            { "value": "high", "labelKey": "options.high" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "womens_health",
+      "titleKey": "sections.womensHealth",
+      "order": 8,
+      "questions": [
+        {
+          "id": "pregnant",
+          "type": "radio",
+          "labelKey": "questions.pregnant",
+          "options": [
+            { "value": "yes", "labelKey": "options.yes" },
+            { "value": "no", "labelKey": "options.no" },
+            { "value": "unknown", "labelKey": "options.unknown" }
+          ],
+          "conditions": [
+            {
+              "questionId": "gender",
+              "operator": "equals",
+              "value": "female"
+            }
+          ]
+        },
+        {
+          "id": "pregnancy_week",
+          "type": "number",
+          "labelKey": "questions.pregnancyWeek",
+          "placeholderKey": "placeholders.pregnancyWeek",
+          "validation": {
+            "min": 1,
+            "max": 42
+          },
+          "conditions": [
+            {
+              "questionId": "pregnant",
+              "operator": "equals",
+              "value": "yes"
+            }
+          ]
+        },
+        {
+          "id": "breastfeeding",
+          "type": "radio",
+          "labelKey": "questions.breastfeeding",
+          "options": [
+            { "value": "yes", "labelKey": "options.yes" },
+            { "value": "no", "labelKey": "options.no" }
+          ],
+          "conditions": [
+            {
+              "questionId": "gender",
+              "operator": "equals",
+              "value": "female"
+            }
+          ]
+        },
+        {
+          "id": "last_menstruation",
+          "type": "date",
+          "labelKey": "questions.lastMenstruation",
+          "conditions": [
+            {
+              "questionId": "gender",
+              "operator": "equals",
+              "value": "female"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

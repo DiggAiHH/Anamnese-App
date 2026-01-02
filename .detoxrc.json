@@ -1,0 +1,49 @@
+{
+  "testRunner": "jest",
+  "runnerConfig": "jest.config.js",
+  "apps": {
+    "ios": {
+      "type": "ios.app",
+      "binaryPath": "ios/build/Build/Products/Debug-iphonesimulator/AnamneseMobile.app",
+      "build": "xcodebuild -workspace ios/AnamneseMobile.xcworkspace -scheme AnamneseMobile -configuration Debug -sdk iphonesimulator -derivedDataPath ios/build"
+    },
+    "android": {
+      "type": "android.apk",
+      "binaryPath": "android/app/build/outputs/apk/debug/app-debug.apk",
+      "build": "cd android && ./gradlew assembleDebug assembleAndroidTest -DtestBuildType=debug"
+    }
+  },
+  "devices": {
+    "simulator": {
+      "type": "ios.simulator",
+      "device": {
+        "type": "iPhone 15 Pro"
+      }
+    },
+    "emulator": {
+      "type": "android.emulator",
+      "device": {
+        "avdName": "Pixel_5_API_33"
+      }
+    }
+  },
+  "configurations": {
+    "ios.debug": {
+      "device": "simulator",
+      "app": "ios"
+    },
+    "android.debug": {
+      "device": "emulator",
+      "app": "android"
+    }
+  },
+  "behavior": {
+    "init": {
+      "reinstallApp": true,
+      "launchApp": true
+    },
+    "cleanup": {
+      "shutdownDevice": false
+    }
+  }
+}
