@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "^1.21.0",
-    "@react-native-voice/voice": "^3.2.4",
+    "@react-native-voice/voice": "^3.1.5",
     "@react-navigation/native": "^6.1.9",
     "@react-navigation/stack": "^6.3.20",
     "@types/crypto-js": "^4.2.1",
@@ -28,7 +28,7 @@
     "immer": "^10.0.3",
     "react": "18.2.0",
     "react-i18next": "^14.0.0",
-    "react-native": "0.73.2",
+    "react-native": "^0.73.11",
     "react-native-date-picker": "^4.3.3",
     "react-native-document-picker": "^9.1.1",
     "react-native-fs": "^2.20.0",

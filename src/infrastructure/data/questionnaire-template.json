@@ -1,13 +1,3 @@
-/**
- * Questionnaire Template - Alle Fragen aus index_v8_complete.html
- * 
- * STRUCTURE:
- * - 8 Hauptsektionen
- * - 60+ Fragen
- * - Conditional Logic
- * - 19 Sprachen Support (labelKey wird von i18n übersetzt)
- */
-
 {
   "version": "1.0.0",
   "sections": [
