@@ -1,0 +1,32 @@
+
+> anamnese-mobile@1.0.0 postinstall
+> patch-package
+
+patch-package 8.0.1
+Applying patches...
+@react-native-windows/cli@0.73.6 ✔
+react-native-document-picker@9.3.1 ✔
+react-native-sqlite-storage@6.0.1 ✔
+react-native-tts@4.1.1 ✔
+
+**ERROR** Failed to apply patch for package react-native-windows
+    
+  This happened because the patch file patches/react-native-windows+0.73.22.patch could not be parsed.
+   
+  If you just upgraded patch-package, you can try running:
+  
+    patch -p1 -i patches/react-native-windows+0.73.22.patch
+    npx patch-package react-native-windows
+    
+  Otherwise, try manually creating the patch file again.
+  
+  If the problem persists, please submit a bug report:
+  
+    https://github.com/ds300/patch-package/issues/new?title=Patch+file+parse+error&body=%3CPlease+attach+the+patch+file+in+question%3E
+
+
+npm error code 1
+npm error path /home/runner/work/Anamnese-App/Anamnese-App
+npm error command failed
+npm error command sh -c patch-package
+npm error A complete log of this run can be found in: /home/runner/.npm/_logs/2026-01-21T17_15_03_205Z-debug-0.log

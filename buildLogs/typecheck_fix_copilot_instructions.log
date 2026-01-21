@@ -1,0 +1,17 @@
+
+> anamnese-mobile@1.0.0 type-check
+> tsc --noEmit
+
+error TS2688: Cannot find type definition file for 'jest'.
+  The file is in the program because:
+    Entry point of type library 'jest' specified in compilerOptions
+error TS2688: Cannot find type definition file for 'node'.
+  The file is in the program because:
+    Entry point of type library 'node' specified in compilerOptions
+error TS2688: Cannot find type definition file for 'react'.
+  The file is in the program because:
+    Entry point of type library 'react' specified in compilerOptions
+error TS2688: Cannot find type definition file for 'react-native'.
+  The file is in the program because:
+    Entry point of type library 'react-native' specified in compilerOptions
+tsconfig.json(2,14): error TS6053: File '@react-native/typescript-config/tsconfig.json' not found.

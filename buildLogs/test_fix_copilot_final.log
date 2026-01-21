@@ -1,0 +1,814 @@
+
+> anamnese-mobile@1.0.0 test
+> jest --runInBand --testPathIgnorePatterns=e2e --forceExit
+
+PASS __tests__/application/services/PDFTemplateService.test.ts
+PASS src/domain/services/__tests__/ClinicalCalculators.test.ts
+PASS __tests__/infrastructure/analytics/LocalAnalyticsService.test.ts
+PASS src/__tests__/integration.test.ts
+FAIL src/infrastructure/speech/__tests__/TTSService.test.ts
+  ● Console
+
+    console.log
+      [TTS] TTS Service mocked (module not available or Windows)
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:108:15)
+
+    console.log
+      [TTS] TTS Service mocked (module not available or Windows)
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:108:15)
+
+    console.log
+      [TTS] TTS Service mocked (module not available or Windows)
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:108:15)
+
+    console.log
+      [TTS] TTS Service mocked (module not available or Windows)
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:108:15)
+
+    console.log
+      [TTS] TTS speak ignored (module not available or Windows)
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:108:15)
+
+    console.log
+      [TTS] TTS Service mocked (module not available or Windows)
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:108:15)
+
+    console.log
+      [TTS] TTS speak ignored (module not available or Windows)
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:108:15)
+
+    console.log
+      [TTS] TTS Service mocked (module not available or Windows)
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:108:15)
+
+    console.log
+      [TTS] TTS speak ignored (module not available or Windows)
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:108:15)
+
+    console.log
+      [TTS] TTS speak ignored (module not available or Windows)
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:108:15)
+
+    console.log
+      [TTS] TTS Service mocked (module not available or Windows)
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:108:15)
+
+    console.log
+      [TTS] TTS speak ignored (module not available or Windows)
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:108:15)
+
+    console.log
+      [TTS] TTS Service mocked (module not available or Windows)
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:108:15)
+
+    console.log
+      [TTS] TTS speak ignored (module not available or Windows)
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:108:15)
+
+    console.log
+      [TTS] TTS Service mocked (module not available or Windows)
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:108:15)
+
+    console.log
+      [TTS] TTS speak ignored (module not available or Windows)
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:108:15)
+
+    console.log
+      [TTS] TTS Service mocked (module not available or Windows)
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:108:15)
+
+    console.log
+      [TTS] TTS Service mocked (module not available or Windows)
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:108:15)
+
+    console.log
+      [TTS] TTS Service mocked (module not available or Windows)
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:108:15)
+
+    console.log
+      [TTS] TTS Service mocked (module not available or Windows)
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:108:15)
+
+    console.log
+      [TTS] TTS Service mocked (module not available or Windows)
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:108:15)
+
+    console.log
+      [TTS] TTS Service mocked (module not available or Windows)
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:108:15)
+
+    console.log
+      [TTS] TTS Service mocked (module not available or Windows)
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:108:15)
+
+    console.log
+      [TTS] TTS Service mocked (module not available or Windows)
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:108:15)
+
+    console.log
+      [TTS] TTS Service mocked (module not available or Windows)
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:108:15)
+
+    console.log
+      [TTS] TTS Service mocked (module not available or Windows)
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:108:15)
+
+    console.log
+      [TTS] TTS Service mocked (module not available or Windows)
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:108:15)
+
+  ● TTSService › initialization › should set up event listeners on construction
+
+    expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+    Expected: "tts-start", Any<Function>
+
+    Number of calls: 0
+
+    [0m [90m 39 |[39m   describe([32m'initialization'[39m[33m,[39m () [33m=>[39m {
+     [90m 40 |[39m     it([32m'should set up event listeners on construction'[39m[33m,[39m () [33m=>[39m {
+    [31m[1m>[22m[39m[90m 41 |[39m       expect(mockedTts[33m.[39maddEventListener)[33m.[39mtoHaveBeenCalledWith([32m'tts-start'[39m[33m,[39m expect[33m.[39many([33mFunction[39m))[33m;[39m
+     [90m    |[39m                                          [31m[1m^[22m[39m
+     [90m 42 |[39m       expect(mockedTts[33m.[39maddEventListener)[33m.[39mtoHaveBeenCalledWith([32m'tts-finish'[39m[33m,[39m expect[33m.[39many([33mFunction[39m))[33m;[39m
+     [90m 43 |[39m       expect(mockedTts[33m.[39maddEventListener)[33m.[39mtoHaveBeenCalledWith([32m'tts-cancel'[39m[33m,[39m expect[33m.[39many([33mFunction[39m))[33m;[39m
+     [90m 44 |[39m     })[33m;[39m[0m
+
+      at Object.toHaveBeenCalledWith (src/infrastructure/speech/__tests__/TTSService.test.ts:41:42)
+
+  ● TTSService › initialization › should set default rate and pitch
+
+    expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+    Expected: 0.5
+
+    Number of calls: 0
+
+    [0m [90m 45 |[39m
+     [90m 46 |[39m     it([32m'should set default rate and pitch'[39m[33m,[39m () [33m=>[39m {
+    [31m[1m>[22m[39m[90m 47 |[39m       expect(mockedTts[33m.[39msetDefaultRate)[33m.[39mtoHaveBeenCalledWith([35m0.5[39m)[33m;[39m
+     [90m    |[39m                                        [31m[1m^[22m[39m
+     [90m 48 |[39m       expect(mockedTts[33m.[39msetDefaultPitch)[33m.[39mtoHaveBeenCalledWith([35m1.0[39m)[33m;[39m
+     [90m 49 |[39m     })[33m;[39m
+     [90m 50 |[39m[0m
+
+      at Object.toHaveBeenCalledWith (src/infrastructure/speech/__tests__/TTSService.test.ts:47:40)
+
+  ● TTSService › initialization › should set default language to German
+
+    expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+    Expected: "de-DE"
+
+    Number of calls: 0
+
+    [0m [90m 50 |[39m
+     [90m 51 |[39m     it([32m'should set default language to German'[39m[33m,[39m () [33m=>[39m {
+    [31m[1m>[22m[39m[90m 52 |[39m       expect(mockedTts[33m.[39msetDefaultLanguage)[33m.[39mtoHaveBeenCalledWith([32m'de-DE'[39m)[33m;[39m
+     [90m    |[39m                                            [31m[1m^[22m[39m
+     [90m 53 |[39m     })[33m;[39m
+     [90m 54 |[39m   })[33m;[39m
+     [90m 55 |[39m[0m
+
+      at Object.toHaveBeenCalledWith (src/infrastructure/speech/__tests__/TTSService.test.ts:52:44)
+
+  ● TTSService › speak() › should speak text in default language
+
+    expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+    Expected: "Hallo Welt"
+
+    Number of calls: 0
+
+    [0m [90m 58 |[39m       [36mawait[39m service[33m.[39mspeak([32m'Hallo Welt'[39m)[33m;[39m
+     [90m 59 |[39m       
+    [31m[1m>[22m[39m[90m 60 |[39m       expect(mockedTts[33m.[39mspeak)[33m.[39mtoHaveBeenCalledWith([32m'Hallo Welt'[39m)[33m;[39m
+     [90m    |[39m                               [31m[1m^[22m[39m
+     [90m 61 |[39m     })[33m;[39m
+     [90m 62 |[39m
+     [90m 63 |[39m     it([32m'should set language before speaking'[39m[33m,[39m [36masync[39m () [33m=>[39m {[0m
+
+      at Object.toHaveBeenCalledWith (src/infrastructure/speech/__tests__/TTSService.test.ts:60:31)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+  ● TTSService › speak() › should set language before speaking
+
+    expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+    Expected: "en-US"
+
+    Number of calls: 0
+
+    [0m [90m 64 |[39m       [36mawait[39m service[33m.[39mspeak([32m'Hello World'[39m[33m,[39m [32m'en'[39m)[33m;[39m
+     [90m 65 |[39m       
+    [31m[1m>[22m[39m[90m 66 |[39m       expect(mockedTts[33m.[39msetDefaultLanguage)[33m.[39mtoHaveBeenCalledWith([32m'en-US'[39m)[33m;[39m
+     [90m    |[39m                                            [31m[1m^[22m[39m
+     [90m 67 |[39m       expect(mockedTts[33m.[39mspeak)[33m.[39mtoHaveBeenCalledWith([32m'Hello World'[39m)[33m;[39m
+     [90m 68 |[39m     })[33m;[39m
+     [90m 69 |[39m[0m
+
+      at Object.toHaveBeenCalledWith (src/infrastructure/speech/__tests__/TTSService.test.ts:66:44)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+  ● TTSService › speak() › should truncate very long text
+
+    expect(jest.fn()).toHaveBeenCalled()
+
+    Expected number of calls: >= 1
+    Received number of calls:    0
+
+    [0m [90m 79 |[39m       [36mawait[39m service[33m.[39mspeak(longText)[33m;[39m
+     [90m 80 |[39m       
+    [31m[1m>[22m[39m[90m 81 |[39m       expect(mockedTts[33m.[39mspeak)[33m.[39mtoHaveBeenCalled()[33m;[39m
+     [90m    |[39m                               [31m[1m^[22m[39m
+     [90m 82 |[39m       [36mconst[39m calledText [33m=[39m (mockedTts[33m.[39mspeak [36mas[39m jest[33m.[39m[33mMock[39m)[33m.[39mmock[33m.[39mcalls[[35m0[39m][[35m0[39m] [36mas[39m string[33m;[39m
+     [90m 83 |[39m       expect(calledText[33m.[39mlength)[33m.[39mtoBeLessThanOrEqual([35m4003[39m)[33m;[39m [90m// 4000 + '...'[39m
+     [90m 84 |[39m       expect(calledText[33m.[39mendsWith([32m'...'[39m))[33m.[39mtoBe([36mtrue[39m)[33m;[39m[0m
+
+      at Object.toHaveBeenCalled (src/infrastructure/speech/__tests__/TTSService.test.ts:81:31)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+  ● TTSService › speak() › should map all 19 languages correctly
+
+    expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+    Expected: "de-DE"
+
+    Number of calls: 0
+
+    [0m [90m 111 |[39m         jest[33m.[39mclearAllMocks()[33m;[39m
+     [90m 112 |[39m         [36mawait[39m service[33m.[39mspeak([32m'test'[39m[33m,[39m app)[33m;[39m
+    [31m[1m>[22m[39m[90m 113 |[39m         expect(mockedTts[33m.[39msetDefaultLanguage)[33m.[39mtoHaveBeenCalledWith(tts)[33m;[39m
+     [90m     |[39m                                              [31m[1m^[22m[39m
+     [90m 114 |[39m       }
+     [90m 115 |[39m     })[33m;[39m
+     [90m 116 |[39m[0m
+
+      at Object.toHaveBeenCalledWith (src/infrastructure/speech/__tests__/TTSService.test.ts:113:46)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+  ● TTSService › speak() › should fallback to German for unknown language
+
+    expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+    Expected: "de-DE"
+
+    Number of calls: 0
+
+    [0m [90m 118 |[39m       [36mawait[39m service[33m.[39mspeak([32m'test'[39m[33m,[39m [32m'xx'[39m)[33m;[39m
+     [90m 119 |[39m       
+    [31m[1m>[22m[39m[90m 120 |[39m       expect(mockedTts[33m.[39msetDefaultLanguage)[33m.[39mtoHaveBeenCalledWith([32m'de-DE'[39m)[33m;[39m
+     [90m     |[39m                                            [31m[1m^[22m[39m
+     [90m 121 |[39m     })[33m;[39m
+     [90m 122 |[39m   })[33m;[39m
+     [90m 123 |[39m[0m
+
+      at Object.toHaveBeenCalledWith (src/infrastructure/speech/__tests__/TTSService.test.ts:120:44)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+  ● TTSService › stop() › should stop TTS playback
+
+    expect(jest.fn()).toHaveBeenCalled()
+
+    Expected number of calls: >= 1
+    Received number of calls:    0
+
+    [0m [90m 126 |[39m       [36mawait[39m service[33m.[39mstop()[33m;[39m
+     [90m 127 |[39m       
+    [31m[1m>[22m[39m[90m 128 |[39m       expect(mockedTts[33m.[39mstop)[33m.[39mtoHaveBeenCalled()[33m;[39m
+     [90m     |[39m                              [31m[1m^[22m[39m
+     [90m 129 |[39m     })[33m;[39m
+     [90m 130 |[39m   })[33m;[39m
+     [90m 131 |[39m[0m
+
+      at Object.toHaveBeenCalled (src/infrastructure/speech/__tests__/TTSService.test.ts:128:30)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+  ● TTSService › getAvailableVoices() › should return available voices
+
+    expect(received).toHaveLength(expected)
+
+    Expected length: 2
+    Received length: 0
+    Received array:  []
+
+    [0m [90m 134 |[39m       [36mconst[39m voices [33m=[39m [36mawait[39m service[33m.[39mgetAvailableVoices()[33m;[39m
+     [90m 135 |[39m       
+    [31m[1m>[22m[39m[90m 136 |[39m       expect(voices)[33m.[39mtoHaveLength([35m2[39m)[33m;[39m
+     [90m     |[39m                      [31m[1m^[22m[39m
+     [90m 137 |[39m       expect(voices[[35m0[39m][33m.[39mname)[33m.[39mtoBe([32m'German Voice'[39m)[33m;[39m
+     [90m 138 |[39m       expect(voices[[35m1[39m][33m.[39mlanguage)[33m.[39mtoBe([32m'en-US'[39m)[33m;[39m
+     [90m 139 |[39m     })[33m;[39m[0m
+
+      at Object.toHaveLength (src/infrastructure/speech/__tests__/TTSService.test.ts:136:22)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+  ● TTSService › setRate() › should set speech rate
+
+    expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+    Expected: 0.7
+
+    Number of calls: 0
+
+    [0m [90m 164 |[39m       [36mawait[39m service[33m.[39msetRate([35m0.7[39m)[33m;[39m
+     [90m 165 |[39m       
+    [31m[1m>[22m[39m[90m 166 |[39m       expect(mockedTts[33m.[39msetDefaultRate)[33m.[39mtoHaveBeenCalledWith([35m0.7[39m)[33m;[39m
+     [90m     |[39m                                        [31m[1m^[22m[39m
+     [90m 167 |[39m     })[33m;[39m
+     [90m 168 |[39m
+     [90m 169 |[39m     it([32m'should clamp rate to valid range'[39m[33m,[39m [36masync[39m () [33m=>[39m {[0m
+
+      at Object.toHaveBeenCalledWith (src/infrastructure/speech/__tests__/TTSService.test.ts:166:40)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+  ● TTSService › setRate() › should clamp rate to valid range
+
+    expect(jest.fn()).toHaveBeenLastCalledWith(...expected)
+
+    Expected: 1
+
+    Number of calls: 0
+
+    [0m [90m 169 |[39m     it([32m'should clamp rate to valid range'[39m[33m,[39m [36masync[39m () [33m=>[39m {
+     [90m 170 |[39m       [36mawait[39m service[33m.[39msetRate([35m2.0[39m)[33m;[39m
+    [31m[1m>[22m[39m[90m 171 |[39m       expect(mockedTts[33m.[39msetDefaultRate)[33m.[39mtoHaveBeenLastCalledWith([35m1.0[39m)[33m;[39m
+     [90m     |[39m                                        [31m[1m^[22m[39m
+     [90m 172 |[39m
+     [90m 173 |[39m       [36mawait[39m service[33m.[39msetRate([33m-[39m[35m0.5[39m)[33m;[39m
+     [90m 174 |[39m       expect(mockedTts[33m.[39msetDefaultRate)[33m.[39mtoHaveBeenLastCalledWith([35m0.1[39m)[33m;[39m[0m
+
+      at Object.toHaveBeenLastCalledWith (src/infrastructure/speech/__tests__/TTSService.test.ts:171:40)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+  ● TTSService › setPitch() › should set speech pitch
+
+    expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+    Expected: 1.5
+
+    Number of calls: 0
+
+    [0m [90m 180 |[39m       [36mawait[39m service[33m.[39msetPitch([35m1.5[39m)[33m;[39m
+     [90m 181 |[39m       
+    [31m[1m>[22m[39m[90m 182 |[39m       expect(mockedTts[33m.[39msetDefaultPitch)[33m.[39mtoHaveBeenCalledWith([35m1.5[39m)[33m;[39m
+     [90m     |[39m                                         [31m[1m^[22m[39m
+     [90m 183 |[39m     })[33m;[39m
+     [90m 184 |[39m
+     [90m 185 |[39m     it([32m'should clamp pitch to valid range'[39m[33m,[39m [36masync[39m () [33m=>[39m {[0m
+
+      at Object.toHaveBeenCalledWith (src/infrastructure/speech/__tests__/TTSService.test.ts:182:41)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+  ● TTSService › setPitch() › should clamp pitch to valid range
+
+    expect(jest.fn()).toHaveBeenLastCalledWith(...expected)
+
+    Expected: 2
+
+    Number of calls: 0
+
+    [0m [90m 185 |[39m     it([32m'should clamp pitch to valid range'[39m[33m,[39m [36masync[39m () [33m=>[39m {
+     [90m 186 |[39m       [36mawait[39m service[33m.[39msetPitch([35m5.0[39m)[33m;[39m
+    [31m[1m>[22m[39m[90m 187 |[39m       expect(mockedTts[33m.[39msetDefaultPitch)[33m.[39mtoHaveBeenLastCalledWith([35m2.0[39m)[33m;[39m
+     [90m     |[39m                                         [31m[1m^[22m[39m
+     [90m 188 |[39m
+     [90m 189 |[39m       [36mawait[39m service[33m.[39msetPitch([35m0.1[39m)[33m;[39m
+     [90m 190 |[39m       expect(mockedTts[33m.[39msetDefaultPitch)[33m.[39mtoHaveBeenLastCalledWith([35m0.5[39m)[33m;[39m[0m
+
+      at Object.toHaveBeenLastCalledWith (src/infrastructure/speech/__tests__/TTSService.test.ts:187:41)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+  ● TTSService › GDPR Compliance › should only log metadata (language, length)
+
+    expect(received).toContain(expected) // indexOf
+
+    Expected substring: "en-US"
+    Received string:    "[TTS] TTS speak ignored (module not available or Windows)"
+
+    [0m [90m 219 |[39m       [36mconst[39m allLogs [33m=[39m consoleSpy[33m.[39mmock[33m.[39mcalls[33m.[39mflat()[33m.[39mjoin([32m' '[39m)[33m;[39m
+     [90m 220 |[39m       [90m// Should log language and character count only[39m
+    [31m[1m>[22m[39m[90m 221 |[39m       expect(allLogs)[33m.[39mtoContain([32m'en-US'[39m)[33m;[39m
+     [90m     |[39m                       [31m[1m^[22m[39m
+     [90m 222 |[39m       expect(allLogs)[33m.[39mtoContain([32m'chars'[39m)[33m;[39m
+     [90m 223 |[39m       
+     [90m 224 |[39m       consoleSpy[33m.[39mmockRestore()[33m;[39m[0m
+
+      at Object.toContain (src/infrastructure/speech/__tests__/TTSService.test.ts:221:23)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+  ● TTSService › destroy() › should stop playback if currently speaking
+
+    expect(jest.fn()).toHaveBeenCalled()
+
+    Expected number of calls: >= 1
+    Received number of calls:    0
+
+    [0m [90m 250 |[39m       
+     [90m 251 |[39m       [90m// Now stop should have been called[39m
+    [31m[1m>[22m[39m[90m 252 |[39m       expect(mockedTts[33m.[39mstop)[33m.[39mtoHaveBeenCalled()[33m;[39m
+     [90m     |[39m                              [31m[1m^[22m[39m
+     [90m 253 |[39m     })[33m;[39m
+     [90m 254 |[39m   })[33m;[39m
+     [90m 255 |[39m })[33m;[39m[0m
+
+      at Object.toHaveBeenCalled (src/infrastructure/speech/__tests__/TTSService.test.ts:252:30)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+PASS __tests__/infrastructure/persistence/SQLiteAnswerRepository.test.ts
+PASS src/domain/services/__tests__/FeedbackTextBuilder.test.ts
+PASS __tests__/shared/sanitizeError.test.ts
+PASS __tests__/infrastructure/persistence/SQLitePatientRepository.test.ts
+PASS src/application/use-cases/__tests__/SaveAnswerUseCase.test.ts
+PASS __tests__/application/use-cases/SaveAnswerUseCase.test.ts
+PASS __tests__/application/use-cases/LoadQuestionnaireUseCase.test.ts
+PASS __tests__/shared/seedData.test.ts
+PASS __tests__/shared/keyManager.test.ts
+  ● Console
+
+    console.log
+      Encryption key stored in secure storage.
+
+      at log (src/shared/logger.ts:13:13)
+
+PASS __tests__/domain/entities/Questionnaire.test.ts
+PASS src/domain/entities/__tests__/Questionnaire.test.ts
+PASS __tests__/domain/value-objects/GDTExport.test.ts
+PASS src/presentation/i18n/__tests__/locales.test.ts
+PASS src/domain/entities/__tests__/Patient.test.ts
+PASS src/domain/entities/__tests__/QuestionnaireCompartmentMapping.test.ts
+PASS src/domain/services/__tests__/PasswordGenerator.test.ts
+PASS __tests__/presentation/ToastProvider.test.ts
+PASS __tests__/shared/sessionPersistence.test.ts
+PASS __tests__/domain/entities/Answer.test.ts
+PASS __tests__/infrastructure/persistence/SQLiteQuestionnaireRepository.test.ts
+PASS src/infrastructure/encryption/__tests__/WebCryptoEncryptionService.test.ts
+PASS __tests__/integration/DeleteAllData.test.ts
+PASS src/domain/value-objects/__tests__/CompartmentAnswerEncoding.test.ts
+PASS __tests__/presentation/components/AppButton.test.ts
+PASS __tests__/shared/rnfsSafe.test.ts
+PASS src/domain/entities/__tests__/AnswerDateValidation.test.ts
+PASS __tests__/presentation/components/Card.test.ts
+PASS __tests__/presentation/components/AppInput.test.ts
+PASS __tests__/presentation/components/AppText.test.ts
+PASS __tests__/presentation/components/EmptyState.test.ts
+PASS __tests__/presentation/components/Section.test.ts
+
+Summary of all failing tests
+FAIL src/infrastructure/speech/__tests__/TTSService.test.ts
+  ● TTSService › initialization › should set up event listeners on construction
+
+    expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+    Expected: "tts-start", Any<Function>
+
+    Number of calls: 0
+
+    [0m [90m 39 |[39m   describe([32m'initialization'[39m[33m,[39m () [33m=>[39m {
+     [90m 40 |[39m     it([32m'should set up event listeners on construction'[39m[33m,[39m () [33m=>[39m {
+    [31m[1m>[22m[39m[90m 41 |[39m       expect(mockedTts[33m.[39maddEventListener)[33m.[39mtoHaveBeenCalledWith([32m'tts-start'[39m[33m,[39m expect[33m.[39many([33mFunction[39m))[33m;[39m
+     [90m    |[39m                                          [31m[1m^[22m[39m
+     [90m 42 |[39m       expect(mockedTts[33m.[39maddEventListener)[33m.[39mtoHaveBeenCalledWith([32m'tts-finish'[39m[33m,[39m expect[33m.[39many([33mFunction[39m))[33m;[39m
+     [90m 43 |[39m       expect(mockedTts[33m.[39maddEventListener)[33m.[39mtoHaveBeenCalledWith([32m'tts-cancel'[39m[33m,[39m expect[33m.[39many([33mFunction[39m))[33m;[39m
+     [90m 44 |[39m     })[33m;[39m[0m
+
+      at Object.toHaveBeenCalledWith (src/infrastructure/speech/__tests__/TTSService.test.ts:41:42)
+
+  ● TTSService › initialization › should set default rate and pitch
+
+    expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+    Expected: 0.5
+
+    Number of calls: 0
+
+    [0m [90m 45 |[39m
+     [90m 46 |[39m     it([32m'should set default rate and pitch'[39m[33m,[39m () [33m=>[39m {
+    [31m[1m>[22m[39m[90m 47 |[39m       expect(mockedTts[33m.[39msetDefaultRate)[33m.[39mtoHaveBeenCalledWith([35m0.5[39m)[33m;[39m
+     [90m    |[39m                                        [31m[1m^[22m[39m
+     [90m 48 |[39m       expect(mockedTts[33m.[39msetDefaultPitch)[33m.[39mtoHaveBeenCalledWith([35m1.0[39m)[33m;[39m
+     [90m 49 |[39m     })[33m;[39m
+     [90m 50 |[39m[0m
+
+      at Object.toHaveBeenCalledWith (src/infrastructure/speech/__tests__/TTSService.test.ts:47:40)
+
+  ● TTSService › initialization › should set default language to German
+
+    expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+    Expected: "de-DE"
+
+    Number of calls: 0
+
+    [0m [90m 50 |[39m
+     [90m 51 |[39m     it([32m'should set default language to German'[39m[33m,[39m () [33m=>[39m {
+    [31m[1m>[22m[39m[90m 52 |[39m       expect(mockedTts[33m.[39msetDefaultLanguage)[33m.[39mtoHaveBeenCalledWith([32m'de-DE'[39m)[33m;[39m
+     [90m    |[39m                                            [31m[1m^[22m[39m
+     [90m 53 |[39m     })[33m;[39m
+     [90m 54 |[39m   })[33m;[39m
+     [90m 55 |[39m[0m
+
+      at Object.toHaveBeenCalledWith (src/infrastructure/speech/__tests__/TTSService.test.ts:52:44)
+
+  ● TTSService › speak() › should speak text in default language
+
+    expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+    Expected: "Hallo Welt"
+
+    Number of calls: 0
+
+    [0m [90m 58 |[39m       [36mawait[39m service[33m.[39mspeak([32m'Hallo Welt'[39m)[33m;[39m
+     [90m 59 |[39m       
+    [31m[1m>[22m[39m[90m 60 |[39m       expect(mockedTts[33m.[39mspeak)[33m.[39mtoHaveBeenCalledWith([32m'Hallo Welt'[39m)[33m;[39m
+     [90m    |[39m                               [31m[1m^[22m[39m
+     [90m 61 |[39m     })[33m;[39m
+     [90m 62 |[39m
+     [90m 63 |[39m     it([32m'should set language before speaking'[39m[33m,[39m [36masync[39m () [33m=>[39m {[0m
+
+      at Object.toHaveBeenCalledWith (src/infrastructure/speech/__tests__/TTSService.test.ts:60:31)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+  ● TTSService › speak() › should set language before speaking
+
+    expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+    Expected: "en-US"
+
+    Number of calls: 0
+
+    [0m [90m 64 |[39m       [36mawait[39m service[33m.[39mspeak([32m'Hello World'[39m[33m,[39m [32m'en'[39m)[33m;[39m
+     [90m 65 |[39m       
+    [31m[1m>[22m[39m[90m 66 |[39m       expect(mockedTts[33m.[39msetDefaultLanguage)[33m.[39mtoHaveBeenCalledWith([32m'en-US'[39m)[33m;[39m
+     [90m    |[39m                                            [31m[1m^[22m[39m
+     [90m 67 |[39m       expect(mockedTts[33m.[39mspeak)[33m.[39mtoHaveBeenCalledWith([32m'Hello World'[39m)[33m;[39m
+     [90m 68 |[39m     })[33m;[39m
+     [90m 69 |[39m[0m
+
+      at Object.toHaveBeenCalledWith (src/infrastructure/speech/__tests__/TTSService.test.ts:66:44)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+  ● TTSService › speak() › should truncate very long text
+
+    expect(jest.fn()).toHaveBeenCalled()
+
+    Expected number of calls: >= 1
+    Received number of calls:    0
+
+    [0m [90m 79 |[39m       [36mawait[39m service[33m.[39mspeak(longText)[33m;[39m
+     [90m 80 |[39m       
+    [31m[1m>[22m[39m[90m 81 |[39m       expect(mockedTts[33m.[39mspeak)[33m.[39mtoHaveBeenCalled()[33m;[39m
+     [90m    |[39m                               [31m[1m^[22m[39m
+     [90m 82 |[39m       [36mconst[39m calledText [33m=[39m (mockedTts[33m.[39mspeak [36mas[39m jest[33m.[39m[33mMock[39m)[33m.[39mmock[33m.[39mcalls[[35m0[39m][[35m0[39m] [36mas[39m string[33m;[39m
+     [90m 83 |[39m       expect(calledText[33m.[39mlength)[33m.[39mtoBeLessThanOrEqual([35m4003[39m)[33m;[39m [90m// 4000 + '...'[39m
+     [90m 84 |[39m       expect(calledText[33m.[39mendsWith([32m'...'[39m))[33m.[39mtoBe([36mtrue[39m)[33m;[39m[0m
+
+      at Object.toHaveBeenCalled (src/infrastructure/speech/__tests__/TTSService.test.ts:81:31)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+  ● TTSService › speak() › should map all 19 languages correctly
+
+    expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+    Expected: "de-DE"
+
+    Number of calls: 0
+
+    [0m [90m 111 |[39m         jest[33m.[39mclearAllMocks()[33m;[39m
+     [90m 112 |[39m         [36mawait[39m service[33m.[39mspeak([32m'test'[39m[33m,[39m app)[33m;[39m
+    [31m[1m>[22m[39m[90m 113 |[39m         expect(mockedTts[33m.[39msetDefaultLanguage)[33m.[39mtoHaveBeenCalledWith(tts)[33m;[39m
+     [90m     |[39m                                              [31m[1m^[22m[39m
+     [90m 114 |[39m       }
+     [90m 115 |[39m     })[33m;[39m
+     [90m 116 |[39m[0m
+
+      at Object.toHaveBeenCalledWith (src/infrastructure/speech/__tests__/TTSService.test.ts:113:46)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+  ● TTSService › speak() › should fallback to German for unknown language
+
+    expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+    Expected: "de-DE"
+
+    Number of calls: 0
+
+    [0m [90m 118 |[39m       [36mawait[39m service[33m.[39mspeak([32m'test'[39m[33m,[39m [32m'xx'[39m)[33m;[39m
+     [90m 119 |[39m       
+    [31m[1m>[22m[39m[90m 120 |[39m       expect(mockedTts[33m.[39msetDefaultLanguage)[33m.[39mtoHaveBeenCalledWith([32m'de-DE'[39m)[33m;[39m
+     [90m     |[39m                                            [31m[1m^[22m[39m
+     [90m 121 |[39m     })[33m;[39m
+     [90m 122 |[39m   })[33m;[39m
+     [90m 123 |[39m[0m
+
+      at Object.toHaveBeenCalledWith (src/infrastructure/speech/__tests__/TTSService.test.ts:120:44)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+  ● TTSService › stop() › should stop TTS playback
+
+    expect(jest.fn()).toHaveBeenCalled()
+
+    Expected number of calls: >= 1
+    Received number of calls:    0
+
+    [0m [90m 126 |[39m       [36mawait[39m service[33m.[39mstop()[33m;[39m
+     [90m 127 |[39m       
+    [31m[1m>[22m[39m[90m 128 |[39m       expect(mockedTts[33m.[39mstop)[33m.[39mtoHaveBeenCalled()[33m;[39m
+     [90m     |[39m                              [31m[1m^[22m[39m
+     [90m 129 |[39m     })[33m;[39m
+     [90m 130 |[39m   })[33m;[39m
+     [90m 131 |[39m[0m
+
+      at Object.toHaveBeenCalled (src/infrastructure/speech/__tests__/TTSService.test.ts:128:30)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+  ● TTSService › getAvailableVoices() › should return available voices
+
+    expect(received).toHaveLength(expected)
+
+    Expected length: 2
+    Received length: 0
+    Received array:  []
+
+    [0m [90m 134 |[39m       [36mconst[39m voices [33m=[39m [36mawait[39m service[33m.[39mgetAvailableVoices()[33m;[39m
+     [90m 135 |[39m       
+    [31m[1m>[22m[39m[90m 136 |[39m       expect(voices)[33m.[39mtoHaveLength([35m2[39m)[33m;[39m
+     [90m     |[39m                      [31m[1m^[22m[39m
+     [90m 137 |[39m       expect(voices[[35m0[39m][33m.[39mname)[33m.[39mtoBe([32m'German Voice'[39m)[33m;[39m
+     [90m 138 |[39m       expect(voices[[35m1[39m][33m.[39mlanguage)[33m.[39mtoBe([32m'en-US'[39m)[33m;[39m
+     [90m 139 |[39m     })[33m;[39m[0m
+
+      at Object.toHaveLength (src/infrastructure/speech/__tests__/TTSService.test.ts:136:22)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+  ● TTSService › setRate() › should set speech rate
+
+    expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+    Expected: 0.7
+
+    Number of calls: 0
+
+    [0m [90m 164 |[39m       [36mawait[39m service[33m.[39msetRate([35m0.7[39m)[33m;[39m
+     [90m 165 |[39m       
+    [31m[1m>[22m[39m[90m 166 |[39m       expect(mockedTts[33m.[39msetDefaultRate)[33m.[39mtoHaveBeenCalledWith([35m0.7[39m)[33m;[39m
+     [90m     |[39m                                        [31m[1m^[22m[39m
+     [90m 167 |[39m     })[33m;[39m
+     [90m 168 |[39m
+     [90m 169 |[39m     it([32m'should clamp rate to valid range'[39m[33m,[39m [36masync[39m () [33m=>[39m {[0m
+
+      at Object.toHaveBeenCalledWith (src/infrastructure/speech/__tests__/TTSService.test.ts:166:40)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+  ● TTSService › setRate() › should clamp rate to valid range
+
+    expect(jest.fn()).toHaveBeenLastCalledWith(...expected)
+
+    Expected: 1
+
+    Number of calls: 0
+
+    [0m [90m 169 |[39m     it([32m'should clamp rate to valid range'[39m[33m,[39m [36masync[39m () [33m=>[39m {
+     [90m 170 |[39m       [36mawait[39m service[33m.[39msetRate([35m2.0[39m)[33m;[39m
+    [31m[1m>[22m[39m[90m 171 |[39m       expect(mockedTts[33m.[39msetDefaultRate)[33m.[39mtoHaveBeenLastCalledWith([35m1.0[39m)[33m;[39m
+     [90m     |[39m                                        [31m[1m^[22m[39m
+     [90m 172 |[39m
+     [90m 173 |[39m       [36mawait[39m service[33m.[39msetRate([33m-[39m[35m0.5[39m)[33m;[39m
+     [90m 174 |[39m       expect(mockedTts[33m.[39msetDefaultRate)[33m.[39mtoHaveBeenLastCalledWith([35m0.1[39m)[33m;[39m[0m
+
+      at Object.toHaveBeenLastCalledWith (src/infrastructure/speech/__tests__/TTSService.test.ts:171:40)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+  ● TTSService › setPitch() › should set speech pitch
+
+    expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+    Expected: 1.5
+
+    Number of calls: 0
+
+    [0m [90m 180 |[39m       [36mawait[39m service[33m.[39msetPitch([35m1.5[39m)[33m;[39m
+     [90m 181 |[39m       
+    [31m[1m>[22m[39m[90m 182 |[39m       expect(mockedTts[33m.[39msetDefaultPitch)[33m.[39mtoHaveBeenCalledWith([35m1.5[39m)[33m;[39m
+     [90m     |[39m                                         [31m[1m^[22m[39m
+     [90m 183 |[39m     })[33m;[39m
+     [90m 184 |[39m
+     [90m 185 |[39m     it([32m'should clamp pitch to valid range'[39m[33m,[39m [36masync[39m () [33m=>[39m {[0m
+
+      at Object.toHaveBeenCalledWith (src/infrastructure/speech/__tests__/TTSService.test.ts:182:41)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+  ● TTSService › setPitch() › should clamp pitch to valid range
+
+    expect(jest.fn()).toHaveBeenLastCalledWith(...expected)
+
+    Expected: 2
+
+    Number of calls: 0
+
+    [0m [90m 185 |[39m     it([32m'should clamp pitch to valid range'[39m[33m,[39m [36masync[39m () [33m=>[39m {
+     [90m 186 |[39m       [36mawait[39m service[33m.[39msetPitch([35m5.0[39m)[33m;[39m
+    [31m[1m>[22m[39m[90m 187 |[39m       expect(mockedTts[33m.[39msetDefaultPitch)[33m.[39mtoHaveBeenLastCalledWith([35m2.0[39m)[33m;[39m
+     [90m     |[39m                                         [31m[1m^[22m[39m
+     [90m 188 |[39m
+     [90m 189 |[39m       [36mawait[39m service[33m.[39msetPitch([35m0.1[39m)[33m;[39m
+     [90m 190 |[39m       expect(mockedTts[33m.[39msetDefaultPitch)[33m.[39mtoHaveBeenLastCalledWith([35m0.5[39m)[33m;[39m[0m
+
+      at Object.toHaveBeenLastCalledWith (src/infrastructure/speech/__tests__/TTSService.test.ts:187:41)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+  ● TTSService › GDPR Compliance › should only log metadata (language, length)
+
+    expect(received).toContain(expected) // indexOf
+
+    Expected substring: "en-US"
+    Received string:    "[TTS] TTS speak ignored (module not available or Windows)"
+
+    [0m [90m 219 |[39m       [36mconst[39m allLogs [33m=[39m consoleSpy[33m.[39mmock[33m.[39mcalls[33m.[39mflat()[33m.[39mjoin([32m' '[39m)[33m;[39m
+     [90m 220 |[39m       [90m// Should log language and character count only[39m
+    [31m[1m>[22m[39m[90m 221 |[39m       expect(allLogs)[33m.[39mtoContain([32m'en-US'[39m)[33m;[39m
+     [90m     |[39m                       [31m[1m^[22m[39m
+     [90m 222 |[39m       expect(allLogs)[33m.[39mtoContain([32m'chars'[39m)[33m;[39m
+     [90m 223 |[39m       
+     [90m 224 |[39m       consoleSpy[33m.[39mmockRestore()[33m;[39m[0m
+
+      at Object.toContain (src/infrastructure/speech/__tests__/TTSService.test.ts:221:23)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+  ● TTSService › destroy() › should stop playback if currently speaking
+
+    expect(jest.fn()).toHaveBeenCalled()
+
+    Expected number of calls: >= 1
+    Received number of calls:    0
+
+    [0m [90m 250 |[39m       
+     [90m 251 |[39m       [90m// Now stop should have been called[39m
+    [31m[1m>[22m[39m[90m 252 |[39m       expect(mockedTts[33m.[39mstop)[33m.[39mtoHaveBeenCalled()[33m;[39m
+     [90m     |[39m                              [31m[1m^[22m[39m
+     [90m 253 |[39m     })[33m;[39m
+     [90m 254 |[39m   })[33m;[39m
+     [90m 255 |[39m })[33m;[39m[0m
+
+      at Object.toHaveBeenCalled (src/infrastructure/speech/__tests__/TTSService.test.ts:252:30)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+
+Test Suites: 1 failed, 2 skipped, 35 passed, 36 of 38 total
+Tests:       16 failed, 29 skipped, 226 passed, 271 total
+Snapshots:   0 total
+Time:        5.13 s
+Ran all test suites.
+Force exiting Jest: Have you considered using `--detectOpenHandles` to detect async operations that kept running after all tests finished?

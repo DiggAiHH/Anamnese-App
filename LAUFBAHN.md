@@ -354,6 +354,21 @@ It defines the always-on checklist and records what was done, when, and where.
   - Evidence: `buildLogs/windows-dev-run_skipbuild_latest.out.log`
 - Status: AWAITING USER VERIFICATION - User to confirm UI renders
 
+### 2026-01-21 17:14 UTC - FIX COPILOT INSTRUCTIONS + PATCH FILES
+- Goal: Fix incorrect `npm run android` command in copilot-instructions.md and resolve broken patch files.
+- Root Cause: 
+  1. copilot-instructions.md contained misleading `npm run android` command (app is Windows-only)
+  2. patches/react-native-share+10.2.1.patch and patches/react-native-windows+0.73.22.patch were malformed (missing line numbers in @@ markers)
+- Changes:
+  - `.github/copilot-instructions.md`: Removed `npm run android` command, added explicit Windows-only platform warning
+  - `patches/react-native-share+10.2.1.patch`: Disabled (renamed to .disabled)
+  - `patches/react-native-windows+0.73.22.patch`: Disabled (renamed to .disabled)
+- Verification:
+  - `npm install`: ✅ PASS (with 1 warning about questionnaire-loading-performance.patch)
+  - `npm test -- --runInBand --testPathIgnorePatterns="e2e" --forceExit`: ⚠️ 16 tests FAILED (TTSService/SystemSpeechService tests failing due to Windows conditional imports)
+  - Evidence: `buildLogs/npm_install_fix_copilot_final.log`, `buildLogs/test_fix_copilot_final.log`
+- Status: NEEDS FIX - Test failures in TTS/Speech services need to be addressed
+
 ## Operating Rule
 - Bei jeder neuen Chat-Session/Task:
   - Erst diese Datei lesen.
