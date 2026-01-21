@@ -142,3 +142,15 @@ info Launching Dev Tools...
  BUNDLE  ./index.js 
 
  LOG  JavaScript logs will appear in your browser console
+ BUNDLE  ./index.js 
+
+ BUNDLE  ./index.js 
+
+ LOG  JavaScript logs will appear in your browser console
+warn No apps connected. Sending "reload" to all React Native apps failed. Make sure your app is running in the simulator or on a phone connected via USB.
+info Launching Dev Tools...
+ BUNDLE  ./index.js 
+
+ BUNDLE  ./index.js 
+
+ LOG  JavaScript logs will appear in your browser console
