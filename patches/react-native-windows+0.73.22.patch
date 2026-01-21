@@ -1,0 +1,8 @@
+diff --git a/node_modules/react-native-windows/Shared/Networking/OriginPolicyHttpFilter.cpp b/node_modules/react-native-windows/Shared/Networking/OriginPolicyHttpFilter.cpp
+--- a/node_modules/react-native-windows/Shared/Networking/OriginPolicyHttpFilter.cpp
++++ b/node_modules/react-native-windows/Shared/Networking/OriginPolicyHttpFilter.cpp
+@@
+-      if (baseFilter = m_innerFilter.try_as<IHttpBaseProtocolFilter>()) {
++      if ((baseFilter = m_innerFilter.try_as<IHttpBaseProtocolFilter>())) {
+         baseFilter.AllowAutoRedirect(false);
+       }

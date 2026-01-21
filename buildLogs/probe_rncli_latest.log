@@ -1,0 +1,2 @@
+warn Package react-native-sqlite-storage contains invalid configuration: "dependency.platforms.ios.project" is not allowed. Please verify it's properly linked using "npx react-native config" command and contact the package maintainers about this.
+error: unknown option '--version'

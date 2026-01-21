@@ -4,14 +4,92 @@
  * Implementiert IPatientRepository für lokale Datenbank
  */
 
-import { SQLiteDatabase } from 'react-native-sqlite-storage';
+import type { SQLiteDatabase } from 'react-native-sqlite-storage';
 import { PatientEntity, Patient } from '@domain/entities/Patient';
 import { IPatientRepository } from '@domain/repositories/IPatientRepository';
 import { database } from './DatabaseConnection';
+import { encryptionService } from '@infrastructure/encryption/encryptionService';
+import { EncryptedDataVO } from '@domain/value-objects/EncryptedData';
+import { getActiveEncryptionKey } from '@shared/keyManager';
+import { logError, logWarn } from '@shared/logger';
 
 export class SQLitePatientRepository implements IPatientRepository {
   private async getDb(): Promise<SQLiteDatabase> {
     return database.connect();
+  }
+
+  private maskEncryptedData(): Patient['encryptedData'] {
+    return {
+      firstName: '***',
+      lastName: '***',
+      birthDate: '****-**-**',
+      gender: 'other',
+      email: undefined,
+      phone: undefined,
+      insurance: undefined,
+      insuranceNumber: undefined,
+    };
+  }
+
+  private tryParsePlaintext(raw: string): Patient['encryptedData'] | null {
+    const trimmed = raw.trim();
+    if (!trimmed.startsWith('{')) return null;
+    try {
+      const parsed = JSON.parse(trimmed) as Patient['encryptedData'];
+      if (!parsed || typeof parsed.firstName !== 'string' || typeof parsed.lastName !== 'string') {
+        return null;
+      }
+      return parsed;
+    } catch {
+      return null;
+    }
+  }
+
+  private async encryptPatientData(data: Patient['encryptedData'], key: string): Promise<string> {
+    const json = JSON.stringify(data);
+    const encrypted = await encryptionService.encrypt(json, key);
+    return encrypted.toString();
+  }
+
+  private async decryptPatientData(
+    raw: string,
+    key: string | null,
+  ): Promise<{ data: Patient['encryptedData']; wasPlaintext: boolean } | null> {
+    const plaintext = this.tryParsePlaintext(raw);
+    if (plaintext) {
+      return { data: plaintext, wasPlaintext: true };
+    }
+
+    if (!key) {
+      return { data: this.maskEncryptedData(), wasPlaintext: false };
+    }
+
+    try {
+      const encryptedVO = EncryptedDataVO.fromString(raw);
+      const decryptedJson = await encryptionService.decrypt(encryptedVO, key);
+      const parsed = JSON.parse(decryptedJson) as Patient['encryptedData'];
+      return { data: parsed, wasPlaintext: false };
+    } catch (error) {
+      logError('Failed to decrypt patient data', error);
+      return { data: this.maskEncryptedData(), wasPlaintext: false };
+    }
+  }
+
+  private async reencryptIfNeeded(patientId: string, plaintext: Patient['encryptedData']): Promise<void> {
+    const key = getActiveEncryptionKey();
+    if (!key) return;
+
+    try {
+      const encrypted = await this.encryptPatientData(plaintext, key);
+      const db = await this.getDb();
+      await db.executeSql(
+        'UPDATE patients SET encrypted_data = ?, updated_at = ? WHERE id = ?;',
+        [encrypted, new Date().getTime(), patientId],
+      );
+    } catch (error) {
+      logWarn('Failed to re-encrypt legacy patient data.');
+      logError('Re-encryption error', error);
+    }
   }
 
   /**
@@ -21,13 +99,20 @@ export class SQLitePatientRepository implements IPatientRepository {
     const db = await this.getDb();
     const json = patient.toJSON();
 
+    const key = getActiveEncryptionKey();
+    if (!key) {
+      throw new Error('Encryption key missing. Please unlock the session.');
+    }
+
+    const encryptedData = await this.encryptPatientData(json.encryptedData, key);
+
     await db.executeSql(
       `INSERT OR REPLACE INTO patients (
         id, encrypted_data, language, created_at, updated_at, gdpr_consents, audit_log
       ) VALUES (?, ?, ?, ?, ?, ?, ?);`,
       [
         json.id,
-        JSON.stringify(json.encryptedData),
+        encryptedData,
         json.language,
         json.createdAt.getTime(),
         json.updatedAt.getTime(),
@@ -62,7 +147,8 @@ export class SQLitePatientRepository implements IPatientRepository {
     const patients: PatientEntity[] = [];
     for (let i = 0; i < result.rows.length; i++) {
       const row = result.rows.item(i);
-      patients.push(this.mapRowToEntity(row));
+      const entity = await this.mapRowToEntity(row);
+      if (entity) patients.push(entity);
     }
 
     return patients;
@@ -77,6 +163,39 @@ export class SQLitePatientRepository implements IPatientRepository {
   }
 
   /**
+   * Patient aktualisieren
+   */
+  async update(patient: PatientEntity): Promise<void> {
+    const db = await this.getDb();
+    const json = patient.toJSON();
+
+    const key = getActiveEncryptionKey();
+    if (!key) {
+      throw new Error('Encryption key missing. Please unlock the session.');
+    }
+
+    const encryptedData = await this.encryptPatientData(json.encryptedData, key);
+
+    await db.executeSql(
+      `UPDATE patients SET
+        encrypted_data = ?,
+        language = ?,
+        updated_at = ?,
+        gdpr_consents = ?,
+        audit_log = ?
+      WHERE id = ?;`,
+      [
+        encryptedData,
+        json.language,
+        new Date().getTime(),
+        JSON.stringify(json.gdprConsents),
+        JSON.stringify(json.auditLog),
+        json.id,
+      ],
+    );
+  }
+
+  /**
    * Patient existiert?
    */
   async exists(id: string): Promise<boolean> {
@@ -85,7 +204,7 @@ export class SQLitePatientRepository implements IPatientRepository {
       id,
     ]);
 
-    return result.rows.item(0).count > 0;
+    return (result.rows.item(0) as { count: number }).count > 0;
   }
 
   /**
@@ -102,7 +221,8 @@ export class SQLitePatientRepository implements IPatientRepository {
     const patients: PatientEntity[] = [];
     for (let i = 0; i < result.rows.length; i++) {
       const row = result.rows.item(i);
-      patients.push(this.mapRowToEntity(row));
+      const entity = await this.mapRowToEntity(row);
+      if (entity) patients.push(entity);
     }
 
     return patients;
@@ -111,10 +231,20 @@ export class SQLitePatientRepository implements IPatientRepository {
   /**
    * Helper: Row zu Entity mappen
    */
-  private mapRowToEntity(row: Record<string, unknown>): PatientEntity {
+  private async mapRowToEntity(row: Record<string, unknown>): Promise<PatientEntity | null> {
+    const key = getActiveEncryptionKey();
+    const encryptedRaw = row.encrypted_data as string;
+
+    const decrypted = await this.decryptPatientData(encryptedRaw, key);
+    if (!decrypted) return null;
+
+    if (decrypted.wasPlaintext && key) {
+      await this.reencryptIfNeeded(row.id as string, decrypted.data);
+    }
+
     const patientData: Patient = {
       id: row.id as string,
-      encryptedData: JSON.parse(row.encrypted_data as string),
+      encryptedData: decrypted.data,
       language: row.language as Patient['language'],
       createdAt: new Date(row.created_at as number),
       updatedAt: new Date(row.updated_at as number),

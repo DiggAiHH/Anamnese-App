@@ -15,7 +15,7 @@ export type AnswerValue =
   | string
   | number
   | boolean
-  | string[] // für multiselect/checkbox
+  | string[] // legacy multiselect/checkbox
   | Date
   | null;
 
@@ -218,6 +218,42 @@ export class AnswerEntity {
  * Wird vom ValidationService verwendet
  */
 export class AnswerValidator {
+  private static parseDateInput(value: string): Date | null {
+    const trimmed = value.trim();
+
+    // ISO (YYYY-MM-DD)
+    const iso = /^\d{4}-\d{2}-\d{2}$/;
+    if (iso.test(trimmed)) {
+      const d = new Date(`${trimmed}T00:00:00Z`);
+      return Number.isNaN(d.getTime()) ? null : d;
+    }
+
+    // German format (DD.MM.YYYY)
+    const de = /^(\d{2})\.(\d{2})\.(\d{4})$/;
+    const match = trimmed.match(de);
+    if (match) {
+      const day = Number.parseInt(match[1], 10);
+      const month = Number.parseInt(match[2], 10);
+      const year = Number.parseInt(match[3], 10);
+
+      if (!Number.isInteger(day) || !Number.isInteger(month) || !Number.isInteger(year)) return null;
+      if (month < 1 || month > 12) return null;
+      if (day < 1 || day > 31) return null;
+
+      // Use UTC to avoid timezone shifts
+      const d = new Date(Date.UTC(year, month - 1, day));
+
+      // Validate that JS didn't overflow (e.g. 31.02.2024)
+      if (d.getUTCFullYear() !== year || d.getUTCMonth() !== month - 1 || d.getUTCDate() !== day) {
+        return null;
+      }
+
+      return d;
+    }
+
+    return null;
+  }
+
   /**
    * Validiert eine Antwort basierend auf Frage-Definition
    */
@@ -269,18 +305,28 @@ export class AnswerValidator {
         break;
 
       case 'date':
-        if (!(value instanceof Date)) {
-          errors.push('Value must be a date');
-        } else {
+        {
+          const dateValue =
+            value instanceof Date
+              ? value
+              : typeof value === 'string'
+                ? AnswerValidator.parseDateInput(value)
+                : null;
+
+          if (!dateValue) {
+            errors.push('Value must be a valid date');
+            break;
+          }
+
           if (question.validation?.minDate) {
             const minDate = new Date(question.validation.minDate);
-            if (value < minDate) {
+            if (dateValue < minDate) {
               errors.push(`Date must be after ${minDate.toLocaleDateString()}`);
             }
           }
           if (question.validation?.maxDate) {
             const maxDate = new Date(question.validation.maxDate);
-            if (value > maxDate) {
+            if (dateValue > maxDate) {
               errors.push(`Date must be before ${maxDate.toLocaleDateString()}`);
             }
           }
@@ -289,11 +335,20 @@ export class AnswerValidator {
 
       case 'checkbox':
       case 'multiselect':
+        // New: bitset integer
+        if (typeof value === 'number') {
+          if (!Number.isInteger(value) || value < 0) {
+            errors.push('Value must be a non-negative integer');
+          }
+          break;
+        }
+
+        // Legacy: array of option values
         if (!Array.isArray(value)) {
-          errors.push('Value must be an array');
+          errors.push('Value must be an array or integer bitset');
         } else {
           const validOptions = question.options?.map(o => o.value) ?? [];
-          const invalidOptions = value.filter(v => !validOptions.includes(v));
+          const invalidOptions = value.filter(v => !validOptions.some(opt => String(opt) === String(v)));
           if (invalidOptions.length > 0) {
             errors.push(`Invalid options: ${invalidOptions.join(', ')}`);
           }
@@ -302,11 +357,12 @@ export class AnswerValidator {
 
       case 'radio':
       case 'select':
-        if (typeof value !== 'string') {
-          errors.push('Value must be a string');
+        if (typeof value !== 'string' && typeof value !== 'number') {
+          errors.push('Value must be a string or number');
         } else {
           const validOptions = question.options?.map(o => o.value) ?? [];
-          if (!validOptions.includes(value)) {
+          const isValid = validOptions.some((opt) => String(opt) === String(value));
+          if (!isValid) {
             errors.push('Invalid option');
           }
         }

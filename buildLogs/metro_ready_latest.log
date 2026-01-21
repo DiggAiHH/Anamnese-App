@@ -1,0 +1,144 @@
+
+> anamnese-mobile@1.0.0 start
+> react-native start --reset-cache
+
+warn Package react-native-sqlite-storage contains invalid configuration: "dependency.platforms.ios.project" is not allowed. Please verify it's properly linked using "npx react-native config" command and contact the package maintainers about this.
+info Welcome to React Native v0.73
+info Starting dev server on port 8081...
+
+                        ▒▒▓▓▓▓▒▒
+                     ▒▓▓▓▒▒░░▒▒▓▓▓▒
+                  ▒▓▓▓▓░░░▒▒▒▒░░░▓▓▓▓▒
+                 ▓▓▒▒▒▓▓▓▓▓▓▓▓▓▓▓▓▒▒▒▓▓
+                 ▓▓░░░░░▒▓▓▓▓▓▓▒░░░░░▓▓
+                 ▓▓░░▓▓▒░░░▒▒░░░▒▓▒░░▓▓
+                 ▓▓░░▓▓▓▓▓▒▒▒▒▓▓▓▓▒░░▓▓
+                 ▓▓░░▓▓▓▓▓▓▓▓▓▓▓▓▓▒░░▓▓
+                 ▓▓▒░░▒▒▓▓▓▓▓▓▓▓▒░░░▒▓▓
+                  ▒▓▓▓▒░░░▒▓▓▒░░░▒▓▓▓▒
+                     ▒▓▓▓▒░░░░▒▓▓▓▒
+                        ▒▒▓▓▓▓▒▒
+
+
+warning: the transform cache was reset.
+                Welcome to Metro v0.80.12
+              Fast - Scalable - Integrated
+
+
+info Dev server ready
+
+i - run on iOS
+a - run on Android
+d - open Dev Menu
+r - reload app
+
+info Launching Dev Tools...
+ BUNDLE  ./index.js 
+
+ BUNDLE  ./index.js 
+
+ LOG  JavaScript logs will appear in your browser console
+ BUNDLE  ./index.js 
+
+ BUNDLE  ./index.js 
+
+ LOG  JavaScript logs will appear in your browser console
+ BUNDLE  ./index.js 
+
+ BUNDLE  ./index.js 
+
+ LOG  JavaScript logs will appear in your browser console
+ BUNDLE  ./index.js 
+
+ BUNDLE  ./index.js 
+
+ LOG  JavaScript logs will appear in your browser console
+ BUNDLE  ./index.js 
+
+ BUNDLE  ./index.js 
+
+ LOG  JavaScript logs will appear in your browser console
+ BUNDLE  ./index.js 
+
+ BUNDLE  ./index.js 
+
+ LOG  JavaScript logs will appear in your browser console
+warn No apps connected. Sending "reload" to all React Native apps failed. Make sure your app is running in the simulator or on a phone connected via USB.
+warn No apps connected. Sending "reload" to all React Native apps failed. Make sure your app is running in the simulator or on a phone connected via USB.
+info Launching Dev Tools...
+ BUNDLE  ./index.js 
+
+ BUNDLE  ./index.js 
+
+ LOG  JavaScript logs will appear in your browser console
+ BUNDLE  ./index.js 
+
+ BUNDLE  ./index.js 
+
+ LOG  JavaScript logs will appear in your browser console
+ BUNDLE  ./index.js 
+
+ BUNDLE  ./index.js 
+
+ LOG  JavaScript logs will appear in your browser console
+ BUNDLE  ./index.js 
+
+ BUNDLE  ./index.js 
+
+ LOG  JavaScript logs will appear in your browser console
+ BUNDLE  ./index.js 
+
+ BUNDLE  ./index.js 
+
+ LOG  JavaScript logs will appear in your browser console
+info Opening C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\invariant\browser.js with code
+ BUNDLE  ./index.js 
+
+ BUNDLE  ./index.js 
+
+ BUNDLE  ./index.js 
+
+ BUNDLE  ./index.js 
+
+ LOG  JavaScript logs will appear in your browser console
+ BUNDLE  ./index.js 
+
+ BUNDLE  ./index.js 
+
+ LOG  JavaScript logs will appear in your browser console
+ BUNDLE  ./index.js 
+
+info Launching Dev Tools...
+ BUNDLE  ./index.js 
+
+ BUNDLE  ./index.js 
+
+ LOG  JavaScript logs will appear in your browser console
+error: Error: Unable to resolve module ../screens/QuestionnaireScreen from C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\src\presentation\navigation\RootNavigator.tsx: 
+
+None of these files exist:
+  * src\presentation\screens\QuestionnaireScreen(.windows.js|.native.js|.js|.windows.jsx|.native.jsx|.jsx|.windows.json|.native.json|.json|.windows.ts|.native.ts|.ts|.windows.tsx|.native.tsx|.tsx)
+  * src\presentation\screens\QuestionnaireScreen
+  15 | import { PatientInfoScreen } from '../screens/PatientInfoScreen';
+  16 | import { GDPRConsentScreen } from '../screens/GDPRConsentScreen';
+> 17 | import { QuestionnaireScreen } from '../screens/QuestionnaireScreen';
+     |                                      ^
+  18 | import { SummaryScreen } from '../screens/SummaryScreen';
+  19 | import { ExportScreen } from '../screens/ExportScreen';
+  20 | import { SavedAnamnesesScreen } from '../screens/SavedAnamnesesScreen';
+    at ModuleResolver.resolveDependency (C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\metro\src\node-haste\DependencyGraph\ModuleResolution.js:112:15)
+    at DependencyGraph.resolveDependency (C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\metro\src\node-haste\DependencyGraph.js:232:43)
+    at C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\metro\src\lib\transformHelpers.js:156:21
+    at resolveDependencies (C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\metro\src\DeltaBundler\buildSubgraph.js:42:25)
+    at visit (C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\metro\src\DeltaBundler\buildSubgraph.js:83:30)
+    at async Promise.all (index 0)
+    at async buildSubgraph (C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\metro\src\DeltaBundler\buildSubgraph.js:103:3)
+    at async Graph._buildDelta (C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\metro\src\DeltaBundler\Graph.js:157:22)
+    at async Graph.traverseDependencies (C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\metro\src\DeltaBundler\Graph.js:49:19)
+    at async DeltaCalculator._getChangedDependencies (C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\metro\src\DeltaBundler\DeltaCalculator.js:187:42)
+info Launching Dev Tools...
+ BUNDLE  ./index.js 
+
+ BUNDLE  ./index.js 
+
+ LOG  JavaScript logs will appear in your browser console

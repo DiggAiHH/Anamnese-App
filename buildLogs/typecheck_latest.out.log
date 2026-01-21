@@ -1,0 +1,5 @@
+
+> anamnese-mobile@1.0.0 type-check
+> tsc --noEmit
+
+EXIT:0

@@ -29,4 +29,32 @@ jest.mock('react-native-quick-crypto', () => ({
   }),
 }));
 
+// Mock react-native-sqlite-storage
+jest.mock('react-native-sqlite-storage', () => ({
+  DEBUG: jest.fn(),
+  enablePromise: jest.fn(),
+  openDatabase: jest.fn(() => Promise.resolve({
+    executeSql: jest.fn(() => Promise.resolve([
+      { rows: { length: 0, item: () => null } } // Default empty result
+    ])),
+    transaction: jest.fn((cb) => cb({
+      executeSql: jest.fn()
+    })),
+    close: jest.fn(() => Promise.resolve()),
+  })),
+}));
+
+// Mock @react-native-async-storage/async-storage
+jest.mock('@react-native-async-storage/async-storage', () =>
+  require('@react-native-async-storage/async-storage/jest/async-storage-mock')
+);
+
+// Mock react-native-keychain (ESM module) for Jest
+jest.mock('react-native-keychain', () => ({
+  setGenericPassword: jest.fn(),
+  getGenericPassword: jest.fn(),
+  resetGenericPassword: jest.fn(),
+  ACCESSIBLE: { WHEN_UNLOCKED_THIS_DEVICE_ONLY: 'DEVICE_ONLY' },
+}));
+
 global.__reanimatedWorkletInit = () => {};

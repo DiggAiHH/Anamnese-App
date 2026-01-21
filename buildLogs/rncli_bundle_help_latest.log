@@ -1,0 +1,27 @@
+warn Package react-native-sqlite-storage contains invalid configuration: "dependency.platforms.ios.project" is not allowed. Please verify it's properly linked using "npx react-native config" command and contact the package maintainers about this.
+Usage: cli bundle [options]
+
+Build the bundle for the provided JavaScript entry file.
+
+Options:
+  --verbose                              Increase logging verbosity
+  --entry-file <path>                    Path to the root JS file, either absolute or relative to JS root
+  --platform <string>                    Either "ios" or "android" (default: "ios")
+  --transformer <string>                 Specify a custom transformer to be used
+  --dev [boolean]                        If false, warnings are disabled and the bundle is minified (default: true)
+  --minify [boolean]                     Allows overriding whether bundle is minified. This defaults to false if dev is true, and true if dev is false. Disabling minification can be useful for speeding up production builds for testing purposes.
+  --bundle-output <string>               File name where to store the resulting bundle, ex. /tmp/groups.bundle
+  --bundle-encoding <string>             Encoding the bundle should be written in (https://nodejs.org/api/buffer.html#buffer_buffer). (default: "utf8")
+  --max-workers <number>                 Specifies the maximum number of workers the worker-pool will spawn for transforming files. This defaults to the number of the cores available on your machine.
+  --sourcemap-output <string>            File name where to store the sourcemap file for resulting bundle, ex. /tmp/groups.map
+  --sourcemap-sources-root <string>      Path to make sourcemap's sources entries relative to, ex. /root/dir
+  --sourcemap-use-absolute-path          Report SourceMapURL using its full path (default: false)
+  --assets-dest <string>                 Directory name where to store assets referenced in the bundle
+  --unstable-transform-profile <string>  Experimental, transform JS for a specific JS engine. Currently supported: hermes, hermes-canary, default (default: "default")
+  --asset-catalog-dest [string]          Path where to create an iOS Asset Catalog for images
+  --reset-cache                          Removes cached files (default: false)
+  --read-global-cache                    Try to fetch transformed JS code from the global cache, if configured. (default: false)
+  --config <string>                      Path to the CLI configuration file
+  -h, --help                             display help for command
+
+

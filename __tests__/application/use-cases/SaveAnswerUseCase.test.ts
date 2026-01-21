@@ -24,8 +24,15 @@ class MockAnswerRepository implements IAnswerRepository {
     return this.answers.filter(a => a.questionnaireId === questionnaireId);
   }
 
-  async findByQuestionId(questionnaireId: string, questionId: string): Promise<AnswerEntity | null> {
-    return this.answers.find(a => a.questionnaireId === questionnaireId && a.questionId === questionId) ?? null;
+  async findByQuestionId(
+    questionnaireId: string,
+    questionId: string,
+  ): Promise<AnswerEntity | null> {
+    return (
+      this.answers.find(
+        a => a.questionnaireId === questionnaireId && a.questionId === questionId,
+      ) ?? null
+    );
   }
 
   async saveMany(answers: AnswerEntity[]): Promise<void> {
@@ -35,7 +42,7 @@ class MockAnswerRepository implements IAnswerRepository {
   async delete(): Promise<void> {}
   async deleteByQuestionnaireId(): Promise<void> {}
   async saveBatch(): Promise<void> {}
-  async getDecryptedAnswersMap(): Promise<Map<string, any>> {
+  async getDecryptedAnswersMap(): Promise<Map<string, unknown>> {
     return new Map();
   }
   async getAnswersMap(): Promise<Map<string, AnswerValue>> {
@@ -104,7 +111,10 @@ describe('SaveAnswerUseCase', () => {
 
     expect(result.success).toBe(true);
     expect(result.answerId).toBeDefined();
-    const stored = await repository.findByQuestionId('11111111-1111-1111-1111-111111111111', 'first_name');
+    const stored = await repository.findByQuestionId(
+      '11111111-1111-1111-1111-111111111111',
+      'first_name',
+    );
     expect(stored?.encryptedValue.length).toBeGreaterThan(0);
   });
 

@@ -262,6 +262,7 @@ export class DocumentEntity {
       value instanceof Date ? value : new Date(value ?? Date.now());
 
     const rawAuditLog = typeof data.auditLog === 'string' ? JSON.parse(data.auditLog) : data.auditLog;
+    const auditEntries: unknown[] = Array.isArray(rawAuditLog) ? rawAuditLog : [];
 
     return new DocumentEntity({
       id: data.id,
@@ -280,10 +281,15 @@ export class DocumentEntity {
       uploadedAt: parseDate(data.uploadedAt),
       updatedAt: parseDate(data.updatedAt),
       ocrConsentGranted: data.ocrConsentGranted,
-      auditLog: (rawAuditLog ?? []).map((entry: any) => ({
-        ...entry,
-        timestamp: parseDate(entry.timestamp),
-      })),
+      auditLog: auditEntries
+        .filter((entry): entry is Record<string, unknown> => typeof entry === 'object' && entry !== null)
+        .map(entry => {
+          const timestampValue = (entry as { timestamp?: unknown }).timestamp;
+          return {
+            ...(entry as Omit<Record<string, unknown>, 'timestamp'>),
+            timestamp: parseDate(timestampValue as number | string | Date | undefined),
+          };
+        }) as Document['auditLog'],
     });
   }
 

@@ -1,0 +1,8 @@
+warn Package react-native-sqlite-storage contains invalid configuration: "dependency.platforms.ios.project" is not allowed. Please verify it's properly linked using "npx react-native config" command and contact the package maintainers about this.
+MSBuild packaging failed with exit code 1
+In C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\scripts\windows-dev-run.ps1:201 Zeichen:7
++       throw "MSBuild packaging failed with exit code $LASTEXITCODE"
++       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (MSBuild packagi...ith exit code 1:String) [], RuntimeException
+    + FullyQualifiedErrorId : MSBuild packaging failed with exit code 1
+ 

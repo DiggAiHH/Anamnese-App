@@ -67,18 +67,28 @@ export class LoadQuestionnaireUseCase {
 
         questionnaire = existingQuestionnaire;
       } else {
-        // Create new questionnaire from template
-        const template = await this.questionnaireRepository.loadTemplate();
-        const version = await this.questionnaireRepository.getLatestTemplateVersion();
+        // Resume latest questionnaire if available
+        const existing = await this.questionnaireRepository.findByPatientId(input.patientId);
+        const latest = existing
+          .slice()
+          .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime())[0];
 
-        questionnaire = QuestionnaireEntity.create({
-          patientId: input.patientId,
-          sections: template,
-          version,
-        });
+        if (latest) {
+          questionnaire = latest;
+        } else {
+          // Create new questionnaire from template
+          const template = await this.questionnaireRepository.loadTemplate();
+          const version = await this.questionnaireRepository.getLatestTemplateVersion();
 
-        // Save new questionnaire
-        await this.questionnaireRepository.save(questionnaire);
+          questionnaire = QuestionnaireEntity.create({
+            patientId: input.patientId,
+            sections: template,
+            version,
+          });
+
+          // Save new questionnaire
+          await this.questionnaireRepository.save(questionnaire);
+        }
       }
 
       // Step 2: Load answers (if questionnaire exists)

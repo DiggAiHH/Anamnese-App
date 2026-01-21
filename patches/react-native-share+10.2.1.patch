@@ -1,0 +1,36 @@
+diff --git a/node_modules/react-native-share/windows/ReactNativeShare/ReactNativeShare.vcxproj b/node_modules/react-native-share/windows/ReactNativeShare/ReactNativeShare.vcxproj
+--- a/node_modules/react-native-share/windows/ReactNativeShare/ReactNativeShare.vcxproj
++++ b/node_modules/react-native-share/windows/ReactNativeShare/ReactNativeShare.vcxproj
+@@
+ 	 <ItemDefinitionGroup>
+ 		 <ClCompile>
+ 			 <PrecompiledHeader>Use</PrecompiledHeader>
+ 			 <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+ 			 <PrecompiledHeaderOutputFile>$(IntDir)pch.pch</PrecompiledHeaderOutputFile>
+ 			 <WarningLevel>Level4</WarningLevel>
+-			 <AdditionalOptions>%(AdditionalOptions) /bigobj</AdditionalOptions>
++			 <AdditionalOptions>%(AdditionalOptions) /bigobj /FS</AdditionalOptions>
++			 <MultiProcessorCompilation>false</MultiProcessorCompilation>
+ 			 <DisableSpecificWarnings>4453;28204</DisableSpecificWarnings>
+ 			 <PreprocessorDefinitions>_WINRT_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+ 			 <AdditionalUsingDirectories>$(WindowsSDK_WindowsMetadata);$(AdditionalUsingDirectories)</AdditionalUsingDirectories>
+ 		 </ClCompile>
+ 		 <Midl>
+ 			 <!-- This allows applications targetting older Windows SDKs (e.g. RNW 0.65 apps) to consume the library generated WinMD -->
+ 			 <AdditionalOptions>%(AdditionalOptions) /noattributename</AdditionalOptions>
+ 		 </Midl>
+@@
+ 	 <ItemGroup>
+ 		 <ClCompile Include="pch.cpp">
+ 			 <PrecompiledHeader>Create</PrecompiledHeader>
++			 <AdditionalOptions>%(AdditionalOptions) /FS</AdditionalOptions>
+ 		 </ClCompile>
+ 		 <ClCompile Include="ReactPackageProvider.cpp">
+ 			 <DependentUpon>ReactPackageProvider.idl</DependentUpon>
++			 <AdditionalOptions>%(AdditionalOptions) /FS</AdditionalOptions>
+ 		 </ClCompile>
+-		 <ClCompile Include="$(GeneratedFilesDir)module.g.cpp" />
++		 <ClCompile Include="$(GeneratedFilesDir)module.g.cpp">
++			 <AdditionalOptions>%(AdditionalOptions) /FS</AdditionalOptions>
++		 </ClCompile>
+ 	 </ItemGroup>

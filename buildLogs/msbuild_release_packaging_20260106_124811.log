@@ -1,0 +1,12 @@
+Der Buildvorgang wurde am 06.01.2026 12:48:18 gestartet.
+Die Ausführlichkeit der Protokollierung ist auf "Normal" festgelegt.
+     1>Projekt "C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\windows\anamnese-mobile.sln" auf Knoten "1", Restore Ziel(e).
+     1>ValidateSolutionConfiguration:
+         Die Projektmappenkonfiguration "Release|x64" wird erstellt.
+     1>Die Erstellung des Projekts "C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\windows\anamnese-mobile.sln" ist abgeschlossen, Restore Ziel(e) -- FEHLER.
+
+Fehler beim Buildvorgang.
+    0 Warnung(en)
+    0 Fehler
+
+Verstrichene Zeit 00:00:30.98

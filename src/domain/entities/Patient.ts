@@ -16,6 +16,9 @@ export const PatientSchema = z.object({
     firstName: z.string(),
     lastName: z.string(),
     birthDate: z.string(), // ISO 8601
+    gender: z.enum(['male', 'female', 'other']).optional(),
+    email: z.string().optional(),
+    phone: z.string().optional(),
     insurance: z.string().optional(),
     insuranceNumber: z.string().optional(),
   }),
@@ -23,8 +26,12 @@ export const PatientSchema = z.object({
   createdAt: z.date(),
   updatedAt: z.date(),
   language: z.enum([
-    'de', 'en', 'fr', 'es', 'it', 'tr', 'pl', 'ru', 'ar', 'zh',
-    'pt', 'nl', 'uk', 'fa', 'ur', 'sq', 'ro', 'hi', 'ja',
+    // Keep in sync with src/presentation/i18n/config.ts SUPPORTED_LANGUAGES
+    'de', 'en', 'fr', 'es', 'it', 'pt', 'nl', 'pl', 'tr', 'ru',
+    'ar', 'fa', 'zh', 'ja', 'ko', 'vi', 'uk', 'ro', 'el',
+
+    // Legacy/extra codes (kept for backward compatibility if data exists)
+    'ur', 'sq', 'hi',
   ]),
   // GDPR Consent Tracking
   gdprConsents: z.array(z.object({
@@ -65,6 +72,9 @@ export class PatientEntity {
     lastName: string;
     birthDate: string;
     language: Patient['language'];
+    gender?: 'male' | 'female' | 'other';
+    email?: string;
+    phone?: string;
     insurance?: string;
     insuranceNumber?: string;
   }): PatientEntity {
@@ -77,6 +87,9 @@ export class PatientEntity {
         firstName: params.firstName,
         lastName: params.lastName,
         birthDate: params.birthDate,
+        gender: params.gender,
+        email: params.email,
+        phone: params.phone,
         insurance: params.insurance,
         insuranceNumber: params.insuranceNumber,
       },

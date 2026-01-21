@@ -2,12 +2,13 @@
  * SQLite Answer Repository Implementation
  */
 
-import { SQLiteDatabase } from 'react-native-sqlite-storage';
+import type { SQLiteDatabase } from 'react-native-sqlite-storage';
 import { AnswerEntity, Answer, AnswerValue } from '@domain/entities/Answer';
 import { IAnswerRepository } from '@domain/repositories/IAnswerRepository';
 import { database } from './DatabaseConnection';
-import { encryptionService } from '../encryption/NativeEncryptionService';
+import { encryptionService } from '../encryption/encryptionService';
 import { EncryptedDataVO } from '@domain/value-objects/EncryptedData';
+import { logError } from '@shared/logger';
 
 export class SQLiteAnswerRepository implements IAnswerRepository {
   private async getDb(): Promise<SQLiteDatabase> {
@@ -166,8 +167,7 @@ export class SQLiteAnswerRepository implements IAnswerRepository {
 
         answersMap.set(answer.questionId, value);
       } catch (error) {
-        // Decryption failed - skip this answer
-        console.error(`Failed to decrypt answer ${answer.id}:`, error);
+        logError('Failed to decrypt answer.', error);
       }
     }
 

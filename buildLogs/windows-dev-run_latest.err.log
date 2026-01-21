@@ -1,0 +1,6 @@
+warn Package react-native-sqlite-storage contains invalid configuration: "dependency.platforms.ios.project" is not allowed. Please verify it's properly linked using "npx react-native config" command and contact the package maintainers about this.
+FEHLER: ReflectionTypeLoadException: Mindestens ein Typ in der Assembly kann nicht geladen werden. Rufen Sie die LoaderExceptions-Eigenschaft ab, wenn Sie weitere Informationen benîtigen.
+FEHLER: Ausnahmen vom Reflexionsladeprogramm:
+FEHLER: FileLoadException: Die Datei oder Assembly "NuGet.VisualStudio.Contracts, Version=17.14.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" oder eine AbhÑngigkeit davon wurde nicht gefunden. Die gefundene Manifestdefinition der Assembly stimmt nicht mit dem Assemblyverweis Åberein. (Ausnahme von HRESULT: 0x80131040)
+FEHLER: ArgumentNullException: Der Wert darf nicht NULL sein.
+Parametername: format

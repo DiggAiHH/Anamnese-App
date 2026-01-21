@@ -1,0 +1,37 @@
+﻿**********************
+nStart der Windows PowerShell-Aufzeichnung
+Startzeit: 20260105114652
+Benutzername: DESKTOP-U1FPK9S\tubbeTEC
+RunAs-Benutzer: DESKTOP-U1FPK9S\tubbeTEC
+Konfigurationsname: 
+Computer: DESKTOP-U1FPK9S (Microsoft Windows NT 10.0.19045.0)
+Hostanwendung: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -NoProfile -NonInteractive -ExecutionPolicy Bypass -File scripts\probe-appx-check.ps1
+Prozess-ID: 7064
+PSVersion: 5.1.19041.6456
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.19041.6456
+BuildVersion: 10.0.19041.6456
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+
+==> Reading Identity from manifest: C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\windows\anamnese-mobile\Package.appxmanifest
+
+==> Get-AppxPackage for: cc3a5ac8-ac09-4f03-b6c9-0cfd812841a0
+
+
+Name              : cc3a5ac8-ac09-4f03-b6c9-0cfd812841a0
+PackageFullName   : cc3a5ac8-ac09-4f03-b6c9-0cfd812841a0_1.0.0.0_x64__4dnmwfyw5v01r
+PackageFamilyName : cc3a5ac8-ac09-4f03-b6c9-0cfd812841a0_4dnmwfyw5v01r
+Status            : Ok
+IsDevelopmentMode : False
+InstallLocation   : C:\Program Files\WindowsApps\cc3a5ac8-ac09-4f03-b6c9-0cfd812841a0_1.0.0.0_x64__4dnmwfyw5v01r
+
+==> AppId / AUMID
+AUMID: cc3a5ac8-ac09-4f03-b6c9-0cfd812841a0_4dnmwfyw5v01r!App
+**********************
+Ende der Windows PowerShell-Aufzeichnung
+Endzeit: 20260105114713
+**********************

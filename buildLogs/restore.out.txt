@@ -1,0 +1,118 @@
+Der Buildvorgang wurde am 02.01.2026 18:59:46 gestartet.
+
+Projekt "C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\windows\anamnese-mobile.sln" auf Knoten "1", Restore Ziel(e).
+ValidateSolutionConfiguration:
+  Die Projektmappenkonfiguration "Debug|x64" wird erstellt.
+_GetAllRestoreProjectPathItems:
+  Wiederherzustellende Projekte werden ermittelt...
+Das Projekt "C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\windows\anamnese-mobile.sln" (1) erstellt "C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\react-native-document-picker\windows\ReactNativeDocumentPicker\ReactNativeDocumentPicker.csproj" (12:6) auf Knoten "1", _GenerateRestoreGraphProjectEntry Ziel(e).
+C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\react-native-document-picker\windows\ReactNativeDocumentPicker\ReactNativeDocumentPicker.csproj : warning NU1504: Es wurden doppelte „PackageReference“-Elemente gefunden. Entfernen Sie die doppelten Elemente, oder verwenden Sie die Updatefunktion, um ein konsistentes Wiederherstellungsverhalten sicherzustellen. Die doppelten „PackageReference“-Elemente sind: Microsoft.NETCore.UniversalWindowsPlatform 6.2.12, Microsoft.NETCore.UniversalWindowsPlatform 6.2.9.
+Die Erstellung von Projekt "C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\react-native-document-picker\windows\ReactNativeDocumentPicker\ReactNativeDocumentPicker.csproj" ist abgeschlossen (_GenerateRestoreGraphProjectEntry Ziel(e)).
+Das Projekt "C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\windows\anamnese-mobile.sln" (1) erstellt "C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\react-native-windows\Microsoft.ReactNative.Managed.CodeGen\Microsoft.ReactNative.Managed.CodeGen.csproj" (14:4) auf Knoten "1", _GenerateRestoreGraphProjectEntry Ziel(e).
+C:\Program Files\dotnet\sdk\10.0.101\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.EolTargetFrameworks.targets(32,5): warning NETSDK1138: Das Zielframework "net6.0" wird nicht mehr unterstützt und erhält in Zukunft keine Sicherheitsupdates mehr. Weitere Informationen zur Supportrichtlinie finden Sie unter "https://aka.ms/dotnet-core-support". [C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\react-native-windows\Microsoft.ReactNative.Managed.CodeGen\Microsoft.ReactNative.Managed.CodeGen.csproj]
+Die Erstellung von Projekt "C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\react-native-windows\Microsoft.ReactNative.Managed.CodeGen\Microsoft.ReactNative.Managed.CodeGen.csproj" ist abgeschlossen (_GenerateRestoreGraphProjectEntry Ziel(e)).
+Restore:
+  Bei der Überprüfung der X.509-Zertifikatkette wird der von .NET ausgewählte Standardvertrauensspeicher für Codesignaturen verwendet.
+  Bei der Überprüfung der X.509-Zertifikatkette wird der von .NET ausgewählte Standardvertrauensspeicher für Zeitstempel verwendet.
+  Die Assetdatei wurde nicht geändert. Das Schreiben der Assetdatei wird übersprungen. Pfad: C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\react-native-screens\windows\RNScreens\obj\project.assets.json
+  Die Assetdatei wurde nicht geändert. Das Schreiben der Assetdatei wird übersprungen. Pfad: C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\react-native-document-picker\windows\ReactNativeDocumentPicker\obj\project.assets.json
+  Die Assetdatei wurde nicht geändert. Das Schreiben der Assetdatei wird übersprungen. Pfad: C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\react-native-windows\Common\obj\project.assets.json
+  Die Assetdatei wurde nicht geändert. Das Schreiben der Assetdatei wird übersprungen. Pfad: C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\@react-native-async-storage\async-storage\windows\ReactNativeAsyncStorage\obj\project.assets.json
+  "C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\react-native-screens\windows\RNScreens\RNScreens.vcxproj" wiederhergestellt (in "171 ms.").
+  "C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\@react-native-async-storage\async-storage\windows\ReactNativeAsyncStorage\ReactNativeAsyncStorage.vcxproj" wiederhergestellt (in "171 ms.").
+  "C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\react-native-document-picker\windows\ReactNativeDocumentPicker\ReactNativeDocumentPicker.csproj" wiederhergestellt (in "188 ms.").
+  "C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\react-native-windows\Common\Common.vcxproj" wiederhergestellt (in "171 ms.").
+  Die Assetdatei wurde nicht geändert. Das Schreiben der Assetdatei wird übersprungen. Pfad: C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\react-native-sqlite-storage\platforms\windows\SQLitePlugin\obj\project.assets.json
+  "C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\react-native-sqlite-storage\platforms\windows\SQLitePlugin\SQLitePlugin.vcxproj" wiederhergestellt (in "4 ms.").
+  Die Assetdatei wurde nicht geändert. Das Schreiben der Assetdatei wird übersprungen. Pfad: C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\react-native-share\windows\ReactNativeShare\obj\project.assets.json
+  "C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\react-native-share\windows\ReactNativeShare\ReactNativeShare.vcxproj" wiederhergestellt (in "6 ms.").
+  Die Assetdatei wurde nicht geändert. Das Schreiben der Assetdatei wird übersprungen. Pfad: C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\react-native-windows\Microsoft.ReactNative\obj\project.assets.json
+  "C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\react-native-windows\Microsoft.ReactNative\Microsoft.ReactNative.vcxproj" wiederhergestellt (in "8 ms.").
+  Die Assetdatei wurde nicht geändert. Das Schreiben der Assetdatei wird übersprungen. Pfad: C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\react-native-windows\Folly\obj\project.assets.json
+  "C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\react-native-windows\Folly\Folly.vcxproj" wiederhergestellt (in "2 ms.").
+  Die Assetdatei wurde nicht geändert. Das Schreiben der Assetdatei wird übersprungen. Pfad: C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\react-native-windows\ReactCommon\obj\project.assets.json
+  "C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\react-native-windows\ReactCommon\ReactCommon.vcxproj" wiederhergestellt (in "4 ms.").
+  Die Assetdatei wurde nicht geändert. Das Schreiben der Assetdatei wird übersprungen. Pfad: C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\react-native-windows\Microsoft.ReactNative.Managed\obj\project.assets.json
+  "C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\react-native-windows\Microsoft.ReactNative.Managed\Microsoft.ReactNative.Managed.csproj" wiederhergestellt (in "25 ms.").
+  Die Assetdatei wurde nicht geändert. Das Schreiben der Assetdatei wird übersprungen. Pfad: C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\react-native-windows\Microsoft.ReactNative.Managed.CodeGen\obj\project.assets.json
+  "C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\react-native-windows\Microsoft.ReactNative.Managed.CodeGen\Microsoft.ReactNative.Managed.CodeGen.csproj" wiederhergestellt (in "186 ms.").
+  Pakete für "C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\windows\anamnese-mobile\anamnese-mobile.vcxproj" werden wiederhergestellt...
+    GET https://api.nuget.org/v3-flatcontainer/microsoft.reactnative/index.json
+    GET https://api.nuget.org/v3-flatcontainer/microsoft.reactnative.cxx/index.json
+    OK https://api.nuget.org/v3-flatcontainer/microsoft.reactnative.cxx/index.json 257 ms
+    OK https://api.nuget.org/v3-flatcontainer/microsoft.reactnative/index.json 375 ms
+    GET https://api.nuget.org/v3-flatcontainer/microsoft.reactnative/0.74.0/microsoft.reactnative.0.74.0.nupkg
+    GET https://api.nuget.org/v3-flatcontainer/microsoft.reactnative.cxx/0.74.0/microsoft.reactnative.cxx.0.74.0.nupkg
+    OK https://api.nuget.org/v3-flatcontainer/microsoft.reactnative.cxx/0.74.0/microsoft.reactnative.cxx.0.74.0.nupkg 167 ms
+    OK https://api.nuget.org/v3-flatcontainer/microsoft.reactnative/0.74.0/microsoft.reactnative.0.74.0.nupkg 639 ms
+  Microsoft.ReactNative.Cxx 0.74.0 von https://api.nuget.org/v3/index.json zum C:\Users\tubbeTEC\.nuget\packages\microsoft.reactnative.cxx\0.74.0 mit Inhaltshash "m+NfRR2xzfs6ZtmlmwkPM9bIgRg7rLIozTSCPrjbgFBmdnfAT+iAp1uHpe97yA3MLD8neCALztblRs/s6PHZKA==" installiert.
+  Microsoft.ReactNative 0.74.0 von https://api.nuget.org/v3/index.json zum C:\Users\tubbeTEC\.nuget\packages\microsoft.reactnative\0.74.0 mit Inhaltshash "o72azPUTcHkuZMC/8Khf5+7K2Rz77F7EbohGL9obIM6kgp5bQOQjSRK6AHgGakjRRlbIoLfNh8fAmWEJVrAONw==" installiert.
+C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\windows\anamnese-mobile\anamnese-mobile.vcxproj : warning NU1601: Die angegebene Abhängigkeit war Microsoft.ReactNative.Cxx (>= 0.73.22), das Ergebnis war aber Microsoft.ReactNative.Cxx 0.74.0. [C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\windows\anamnese-mobile.sln]
+    CACHE https://api.nuget.org/v3/vulnerabilities/index.json
+    CACHE https://api.nuget.org/v3-vulnerabilities/2026.01.01.05.38.17/vulnerability.base.json
+    CACHE https://api.nuget.org/v3-vulnerabilities/2026.01.01.05.38.17/2026.01.01.05.38.17/vulnerability.update.json
+C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\windows\anamnese-mobile\anamnese-mobile.vcxproj : warning NU1701: Das Paket "Microsoft.NETCore.Platforms 2.1.0" wurde nicht mit dem Projektzielframework "native,Version=v0.0", sondern mit "UAP,Version=v10.0.17763, .NETFramework,Version=v4.6.1" wiederhergestellt. Dieses Paket ist mit Ihrem Projekt möglicherweise nicht vollständig kompatibel. [C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\windows\anamnese-mobile.sln]
+C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\windows\anamnese-mobile\anamnese-mobile.vcxproj : warning NU1701: Das Paket "NETStandard.Library 2.0.3" wurde nicht mit dem Projektzielframework "native,Version=v0.0", sondern mit "UAP,Version=v10.0.17763, .NETFramework,Version=v4.6.1" wiederhergestellt. Dieses Paket ist mit Ihrem Projekt möglicherweise nicht vollständig kompatibel. [C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\windows\anamnese-mobile.sln]
+C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\windows\anamnese-mobile\anamnese-mobile.vcxproj : warning NU1701: Das Paket "runtime.win10-arm.Microsoft.NETCore.UniversalWindowsPlatform 6.2.12" wurde nicht mit dem Projektzielframework "native,Version=v0.0", sondern mit "UAP,Version=v10.0.17763, .NETFramework,Version=v4.6.1" wiederhergestellt. Dieses Paket ist mit Ihrem Projekt möglicherweise nicht vollständig kompatibel. [C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\windows\anamnese-mobile.sln]
+C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\windows\anamnese-mobile\anamnese-mobile.vcxproj : warning NU1701: Das Paket "runtime.win10-arm-aot.Microsoft.NETCore.UniversalWindowsPlatform 6.2.12" wurde nicht mit dem Projektzielframework "native,Version=v0.0", sondern mit "UAP,Version=v10.0.17763, .NETFramework,Version=v4.6.1" wiederhergestellt. Dieses Paket ist mit Ihrem Projekt möglicherweise nicht vollständig kompatibel. [C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\windows\anamnese-mobile.sln]
+C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\windows\anamnese-mobile\anamnese-mobile.vcxproj : warning NU1701: Das Paket "runtime.win10-arm64-aot.Microsoft.NETCore.UniversalWindowsPlatform 6.2.12" wurde nicht mit dem Projektzielframework "native,Version=v0.0", sondern mit "UAP,Version=v10.0.17763, .NETFramework,Version=v4.6.1" wiederhergestellt. Dieses Paket ist mit Ihrem Projekt möglicherweise nicht vollständig kompatibel. [C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\windows\anamnese-mobile.sln]
+C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\windows\anamnese-mobile\anamnese-mobile.vcxproj : warning NU1701: Das Paket "runtime.win10-x64.Microsoft.NETCore.UniversalWindowsPlatform 6.2.12" wurde nicht mit dem Projektzielframework "native,Version=v0.0", sondern mit "UAP,Version=v10.0.17763, .NETFramework,Version=v4.6.1" wiederhergestellt. Dieses Paket ist mit Ihrem Projekt möglicherweise nicht vollständig kompatibel. [C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\windows\anamnese-mobile.sln]
+C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\windows\anamnese-mobile\anamnese-mobile.vcxproj : warning NU1701: Das Paket "runtime.win10-x64-aot.Microsoft.NETCore.UniversalWindowsPlatform 6.2.12" wurde nicht mit dem Projektzielframework "native,Version=v0.0", sondern mit "UAP,Version=v10.0.17763, .NETFramework,Version=v4.6.1" wiederhergestellt. Dieses Paket ist mit Ihrem Projekt möglicherweise nicht vollständig kompatibel. [C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\windows\anamnese-mobile.sln]
+C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\windows\anamnese-mobile\anamnese-mobile.vcxproj : warning NU1701: Das Paket "runtime.win10-x86.Microsoft.NETCore.UniversalWindowsPlatform 6.2.12" wurde nicht mit dem Projektzielframework "native,Version=v0.0", sondern mit "UAP,Version=v10.0.17763, .NETFramework,Version=v4.6.1" wiederhergestellt. Dieses Paket ist mit Ihrem Projekt möglicherweise nicht vollständig kompatibel. [C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\windows\anamnese-mobile.sln]
+C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\windows\anamnese-mobile\anamnese-mobile.vcxproj : warning NU1701: Das Paket "runtime.win10-x86-aot.Microsoft.NETCore.UniversalWindowsPlatform 6.2.12" wurde nicht mit dem Projektzielframework "native,Version=v0.0", sondern mit "UAP,Version=v10.0.17763, .NETFramework,Version=v4.6.1" wiederhergestellt. Dieses Paket ist mit Ihrem Projekt möglicherweise nicht vollständig kompatibel. [C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\windows\anamnese-mobile.sln]
+  Die MSBuild-Datei "C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\windows\anamnese-mobile\obj\anamnese-mobile.vcxproj.nuget.g.props" wird generiert.
+  Die MSBuild-Datei "C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\windows\anamnese-mobile\obj\anamnese-mobile.vcxproj.nuget.g.targets" wird generiert.
+  Die Assetdatei wird auf den Datenträger geschrieben. Pfad: C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\windows\anamnese-mobile\obj\project.assets.json
+  Die Paketsperrdatei wird auf den Datenträger geschrieben. Pfad: C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\windows\anamnese-mobile\packages.lock.json
+  "C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\windows\anamnese-mobile\anamnese-mobile.vcxproj" wiederhergestellt (in "52,53 Sek.").
+  
+  Verwendete NuGet-Konfigurationsdateien:
+      C:\Users\tubbeTEC\AppData\Roaming\NuGet\NuGet.Config
+      C:\Program Files (x86)\NuGet\Config\Microsoft.VisualStudio.FallbackLocation.config
+      C:\Program Files (x86)\NuGet\Config\Microsoft.VisualStudio.Offline.config
+      C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\react-native-document-picker\windows\NuGet.Config
+      C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\react-native-share\windows\NuGet.Config
+      C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\windows\NuGet.Config
+  
+  Verwendete Feeds:
+      https://api.nuget.org/v3/index.json
+      C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+      https://pkgs.dev.azure.com/ms/react-native/_packaging/react-native-public/nuget/v3/index.json
+      C:\Program Files\dotnet\library-packs
+  
+  Installiert:
+      2 Paket(e) auf C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\windows\anamnese-mobile\anamnese-mobile.vcxproj
+  11 von 12 Projekten sind für die Wiederherstellung auf dem neuesten Stand.
+Die Erstellung von Projekt "C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\windows\anamnese-mobile.sln" ist abgeschlossen (Restore Ziel(e)).
+
+Der Buildvorgang wurde erfolgreich ausgeführt.
+
+"C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\windows\anamnese-mobile.sln" (Restore Ziel) (1) ->
+"C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\react-native-document-picker\windows\ReactNativeDocumentPicker\ReactNativeDocumentPicker.csproj" (_GenerateRestoreGraphProjectEntry Ziel) (12:6) ->
+(CollectPackageReferences Ziel) -> 
+  C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\react-native-document-picker\windows\ReactNativeDocumentPicker\ReactNativeDocumentPicker.csproj : warning NU1504: Es wurden doppelte „PackageReference“-Elemente gefunden. Entfernen Sie die doppelten Elemente, oder verwenden Sie die Updatefunktion, um ein konsistentes Wiederherstellungsverhalten sicherzustellen. Die doppelten „PackageReference“-Elemente sind: Microsoft.NETCore.UniversalWindowsPlatform 6.2.12, Microsoft.NETCore.UniversalWindowsPlatform 6.2.9.
+
+
+"C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\windows\anamnese-mobile.sln" (Restore Ziel) (1) ->
+"C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\react-native-windows\Microsoft.ReactNative.Managed.CodeGen\Microsoft.ReactNative.Managed.CodeGen.csproj" (_GenerateRestoreGraphProjectEntry Ziel) (14:4) ->
+(_CheckForEolTargetFrameworks Ziel) -> 
+  C:\Program Files\dotnet\sdk\10.0.101\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.EolTargetFrameworks.targets(32,5): warning NETSDK1138: Das Zielframework "net6.0" wird nicht mehr unterstützt und erhält in Zukunft keine Sicherheitsupdates mehr. Weitere Informationen zur Supportrichtlinie finden Sie unter "https://aka.ms/dotnet-core-support". [C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\react-native-windows\Microsoft.ReactNative.Managed.CodeGen\Microsoft.ReactNative.Managed.CodeGen.csproj]
+
+
+"C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\windows\anamnese-mobile.sln" (Restore Ziel) (1) ->
+(Restore Ziel) -> 
+  C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\windows\anamnese-mobile\anamnese-mobile.vcxproj : warning NU1601: Die angegebene Abhängigkeit war Microsoft.ReactNative.Cxx (>= 0.73.22), das Ergebnis war aber Microsoft.ReactNative.Cxx 0.74.0. [C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\windows\anamnese-mobile.sln]
+  C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\windows\anamnese-mobile\anamnese-mobile.vcxproj : warning NU1701: Das Paket "Microsoft.NETCore.Platforms 2.1.0" wurde nicht mit dem Projektzielframework "native,Version=v0.0", sondern mit "UAP,Version=v10.0.17763, .NETFramework,Version=v4.6.1" wiederhergestellt. Dieses Paket ist mit Ihrem Projekt möglicherweise nicht vollständig kompatibel. [C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\windows\anamnese-mobile.sln]
+  C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\windows\anamnese-mobile\anamnese-mobile.vcxproj : warning NU1701: Das Paket "NETStandard.Library 2.0.3" wurde nicht mit dem Projektzielframework "native,Version=v0.0", sondern mit "UAP,Version=v10.0.17763, .NETFramework,Version=v4.6.1" wiederhergestellt. Dieses Paket ist mit Ihrem Projekt möglicherweise nicht vollständig kompatibel. [C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\windows\anamnese-mobile.sln]
+  C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\windows\anamnese-mobile\anamnese-mobile.vcxproj : warning NU1701: Das Paket "runtime.win10-arm.Microsoft.NETCore.UniversalWindowsPlatform 6.2.12" wurde nicht mit dem Projektzielframework "native,Version=v0.0", sondern mit "UAP,Version=v10.0.17763, .NETFramework,Version=v4.6.1" wiederhergestellt. Dieses Paket ist mit Ihrem Projekt möglicherweise nicht vollständig kompatibel. [C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\windows\anamnese-mobile.sln]
+  C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\windows\anamnese-mobile\anamnese-mobile.vcxproj : warning NU1701: Das Paket "runtime.win10-arm-aot.Microsoft.NETCore.UniversalWindowsPlatform 6.2.12" wurde nicht mit dem Projektzielframework "native,Version=v0.0", sondern mit "UAP,Version=v10.0.17763, .NETFramework,Version=v4.6.1" wiederhergestellt. Dieses Paket ist mit Ihrem Projekt möglicherweise nicht vollständig kompatibel. [C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\windows\anamnese-mobile.sln]
+  C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\windows\anamnese-mobile\anamnese-mobile.vcxproj : warning NU1701: Das Paket "runtime.win10-arm64-aot.Microsoft.NETCore.UniversalWindowsPlatform 6.2.12" wurde nicht mit dem Projektzielframework "native,Version=v0.0", sondern mit "UAP,Version=v10.0.17763, .NETFramework,Version=v4.6.1" wiederhergestellt. Dieses Paket ist mit Ihrem Projekt möglicherweise nicht vollständig kompatibel. [C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\windows\anamnese-mobile.sln]
+  C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\windows\anamnese-mobile\anamnese-mobile.vcxproj : warning NU1701: Das Paket "runtime.win10-x64.Microsoft.NETCore.UniversalWindowsPlatform 6.2.12" wurde nicht mit dem Projektzielframework "native,Version=v0.0", sondern mit "UAP,Version=v10.0.17763, .NETFramework,Version=v4.6.1" wiederhergestellt. Dieses Paket ist mit Ihrem Projekt möglicherweise nicht vollständig kompatibel. [C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\windows\anamnese-mobile.sln]
+  C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\windows\anamnese-mobile\anamnese-mobile.vcxproj : warning NU1701: Das Paket "runtime.win10-x64-aot.Microsoft.NETCore.UniversalWindowsPlatform 6.2.12" wurde nicht mit dem Projektzielframework "native,Version=v0.0", sondern mit "UAP,Version=v10.0.17763, .NETFramework,Version=v4.6.1" wiederhergestellt. Dieses Paket ist mit Ihrem Projekt möglicherweise nicht vollständig kompatibel. [C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\windows\anamnese-mobile.sln]
+  C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\windows\anamnese-mobile\anamnese-mobile.vcxproj : warning NU1701: Das Paket "runtime.win10-x86.Microsoft.NETCore.UniversalWindowsPlatform 6.2.12" wurde nicht mit dem Projektzielframework "native,Version=v0.0", sondern mit "UAP,Version=v10.0.17763, .NETFramework,Version=v4.6.1" wiederhergestellt. Dieses Paket ist mit Ihrem Projekt möglicherweise nicht vollständig kompatibel. [C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\windows\anamnese-mobile.sln]
+  C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\windows\anamnese-mobile\anamnese-mobile.vcxproj : warning NU1701: Das Paket "runtime.win10-x86-aot.Microsoft.NETCore.UniversalWindowsPlatform 6.2.12" wurde nicht mit dem Projektzielframework "native,Version=v0.0", sondern mit "UAP,Version=v10.0.17763, .NETFramework,Version=v4.6.1" wiederhergestellt. Dieses Paket ist mit Ihrem Projekt möglicherweise nicht vollständig kompatibel. [C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\windows\anamnese-mobile.sln]
+
+    12 Warnung(en)
+    0 Fehler
+
+Verstrichene Zeit 00:00:57.87

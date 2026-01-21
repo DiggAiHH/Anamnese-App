@@ -1,0 +1,55 @@
+﻿**********************
+nStart der Windows PowerShell-Aufzeichnung
+Startzeit: 20260103145117
+Benutzername: DESKTOP-U1FPK9S\tubbeTEC
+RunAs-Benutzer: DESKTOP-U1FPK9S\tubbeTEC
+Konfigurationsname: 
+Computer: DESKTOP-U1FPK9S (Microsoft Windows NT 10.0.19045.0)
+Hostanwendung: powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts\windows-cleanrun.ps1
+Prozess-ID: 17272
+PSVersion: 5.1.19041.6456
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.19041.6456
+BuildVersion: 10.0.19041.6456
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+\n==> Clean rebuild starting (Configuration=Debug, Platform=x64)
+\n==> Repo root: C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App
+\n==> Stopping Metro (port 8081) + app process
+\n==> Uninstalling existing AppX (if installed)
+No installed package found.
+\n==> Deleting repo build artifacts + caches
+Deleting: C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules
+PS>TerminatingError(Remove-Item): "Das System kann die angegebene Datei nicht finden"
+>> TerminatingError(Remove-Item): "Das System kann die angegebene Datei nicht finden"
+>> TerminatingError(Remove-Item): "Das System kann die angegebene Datei nicht finden"
+Das System kann die angegebene Datei nicht finden
+Remove-Item : Das System kann
+die angegebene Datei nicht
+finden
+In C:\Users\tubbeTEC\Desktop\Pr
+ojects\Anamnese-App\Anamnese-Ap
+p\scripts\windows-cleanrun.ps1:
+45 Zeichen:7
++       Remove-Item
+-LiteralPath $path -Recurse
+-Force -ErrorAction Sil ...
++       ~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~
+    + CategoryInfo          :
+   NotSpecified: (:) [Remove-
+  Item], Win32Exception
+    + FullyQualifiedErrorId :
+   System.ComponentModel.Win3
+  2Exception,Microsoft.Power
+ Shell.Commands.RemoveItemC
+ommand
+
+**********************
+Ende der Windows PowerShell-Aufzeichnung
+Endzeit: 20260103163525
+**********************

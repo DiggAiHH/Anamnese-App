@@ -1,0 +1,28 @@
+﻿
+> anamnese-mobile@1.0.0 windows
+> react-native run-windows
+
+node.exe : warn Package 
+react-native-sqlite-storage contains invalid 
+configuration: "dependency.platforms.ios.project" 
+is not allowed. Please verify it's properly linked 
+using "npx react-native config" command and 
+contact the package maintainers about this.
+In Zeile:1 Zeichen:1
++ & "C:\Program Files\nodejs/node.exe" 
+"C:\Users\tubbeTEC\AppData\Roami ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (warn  
+   Package re...ers about this.:String) [], Remot  
+  eException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+- Restoring NuGet packages 
+MSBuild-Version 17.14.23+b0019275e f├╝r .NET Framework
+Der Buildvorgang wurde am 06.01.2026 22:37:45 gestartet.
+
+Projekt "C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\windows\anamnese-mobile.sln" auf Knoten "1", Restore Ziel(e).
+ValidateSolutionConfiguration:
+  Die Projektmappenkonfiguration "Debug|x64" wird erstellt.
+Es wird versucht, den Buildvorgang abzubrechen...

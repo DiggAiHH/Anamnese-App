@@ -1,0 +1,39 @@
+\n==> Repo root: C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App
+\n==> Building Windows (Release|x64) via RNW (telemetry disabled)
+\n==> Bundling JS for Windows Release (RepoRoot=C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App)
+                Welcome to Metro v0.80.12
+              Fast - Scalable - Integrated
+
+
+info Writing bundle output to: C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\tmp\\windows-bundle-stage\index.windows.bundle
+info Done writing bundle output
+info Copying 2 asset files
+info Done copying assets
+Bundle copied to: C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\windows\\anamnese-mobile\\Bundle\index.windows.bundle
+Release mode: skipping 'react-native run-windows' to avoid double-building; using MSBuild packaging to produce the MSIX.
+\n==> Ensuring Release AppPackages output exists (MSBuild packaging)
+Packaging output dir: C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\windows\AppPackages\anamnese-mobile_x64_Release_20260105_181432_Test\\
+MSBuild-Version 18.0.5+e22287bf1 für .NET Framework
+Der Buildvorgang wurde am 05.01.2026 18:14:32 gestartet.
+
+     1>Projekt "C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\windows\anamnese-mobile\anamnese-mobile.vcxproj" auf Knoten "1", Restore Ziel(e).
+     1>_GetAllRestoreProjectPathItems:
+         Wiederherzustellende Projekte werden ermittelt...
+     1>Das Projekt "C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\windows\anamnese-mobile\anamnese-mobile.vcxproj" (1) erstellt "C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\windows\anamnese-mobile\anamnese-mobile.vcxproj" (1:3) auf Knoten "1", _GenerateRestoreProjectPathWalk Ziel(e).
+   1:3>Das Projekt "C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\windows\anamnese-mobile\anamnese-mobile.vcxproj" (1:3) erstellt "C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\react-native-share\windows\ReactNativeShare\ReactNativeShare.vcxproj" (7) auf Knoten "1", _GenerateRestoreProjectPathWalk Ziel(e).
+     7>C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\react-native-share\windows\ReactNativeShare\ReactNativeShare.vcxproj(19,5): error MSB4184: Der Ausdruck "[MSBuild]::GetDirectoryNameOfFileAbove('', node_modules\react-native-windows\package.json)" kann nicht ausgewertet werden. Die Syntax für den Dateinamen, Verzeichnisnamen oder die Datenträgerbezeichnung ist falsch. (Ausnahme von HRESULT: 0x8007007B)
+     7>Die Erstellung des Projekts "C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\react-native-share\windows\ReactNativeShare\ReactNativeShare.vcxproj" ist abgeschlossen, _GenerateRestoreProjectPathWalk Ziel(e) -- FEHLER.
+     1>Die Erstellung des Projekts "C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\windows\anamnese-mobile\anamnese-mobile.vcxproj" ist abgeschlossen, _GenerateRestoreProjectPathWalk Ziel(e) -- FEHLER.
+     1>Die Erstellung des Projekts "C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\windows\anamnese-mobile\anamnese-mobile.vcxproj" ist abgeschlossen, Restore Ziel(e) -- FEHLER.
+
+Fehler beim Buildvorgang.
+
+       "C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\windows\anamnese-mobile\anamnese-mobile.vcxproj" (Restore Ziel) (1) ->
+       "C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\windows\anamnese-mobile\anamnese-mobile.vcxproj" (_GenerateRestoreProjectPathWalk Ziel) (1:3) ->
+       "C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\react-native-share\windows\ReactNativeShare\ReactNativeShare.vcxproj" (_GenerateRestoreProjectPathWalk Ziel) (7) ->
+         C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\react-native-share\windows\ReactNativeShare\ReactNativeShare.vcxproj(19,5): error MSB4184: Der Ausdruck "[MSBuild]::GetDirectoryNameOfFileAbove('', node_modules\react-native-windows\package.json)" kann nicht ausgewertet werden. Die Syntax für den Dateinamen, Verzeichnisnamen oder die Datenträgerbezeichnung ist falsch. (Ausnahme von HRESULT: 0x8007007B)
+
+    0 Warnung(en)
+    1 Fehler
+
+Verstrichene Zeit 00:00:02.51

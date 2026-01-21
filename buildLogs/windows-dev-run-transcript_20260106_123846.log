@@ -1,0 +1,41 @@
+﻿**********************
+nStart der Windows PowerShell-Aufzeichnung
+Startzeit: 20260106123847
+Benutzername: DESKTOP-U1FPK9S\tubbeTEC
+RunAs-Benutzer: DESKTOP-U1FPK9S\tubbeTEC
+Konfigurationsname: 
+Computer: DESKTOP-U1FPK9S (Microsoft Windows NT 10.0.19045.0)
+Hostanwendung: powershell.exe -NoProfile -NonInteractive -ExecutionPolicy Bypass -File scripts\windows-dev-run.ps1 -Configuration Release -Platform x64
+Prozess-ID: 3996
+PSVersion: 5.1.19041.6456
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.19041.6456
+BuildVersion: 10.0.19041.6456
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+\n==> Repo root: C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App
+\n==> Building Windows (Release|x64) via RNW (telemetry disabled)
+ > buildLogs\windows-dev-run_release_probe.out.log 2> buildLogs\windows-dev-run
+_release_probe.err.log & exit /b %errorlevel%"
+Get-CimInstance Win32_Process -Filter "Name='cmd.exe'" | Select-Object ProcessI
+d,CommandLine | Where-Object { $_.CommandLine -match 'Anamnese-App' -or $_.Comm
+andLine -match 'windows-dev-run' } | Format-List | Out-String -Width 240
+Get-CimInstance Win32_Process -Filter "Name='cmd.exe'" | Select-Object ProcessI
+d,ParentProcessId,CommandLine | Sort-Object ProcessId | Select-Object -Last 10
+| Format-Table -AutoSize | Out-String -Width 240
+Set-Location 'c:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App'; Ge
+t-Item buildLogs\windows-dev-run_release_latest.out.log,buildLogs\windows-dev-r
+un_release_latest.err.log | Select-Object Name,Length,LastWriteTime | Format-Ta
+ble -AutoSize | O
+Set-Location 'c:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App'; Ge
+t-Item buildLogs\windows-dev-run_release_latest.out.log,buildLogs\windows-dev-r
+un_release_latest.err.log -ErrorAction SilentlyContinue | Select-Object Name,Le
+ngth,LastWriteTim
+PS>TerminatingError(): "Die Pipeline wurde beendet."
+**********************
+Ende der Windows PowerShell-Aufzeichnung
+Endzeit: 20260106124246
+**********************

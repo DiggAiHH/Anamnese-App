@@ -1,0 +1,21 @@
+
+> anamnese-mobile@1.0.0 test
+> jest __tests__/infrastructure/persistence/SQLitePatientRepository.test.ts __tests__/infrastructure/persistence/SQLiteAnswerRepository.test.ts __tests__/infrastructure/persistence/SQLiteQuestionnaireRepository.test.ts
+
+PASS __tests__/infrastructure/persistence/SQLitePatientRepository.test.ts
+PASS __tests__/infrastructure/persistence/SQLiteAnswerRepository.test.ts
+PASS __tests__/infrastructure/persistence/SQLiteQuestionnaireRepository.test.ts
+  ● Console
+
+    console.log
+      Promise based runtime ready
+
+      at Object.<anonymous>.plugin.log (node_modules/react-native-sqlite-storage/lib/sqlite.core.js:94:13)
+
+
+Test Suites: 3 passed, 3 total
+Tests:       8 passed, 8 total
+Snapshots:   0 total
+Time:        9.693 s
+Ran all test suites matching /__tests__\\infrastructure\\persistence\\SQLitePatientRepository.test.ts|__tests__\\infrastructure\\persistence\\SQLiteAnswerRepository.test.ts|__tests__\\infrastructure\\persistence\\SQLiteQuestionnaireRepository.test.ts/i.
+EXITCODE:0

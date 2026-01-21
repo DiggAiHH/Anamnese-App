@@ -4,15 +4,16 @@ DSGVO-konforme medizinische Anamnese App für Android, iOS und Windows.
 
 ## 🎯 Features
 
-- ✅ **19 Sprachen** (DE, EN, FR, ES, IT, TR, PL, RU, AR, ZH, PT, NL, UK, FA, UR, SQ, RO, HI, JA)
+- ✅ **Mehrsprachigkeit**: UI-Übersetzungen für **19 Sprachen** (de als Quelle, Key-Parität via Jest-Test).
 - ✅ **AES-256 Verschlüsselung** (native Crypto APIs)
 - ✅ **Offline-First** (keine externen Requests, DSGVO-konform)
-- ✅ **Lokales OCR** (Tesseract.js für Dokumenten-Scan)
-- ✅ **Spracherkennung** (Vosk für offline Speech-to-Text)
-- ✅ **GDT Export/Import** (Integration mit Praxissystemen)
+- 🟡 **Lokales OCR** (Service vorhanden; UI/Flow noch nicht vollständig verdrahtet)
+- 🟡 **Spracherkennung** (Service vorhanden; UI/Flow noch nicht vollständig verdrahtet)
+- ✅ **GDT Export** (Consent-gated, lokale Datei)
 - ✅ **Conditional Logic** (dynamische Fragen basierend auf Antworten)
 - ✅ **WCAG 2.1 AA** (Barrierefreiheit)
 - ✅ **Clean Architecture** (Domain-Driven Design)
+- ✅ **Gespeicherte Anamnesen** (Liste + Resume Flow)
 
 ## 📦 Architektur
 
@@ -42,16 +43,16 @@ Details: [docs/03_ARCHITECTURE.md](docs/03_ARCHITECTURE.md)
 # Dependencies installieren
 npm install
 
-# iOS Pods installieren
-cd ios && pod install && cd ..
+# Hinweis: In diesem Workspace-Snapshot sind die nativen Projektordner (z.B. android/ios/) aktuell nicht enthalten.
+# Für Builds auf Android/iOS müssen diese Ordner im Projekt vorhanden sein.
 
-# Android Build
+# Android Build (wenn android/ vorhanden)
 npm run android
 
-# iOS Build
+# iOS Build (wenn ios/ vorhanden)
 npm run ios
 
-# Windows Build
+# Windows Build (wenn windows/ vorhanden)
 npm run windows
 ```
 
@@ -72,10 +73,9 @@ npm run test:e2e
 ## 📚 Dokumentation
 
 - [Architecture](docs/03_ARCHITECTURE.md) - Clean Architecture & DDD
-- [API Reference](docs/04_API.md) - Use Cases & Repositories
-- [Testing](docs/05_TESTING.md) - Test Strategy
-- [Elements List](docs/01_ELEMENTS_LIST.md) - Alle UI Elemente
-- [Questions List](docs/02_QUESTIONS_LIST.md) - Kompletter Fragebogen
+- [Elements List](docs/01_COMPLETE_ELEMENTS_LIST.md) - Alle UI Elemente
+- [Questions List](docs/02_COMPLETE_QUESTIONS_LIST.md) - Kompletter Fragebogen
+- [Feature Audit](docs/FEATURE_AUDIT.md) - Reachability & Status
 
 ## 🔒 Sicherheit & Datenschutz
 

@@ -1,0 +1,123 @@
+diff --git a/node_modules/@react-native-windows/cli/lib-commonjs/utils/msbuildtools.js b/node_modules/@react-native-windows/cli/lib-commonjs/utils/msbuildtools.js
+index bfc63f6..9b95b04 100644
+--- a/node_modules/@react-native-windows/cli/lib-commonjs/utils/msbuildtools.js
++++ b/node_modules/@react-native-windows/cli/lib-commonjs/utils/msbuildtools.js
+@@ -44,6 +44,35 @@ const commandWithProgress_1 = require("./commandWithProgress");
+ const child_process_2 = require("child_process");
+ const vsInstalls_1 = require("./vsInstalls");
+ const telemetry_1 = require("@react-native-windows/telemetry");
++
++function getLatestInstalledWindowsSdkVersion() {
++    var _a;
++    try {
++        const programFilesX86 = (_a = process.env['ProgramFiles(x86)']) !== null && _a !== void 0 ? _a : 'C:\\Program Files (x86)';
++        const kitsLibDir = path_1.default.join(programFilesX86, 'Windows Kits', '10', 'Lib');
++        if (!fs_1.default.existsSync(kitsLibDir)) {
++            return undefined;
++        }
++        const entries = fs_1.default.readdirSync(kitsLibDir);
++        const versionDirs = entries
++            .filter(e => /^\d+\.\d+\.\d+\.\d+$/.test(e))
++            .sort((a, b) => {
++            const aa = a.split('.').map(n => parseInt(n, 10));
++            const bb = b.split('.').map(n => parseInt(n, 10));
++            for (let i = 0; i < 4; i++) {
++                if (aa[i] !== bb[i]) {
++                    return aa[i] - bb[i];
++                }
++            }
++            return 0;
++        });
++        return versionDirs.length > 0 ? versionDirs[versionDirs.length - 1] : undefined;
++    }
++    catch (_b) {
++        return undefined;
++    }
++}
++
+ class MSBuildTools {
+     /**
+      * @param version is something like 17.0 for 2022
+@@ -86,13 +115,16 @@ class MSBuildTools {
+         const logPrefix = path_1.default.join(buildLogDirectory || os_2.default.tmpdir(), `msbuild_${process.pid}_${target}`);
+         const errorLog = logPrefix + '.err';
+         const warnLog = logPrefix + '.wrn';
+-        const localBinLog = target === 'build' ? '' : ':deploy.binlog';
+-        const binlog = buildLogDirectory ? `:${logPrefix}.binlog` : localBinLog;
++        // Always write a unique binlog file to avoid collisions with the default
++        // "msbuild.binlog" (which can be locked by another process).
++        const binlog = `:${logPrefix}.binlog`;
++        const windowsSdkVersion = process.env.RNW_WINDOWS_SDK_VERSION || getLatestInstalledWindowsSdkVersion();
+         const args = [
+             `/clp:NoSummary;NoItemAndPropertyList;Verbosity=${verbosityOption}`,
+             '/nologo',
+             `/p:Configuration=${buildType}`,
+             `/p:Platform=${buildArch}`,
++            ...(windowsSdkVersion ? [`/p:WindowsTargetPlatformVersion=${windowsSdkVersion}`] : []),
+             '/p:AppxBundle=Never',
+             `/bl${binlog}`,
+             `/flp1:errorsonly;logfile=${errorLog}`,
+diff --git a/node_modules/@react-native-windows/cli/lib-commonjs/utils/telemetryHelpers.js b/node_modules/@react-native-windows/cli/lib-commonjs/utils/telemetryHelpers.js
+index 6cc331d..c4c7ce6 100644
+--- a/node_modules/@react-native-windows/cli/lib-commonjs/utils/telemetryHelpers.js
++++ b/node_modules/@react-native-windows/cli/lib-commonjs/utils/telemetryHelpers.js
+@@ -65,7 +65,12 @@ exports.getDefaultOptions = getDefaultOptions;
+  */
+ async function startTelemetrySession(commandName, config, options, defaultOptions, optionSanitizer) {
+     const verbose = options.logging === true;
+-    if (!options.telemetry) {
++    // Privacy-first: require explicit opt-in to enable telemetry.
++    // Note: RNW CLI exposes a `--no-telemetry` flag, which Commander treats as `telemetry=true` by default.
++    // We override that behavior here so telemetry is off unless the user explicitly opts in.
++    const telemetryOptIn =
++        process.env.RNW_CLI_TELEMETRY === '1' || process.env.RNW_TELEMETRY === '1';
++    if (!telemetryOptIn || !options.telemetry) {
+         if (verbose) {
+             (0, commandWithProgress_1.newInfo)('Telemetry is disabled');
+         }
+diff --git a/node_modules/@react-native-windows/cli/lib-commonjs/utils/vsInstalls.js b/node_modules/@react-native-windows/cli/lib-commonjs/utils/vsInstalls.js
+index 622a7ec..9e3bc46 100644
+--- a/node_modules/@react-native-windows/cli/lib-commonjs/utils/vsInstalls.js
++++ b/node_modules/@react-native-windows/cli/lib-commonjs/utils/vsInstalls.js
+@@ -29,9 +29,14 @@ function vsWhere(args, verbose) {
+     if (!fs_1.default.existsSync(vsWherePath)) {
+         throw new telemetry_1.CodedError('NoVSWhere', `Unable to find vswhere at ${vsWherePath}`);
+     }
+-    const system32 = `${process.env.SystemRoot}\\System32`;
+-    const cmdline = `${system32}\\cmd.exe /c ${system32}\\chcp.com 65001>nul && "${vsWherePath}" ${args.join(' ')} -format json -utf8`;
+-    const json = JSON.parse((0, child_process_1.execSync)(cmdline).toString());
++    // Use execFileSync instead of a cmd.exe wrapper.
++    // The previous implementation used cmd.exe to force UTF-8 codepage, but cmd
++    // parsing breaks version ranges containing parentheses (e.g. [17.11,18.0)).
++    // Calling the executable directly avoids shell parsing issues entirely.
++    const jsonText = (0, child_process_1.execFileSync)(vsWherePath, [...args, '-format', 'json', '-utf8'], {
++        encoding: 'utf8',
++    });
++    const json = JSON.parse(jsonText.toString());
+     for (const entry of json) {
+         entry.prerelease = entry.catalog.productMilestoneIsPreRelease;
+     }
+@@ -42,6 +47,9 @@ function vsWhere(args, verbose) {
+  */
+ function enumerateVsInstalls(opts) {
+     const args = [];
++    // Explicitly search all product SKUs. Without this, vswhere may return no
++    // results even when Build Tools / Community are installed.
++    args.push('-products', '*');
+     if (opts.minVersion) {
+         // VS 2019 ex: minVersion == 16.7 => [16.7,17.0)
+         // VS 2022 ex: minVersion == 17.0 => [17.0,18.0)
+@@ -69,10 +77,11 @@ function enumerateVsInstalls(opts) {
+         if (opts.verbose) {
+             console.log(`Looking for VS installs with version range: ${versionRange}`);
+         }
+-        args.push(`-version ${versionRange}`);
++        // Pass as separate argv entries (required for execFileSync).
++        args.push('-version', versionRange);
+     }
+     if (opts.requires) {
+-        args.push(`-requires ${opts.requires.join(' ')}`);
++        args.push('-requires', ...opts.requires);
+     }
+     if (opts.latest) {
+         args.push('-latest');

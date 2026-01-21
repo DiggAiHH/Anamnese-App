@@ -1,0 +1,46 @@
+
+> anamnese-mobile@1.0.0 type-check
+> tsc --noEmit
+
+src/application/use-cases/BackupUseCase.ts(87,65): error TS2339: Property 'findAll' does not exist on type 'SQLiteQuestionnaireRepository'.
+src/application/use-cases/BackupUseCase.ts(95,39): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(entries: Iterable<readonly [PropertyKey, unknown]>): { [k: string]: unknown; }', gave the following error.
+    Argument of type 'AnswerEntity[]' is not assignable to parameter of type 'Iterable<readonly [PropertyKey, unknown]>'.
+      The types returned by '[Symbol.iterator]().next(...)' are incompatible between these types.
+        Type 'IteratorResult<AnswerEntity, any>' is not assignable to type 'IteratorResult<readonly [PropertyKey, unknown], any>'.
+          Type 'IteratorYieldResult<AnswerEntity>' is not assignable to type 'IteratorResult<readonly [PropertyKey, unknown], any>'.
+            Type 'IteratorYieldResult<AnswerEntity>' is not assignable to type 'IteratorYieldResult<readonly [PropertyKey, unknown]>'.
+              Type 'AnswerEntity' is not assignable to type 'readonly [PropertyKey, unknown]'.
+  Overload 2 of 2, '(entries: Iterable<readonly any[]>): any', gave the following error.
+    Argument of type 'AnswerEntity[]' is not assignable to parameter of type 'Iterable<readonly any[]>'.
+      The types returned by '[Symbol.iterator]().next(...)' are incompatible between these types.
+        Type 'IteratorResult<AnswerEntity, any>' is not assignable to type 'IteratorResult<readonly any[], any>'.
+          Type 'IteratorYieldResult<AnswerEntity>' is not assignable to type 'IteratorResult<readonly any[], any>'.
+            Type 'IteratorYieldResult<AnswerEntity>' is not assignable to type 'IteratorYieldResult<readonly any[]>'.
+              Type 'AnswerEntity' is missing the following properties from type 'readonly any[]': length, concat, join, slice, and 19 more.
+src/application/use-cases/BackupUseCase.ts(120,43): error TS7006: Parameter 'q' implicitly has an 'any' type.
+src/application/use-cases/BackupUseCase.ts(137,13): error TS6133: 'backupData' is declared but its value is never read.
+src/application/use-cases/BackupUseCase.ts(139,9): error TS2322: Type 'EncryptedDataVO' is not assignable to type 'string'.
+src/application/use-cases/BackupUseCase.ts(140,9): error TS2322: Type 'EncryptedDataVO' is not assignable to type 'string'.
+src/application/use-cases/BackupUseCase.ts(141,9): error TS2322: Type 'EncryptedDataVO' is not assignable to type 'string'.
+src/application/use-cases/BackupUseCase.ts(178,63): error TS2339: Property 'findAll' does not exist on type 'SQLiteQuestionnaireRepository'.
+src/application/use-cases/BackupUseCase.ts(185,37): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(entries: Iterable<readonly [PropertyKey, unknown]>): { [k: string]: unknown; }', gave the following error.
+    Argument of type 'AnswerEntity[]' is not assignable to parameter of type 'Iterable<readonly [PropertyKey, unknown]>'.
+  Overload 2 of 2, '(entries: Iterable<readonly any[]>): any', gave the following error.
+    Argument of type 'AnswerEntity[]' is not assignable to parameter of type 'Iterable<readonly any[]>'.
+src/application/use-cases/BackupUseCase.ts(200,41): error TS7006: Parameter 'q' implicitly has an 'any' type.
+src/application/use-cases/BackupUseCase.ts(218,7): error TS2322: Type 'EncryptedDataVO' is not assignable to type 'string'.
+src/application/use-cases/BackupUseCase.ts(219,7): error TS2322: Type 'EncryptedDataVO' is not assignable to type 'string'.
+src/application/use-cases/BackupUseCase.ts(220,7): error TS2322: Type 'EncryptedDataVO' is not assignable to type 'string'.
+src/application/use-cases/RestoreUseCase.ts(19,1): error TS6133: 'QuestionnaireEntity' is declared but its value is never read.
+src/application/use-cases/RestoreUseCase.ts(95,11): error TS2345: Argument of type 'string' is not assignable to parameter of type 'EncryptedDataVO'.
+src/application/use-cases/RestoreUseCase.ts(117,11): error TS2345: Argument of type 'string' is not assignable to parameter of type 'EncryptedDataVO'.
+src/application/use-cases/RestoreUseCase.ts(135,11): error TS2345: Argument of type 'string' is not assignable to parameter of type 'EncryptedDataVO'.
+src/application/use-cases/RestoreUseCase.ts(158,42): error TS2339: Property 'update' does not exist on type 'SQLitePatientRepository'.
+src/application/use-cases/RestoreUseCase.ts(204,13): error TS2322: Type 'null' is not assignable to type 'string'.
+src/application/use-cases/RestoreUseCase.ts(205,13): error TS2322: Type '"restored"' is not assignable to type '"manual" | "voice" | "ocr"'.
+src/presentation/components/QuestionCard.tsx(144,33): error TS2339: Property 'stopListening' does not exist on type 'typeof VoskSpeechService'.
+src/presentation/components/QuestionCard.tsx(154,51): error TS2339: Property 'isAvailable' does not exist on type 'typeof VoskSpeechService'.
+src/presentation/components/QuestionCard.tsx(161,33): error TS2339: Property 'startListening' does not exist on type 'typeof VoskSpeechService'.
+src/presentation/screens/FeedbackScreen.tsx(35,32): error TS6133: 'navigation' is declared but its value is never read.

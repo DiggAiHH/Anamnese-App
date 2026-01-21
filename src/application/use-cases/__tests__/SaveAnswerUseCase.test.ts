@@ -35,7 +35,7 @@ class MockAnswerRepository implements IAnswerRepository {
   async delete(): Promise<void> {}
   async deleteByQuestionnaireId(): Promise<void> {}
   async saveBatch(): Promise<void> {}
-  async getDecryptedAnswersMap(): Promise<Map<string, any>> {
+  async getDecryptedAnswersMap(): Promise<Map<string, unknown>> {
     return new Map();
   }
   async getAnswersMap(): Promise<Map<string, AnswerValue>> {
@@ -141,5 +141,36 @@ describe('SaveAnswerUseCase', () => {
     const answers = await repository.findByQuestionnaireId('11111111-1111-1111-1111-111111111111');
     expect(answers).toHaveLength(1);
     expect(answers[0].sourceType).toBe('voice');
+  });
+
+  it('normalizes multiselect array answers to integer bitset', async () => {
+    const multiQuestion = {
+      id: 'symptoms',
+      labelKey: 'q.symptoms',
+      type: 'multiselect' as const,
+      required: false,
+      options: [
+        { value: 0, labelKey: 'cough' },
+        { value: 1, labelKey: 'fever' },
+        { value: 2, labelKey: 'pain' },
+      ],
+    };
+
+    const questionnaireId = '11111111-1111-1111-1111-111111111111';
+
+    const result = await useCase.execute({
+      questionnaireId,
+      question: multiQuestion,
+      value: ['0', '2'],
+      encryptionKey: 'base64key',
+    });
+
+    expect(result.success).toBe(true);
+
+    const stored = await repository.findByQuestionId(questionnaireId, 'symptoms');
+    expect(stored).toBeTruthy();
+
+    const decrypted = await encryption.decrypt(EncryptedDataVO.fromString(stored!.encryptedValue), 'base64key');
+    expect(JSON.parse(decrypted)).toBe(5);
   });
 });

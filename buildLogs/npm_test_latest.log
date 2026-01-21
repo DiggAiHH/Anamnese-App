@@ -1,0 +1,29 @@
+
+> anamnese-mobile@1.0.0 test
+> jest
+
+PASS src/infrastructure/encryption/__tests__/WebCryptoEncryptionService.test.ts
+PASS src/__tests__/integration.test.ts
+PASS src/presentation/i18n/__tests__/locales.test.ts
+PASS __tests__/presentation/ToastProvider.test.ts
+PASS __tests__/infrastructure/persistence/SQLiteQuestionnaireRepository.test.ts
+PASS __tests__/infrastructure/persistence/SQLiteAnswerRepository.test.ts
+PASS __tests__/infrastructure/persistence/SQLitePatientRepository.test.ts
+PASS src/application/use-cases/__tests__/SaveAnswerUseCase.test.ts
+PASS src/domain/services/__tests__/PasswordGenerator.test.ts
+PASS __tests__/application/use-cases/SaveAnswerUseCase.test.ts
+PASS __tests__/integration/DeleteAllData.test.ts
+PASS __tests__/domain/entities/Questionnaire.test.ts
+PASS src/domain/value-objects/__tests__/CompartmentAnswerEncoding.test.ts
+PASS __tests__/domain/value-objects/GDTExport.test.ts
+PASS src/domain/entities/__tests__/QuestionnaireCompartmentMapping.test.ts
+PASS src/domain/entities/__tests__/Patient.test.ts
+PASS src/domain/entities/__tests__/AnswerDateValidation.test.ts
+PASS __tests__/domain/entities/Answer.test.ts
+PASS src/domain/entities/__tests__/Questionnaire.test.ts
+
+Test Suites: 2 skipped, 19 passed, 19 of 21 total
+Tests:       29 skipped, 57 passed, 86 total
+Snapshots:   0 total
+Time:        10.101 s
+Ran all test suites.

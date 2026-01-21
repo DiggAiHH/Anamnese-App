@@ -1,0 +1,19 @@
+
+> anamnese-mobile@1.0.0 windows:cleanrun
+> powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts\windows-cleanrun.ps1
+
+\n==> Clean rebuild starting (Configuration=Debug, Platform=x64)
+\n==> Repo root: C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App
+\n==> Stopping Metro (port 8081) + app process
+\n==> Uninstalling existing AppX (if installed)
+Removing installed package: cc3a5ac8-ac09-4f03-b6c9-0cfd812841a0_1.0.0.0_x64__4dnmwfyw5v01r
+\n==> Deleting repo build artifacts + caches
+Deleting: C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules
+Deleting: C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\tmp
+Deleting: C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\windows\AppPackages
+Deleting: C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\windows\anamnese-mobile\\x64
+Deleting: C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\windows\anamnese-mobile\\obj
+Deleting: C:\Users\tubbeTEC\AppData\Local\Temp\metro-cache
+\n==> Reinstalling JS dependencies
+^CBatchvorgang abbrechen (J/N)? Batchvorgang abbrechen (J/N)? Batchvorgang abbrechen (J/N)? Batchvorgang abbrechen (J/N)? Batchvorgang abbrechen (J/N)? Batchvorgang abbrechen (J/N)? Batchvorgang abbrechen (J/N)? Batchvorgang abbrechen (J/N)? Batchvorgang abbrechen (J/N)? Batchvorgang abbrechen (J/N)? Batchvorgang abbrechen (J/N)? Batchvorgang abbrechen (J/N)? Batchvorgang abbrechen (J/N)? Batchvorgang abbrechen (J/N)? Batchvorgang abbrechen (J/N)? Batchvorgang abbrechen (J/N)? 
+^CBatchvorgang abbrechen (J/N)? Batchvorgang abbrechen (J/N)? Batchvorgang abbrechen (J/N)? Batchvorgang abbrechen (J/N)? Batchvorgang abbrechen (J/N)? Batchvorgang abbrechen (J/N)? Batchvorgang abbrechen (J/N)? Batchvorgang abbrechen (J/N)? 

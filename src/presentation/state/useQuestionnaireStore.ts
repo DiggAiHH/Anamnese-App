@@ -10,16 +10,47 @@
 
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
-import { QuestionnaireEntity } from '@domain/entities/Questionnaire';
+import { enableMapSet } from 'immer';
+import { QuestionnaireEntity, Section, Question } from '@domain/entities/Questionnaire';
 import { PatientEntity } from '@domain/entities/Patient';
 import { AnswerValue } from '@domain/entities/Answer';
+import { saveActiveSession, clearActiveSession } from '@shared/sessionPersistence';
+
+enableMapSet();
+
+const HIDDEN_SECTION_IDS = new Set<string>(['q0000']);
+
+function findNextVisibleSectionIndex(
+  sections: Section[],
+  startIndex: number,
+  direction: 1 | -1,
+): number {
+  let i = startIndex;
+  while (i >= 0 && i < sections.length) {
+    if (!HIDDEN_SECTION_IDS.has(sections[i].id)) return i;
+    i += direction;
+  }
+  return startIndex;
+}
+
+/**
+ * User Mode Type
+ */
+export type UserMode = 'doctor' | 'patient' | null;
 
 /**
  * State Interface
  */
 interface QuestionnaireState {
+  // User Mode (doctor/patient)
+  userMode: UserMode;
+  
   // Current Patient
   patient: PatientEntity | null;
+
+  // Active IDs (for session resume)
+  activePatientId: string | null;
+  activeQuestionnaireId: string | null;
   
   // Current Questionnaire
   questionnaire: QuestionnaireEntity | null;
@@ -44,9 +75,16 @@ interface QuestionnaireState {
  * Actions Interface
  */
 interface QuestionnaireActions {
+  // User Mode Action
+  setUserMode: (mode: UserMode) => void;
+  
   // Patient Actions
   setPatient: (patient: PatientEntity) => void;
   clearPatient: () => void;
+
+  // Session IDs
+  setActiveSessionIds: (patientId: string | null, questionnaireId: string | null) => void;
+  clearActiveSessionIds: () => void;
   
   // Questionnaire Actions
   setQuestionnaire: (questionnaire: QuestionnaireEntity) => void;
@@ -78,7 +116,10 @@ interface QuestionnaireActions {
  * Initial State
  */
 const initialState: QuestionnaireState = {
+  userMode: null,
   patient: null,
+  activePatientId: null,
+  activeQuestionnaireId: null,
   questionnaire: null,
   answers: new Map(),
   currentSectionIndex: 0,
@@ -95,28 +136,64 @@ export const useQuestionnaireStore = create<QuestionnaireState & QuestionnaireAc
     // State
     ...initialState,
 
+    // User Mode Action
+    setUserMode: (mode) =>
+      set((state) => {
+        state.userMode = mode;
+      }),
+
     // Patient Actions
     setPatient: (patient) =>
       set((state) => {
         state.patient = patient;
+        state.activePatientId = patient.id;
+        void saveActiveSession({ patientId: patient.id });
       }),
 
     clearPatient: () =>
       set((state) => {
         state.patient = null;
+        state.activePatientId = null;
+        void saveActiveSession({ patientId: null });
+      }),
+
+    // Session IDs
+    setActiveSessionIds: (patientId, questionnaireId) =>
+      set((state) => {
+        state.activePatientId = patientId;
+        state.activeQuestionnaireId = questionnaireId;
+      }),
+
+    clearActiveSessionIds: () =>
+      set((state) => {
+        state.activePatientId = null;
+        state.activeQuestionnaireId = null;
+        void clearActiveSession();
       }),
 
     // Questionnaire Actions
     setQuestionnaire: (questionnaire) =>
       set((state) => {
         state.questionnaire = questionnaire;
-        state.currentSectionIndex = 0;
+        state.activeQuestionnaireId = questionnaire.id;
+        state.currentSectionIndex = findNextVisibleSectionIndex(
+          questionnaire.sections,
+          0,
+          1,
+        );
+        void saveActiveSession({
+          patientId: state.activePatientId,
+          questionnaireId: questionnaire.id,
+          currentSectionIndex: state.currentSectionIndex,
+        });
       }),
 
     clearQuestionnaire: () =>
       set((state) => {
         state.questionnaire = null;
+        state.activeQuestionnaireId = null;
         state.currentSectionIndex = 0;
+        void saveActiveSession({ questionnaireId: null, currentSectionIndex: 0 });
       }),
 
     // Answer Actions
@@ -141,7 +218,19 @@ export const useQuestionnaireStore = create<QuestionnaireState & QuestionnaireAc
         const { questionnaire, currentSectionIndex } = get();
         
         if (questionnaire && currentSectionIndex < questionnaire.sections.length - 1) {
-          state.currentSectionIndex = currentSectionIndex + 1;
+          const nextIndex = findNextVisibleSectionIndex(
+            questionnaire.sections,
+            currentSectionIndex + 1,
+            1,
+          );
+          if (nextIndex >= 0 && nextIndex < questionnaire.sections.length) {
+            state.currentSectionIndex = nextIndex;
+            void saveActiveSession({
+              currentSectionIndex: state.currentSectionIndex,
+              questionnaireId: state.activeQuestionnaireId,
+              patientId: state.activePatientId,
+            });
+          }
         }
       }),
 
@@ -150,7 +239,22 @@ export const useQuestionnaireStore = create<QuestionnaireState & QuestionnaireAc
         const { currentSectionIndex } = get();
         
         if (currentSectionIndex > 0) {
-          state.currentSectionIndex = currentSectionIndex - 1;
+          const { questionnaire } = get();
+          if (!questionnaire) return;
+
+          const prevIndex = findNextVisibleSectionIndex(
+            questionnaire.sections,
+            currentSectionIndex - 1,
+            -1,
+          );
+          if (prevIndex >= 0 && prevIndex < questionnaire.sections.length) {
+            state.currentSectionIndex = prevIndex;
+            void saveActiveSession({
+              currentSectionIndex: state.currentSectionIndex,
+              questionnaireId: state.activeQuestionnaireId,
+              patientId: state.activePatientId,
+            });
+          }
         }
       }),
 
@@ -159,7 +263,15 @@ export const useQuestionnaireStore = create<QuestionnaireState & QuestionnaireAc
         const { questionnaire } = get();
         
         if (questionnaire && index >= 0 && index < questionnaire.sections.length) {
-          state.currentSectionIndex = index;
+          const targetIndex = findNextVisibleSectionIndex(questionnaire.sections, index, 1);
+          if (targetIndex >= 0 && targetIndex < questionnaire.sections.length) {
+            state.currentSectionIndex = targetIndex;
+            void saveActiveSession({
+              currentSectionIndex: state.currentSectionIndex,
+              questionnaireId: state.activeQuestionnaireId,
+              patientId: state.activePatientId,
+            });
+          }
         }
       }),
 
@@ -186,19 +298,26 @@ export const useQuestionnaireStore = create<QuestionnaireState & QuestionnaireAc
       }),
 
     // Reset All
-    reset: () => set(initialState),
+    reset: () => {
+      void clearActiveSession();
+      set(initialState);
+    },
   })),
 );
 
 /**
  * Selectors (für Performance-Optimierung)
  */
-export const selectCurrentSection = (state: QuestionnaireState & QuestionnaireActions) => {
+export const selectCurrentSection = (
+  state: QuestionnaireState & QuestionnaireActions,
+): Section | null => {
   if (!state.questionnaire) return null;
   return state.questionnaire.sections[state.currentSectionIndex];
 };
 
-export const selectVisibleQuestions = (state: QuestionnaireState & QuestionnaireActions) => {
+export const selectVisibleQuestions = (
+  state: QuestionnaireState & QuestionnaireActions,
+): Question[] => {
   const { questionnaire, currentSectionIndex, answers } = state;
   
   if (!questionnaire) return [];

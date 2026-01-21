@@ -1,0 +1,15 @@
+
+> anamnese-mobile@1.0.0 windows:ready:skiptests
+> powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts\windows-ready-to-test.ps1 -SkipTests
+
+[windows:ready] Skipping tests (SkipTests=true)
+[windows:ready] Checking Metro status on http://127.0.0.1:8081/status
+[windows:ready] Deploying/launching Windows app (with build)
+[windows:ready] Post-run process check
+[windows:ready] App process running (PID(s): 16304)
+[windows:ready] Probing loopback exemption (informational)
+[windows:ready] READY: App should be running; Metro should be serving bundles.
+[windows:ready] Testing URLs:
+  - Metro status: http://127.0.0.1:8081/status
+  - Metro debugger UI: http://127.0.0.1:8081/debugger-ui
+[windows:ready] If the app didnƒ?Tt open, run: npm.cmd run windows:launch:log

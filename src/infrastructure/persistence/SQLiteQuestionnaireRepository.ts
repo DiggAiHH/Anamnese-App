@@ -2,10 +2,17 @@
  * SQLite Questionnaire Repository Implementation
  */
 
-import { SQLiteDatabase } from 'react-native-sqlite-storage';
+import type { SQLiteDatabase } from 'react-native-sqlite-storage';
 import { QuestionnaireEntity, Questionnaire, Section } from '@domain/entities/Questionnaire';
 import { IQuestionnaireRepository } from '@domain/repositories/IQuestionnaireRepository';
 import { database } from './DatabaseConnection';
+import template from '../data/questionnaire-template.json';
+
+type QuestionnaireTemplate = {
+  version?: string;
+  sections: Section[];
+  versions?: Record<string, { sections: Section[] }>;
+};
 
 export class SQLiteQuestionnaireRepository implements IQuestionnaireRepository {
   private async getDb(): Promise<SQLiteDatabase> {
@@ -52,6 +59,22 @@ export class SQLiteQuestionnaireRepository implements IQuestionnaireRepository {
   }
 
   /**
+   * Alle Fragebögen abrufen
+   */
+  async findAll(): Promise<QuestionnaireEntity[]> {
+    const db = await this.getDb();
+    const [result] = await db.executeSql('SELECT * FROM questionnaires ORDER BY created_at DESC;');
+
+    const questionnaires: QuestionnaireEntity[] = [];
+    for (let i = 0; i < result.rows.length; i++) {
+      const row = result.rows.item(i);
+      questionnaires.push(this.mapRowToEntity(row));
+    }
+
+    return questionnaires;
+  }
+
+  /**
    * Fragebögen für einen Patienten finden
    */
   async findByPatientId(patientId: string): Promise<QuestionnaireEntity[]> {
@@ -80,28 +103,27 @@ export class SQLiteQuestionnaireRepository implements IQuestionnaireRepository {
 
   /**
    * Fragebogen-Template laden
-   * 
+   *
    * Hinweis: Template wird aus JSON-Datei geladen, nicht aus DB
    */
   async loadTemplate(version?: string): Promise<Section[]> {
-    // Template aus mobile-app/src/infrastructure/data/questionnaire-template.json laden
-    const template = require('../data/questionnaire-template.json');
-    
+    const tpl = template as unknown as QuestionnaireTemplate;
+
     // Wenn Version spezifiziert, entsprechende Version laden
-    if (version && template.versions && template.versions[version]) {
-      return template.versions[version].sections as Section[];
+    if (version && tpl.versions && tpl.versions[version]) {
+      return tpl.versions[version].sections;
     }
 
     // Sonst default/latest Version
-    return template.sections as Section[];
+    return tpl.sections;
   }
 
   /**
    * Neueste Template-Version abrufen
    */
   async getLatestTemplateVersion(): Promise<string> {
-    const template = require('../data/questionnaire-template.json');
-    return template.version ?? '1.0.0';
+    const tpl = template as unknown as QuestionnaireTemplate;
+    return tpl.version ?? '1.0.0';
   }
 
   /**

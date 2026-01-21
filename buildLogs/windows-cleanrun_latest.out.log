@@ -1,0 +1,13 @@
+\n==> Clean rebuild starting (Configuration=Debug, Platform=x64)
+\n==> Repo root: C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App
+\n==> Stopping Metro (port 8081) + app process
+\n==> Uninstalling existing AppX (if installed)
+No installed package found.
+\n==> Deleting repo build artifacts + caches
+Deleting: C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules.__old_20260105_065340
+Deleted: C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules.__old_20260105_065340
+Deleting: C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\tmp
+Deleted: C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\tmp
+Deleting: C:\Users\tubbeTEC\AppData\Local\Temp\metro-cache
+Deleted: C:\Users\tubbeTEC\AppData\Local\Temp\metro-cache
+\n==> Reinstalling JS dependencies

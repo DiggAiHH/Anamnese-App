@@ -33,7 +33,7 @@ const validatePasswordStrength = (password) => {
   };
 };
 
-const encrypt = async (plaintext, key) => {
+const encrypt = async (plaintext, _key) => {
   // Simple mock encryption - just base64 encode for testing
   const iv = Buffer.from('0123456789abcdef').toString('base64');
   const salt = Buffer.from('saltvalue1234567').toString('base64');
@@ -50,12 +50,12 @@ const encrypt = async (plaintext, key) => {
   };
 };
 
-const decrypt = async (encryptedData, key) => {
+const decrypt = async (encryptedData, _key) => {
   // Simple mock decryption - just base64 decode for testing
   return Buffer.from(encryptedData.ciphertext, 'base64').toString('utf-8');
 };
 
-const deriveKey = async (password, salt) => {
+const deriveKey = async (_password, _salt) => {
   // Return mock key
   return Buffer.from('mockderivedkey01234567890123456').toString('base64');
 };

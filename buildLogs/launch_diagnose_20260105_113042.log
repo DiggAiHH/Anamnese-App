@@ -1,0 +1,48 @@
+﻿**********************
+nStart der Windows PowerShell-Aufzeichnung
+Startzeit: 20260105113042
+Benutzername: DESKTOP-U1FPK9S\tubbeTEC
+RunAs-Benutzer: DESKTOP-U1FPK9S\tubbeTEC
+Konfigurationsname: 
+Computer: DESKTOP-U1FPK9S (Microsoft Windows NT 10.0.19045.0)
+Hostanwendung: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -NoProfile -NonInteractive -ExecutionPolicy Bypass -File scripts\diagnose-app-launch.ps1 -Aumid cc3a5ac8-ac09-4f03-b6c9-0cfd812841a0_4dnmwfyw5v01r!App -Minutes 20
+Prozess-ID: 17364
+PSVersion: 5.1.19041.6456
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.19041.6456
+BuildVersion: 10.0.19041.6456
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+
+==== Launch diagnostic ====\n
+Time:        2026-01-05T11:30:42.9482413+01:00
+AUMID:       cc3a5ac8-ac09-4f03-b6c9-0cfd812841a0_4dnmwfyw5v01r!App
+Start window: 01/05/2026 11:10:42
+
+==== Attempt launch (explorer.exe) ====\n
+explorer.exe launch invoked
+
+==== Attempt launch (Shell.Application COM) ====\n
+ShellExecute invoked
+
+==== Process check ====\n
+anamnese-mobile process: NOT RUNNING
+
+==== Recent Application log (crash/wer) ====\n
+
+
+==== Recent AppModel-Runtime/Admin log ====\n
+
+
+TimeCreated      : 05.01.2026 11:30:28
+ProviderName     : Microsoft-Windows-AppModel-Runtime
+Id               : 40
+LevelDisplayName : Informationen
+Message          : AppContainer "onecore\ds\security\gina\profile\profext\appcontainer.cpp Line:1813 anamnese-mobile cc3a5ac8-ac09-4f03-b6c9-0cfd812841a0_4dnmwfyw5v01r" wurde nicht erstellt, da er bereits vorhanden ist.
+**********************
+Ende der Windows PowerShell-Aufzeichnung
+Endzeit: 20260105113055
+**********************

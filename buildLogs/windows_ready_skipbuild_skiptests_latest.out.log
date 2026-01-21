@@ -1,0 +1,7 @@
+
+> anamnese-mobile@1.0.0 windows:ready:skipbuild:skiptests
+> powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts\windows-ready-to-test.ps1 -SkipBuild -SkipTests
+
+[windows:ready] Skipping tests (SkipTests=true)
+[windows:ready] Checking Metro status on http://127.0.0.1:8081/status
+[windows:ready] Deploying/launching Windows app (SkipBuild=true)

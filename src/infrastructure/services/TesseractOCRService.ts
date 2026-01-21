@@ -7,6 +7,8 @@ import { IOCRService } from '@domain/repositories/IOCRService';
  * DSGVO-compliant: All processing happens locally on device
  */
 export class TesseractOCRService implements IOCRService {
+  private readonly languagesToTry = ['deu', 'eng', 'fra', 'spa'] as const;
+
   private readonly supportedLanguages = [
     'deu', // German
     'eng', // English
@@ -97,8 +99,12 @@ export class TesseractOCRService implements IOCRService {
         blocks,
       };
     } catch (error) {
-      console.error('OCR Error:', error);
-      throw new Error(`OCR processing failed: ${(error as Error).message}`);
+      // Avoid leaking local file paths / OCR contents in production logs.
+      if (typeof __DEV__ !== 'undefined' && __DEV__) {
+        // eslint-disable-next-line no-console
+        console.error('OCR Error:', error);
+      }
+      throw new Error('OCR processing failed');
     }
   }
 
@@ -119,11 +125,11 @@ export class TesseractOCRService implements IOCRService {
     }>;
   }> {
     // Try with multiple common languages
-    const languagesToTry = ['deu', 'eng', 'fra', 'spa'];
-    let bestResult: any = null;
+    type OCRResult = Awaited<ReturnType<TesseractOCRService['performOCR']>>;
+    let bestResult: OCRResult | null = null;
     let bestConfidence = 0;
 
-    for (const lang of languagesToTry) {
+    for (const lang of this.languagesToTry) {
       try {
         const result = await this.performOCR(imagePath, lang);
         if (result.confidence > bestConfidence && result.text.length > 10) {
@@ -131,7 +137,10 @@ export class TesseractOCRService implements IOCRService {
           bestConfidence = result.confidence;
         }
       } catch (error) {
-        console.warn(`OCR failed for language ${lang}:`, error);
+        if (typeof __DEV__ !== 'undefined' && __DEV__) {
+          // eslint-disable-next-line no-console
+          console.warn(`OCR failed for language ${lang}:`, error);
+        }
       }
     }
 
@@ -176,7 +185,7 @@ export class TesseractOCRService implements IOCRService {
     const patterns = {
       insuranceNumber: /\b\d{10}\b/, // 10-digit number
       insuranceName: /(?:AOK|Barmer|TK|DAK|IKK|BKK|KKH|Techniker|Debeka)[\w\s]+/i,
-      validUntil: /(?:gültig bis|valid until)[\s:]*(\d{2}[\.\/]\d{2}[\.\/]\d{4})/i,
+      validUntil: /(?:gültig bis|valid until)[\s:]*(\d{2}[./]\d{2}[./]\d{4})/i,
     };
 
     const ocrResult = await this.performOCR(imagePath, 'deu');

@@ -1,0 +1,4 @@
+Die Zeichenfolge hat kein Abschlusszeichen: ".
+    + CategoryInfo          : ParserError: (:) [], ParentContainsErrorRecordException
+    + FullyQualifiedErrorId : TerminatorExpectedAtEndOfString
+ 
