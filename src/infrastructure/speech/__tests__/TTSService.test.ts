@@ -5,27 +5,39 @@
  * Verifies GDPR compliance (no PII in logs) and proper language handling.
  */
 
+// Mock Platform.OS to be 'ios' so TTS module loads
+jest.mock('react-native/Libraries/Utilities/Platform', () => ({
+  __esModule: true,
+  default: {
+    OS: 'ios',
+    select: jest.fn((obj) => obj.ios || obj.default),
+  },
+}));
+
 // Mock the module - Jest hoists this
 jest.mock('react-native-tts', () => {
   return {
-    speak: jest.fn().mockResolvedValue(undefined),
-    stop: jest.fn().mockResolvedValue(undefined),
-    setDefaultRate: jest.fn().mockResolvedValue(undefined),
-    setDefaultPitch: jest.fn().mockResolvedValue(undefined),
-    setDefaultLanguage: jest.fn().mockResolvedValue(undefined),
-    voices: jest.fn().mockResolvedValue([
-      { id: 'voice1', name: 'German Voice', language: 'de-DE', quality: 300 },
-      { id: 'voice2', name: 'English Voice', language: 'en-US', quality: 300 },
-    ]),
-    addEventListener: jest.fn(),
+    default: {
+      speak: jest.fn().mockResolvedValue(undefined),
+      stop: jest.fn().mockResolvedValue(undefined),
+      setDefaultRate: jest.fn().mockResolvedValue(undefined),
+      setDefaultPitch: jest.fn().mockResolvedValue(undefined),
+      setDefaultLanguage: jest.fn().mockResolvedValue(undefined),
+      voices: jest.fn().mockResolvedValue([
+        { id: 'voice1', name: 'German Voice', language: 'de-DE', quality: 300 },
+        { id: 'voice2', name: 'English Voice', language: 'en-US', quality: 300 },
+      ]),
+      addEventListener: jest.fn(),
+    },
   };
 });
 
-// Import AFTER mock
-import Tts from 'react-native-tts';
+// Import AFTER mocks
 import { TTSService } from '../TTSService';
 
 // Get references to the mocked functions for assertions
+// We need to require it again to get the mocked default export
+const Tts = require('react-native-tts').default;
 const mockedTts = Tts as jest.Mocked<typeof Tts>;
 
 describe('TTSService', () => {

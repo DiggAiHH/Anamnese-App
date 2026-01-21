@@ -1,0 +1,377 @@
+
+> anamnese-mobile@1.0.0 test
+> jest --runInBand --testPathPattern=TTSService --forceExit
+
+  console.log
+    [TTS] TTS Service initialized
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:108:15)
+
+  console.log
+    [TTS] TTS Service initialized
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:108:15)
+
+  console.log
+    [TTS] TTS Service initialized
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:108:15)
+
+  console.log
+    [TTS] TTS Service initialized
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:108:15)
+
+  console.log
+    [TTS] Speaking in de-DE (10 chars)
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:108:15)
+
+  console.log
+    [TTS] TTS Service initialized
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:108:15)
+
+  console.log
+    [TTS] Speaking in en-US (11 chars)
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:108:15)
+
+  console.log
+    [TTS] TTS Service initialized
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:108:15)
+
+  console.log
+    [TTS] Empty text, skipping
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:108:15)
+
+  console.log
+    [TTS] Empty text, skipping
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:108:15)
+
+  console.log
+    [TTS] TTS Service initialized
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:108:15)
+
+  console.log
+    [TTS] Speaking in de-DE (4003 chars)
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:108:15)
+
+  console.log
+    [TTS] TTS Service initialized
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:108:15)
+
+  console.log
+    [TTS] Speaking in de-DE (4 chars)
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:108:15)
+
+  console.log
+    [TTS] Speaking in en-US (4 chars)
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:108:15)
+
+  console.log
+    [TTS] Speaking in ar-SA (4 chars)
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:108:15)
+
+  console.log
+    [TTS] Speaking in el-GR (4 chars)
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:108:15)
+
+  console.log
+    [TTS] Speaking in es-ES (4 chars)
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:108:15)
+
+  console.log
+    [TTS] Speaking in fa-IR (4 chars)
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:108:15)
+
+  console.log
+    [TTS] Speaking in fr-FR (4 chars)
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:108:15)
+
+  console.log
+    [TTS] Speaking in it-IT (4 chars)
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:108:15)
+
+  console.log
+    [TTS] Speaking in ja-JP (4 chars)
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:108:15)
+
+  console.log
+    [TTS] Speaking in ko-KR (4 chars)
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:108:15)
+
+  console.log
+    [TTS] Speaking in nl-NL (4 chars)
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:108:15)
+
+  console.log
+    [TTS] Speaking in pl-PL (4 chars)
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:108:15)
+
+  console.log
+    [TTS] Speaking in pt-BR (4 chars)
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:108:15)
+
+  console.log
+    [TTS] Speaking in ro-RO (4 chars)
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:108:15)
+
+  console.log
+    [TTS] Speaking in ru-RU (4 chars)
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:108:15)
+
+  console.log
+    [TTS] Speaking in tr-TR (4 chars)
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:108:15)
+
+  console.log
+    [TTS] Speaking in uk-UA (4 chars)
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:108:15)
+
+  console.log
+    [TTS] Speaking in vi-VN (4 chars)
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:108:15)
+
+  console.log
+    [TTS] Speaking in zh-CN (4 chars)
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:108:15)
+
+  console.log
+    [TTS] TTS Service initialized
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:108:15)
+
+  console.log
+    [TTS] Speaking in de-DE (4 chars)
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:108:15)
+
+  console.log
+    [TTS] TTS Service initialized
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:108:15)
+
+  console.log
+    [TTS] Speech stopped
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:108:15)
+
+  console.log
+    [TTS] TTS Service initialized
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:108:15)
+
+  console.log
+    [TTS] Found 2 voices
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:108:15)
+
+  console.log
+    [TTS] TTS Service initialized
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:108:15)
+
+  console.error
+    [TTS] Failed to get voices Error: No voices
+        at Object.<anonymous> (/home/runner/work/Anamnese-App/Anamnese-App/src/infrastructure/speech/__tests__/TTSService.test.ts:154:61)
+        at Generator.next (<anonymous>)
+        at asyncGeneratorStep (/home/runner/work/Anamnese-App/Anamnese-App/node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+        at _next (/home/runner/work/Anamnese-App/Anamnese-App/node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+        at /home/runner/work/Anamnese-App/Anamnese-App/node_modules/@babel/runtime/helpers/asyncToGenerator.js:22:7
+        at new Promise (<anonymous>)
+        at Object.<anonymous> (/home/runner/work/Anamnese-App/Anamnese-App/node_modules/@babel/runtime/helpers/asyncToGenerator.js:14:12)
+        at Promise.then.completed (/home/runner/work/Anamnese-App/Anamnese-App/node_modules/jest-circus/build/utils.js:298:28)
+        at new Promise (<anonymous>)
+        at callAsyncCircusFn (/home/runner/work/Anamnese-App/Anamnese-App/node_modules/jest-circus/build/utils.js:231:10)
+        at _callCircusTest (/home/runner/work/Anamnese-App/Anamnese-App/node_modules/jest-circus/build/run.js:316:40)
+        at _runTest (/home/runner/work/Anamnese-App/Anamnese-App/node_modules/jest-circus/build/run.js:252:3)
+        at _runTestsForDescribeBlock (/home/runner/work/Anamnese-App/Anamnese-App/node_modules/jest-circus/build/run.js:126:9)
+        at _runTestsForDescribeBlock (/home/runner/work/Anamnese-App/Anamnese-App/node_modules/jest-circus/build/run.js:121:9)
+        at _runTestsForDescribeBlock (/home/runner/work/Anamnese-App/Anamnese-App/node_modules/jest-circus/build/run.js:121:9)
+        at run (/home/runner/work/Anamnese-App/Anamnese-App/node_modules/jest-circus/build/run.js:71:3)
+        at runAndTransformResultsToJestFormat (/home/runner/work/Anamnese-App/Anamnese-App/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)
+        at jestAdapter (/home/runner/work/Anamnese-App/Anamnese-App/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
+        at runTestInternal (/home/runner/work/Anamnese-App/Anamnese-App/node_modules/jest-runner/build/runTest.js:367:16)
+        at runTest (/home/runner/work/Anamnese-App/Anamnese-App/node_modules/jest-runner/build/runTest.js:444:34)
+
+    [0m [90m 114 |[39m     [36mif[39m ([36mtypeof[39m __DEV__ [33m!==[39m [32m'undefined'[39m [33m&&[39m __DEV__) {
+     [90m 115 |[39m       [90m// eslint-disable-next-line no-console[39m
+    [31m[1m>[22m[39m[90m 116 |[39m       console[33m.[39merror([32m`[TTS] ${message}`[39m[33m,[39m error)[33m;[39m
+     [90m     |[39m               [31m[1m^[22m[39m
+     [90m 117 |[39m     }
+     [90m 118 |[39m     [90m// Production: no logging to avoid any PII leak[39m
+     [90m 119 |[39m   }[0m
+
+      at TTSService.error [as logError] (src/infrastructure/speech/TTSService.ts:116:15)
+      at TTSService.logError (src/infrastructure/speech/TTSService.ts:261:12)
+          at Generator.throw (<anonymous>)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _throw (node_modules/@babel/runtime/helpers/asyncToGenerator.js:20:9)
+
+  console.log
+    [TTS] TTS Service initialized
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:108:15)
+
+  console.log
+    [TTS] TTS Service initialized
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:108:15)
+
+  console.log
+    [TTS] Rate set to 0.7
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:108:15)
+
+  console.log
+    [TTS] TTS Service initialized
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:108:15)
+
+  console.log
+    [TTS] Rate set to 1
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:108:15)
+
+  console.log
+    [TTS] Rate set to 0.1
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:108:15)
+
+  console.log
+    [TTS] TTS Service initialized
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:108:15)
+
+  console.log
+    [TTS] Pitch set to 1.5
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:108:15)
+
+  console.log
+    [TTS] TTS Service initialized
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:108:15)
+
+  console.log
+    [TTS] Pitch set to 2
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:108:15)
+
+  console.log
+    [TTS] Pitch set to 0.5
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:108:15)
+
+  console.log
+    [TTS] TTS Service initialized
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:108:15)
+
+  console.log
+    [TTS] TTS Service initialized
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:108:15)
+
+  console.log
+    [TTS] TTS Service initialized
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:108:15)
+
+  console.log
+    [TTS] TTS Service initialized
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:108:15)
+
+  console.log
+    [TTS] TTS Service destroyed
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:108:15)
+
+  console.log
+    [TTS] TTS Service initialized
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:108:15)
+
+  console.log
+    [TTS] Speaking in de-DE (9 chars)
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:108:15)
+
+  console.log
+    [TTS] Speech started
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:108:15)
+
+  console.log
+    [TTS] TTS Service destroyed
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:108:15)
+
+PASS src/infrastructure/speech/__tests__/TTSService.test.ts
+  TTSService
+    initialization
+      ✓ should set up event listeners on construction (14 ms)
+      ✓ should set default rate and pitch (1 ms)
+      ✓ should set default language to German (1 ms)
+    speak()
+      ✓ should speak text in default language (2 ms)
+      ✓ should set language before speaking (1 ms)
+      ✓ should skip empty text (4 ms)
+      ✓ should truncate very long text (2 ms)
+      ✓ should map all 19 languages correctly (11 ms)
+      ✓ should fallback to German for unknown language (4 ms)
+    stop()
+      ✓ should stop TTS playback (1 ms)
+    getAvailableVoices()
+      ✓ should return available voices (2 ms)
+      ✓ should return empty array on error (18 ms)
+    getSupportedLanguages()
+      ✓ should return all 19 supported languages (1 ms)
+    setRate()
+      ✓ should set speech rate (2 ms)
+      ✓ should clamp rate to valid range (2 ms)
+    setPitch()
+      ✓ should set speech pitch (1 ms)
+      ✓ should clamp pitch to valid range (1 ms)
+    isSpeaking()
+      ✓ should return false initially (1 ms)
+    GDPR Compliance
+      ✓ should NOT log spoken text content (1 ms)
+      ✓ should only log metadata (language, length) (1 ms)
+    destroy()
+      ✓ should cleanup resources and reset state (1 ms)
+      ✓ should stop playback if currently speaking (2 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       22 passed, 22 total
+Snapshots:   0 total
+Time:        0.809 s
+Ran all test suites matching /TTSService/i.
+Force exiting Jest: Have you considered using `--detectOpenHandles` to detect async operations that kept running after all tests finished?

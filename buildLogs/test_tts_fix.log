@@ -1,0 +1,185 @@
+
+> anamnese-mobile@1.0.0 test
+> jest --runInBand --testPathPattern=TTSService --forceExit
+
+  console.warn
+    ProgressBarAndroid has been extracted from react-native core and will be removed in a future release. It can now be installed and imported from '@react-native-community/progress-bar-android' instead of 'react-native'. See https://github.com/react-native-progress-view/progress-bar-android
+
+    [0m [90m  9 |[39m jest[33m.[39mmock([32m'react-native'[39m[33m,[39m () [33m=>[39m {
+     [90m 10 |[39m   [36mconst[39m actualRN [33m=[39m jest[33m.[39mrequireActual([32m'react-native'[39m)[33m;[39m
+    [31m[1m>[22m[39m[90m 11 |[39m   [36mreturn[39m {
+     [90m    |[39m   [31m[1m^[22m[39m
+     [90m 12 |[39m     [33m...[39mactualRN[33m,[39m
+     [90m 13 |[39m     [33mPlatform[39m[33m:[39m {
+     [90m 14 |[39m       [33m...[39mactualRN[33m.[39m[33mPlatform[39m[33m,[39m[0m
+
+      at warn (node_modules/react-native/Libraries/Utilities/warnOnce.js:27:11)
+      at Object.warnOnce [as ProgressBarAndroid] (node_modules/react-native/index.js:143:5)
+          at Function.assign (<anonymous>)
+      at assign (src/infrastructure/speech/__tests__/TTSService.test.ts:11:3)
+      at Object.require (src/infrastructure/speech/TTSService.ts:11:1)
+      at Object.require (src/infrastructure/speech/__tests__/TTSService.test.ts:39:1)
+
+  console.warn
+    Clipboard has been extracted from react-native core and will be removed in a future release. It can now be installed and imported from '@react-native-clipboard/clipboard' instead of 'react-native'. See https://github.com/react-native-clipboard/clipboard
+
+    [0m [90m  9 |[39m jest[33m.[39mmock([32m'react-native'[39m[33m,[39m () [33m=>[39m {
+     [90m 10 |[39m   [36mconst[39m actualRN [33m=[39m jest[33m.[39mrequireActual([32m'react-native'[39m)[33m;[39m
+    [31m[1m>[22m[39m[90m 11 |[39m   [36mreturn[39m {
+     [90m    |[39m   [31m[1m^[22m[39m
+     [90m 12 |[39m     [33m...[39mactualRN[33m,[39m
+     [90m 13 |[39m     [33mPlatform[39m[33m:[39m {
+     [90m 14 |[39m       [33m...[39mactualRN[33m.[39m[33mPlatform[39m[33m,[39m[0m
+
+      at warn (node_modules/react-native/Libraries/Utilities/warnOnce.js:27:11)
+      at Object.warnOnce [as Clipboard] (node_modules/react-native/index.js:226:5)
+          at Function.assign (<anonymous>)
+      at assign (src/infrastructure/speech/__tests__/TTSService.test.ts:11:3)
+      at Object.require (node_modules/@react-native/virtualized-lists/Lists/VirtualizedSectionList.js:13:1)
+      at Object.require [as VirtualizedSectionList] (node_modules/@react-native/virtualized-lists/index.js:46:12)
+      at Object.<anonymous> (node_modules/react-native/Libraries/Lists/VirtualizedSectionList.js:16:45)
+      at Object.require [as VirtualizedSectionList] (node_modules/react-native/index.js:197:12)
+          at Function.assign (<anonymous>)
+      at assign (src/infrastructure/speech/__tests__/TTSService.test.ts:11:3)
+      at Object.require (node_modules/@react-native/virtualized-lists/Lists/VirtualizedList.js:27:1)
+      at Object.require [as VirtualizedList] (node_modules/@react-native/virtualized-lists/index.js:43:12)
+      at Object.<anonymous> (node_modules/react-native/Libraries/Lists/VirtualizedList.js:16:45)
+      at Object.require [as VirtualizedList] (node_modules/react-native/index.js:194:12)
+          at Function.assign (<anonymous>)
+      at assign (src/infrastructure/speech/__tests__/TTSService.test.ts:11:3)
+      at Object.require (src/infrastructure/speech/TTSService.ts:11:1)
+      at Object.require (src/infrastructure/speech/__tests__/TTSService.test.ts:39:1)
+
+  console.warn
+    `new NativeEventEmitter()` was called with a non-null argument without the required `addListener` method.
+
+    [0m [90m  9 |[39m jest[33m.[39mmock([32m'react-native'[39m[33m,[39m () [33m=>[39m {
+     [90m 10 |[39m   [36mconst[39m actualRN [33m=[39m jest[33m.[39mrequireActual([32m'react-native'[39m)[33m;[39m
+    [31m[1m>[22m[39m[90m 11 |[39m   [36mreturn[39m {
+     [90m    |[39m   [31m[1m^[22m[39m
+     [90m 12 |[39m     [33m...[39mactualRN[33m,[39m
+     [90m 13 |[39m     [33mPlatform[39m[33m:[39m {
+     [90m 14 |[39m       [33m...[39mactualRN[33m.[39m[33mPlatform[39m[33m,[39m[0m
+
+      at new warn (node_modules/react-native/Libraries/EventEmitter/NativeEventEmitter.js:63:17)
+      at Object.<anonymous> (node_modules/react-native/Libraries/Utilities/DevSettings.js:32:19)
+      at Object.require [as DevSettings] (node_modules/react-native/index.js:238:12)
+          at Function.assign (<anonymous>)
+      at assign (src/infrastructure/speech/__tests__/TTSService.test.ts:11:3)
+      at Object.require (node_modules/@react-native/virtualized-lists/Lists/VirtualizedSectionList.js:13:1)
+      at Object.require [as VirtualizedSectionList] (node_modules/@react-native/virtualized-lists/index.js:46:12)
+      at Object.<anonymous> (node_modules/react-native/Libraries/Lists/VirtualizedSectionList.js:16:45)
+      at Object.require [as VirtualizedSectionList] (node_modules/react-native/index.js:197:12)
+          at Function.assign (<anonymous>)
+      at assign (src/infrastructure/speech/__tests__/TTSService.test.ts:11:3)
+      at Object.require (node_modules/@react-native/virtualized-lists/Lists/VirtualizedList.js:27:1)
+      at Object.require [as VirtualizedList] (node_modules/@react-native/virtualized-lists/index.js:43:12)
+      at Object.<anonymous> (node_modules/react-native/Libraries/Lists/VirtualizedList.js:16:45)
+      at Object.require [as VirtualizedList] (node_modules/react-native/index.js:194:12)
+          at Function.assign (<anonymous>)
+      at assign (src/infrastructure/speech/__tests__/TTSService.test.ts:11:3)
+      at Object.require (src/infrastructure/speech/TTSService.ts:11:1)
+      at Object.require (src/infrastructure/speech/__tests__/TTSService.test.ts:39:1)
+
+  console.warn
+    `new NativeEventEmitter()` was called with a non-null argument without the required `removeListeners` method.
+
+    [0m [90m  9 |[39m jest[33m.[39mmock([32m'react-native'[39m[33m,[39m () [33m=>[39m {
+     [90m 10 |[39m   [36mconst[39m actualRN [33m=[39m jest[33m.[39mrequireActual([32m'react-native'[39m)[33m;[39m
+    [31m[1m>[22m[39m[90m 11 |[39m   [36mreturn[39m {
+     [90m    |[39m   [31m[1m^[22m[39m
+     [90m 12 |[39m     [33m...[39mactualRN[33m,[39m
+     [90m 13 |[39m     [33mPlatform[39m[33m:[39m {
+     [90m 14 |[39m       [33m...[39mactualRN[33m.[39m[33mPlatform[39m[33m,[39m[0m
+
+      at new warn (node_modules/react-native/Libraries/EventEmitter/NativeEventEmitter.js:68:17)
+      at Object.<anonymous> (node_modules/react-native/Libraries/Utilities/DevSettings.js:32:19)
+      at Object.require [as DevSettings] (node_modules/react-native/index.js:238:12)
+          at Function.assign (<anonymous>)
+      at assign (src/infrastructure/speech/__tests__/TTSService.test.ts:11:3)
+      at Object.require (node_modules/@react-native/virtualized-lists/Lists/VirtualizedSectionList.js:13:1)
+      at Object.require [as VirtualizedSectionList] (node_modules/@react-native/virtualized-lists/index.js:46:12)
+      at Object.<anonymous> (node_modules/react-native/Libraries/Lists/VirtualizedSectionList.js:16:45)
+      at Object.require [as VirtualizedSectionList] (node_modules/react-native/index.js:197:12)
+          at Function.assign (<anonymous>)
+      at assign (src/infrastructure/speech/__tests__/TTSService.test.ts:11:3)
+      at Object.require (node_modules/@react-native/virtualized-lists/Lists/VirtualizedList.js:27:1)
+      at Object.require [as VirtualizedList] (node_modules/@react-native/virtualized-lists/index.js:43:12)
+      at Object.<anonymous> (node_modules/react-native/Libraries/Lists/VirtualizedList.js:16:45)
+      at Object.require [as VirtualizedList] (node_modules/react-native/index.js:194:12)
+          at Function.assign (<anonymous>)
+      at assign (src/infrastructure/speech/__tests__/TTSService.test.ts:11:3)
+      at Object.require (src/infrastructure/speech/TTSService.ts:11:1)
+      at Object.require (src/infrastructure/speech/__tests__/TTSService.test.ts:39:1)
+
+  console.warn
+    PushNotificationIOS has been extracted from react-native core and will be removed in a future release. It can now be installed and imported from '@react-native-community/push-notification-ios' instead of 'react-native'. See https://github.com/react-native-push-notification-ios/push-notification-ios
+
+    [0m [90m  9 |[39m jest[33m.[39mmock([32m'react-native'[39m[33m,[39m () [33m=>[39m {
+     [90m 10 |[39m   [36mconst[39m actualRN [33m=[39m jest[33m.[39mrequireActual([32m'react-native'[39m)[33m;[39m
+    [31m[1m>[22m[39m[90m 11 |[39m   [36mreturn[39m {
+     [90m    |[39m   [31m[1m^[22m[39m
+     [90m 12 |[39m     [33m...[39mactualRN[33m,[39m
+     [90m 13 |[39m     [33mPlatform[39m[33m:[39m {
+     [90m 14 |[39m       [33m...[39mactualRN[33m.[39m[33mPlatform[39m[33m,[39m[0m
+
+      at warn (node_modules/react-native/Libraries/Utilities/warnOnce.js:27:11)
+      at Object.warnOnce [as PushNotificationIOS] (node_modules/react-native/index.js:287:5)
+          at Function.assign (<anonymous>)
+      at assign (src/infrastructure/speech/__tests__/TTSService.test.ts:11:3)
+      at Object.require (node_modules/@react-native/virtualized-lists/Lists/VirtualizedSectionList.js:13:1)
+      at Object.require [as VirtualizedSectionList] (node_modules/@react-native/virtualized-lists/index.js:46:12)
+      at Object.<anonymous> (node_modules/react-native/Libraries/Lists/VirtualizedSectionList.js:16:45)
+      at Object.require [as VirtualizedSectionList] (node_modules/react-native/index.js:197:12)
+          at Function.assign (<anonymous>)
+      at assign (src/infrastructure/speech/__tests__/TTSService.test.ts:11:3)
+      at Object.require (node_modules/@react-native/virtualized-lists/Lists/VirtualizedList.js:27:1)
+      at Object.require [as VirtualizedList] (node_modules/@react-native/virtualized-lists/index.js:43:12)
+      at Object.<anonymous> (node_modules/react-native/Libraries/Lists/VirtualizedList.js:16:45)
+      at Object.require [as VirtualizedList] (node_modules/react-native/index.js:194:12)
+          at Function.assign (<anonymous>)
+      at assign (src/infrastructure/speech/__tests__/TTSService.test.ts:11:3)
+      at Object.require (src/infrastructure/speech/TTSService.ts:11:1)
+      at Object.require (src/infrastructure/speech/__tests__/TTSService.test.ts:39:1)
+
+FAIL src/infrastructure/speech/__tests__/TTSService.test.ts
+  ● Test suite failed to run
+
+    Invariant Violation: TurboModuleRegistry.getEnforcing(...): 'SettingsManager' could not be found. Verify that a module by this name is registered in the native binary.Bridgeless mode: false. TurboModule interop: false. Modules loaded: {"NativeModules":["PlatformConstants","DeviceInfo","ImageLoader","KeyboardObserver","I18nManager","StatusBarManager","StatusBarManager","AlertManager","DevSettings","SourceCode","Networking","PushNotificationManager"],"TurboModules":[],"NotFound":["SoundManager","ModalManager","FrameRateLogger","ActionSheetManager","Appearance","RedBox","BugReporting","NativePerformanceCxx","HeadlessJsTaskSupport","LogBox","DialogManagerAndroid","PermissionsAndroid","SettingsManager"]}
+
+    [0m [90m  9 |[39m jest[33m.[39mmock([32m'react-native'[39m[33m,[39m () [33m=>[39m {
+     [90m 10 |[39m   [36mconst[39m actualRN [33m=[39m jest[33m.[39mrequireActual([32m'react-native'[39m)[33m;[39m
+    [31m[1m>[22m[39m[90m 11 |[39m   [36mreturn[39m {
+     [90m    |[39m   [31m[1m^[22m[39m
+     [90m 12 |[39m     [33m...[39mactualRN[33m,[39m
+     [90m 13 |[39m     [33mPlatform[39m[33m:[39m {
+     [90m 14 |[39m       [33m...[39mactualRN[33m.[39m[33mPlatform[39m[33m,[39m[0m
+
+      at invariant (node_modules/invariant/invariant.js:40:15)
+      at Object.getEnforcing (node_modules/react-native/Libraries/TurboModule/TurboModuleRegistry.js:87:12)
+      at Object.getEnforcing (node_modules/react-native/Libraries/Settings/NativeSettingsManager.js:23:37)
+      at Object.require (node_modules/react-native/Libraries/Settings/Settings.ios.js:12:1)
+      at Object.require [as Settings] (node_modules/react-native/index.js:296:12)
+          at Function.assign (<anonymous>)
+      at assign (src/infrastructure/speech/__tests__/TTSService.test.ts:11:3)
+      at Object.require (node_modules/@react-native/virtualized-lists/Lists/VirtualizedSectionList.js:13:1)
+      at Object.require [as VirtualizedSectionList] (node_modules/@react-native/virtualized-lists/index.js:46:12)
+      at Object.<anonymous> (node_modules/react-native/Libraries/Lists/VirtualizedSectionList.js:16:45)
+      at Object.require [as VirtualizedSectionList] (node_modules/react-native/index.js:197:12)
+          at Function.assign (<anonymous>)
+      at assign (src/infrastructure/speech/__tests__/TTSService.test.ts:11:3)
+      at Object.require (node_modules/@react-native/virtualized-lists/Lists/VirtualizedList.js:27:1)
+      at Object.require [as VirtualizedList] (node_modules/@react-native/virtualized-lists/index.js:43:12)
+      at Object.<anonymous> (node_modules/react-native/Libraries/Lists/VirtualizedList.js:16:45)
+      at Object.require [as VirtualizedList] (node_modules/react-native/index.js:194:12)
+          at Function.assign (<anonymous>)
+      at assign (src/infrastructure/speech/__tests__/TTSService.test.ts:11:3)
+      at Object.require (src/infrastructure/speech/TTSService.ts:11:1)
+      at Object.require (src/infrastructure/speech/__tests__/TTSService.test.ts:39:1)
+
+Test Suites: 1 failed, 1 total
+Tests:       0 total
+Snapshots:   0 total
+Time:        7.41 s
+Ran all test suites matching /TTSService/i.
+Force exiting Jest: Have you considered using `--detectOpenHandles` to detect async operations that kept running after all tests finished?
