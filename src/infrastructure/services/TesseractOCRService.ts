@@ -1,5 +1,21 @@
-import TesseractOcr from 'react-native-tesseract-ocr';
 import { IOCRService } from '@domain/repositories/IOCRService';
+import { logError, logWarn } from '@shared/logger';
+import { supportsOCR } from '@shared/platformCapabilities';
+
+type TesseractModule = {
+  recognize: (imagePath: string, language: string, options: unknown) => Promise<string>;
+};
+
+let TesseractOcr: TesseractModule | null = null;
+if (supportsOCR) {
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const mod = require('react-native-tesseract-ocr') as { default?: TesseractModule };
+    TesseractOcr = mod?.default ?? (mod as unknown as TesseractModule);
+  } catch {
+    TesseractOcr = null;
+  }
+}
 
 /**
  * Tesseract OCR Service Implementation
@@ -7,6 +23,8 @@ import { IOCRService } from '@domain/repositories/IOCRService';
  * DSGVO-compliant: All processing happens locally on device
  */
 export class TesseractOCRService implements IOCRService {
+  private readonly languagesToTry = ['deu', 'eng', 'fra', 'spa'] as const;
+
   private readonly supportedLanguages = [
     'deu', // German
     'eng', // English
@@ -49,6 +67,10 @@ export class TesseractOCRService implements IOCRService {
     }>;
   }> {
     try {
+      if (!supportsOCR || !TesseractOcr) {
+        throw new Error('OCR not supported on this platform');
+      }
+
       // Validate language
       const tesseractLang = this.mapLanguageCode(language);
       if (!this.supportedLanguages.includes(tesseractLang)) {
@@ -97,8 +119,9 @@ export class TesseractOCRService implements IOCRService {
         blocks,
       };
     } catch (error) {
-      console.error('OCR Error:', error);
-      throw new Error(`OCR processing failed: ${(error as Error).message}`);
+      // Avoid leaking local file paths / OCR contents in logs.
+      logError('[OCR] Processing failed', error);
+      throw new Error('OCR processing failed');
     }
   }
 
@@ -119,11 +142,11 @@ export class TesseractOCRService implements IOCRService {
     }>;
   }> {
     // Try with multiple common languages
-    const languagesToTry = ['deu', 'eng', 'fra', 'spa'];
-    let bestResult: any = null;
+    type OCRResult = Awaited<ReturnType<TesseractOCRService['performOCR']>>;
+    let bestResult: OCRResult | null = null;
     let bestConfidence = 0;
 
-    for (const lang of languagesToTry) {
+    for (const lang of this.languagesToTry) {
       try {
         const result = await this.performOCR(imagePath, lang);
         if (result.confidence > bestConfidence && result.text.length > 10) {
@@ -131,7 +154,7 @@ export class TesseractOCRService implements IOCRService {
           bestConfidence = result.confidence;
         }
       } catch (error) {
-        console.warn(`OCR failed for language ${lang}:`, error);
+        logWarn(`[OCR] Failed for language ${lang}`);
       }
     }
 
@@ -176,7 +199,7 @@ export class TesseractOCRService implements IOCRService {
     const patterns = {
       insuranceNumber: /\b\d{10}\b/, // 10-digit number
       insuranceName: /(?:AOK|Barmer|TK|DAK|IKK|BKK|KKH|Techniker|Debeka)[\w\s]+/i,
-      validUntil: /(?:gültig bis|valid until)[\s:]*(\d{2}[\.\/]\d{2}[\.\/]\d{4})/i,
+      validUntil: /(?:gültig bis|valid until)[\s:]*(\d{2}[./]\d{2}[./]\d{4})/i,
     };
 
     const ocrResult = await this.performOCR(imagePath, 'deu');
@@ -230,9 +253,7 @@ export class TesseractOCRService implements IOCRService {
    */
   async isAvailable(): Promise<boolean> {
     try {
-      // Try a simple OCR operation with a dummy path
-      // If Tesseract is not initialized, it will throw an error
-      return true;
+      return supportsOCR && !!TesseractOcr;
     } catch (error) {
       return false;
     }

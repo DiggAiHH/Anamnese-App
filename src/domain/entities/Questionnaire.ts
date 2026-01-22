@@ -8,6 +8,7 @@
  */
 
 import { z } from 'zod';
+import { CompartmentInputType, CompartmentOption, CompartmentQuestion } from './CompartmentQuestion';
 
 // Question Types
 export type QuestionType =
@@ -24,7 +25,13 @@ export type QuestionType =
 export const ConditionSchema = z.object({
   questionId: z.string(),
   operator: z.enum(['equals', 'not_equals', 'contains', 'not_contains', 'greater', 'less']),
-  value: z.union([z.string(), z.number(), z.boolean(), z.array(z.string())]),
+  value: z.union([
+    z.string(),
+    z.number(),
+    z.boolean(),
+    z.array(z.string()),
+    z.array(z.number()),
+  ]),
 });
 
 export type Condition = z.infer<typeof ConditionSchema>;
@@ -48,7 +55,7 @@ export const QuestionSchema = z.object({
   options: z
     .array(
       z.object({
-        value: z.string(),
+        value: z.union([z.string(), z.number()]),
         labelKey: z.string(),
       }),
     )
@@ -100,6 +107,114 @@ export type Questionnaire = z.infer<typeof QuestionnaireSchema>;
 export class QuestionnaireEntity {
   private constructor(private readonly data: Questionnaire) {
     QuestionnaireSchema.parse(data);
+  }
+
+  private static inferCompartmentInputType(question: Question): CompartmentInputType {
+    if (question.type === 'multiselect' || question.type === 'checkbox') return 'multi';
+    if (question.type === 'text' || question.type === 'textarea') return 'text';
+    if (question.type === 'number') return 'number';
+    if (question.type === 'date') return 'date';
+
+    if (question.type === 'radio' || question.type === 'select') {
+      const values = (question.options ?? [])
+        .map((o) => o.value)
+        .map((v) => (typeof v === 'number' ? v : Number.NaN))
+        .filter((v) => Number.isFinite(v));
+
+      if (values.length === 2) {
+        const unique = new Set(values);
+        if (unique.has(0) && unique.has(1) && unique.size === 2) {
+          return 'binary';
+        }
+      }
+
+      return 'single';
+    }
+
+    return 'text';
+  }
+
+  /**
+   * Converts the template questions into compartment questions using stable numeric IDs/orders.
+   * This is the basis for integer-only answer encoding and later export mapping.
+   */
+  toCompartmentQuestions(): CompartmentQuestion[] {
+    const result: CompartmentQuestion[] = [];
+
+    // Fallback deterministic order if template didn't provide one
+    let fallbackOrder = 1;
+
+    for (const section of this.data.sections) {
+      for (const question of section.questions) {
+        const metadata = (question.metadata ?? {}) as Record<string, unknown>;
+
+        const compartmentIdRaw = metadata.compartmentId;
+        const compartmentId =
+          typeof compartmentIdRaw === 'number'
+            ? compartmentIdRaw
+            : Number.parseInt(String(question.id), 10);
+
+        if (!Number.isInteger(compartmentId)) {
+          throw new Error(`Missing or invalid compartmentId for question ${question.id}`);
+        }
+
+        const compartmentOrderRaw = metadata.compartmentOrder;
+        const compartmentOrder =
+          typeof compartmentOrderRaw === 'number' && Number.isInteger(compartmentOrderRaw)
+            ? compartmentOrderRaw
+            : fallbackOrder;
+
+        const codeRaw = metadata.compartmentCode ?? metadata.fieldName;
+        const code = String(codeRaw ?? question.id).trim();
+        const sectionLabel = String(metadata.compartmentSection ?? section.titleKey ?? section.id).trim();
+        const conceptLabel = String(metadata.compartmentConcept ?? section.id).trim();
+        const label = String(question.labelKey).trim();
+
+        const inputType = QuestionnaireEntity.inferCompartmentInputType(question);
+
+        let options: CompartmentOption[] | undefined;
+        if (inputType === 'single' || inputType === 'multi') {
+          const mapped = (question.options ?? [])
+            .map((o) => {
+              const value =
+                typeof o.value === 'number'
+                  ? o.value
+                  : Number.parseInt(String(o.value), 10);
+              if (!Number.isInteger(value)) return null;
+              return {
+                value,
+                label: String(o.labelKey),
+              };
+            })
+            .filter((v): v is CompartmentOption => v !== null);
+
+          if (mapped.length > 0) {
+            options = mapped;
+          }
+        }
+
+        const gdprRelated = Boolean(metadata.gdprRelated);
+
+        result.push(
+          new CompartmentQuestion({
+            id: compartmentId,
+            order: compartmentOrder,
+            code,
+            section: sectionLabel,
+            concept: conceptLabel,
+            label,
+            inputType,
+            options,
+            required: Boolean(question.required),
+            gdprRelated,
+          }),
+        );
+
+        fallbackOrder++;
+      }
+    }
+
+    return result;
   }
 
   static create(patientId: string, sections: Section[], version?: string): QuestionnaireEntity;
@@ -246,9 +361,42 @@ export class QuestionnaireEntity {
         case 'not_equals':
           return answerValue !== condition.value;
         case 'contains':
-          return Array.isArray(answerValue) && answerValue.includes(condition.value);
+          // Back-compat: array-based multiselect
+          if (Array.isArray(answerValue)) {
+            return answerValue.includes(condition.value as never);
+          }
+
+          // New: bitset integer multiselect
+          if (
+            typeof answerValue === 'number' &&
+            typeof condition.value === 'number' &&
+            Number.isInteger(answerValue) &&
+            Number.isInteger(condition.value) &&
+            condition.value >= 0
+          ) {
+            // condition.value is bit position
+            const mask = 1 << condition.value;
+            return (answerValue & mask) !== 0;
+          }
+
+          return false;
         case 'not_contains':
-          return !Array.isArray(answerValue) || !answerValue.includes(condition.value);
+          if (Array.isArray(answerValue)) {
+            return !answerValue.includes(condition.value as never);
+          }
+
+          if (
+            typeof answerValue === 'number' &&
+            typeof condition.value === 'number' &&
+            Number.isInteger(answerValue) &&
+            Number.isInteger(condition.value) &&
+            condition.value >= 0
+          ) {
+            const mask = 1 << condition.value;
+            return (answerValue & mask) === 0;
+          }
+
+          return true;
         case 'greater':
           return typeof answerValue === 'number' && answerValue > (condition.value as number);
         case 'less':

@@ -15,8 +15,13 @@ import { IPatientRepository } from '@domain/repositories/IPatientRepository';
 import { IQuestionnaireRepository } from '@domain/repositories/IQuestionnaireRepository';
 import { IAnswerRepository } from '@domain/repositories/IAnswerRepository';
 import { IGDPRConsentRepository } from '@domain/repositories/IGDPRConsentRepository';
+import { PatientEntity } from '@domain/entities/Patient';
+import { QuestionnaireEntity } from '@domain/entities/Questionnaire';
+import { AnswerValue } from '@domain/entities/Answer';
 import { GDTExportVO, GDTRecordBuilder } from '@domain/value-objects/GDTExport';
-import RNFS from 'react-native-fs';
+import { decodeMultiChoiceBitset } from '@domain/value-objects/CompartmentAnswerEncoding';
+import { requireRNFS } from '@shared/rnfsSafe';
+import { supportsRNFS } from '@shared/platformCapabilities';
 
 export interface ExportGDTInput {
   patientId: string;
@@ -114,9 +119,9 @@ export class ExportGDTUseCase {
    * Build GDT Export
    */
   private async buildGDTExport(
-    patient: any,
-    questionnaire: any,
-    answersMap: Map<string, any>,
+    patient: PatientEntity,
+    questionnaire: QuestionnaireEntity,
+    answersMap: Map<string, AnswerValue>,
     input: ExportGDTInput,
   ): Promise<GDTExportVO> {
     const builder = new GDTRecordBuilder();
@@ -132,7 +137,7 @@ export class ExportGDTUseCase {
       lastName: patientData.lastName,
       firstName: patientData.firstName,
       birthDate,
-      gender: answersMap.get('gender') === 'male' ? 'M' : answersMap.get('gender') === 'female' ? 'F' : 'X',
+      gender: patientData.gender === 'male' ? 'M' : patientData.gender === 'female' ? 'F' : 'X',
     });
 
     // Insurance Data (optional)
@@ -160,7 +165,10 @@ export class ExportGDTUseCase {
   /**
    * Build Anamnesis Text aus allen Antworten
    */
-  private buildAnamnesisText(questionnaire: any, answersMap: Map<string, any>): string {
+  private buildAnamnesisText(
+    questionnaire: QuestionnaireEntity,
+    answersMap: Map<string, AnswerValue>,
+  ): string {
     let text = 'MEDIZINISCHE ANAMNESE\n\n';
 
     for (const section of questionnaire.sections) {
@@ -172,15 +180,7 @@ export class ExportGDTUseCase {
         
         if (answer !== undefined && answer !== null) {
           text += `${question.labelKey}: `;
-          
-          // Format answer based on type
-          if (Array.isArray(answer)) {
-            text += answer.join(', ');
-          } else if (typeof answer === 'boolean') {
-            text += answer ? 'Ja' : 'Nein';
-          } else {
-            text += answer.toString();
-          }
+          text += this.formatAnswer(question, answer);
           
           text += '\n';
         }
@@ -192,10 +192,51 @@ export class ExportGDTUseCase {
     return text;
   }
 
+  private formatAnswer(
+    question: QuestionnaireEntity['sections'][number]['questions'][number],
+    answer: AnswerValue,
+  ): string {
+    // Legacy array-based multiselect
+    if (Array.isArray(answer)) {
+      return answer.map((v) => String(v)).join(', ');
+    }
+
+    if (typeof answer === 'boolean') {
+      return answer ? 'Ja' : 'Nein';
+    }
+
+    // Option-based rendering (numeric answers)
+    if (typeof answer === 'number' && question.options && question.options.length > 0) {
+      // Multiselect stored as bitset integer
+      if (question.type === 'multiselect' || question.type === 'checkbox') {
+        const selectedBitPositions = decodeMultiChoiceBitset(answer);
+        const labels = selectedBitPositions
+          .map((bitPos) => question.options?.find((o) => o.value === bitPos)?.labelKey)
+          .filter((v): v is string => typeof v === 'string' && v.length > 0);
+
+        return labels.length > 0 ? labels.join(', ') : answer.toString();
+      }
+
+      // Single-choice numeric option values
+      const match = question.options.find((o) => o.value === answer);
+      if (match) {
+        return String(match.labelKey);
+      }
+    }
+
+    if (answer === null) return '';
+    return String(answer);
+  }
+
   /**
    * Save GDT File
    */
   private async saveGDTFile(gdtExport: GDTExportVO, patientId: string): Promise<string> {
+    if (!supportsRNFS) {
+      throw new Error('File system export is not supported on this platform');
+    }
+    const RNFS = requireRNFS();
+
     // Create exports directory
     const exportsDir = `${RNFS.DocumentDirectoryPath}/exports`;
     await RNFS.mkdir(exportsDir);

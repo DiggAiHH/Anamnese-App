@@ -1,0 +1,36 @@
+triage.name=test
+triage.cwd=C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App
+triage.command=npm test
+triage.exitCode=0
+triage.log=C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\buildLogs\triage_test_20260108_112532.log
+
+--- summary (filtered) ---
+  ● Console
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:97:15)
+    console.error
+      [TTS] Failed to get voices Error: No voices
+          at Object.<anonymous> (C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\src\infrastructure\speech\__tests__\TTSService.test.ts:142:61)
+          at Generator.next (<anonymous>)
+          at asyncGeneratorStep (C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\@babel\runtime\helpers\asyncToGenerator.js:3:17)
+          at _next (C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\@babel\runtime\helpers\asyncToGenerator.js:17:9)
+          at new Promise (<anonymous>)
+          at Object.<anonymous> (C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\@babel\runtime\helpers\asyncToGenerator.js:14:12)
+          at Promise.then.completed (C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\jest-circus\build\utils.js:298:28)
+          at callAsyncCircusFn (C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\jest-circus\build\utils.js:231:10)
+          at _callCircusTest (C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\jest-circus\build\run.js:316:40)
+          at processTicksAndRejections (node:internal/process/task_queues:103:5)
+          at _runTest (C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\jest-circus\build\run.js:252:3)
+          at _runTestsForDescribeBlock (C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\jest-circus\build\run.js:126:9)
+          at _runTestsForDescribeBlock (C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\jest-circus\build\run.js:121:9)
+          at run (C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\jest-circus\build\run.js:71:3)
+          at runAndTransformResultsToJestFormat (C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+          at jestAdapter (C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+          at runTestInternal (C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\jest-runner\build\runTest.js:367:16)
+          at runTest (C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\jest-runner\build\runTest.js:444:34)
+          at Object.worker (C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\jest-runner\build\testWorker.js:106:12)
+    [31m[1m>[22m[39m[90m 104 |[39m       console[33m.[39merror([32m`[TTS] ${message}`[39m[33m,[39m error)[33m;[39m
+      at TTSService.error [as logError] (src/infrastructure/speech/TTSService.ts:104:15)
+      at TTSService.logError (src/infrastructure/speech/TTSService.ts:236:12)
+          at Generator.throw (<anonymous>)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _throw (node_modules/@babel/runtime/helpers/asyncToGenerator.js:20:9)

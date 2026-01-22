@@ -1,0 +1,6 @@
+warn Package react-native-sqlite-storage contains invalid configuration: "dependency.platforms.ios.project" is not allowed. Please verify it's properly linked using "npx react-native config" command and contact the package maintainers about this.
+Failed to construct transformer:  Error: Failed to start watch mode.
+    at Timeout._onTimeout (C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\metro-file-map\src\Watcher.js:176:24)
+    at listOnTimeout (node:internal/timers:605:17)
+    at process.processTimers (node:internal/timers:541:7)
+error Failed to start watch mode.

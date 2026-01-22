@@ -1,0 +1,30 @@
+
+> anamnese-mobile@1.0.0 postinstall
+> patch-package
+
+patch-package 8.0.1
+Applying patches...
+@react-native-windows/cli@0.73.6 ✔
+react-native-document-picker@9.3.1 ✔
+react-native-share@10.2.1 ✔
+react-native-sqlite-storage@6.0.1 ✔
+react-native-tts@4.1.1 ✔
+react-native-windows@0.73.22 ✔
+Unrecognized patch file in patches directory questionnaire-loading-performance.patch
+---
+patch-package finished with 1 warning(s).
+
+up to date, audited 1654 packages in 27s
+
+240 packages are looking for funding
+  run `npm fund` for details
+
+7 vulnerabilities (2 moderate, 5 high)
+
+To address issues that do not require attention, run:
+  npm audit fix
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+
+Run `npm audit` for details.

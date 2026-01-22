@@ -1,0 +1,29 @@
+﻿**********************
+nStart der Windows PowerShell-Aufzeichnung
+Startzeit: 20260105184726
+Benutzername: DESKTOP-U1FPK9S\tubbeTEC
+RunAs-Benutzer: DESKTOP-U1FPK9S\tubbeTEC
+Konfigurationsname: 
+Computer: DESKTOP-U1FPK9S (Microsoft Windows NT 10.0.19045.0)
+Hostanwendung: powershell.exe -NoProfile -NonInteractive -ExecutionPolicy Bypass -File scripts\windows-dev-run.ps1 -Configuration Release -Platform x64
+Prozess-ID: 13512
+PSVersion: 5.1.19041.6456
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.19041.6456
+BuildVersion: 10.0.19041.6456
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+\n==> Repo root: C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App
+\n==> Building Windows (Release|x64) via RNW (telemetry disabled)
+
+Release mode: skipping 'react-native run-windows' to avoid double-building; using MSBuild packaging to produce the MSIX.
+\n==> Ensuring Release AppPackages output exists (MSBuild packaging)
+Packaging output dir: C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\windows\AppPackages\anamnese-mobile_x64_Release_20260105_184904_Test\\
+
+**********************
+Ende der Windows PowerShell-Aufzeichnung
+Endzeit: 20260105193011
+**********************

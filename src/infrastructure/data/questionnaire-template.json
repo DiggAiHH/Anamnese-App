@@ -1,469 +1,1188 @@
 {
-  "version": "1.0.0",
+  "version": "2.0.0",
   "sections": [
     {
-      "id": "personal_data",
-      "titleKey": "sections.personal",
-      "descriptionKey": "sections.personal_description",
+      "id": "q0000",
+      "titleKey": "sections.basisdaten",
+      "descriptionKey": "sections.basisdaten_description",
       "order": 1,
       "questions": [
         {
-          "id": "first_name",
+          "id": "0000",
           "type": "text",
-          "labelKey": "questions.firstName",
-          "placeholderKey": "placeholders.firstName",
+          "labelKey": "questions.0000",
+          "placeholderKey": "placeholders.nachname",
           "required": true,
-          "validation": {
-            "min": 2,
-            "max": 50
-          }
+          "validation": { "min": 1, "max": 100 },
+          "metadata": { "fieldName": "0", "compartmentCode": "0" }
         },
         {
-          "id": "last_name",
+          "id": "0001",
           "type": "text",
-          "labelKey": "questions.lastName",
-          "placeholderKey": "placeholders.lastName",
+          "labelKey": "questions.0001",
+          "placeholderKey": "placeholders.vorname",
           "required": true,
-          "validation": {
-            "min": 2,
-            "max": 50
-          }
+          "validation": { "min": 1, "max": 100 },
+          "metadata": { "fieldName": "1", "compartmentCode": "1" }
         },
         {
-          "id": "birth_date",
-          "type": "date",
-          "labelKey": "questions.birthDate",
-          "required": true,
-          "validation": {
-            "maxDate": "today",
-            "minDate": "1900-01-01"
-          }
-        },
-        {
-          "id": "gender",
-          "type": "radio",
-          "labelKey": "questions.gender",
+          "id": "0002",
+          "type": "select",
+          "labelKey": "questions.0002",
           "required": true,
           "options": [
-            { "value": "male", "labelKey": "options.male" },
-            { "value": "female", "labelKey": "options.female" },
-            { "value": "diverse", "labelKey": "options.diverse" }
-          ]
+            { "value": 1, "labelKey": "options.maennlich" },
+            { "value": 2, "labelKey": "options.weiblich" },
+            { "value": 3, "labelKey": "options.divers" }
+          ],
+          "metadata": { "fieldName": "2", "compartmentCode": "2" }
         },
         {
-          "id": "insurance",
-          "type": "text",
-          "labelKey": "questions.insurance",
-          "placeholderKey": "placeholders.insurance"
+          "id": "0003",
+          "type": "date",
+          "labelKey": "questions.0003",
+          "required": true,
+          "metadata": { "fieldName": "3", "compartmentCode": "3" }
         },
         {
-          "id": "insurance_number",
-          "type": "text",
-          "labelKey": "questions.insuranceNumber",
-          "placeholderKey": "placeholders.insuranceNumber"
+          "id": "0003_tag",
+          "type": "number",
+          "labelKey": "questions.0003_tag",
+          "validation": { "min": 1, "max": 31 },
+          "metadata": { "compartmentCode": "0003_tag" }
+        },
+        {
+          "id": "0003_monat",
+          "type": "number",
+          "labelKey": "questions.0003_monat",
+          "validation": { "min": 1, "max": 12 },
+          "metadata": { "compartmentCode": "0003_monat" }
+        },
+        {
+          "id": "0003_jahr",
+          "type": "number",
+          "labelKey": "questions.0003_jahr",
+          "validation": { "min": 1900, "max": 2100 },
+          "metadata": { "compartmentCode": "0003_jahr" }
         }
       ]
     },
     {
-      "id": "general_anamnesis",
-      "titleKey": "sections.general",
+      "id": "q1000",
+      "titleKey": "sections.beschwerden",
+      "descriptionKey": "sections.beschwerden_description",
       "order": 2,
       "questions": [
         {
-          "id": "chief_complaint",
-          "type": "textarea",
-          "labelKey": "questions.chiefComplaint",
-          "placeholderKey": "placeholders.chiefComplaint",
-          "required": true,
-          "validation": {
-            "min": 10,
-            "max": 500
-          }
-        },
-        {
-          "id": "complaint_duration",
+          "id": "1000",
           "type": "select",
-          "labelKey": "questions.complaintDuration",
+          "labelKey": "questions.1000",
           "required": true,
           "options": [
-            { "value": "days", "labelKey": "options.days" },
-            { "value": "weeks", "labelKey": "options.weeks" },
-            { "value": "months", "labelKey": "options.months" },
-            { "value": "years", "labelKey": "options.years" }
+            { "value": 1, "labelKey": "options.ja" },
+            { "value": 2, "labelKey": "options.nein" }
           ]
         },
         {
-          "id": "pain_level",
-          "type": "number",
-          "labelKey": "questions.painLevel",
-          "placeholderKey": "placeholders.painLevel",
-          "validation": {
-            "min": 0,
-            "max": 10
-          }
-        },
-        {
-          "id": "previous_treatment",
-          "type": "radio",
-          "labelKey": "questions.previousTreatment",
-          "required": true,
-          "options": [
-            { "value": "yes", "labelKey": "options.yes" },
-            { "value": "no", "labelKey": "options.no" }
-          ]
-        },
-        {
-          "id": "previous_treatment_details",
+          "id": "1001",
           "type": "textarea",
-          "labelKey": "questions.previousTreatmentDetails",
-          "placeholderKey": "placeholders.previousTreatmentDetails",
+          "labelKey": "questions.1001",
+          "placeholderKey": "placeholders.beschwerden_freitext",
+          "conditions": [{ "questionId": "1000", "operator": "equals", "value": 1 }]
+        },
+        {
+          "id": "1002",
+          "type": "select",
+          "labelKey": "questions.1002",
+          "options": [
+            { "value": 1, "labelKey": "options.ja" },
+            { "value": 2, "labelKey": "options.nein" }
+          ],
+          "conditions": [{ "questionId": "1000", "operator": "equals", "value": 1 }]
+        },
+        {
+          "id": "1003",
+          "type": "select",
+          "labelKey": "questions.1003",
+          "options": [
+            { "value": 1, "labelKey": "options.ja" },
+            { "value": 2, "labelKey": "options.nein" }
+          ],
+          "conditions": [{ "questionId": "1000", "operator": "equals", "value": 1 }]
+        },
+        {
+          "id": "1004",
+          "type": "select",
+          "labelKey": "questions.1004",
+          "options": [
+            { "value": 1, "labelKey": "options.ja" },
+            { "value": 2, "labelKey": "options.nein" }
+          ],
+          "conditions": [{ "questionId": "1000", "operator": "equals", "value": 1 }]
+        },
+        {
+          "id": "1005",
+          "type": "select",
+          "labelKey": "questions.1005",
+          "options": [
+            { "value": 1, "labelKey": "options.ja" },
+            { "value": 2, "labelKey": "options.nein" }
+          ],
+          "conditions": [{ "questionId": "1000", "operator": "equals", "value": 1 }]
+        },
+        {
+          "id": "1006",
+          "type": "multiselect",
+          "labelKey": "questions.1006",
+          "options": [
+            { "value": "CT", "labelKey": "options.ct" },
+            { "value": "MRT", "labelKey": "options.mrt" },
+            { "value": "Roentgen", "labelKey": "options.roentgen" },
+            { "value": "Sonographie", "labelKey": "options.sonographie" },
+            { "value": "Angio", "labelKey": "options.angio" },
+            { "value": "Nuklearmedizin", "labelKey": "options.nuklearmedizin" },
+            { "value": "Mammografie", "labelKey": "options.mammografie" },
+            { "value": "Sonstiges", "labelKey": "options.sonstiges" }
+          ],
+          "conditions": [{ "questionId": "1000", "operator": "equals", "value": 1 }]
+        },
+        {
+          "id": "1007",
+          "type": "select",
+          "labelKey": "questions.1007",
+          "options": [
+            { "value": 1, "labelKey": "options.ja" },
+            { "value": 2, "labelKey": "options.nein" }
+          ],
           "conditions": [
-            {
-              "questionId": "previous_treatment",
-              "operator": "equals",
-              "value": "yes"
-            }
+            { "questionId": "1006", "operator": "contains", "value": "Angio" }
           ]
+        },
+        {
+          "id": "1007_text",
+          "type": "text",
+          "labelKey": "questions.1007_text",
+          "placeholderKey": "placeholders.kreatinin_wert",
+          "conditions": [{ "questionId": "1007", "operator": "equals", "value": 1 }]
         }
       ]
     },
     {
-      "id": "medical_history",
-      "titleKey": "sections.history",
+      "id": "q2000",
+      "titleKey": "sections.terminvereinbarung",
+      "descriptionKey": "sections.terminvereinbarung_description",
       "order": 3,
       "questions": [
         {
-          "id": "chronic_diseases",
-          "type": "checkbox",
-          "labelKey": "questions.chronicDiseases",
-          "options": [
-            { "value": "diabetes", "labelKey": "options.diabetes" },
-            { "value": "hypertension", "labelKey": "options.hypertension" },
-            { "value": "heart_disease", "labelKey": "options.heartDisease" },
-            { "value": "asthma", "labelKey": "options.asthma" },
-            { "value": "copd", "labelKey": "options.copd" },
-            { "value": "kidney_disease", "labelKey": "options.kidneyDisease" },
-            { "value": "liver_disease", "labelKey": "options.liverDisease" },
-            { "value": "cancer", "labelKey": "options.cancer" },
-            { "value": "thyroid_disorder", "labelKey": "options.thyroidDisorder" },
-            { "value": "none", "labelKey": "options.none" }
-          ]
-        },
-        {
-          "id": "cancer_details",
-          "type": "textarea",
-          "labelKey": "questions.cancerDetails",
-          "placeholderKey": "placeholders.cancerDetails",
-          "conditions": [
-            {
-              "questionId": "chronic_diseases",
-              "operator": "contains",
-              "value": "cancer"
-            }
-          ]
-        },
-        {
-          "id": "previous_surgeries",
-          "type": "radio",
-          "labelKey": "questions.previousSurgeries",
+          "id": "2000",
+          "type": "select",
+          "labelKey": "questions.2000",
           "required": true,
           "options": [
-            { "value": "yes", "labelKey": "options.yes" },
-            { "value": "no", "labelKey": "options.no" }
+            { "value": 1, "labelKey": "options.ambulant" },
+            { "value": 2, "labelKey": "options.stationaer" }
           ]
         },
         {
-          "id": "surgery_details",
-          "type": "textarea",
-          "labelKey": "questions.surgeryDetails",
-          "placeholderKey": "placeholders.surgeryDetails",
-          "conditions": [
-            {
-              "questionId": "previous_surgeries",
-              "operator": "equals",
-              "value": "yes"
-            }
-          ]
+          "id": "2001",
+          "type": "text",
+          "labelKey": "questions.2001",
+          "placeholderKey": "placeholders.station",
+          "conditions": [{ "questionId": "2000", "operator": "equals", "value": 2 }]
         },
         {
-          "id": "hospitalizations",
-          "type": "radio",
-          "labelKey": "questions.hospitalizations",
+          "id": "2002",
+          "type": "date",
+          "labelKey": "questions.2002"
+        },
+        {
+          "id": "2003",
+          "type": "text",
+          "labelKey": "questions.2003",
+          "placeholderKey": "placeholders.uhrzeit"
+        },
+        {
+          "id": "2004",
+          "type": "select",
+          "labelKey": "questions.2004",
           "options": [
-            { "value": "yes", "labelKey": "options.yes" },
-            { "value": "no", "labelKey": "options.no" }
+            { "value": "CT", "labelKey": "options.ct" },
+            { "value": "MRT", "labelKey": "options.mrt" },
+            { "value": "Roentgen", "labelKey": "options.roentgen" },
+            { "value": "Sonographie", "labelKey": "options.sonographie" },
+            { "value": "Angio", "labelKey": "options.angio" },
+            { "value": "Nuklearmedizin", "labelKey": "options.nuklearmedizin" },
+            { "value": "Mammografie", "labelKey": "options.mammografie" },
+            { "value": "Sonstiges", "labelKey": "options.sonstiges" }
           ]
+        },
+        {
+          "id": "2005",
+          "type": "text",
+          "labelKey": "questions.2005",
+          "placeholderKey": "placeholders.untersuchung_freitext",
+          "conditions": [{ "questionId": "2004", "operator": "equals", "value": "Sonstiges" }]
         }
       ]
     },
     {
-      "id": "medications",
-      "titleKey": "sections.medications",
+      "id": "q3000",
+      "titleKey": "sections.adressdaten",
+      "descriptionKey": "sections.adressdaten_description",
       "order": 4,
       "questions": [
         {
-          "id": "current_medications",
-          "type": "radio",
-          "labelKey": "questions.currentMedications",
-          "required": true,
+          "id": "3000",
+          "type": "text",
+          "labelKey": "questions.3000",
+          "placeholderKey": "placeholders.strasse"
+        },
+        {
+          "id": "3001",
+          "type": "text",
+          "labelKey": "questions.3001",
+          "placeholderKey": "placeholders.plz"
+        },
+        {
+          "id": "3002",
+          "type": "text",
+          "labelKey": "questions.3002",
+          "placeholderKey": "placeholders.wohnort"
+        },
+        {
+          "id": "3003",
+          "type": "text",
+          "labelKey": "questions.3003",
+          "placeholderKey": "placeholders.telefon_privat"
+        },
+        {
+          "id": "3004",
+          "type": "text",
+          "labelKey": "questions.3004",
+          "placeholderKey": "placeholders.telefon_mobil"
+        },
+        {
+          "id": "3005",
+          "type": "text",
+          "labelKey": "questions.3005",
+          "placeholderKey": "placeholders.email"
+        },
+        {
+          "id": "3006",
+          "type": "select",
+          "labelKey": "questions.3006",
           "options": [
-            { "value": "yes", "labelKey": "options.yes" },
-            { "value": "no", "labelKey": "options.no" }
+            { "value": 1, "labelKey": "options.ja" },
+            { "value": 2, "labelKey": "options.nein" }
           ]
         },
         {
-          "id": "medication_list",
-          "type": "textarea",
-          "labelKey": "questions.medicationList",
-          "placeholderKey": "placeholders.medicationList",
-          "conditions": [
-            {
-              "questionId": "current_medications",
-              "operator": "equals",
-              "value": "yes"
-            }
+          "id": "3007",
+          "type": "text",
+          "labelKey": "questions.3007",
+          "placeholderKey": "placeholders.hausarzt_name",
+          "conditions": [{ "questionId": "3006", "operator": "equals", "value": 1 }]
+        },
+        {
+          "id": "3008",
+          "type": "text",
+          "labelKey": "questions.3008",
+          "placeholderKey": "placeholders.hausarzt_strasse",
+          "conditions": [{ "questionId": "3006", "operator": "equals", "value": 1 }]
+        },
+        {
+          "id": "3009",
+          "type": "text",
+          "labelKey": "questions.3009",
+          "placeholderKey": "placeholders.hausarzt_plz",
+          "conditions": [{ "questionId": "3006", "operator": "equals", "value": 1 }]
+        },
+        {
+          "id": "3010",
+          "type": "text",
+          "labelKey": "questions.3010",
+          "placeholderKey": "placeholders.hausarzt_ort",
+          "conditions": [{ "questionId": "3006", "operator": "equals", "value": 1 }]
+        },
+        {
+          "id": "3011",
+          "type": "text",
+          "labelKey": "questions.3011",
+          "placeholderKey": "placeholders.hausarzt_telefon",
+          "conditions": [{ "questionId": "3006", "operator": "equals", "value": 1 }]
+        },
+        {
+          "id": "3012",
+          "type": "text",
+          "labelKey": "questions.3012",
+          "placeholderKey": "placeholders.hausarzt_fax",
+          "conditions": [{ "questionId": "3006", "operator": "equals", "value": 1 }]
+        },
+        {
+          "id": "3013",
+          "type": "select",
+          "labelKey": "questions.3013",
+          "options": [
+            { "value": 1, "labelKey": "options.ja" },
+            { "value": 2, "labelKey": "options.nein" }
           ]
         },
         {
-          "id": "medication_adherence",
-          "type": "radio",
-          "labelKey": "questions.medicationAdherence",
-          "options": [
-            { "value": "always", "labelKey": "options.always" },
-            { "value": "mostly", "labelKey": "options.mostly" },
-            { "value": "sometimes", "labelKey": "options.sometimes" },
-            { "value": "rarely", "labelKey": "options.rarely" }
-          ],
-          "conditions": [
-            {
-              "questionId": "current_medications",
-              "operator": "equals",
-              "value": "yes"
-            }
-          ]
+          "id": "3014",
+          "type": "text",
+          "labelKey": "questions.3014",
+          "placeholderKey": "placeholders.ueberweiser_name",
+          "conditions": [{ "questionId": "3013", "operator": "equals", "value": 1 }]
+        },
+        {
+          "id": "3015",
+          "type": "text",
+          "labelKey": "questions.3015",
+          "placeholderKey": "placeholders.ueberweiser_strasse",
+          "conditions": [{ "questionId": "3013", "operator": "equals", "value": 1 }]
+        },
+        {
+          "id": "3016",
+          "type": "text",
+          "labelKey": "questions.3016",
+          "placeholderKey": "placeholders.ueberweiser_plz",
+          "conditions": [{ "questionId": "3013", "operator": "equals", "value": 1 }]
+        },
+        {
+          "id": "3017",
+          "type": "text",
+          "labelKey": "questions.3017",
+          "placeholderKey": "placeholders.ueberweiser_ort",
+          "conditions": [{ "questionId": "3013", "operator": "equals", "value": 1 }]
+        },
+        {
+          "id": "3018",
+          "type": "text",
+          "labelKey": "questions.3018",
+          "placeholderKey": "placeholders.ueberweiser_telefon",
+          "conditions": [{ "questionId": "3013", "operator": "equals", "value": 1 }]
+        },
+        {
+          "id": "3019",
+          "type": "text",
+          "labelKey": "questions.3019",
+          "placeholderKey": "placeholders.ueberweiser_fax",
+          "conditions": [{ "questionId": "3013", "operator": "equals", "value": 1 }]
         }
       ]
     },
     {
-      "id": "allergies",
-      "titleKey": "sections.allergies",
+      "id": "q4000",
+      "titleKey": "sections.koerpermasse",
+      "descriptionKey": "sections.koerpermasse_description",
       "order": 5,
       "questions": [
         {
-          "id": "has_allergies",
-          "type": "radio",
-          "labelKey": "questions.hasAllergies",
-          "required": true,
+          "id": "4000",
+          "type": "number",
+          "labelKey": "questions.4000",
+          "placeholderKey": "placeholders.groesse_cm",
+          "validation": { "min": 30, "max": 300 }
+        },
+        {
+          "id": "4001",
+          "type": "number",
+          "labelKey": "questions.4001",
+          "placeholderKey": "placeholders.gewicht_kg",
+          "validation": { "min": 1, "max": 500 }
+        },
+        {
+          "id": "4002",
+          "type": "select",
+          "labelKey": "questions.4002",
           "options": [
-            { "value": "yes", "labelKey": "options.yes" },
-            { "value": "no", "labelKey": "options.no" },
-            { "value": "unknown", "labelKey": "options.unknown" }
+            { "value": 1, "labelKey": "options.raucher" },
+            { "value": 2, "labelKey": "options.nichtraucher" },
+            { "value": 3, "labelKey": "options.exraucher" }
           ]
         },
         {
-          "id": "allergy_types",
-          "type": "checkbox",
-          "labelKey": "questions.allergyTypes",
-          "options": [
-            { "value": "medication", "labelKey": "options.medicationAllergy" },
-            { "value": "food", "labelKey": "options.foodAllergy" },
-            { "value": "pollen", "labelKey": "options.pollenAllergy" },
-            { "value": "dust", "labelKey": "options.dustAllergy" },
-            { "value": "animal", "labelKey": "options.animalAllergy" },
-            { "value": "other", "labelKey": "options.other" }
-          ],
+          "id": "4003",
+          "type": "number",
+          "labelKey": "questions.4003",
+          "placeholderKey": "placeholders.zigaretten_tag",
+          "conditions": [{ "questionId": "4002", "operator": "equals", "value": 1 }]
+        },
+        {
+          "id": "4004",
+          "type": "number",
+          "labelKey": "questions.4004",
+          "placeholderKey": "placeholders.raucherjahre",
           "conditions": [
-            {
-              "questionId": "has_allergies",
-              "operator": "equals",
-              "value": "yes"
-            }
+            { "questionId": "4002", "operator": "equals", "value": 1 }
           ]
         },
         {
-          "id": "allergy_details",
-          "type": "textarea",
-          "labelKey": "questions.allergyDetails",
-          "placeholderKey": "placeholders.allergyDetails",
-          "conditions": [
-            {
-              "questionId": "has_allergies",
-              "operator": "equals",
-              "value": "yes"
-            }
-          ]
+          "id": "4005",
+          "type": "number",
+          "labelKey": "questions.4005",
+          "placeholderKey": "placeholders.raucherjahre",
+          "conditions": [{ "questionId": "4002", "operator": "equals", "value": 3 }]
+        },
+        {
+          "id": "4006",
+          "type": "number",
+          "labelKey": "questions.4006",
+          "placeholderKey": "placeholders.rauchstopp_jahre",
+          "conditions": [{ "questionId": "4002", "operator": "equals", "value": 3 }]
         }
       ]
     },
     {
-      "id": "family_history",
-      "titleKey": "sections.family",
+      "id": "q5000",
+      "titleKey": "sections.diabetes",
+      "descriptionKey": "sections.diabetes_description",
       "order": 6,
       "questions": [
         {
-          "id": "family_diseases",
-          "type": "checkbox",
-          "labelKey": "questions.familyDiseases",
+          "id": "5000",
+          "type": "select",
+          "labelKey": "questions.5000",
+          "required": true,
           "options": [
-            { "value": "heart_disease", "labelKey": "options.familyHeartDisease" },
-            { "value": "cancer", "labelKey": "options.familyCancer" },
-            { "value": "diabetes", "labelKey": "options.familyDiabetes" },
-            { "value": "hypertension", "labelKey": "options.familyHypertension" },
-            { "value": "mental_illness", "labelKey": "options.familyMentalIllness" },
-            { "value": "stroke", "labelKey": "options.familyStroke" },
-            { "value": "none", "labelKey": "options.none" }
+            { "value": 1, "labelKey": "options.ja" },
+            { "value": 2, "labelKey": "options.nein" }
           ]
         },
         {
-          "id": "family_disease_details",
-          "type": "textarea",
-          "labelKey": "questions.familyDiseaseDetails",
-          "placeholderKey": "placeholders.familyDiseaseDetails",
+          "id": "5001",
+          "type": "select",
+          "labelKey": "questions.5001",
+          "options": [
+            { "value": 1, "labelKey": "options.diaet" },
+            { "value": 2, "labelKey": "options.tabletten" },
+            { "value": 3, "labelKey": "options.insulin" },
+            { "value": 4, "labelKey": "options.kombination" }
+          ],
+          "conditions": [{ "questionId": "5000", "operator": "equals", "value": 1 }]
+        },
+        {
+          "id": "5002",
+          "type": "text",
+          "labelKey": "questions.5002",
+          "placeholderKey": "placeholders.diabetes_medikament",
           "conditions": [
-            {
-              "questionId": "family_diseases",
-              "operator": "not_contains",
-              "value": "none"
-            }
+            { "questionId": "5001", "operator": "equals", "value": 2 }
           ]
+        },
+        {
+          "id": "5002b",
+          "type": "text",
+          "labelKey": "questions.5002b",
+          "placeholderKey": "placeholders.diabetes_medikament",
+          "conditions": [
+            { "questionId": "5001", "operator": "equals", "value": 4 }
+          ]
+        },
+        {
+          "id": "5003",
+          "type": "select",
+          "labelKey": "questions.5003",
+          "options": [
+            { "value": 1, "labelKey": "options.ja" },
+            { "value": 2, "labelKey": "options.nein" }
+          ],
+          "conditions": [{ "questionId": "5000", "operator": "equals", "value": 1 }]
+        },
+        {
+          "id": "5003_text",
+          "type": "text",
+          "labelKey": "questions.5003_text",
+          "placeholderKey": "placeholders.metformin_pause",
+          "conditions": [{ "questionId": "5003", "operator": "equals", "value": 1 }]
         }
       ]
     },
     {
-      "id": "lifestyle",
-      "titleKey": "sections.lifestyle",
+      "id": "q6000",
+      "titleKey": "sections.mobilitaet_implantate",
+      "descriptionKey": "sections.mobilitaet_implantate_description",
       "order": 7,
       "questions": [
         {
-          "id": "smoking",
-          "type": "radio",
-          "labelKey": "questions.smoking",
-          "required": true,
+          "id": "6000",
+          "type": "select",
+          "labelKey": "questions.6000",
           "options": [
-            { "value": "never", "labelKey": "options.never" },
-            { "value": "former", "labelKey": "options.former" },
-            { "value": "current", "labelKey": "options.current" }
+            { "value": 1, "labelKey": "options.gehfaehig" },
+            { "value": 2, "labelKey": "options.rollstuhl" },
+            { "value": 3, "labelKey": "options.bettlaegerig" }
           ]
         },
         {
-          "id": "smoking_amount",
+          "id": "6001",
+          "type": "select",
+          "labelKey": "questions.6001",
+          "options": [
+            { "value": 1, "labelKey": "options.ja" },
+            { "value": 2, "labelKey": "options.nein" }
+          ]
+        },
+        {
+          "id": "6002",
+          "type": "select",
+          "labelKey": "questions.6002",
+          "options": [
+            { "value": 1, "labelKey": "options.ja" },
+            { "value": 2, "labelKey": "options.nein" }
+          ]
+        },
+        {
+          "id": "6002_ausweis",
+          "type": "select",
+          "labelKey": "questions.6002_ausweis",
+          "options": [
+            { "value": 1, "labelKey": "options.ja" },
+            { "value": 2, "labelKey": "options.nein" }
+          ],
+          "conditions": [{ "questionId": "6002", "operator": "equals", "value": 1 }]
+        },
+        {
+          "id": "6003",
+          "type": "select",
+          "labelKey": "questions.6003",
+          "options": [
+            { "value": 1, "labelKey": "options.ja" },
+            { "value": 2, "labelKey": "options.nein" }
+          ]
+        },
+        {
+          "id": "6004",
+          "type": "select",
+          "labelKey": "questions.6004",
+          "options": [
+            { "value": 1, "labelKey": "options.ja" },
+            { "value": 2, "labelKey": "options.nein" }
+          ]
+        },
+        {
+          "id": "6005",
+          "type": "select",
+          "labelKey": "questions.6005",
+          "options": [
+            { "value": 1, "labelKey": "options.ja" },
+            { "value": 2, "labelKey": "options.nein" }
+          ]
+        },
+        {
+          "id": "6006",
+          "type": "select",
+          "labelKey": "questions.6006",
+          "options": [
+            { "value": 1, "labelKey": "options.ja" },
+            { "value": 2, "labelKey": "options.nein" }
+          ]
+        },
+        {
+          "id": "6007",
+          "type": "select",
+          "labelKey": "questions.6007",
+          "options": [
+            { "value": 1, "labelKey": "options.ja" },
+            { "value": 2, "labelKey": "options.nein" }
+          ]
+        },
+        {
+          "id": "6008",
+          "type": "select",
+          "labelKey": "questions.6008",
+          "options": [
+            { "value": 1, "labelKey": "options.ja" },
+            { "value": 2, "labelKey": "options.nein" }
+          ]
+        },
+        {
+          "id": "6009",
+          "type": "select",
+          "labelKey": "questions.6009",
+          "options": [
+            { "value": 1, "labelKey": "options.ja" },
+            { "value": 2, "labelKey": "options.nein" }
+          ]
+        },
+        {
+          "id": "6010",
+          "type": "select",
+          "labelKey": "questions.6010",
+          "options": [
+            { "value": 1, "labelKey": "options.ja" },
+            { "value": 2, "labelKey": "options.nein" }
+          ]
+        },
+        {
+          "id": "6011",
+          "type": "select",
+          "labelKey": "questions.6011",
+          "options": [
+            { "value": 1, "labelKey": "options.ja" },
+            { "value": 2, "labelKey": "options.nein" }
+          ]
+        },
+        {
+          "id": "6012",
+          "type": "select",
+          "labelKey": "questions.6012",
+          "options": [
+            { "value": 1, "labelKey": "options.ja" },
+            { "value": 2, "labelKey": "options.nein" }
+          ]
+        },
+        {
+          "id": "6013",
+          "type": "select",
+          "labelKey": "questions.6013",
+          "options": [
+            { "value": 1, "labelKey": "options.ja" },
+            { "value": 2, "labelKey": "options.nein" }
+          ]
+        },
+        {
+          "id": "6014",
           "type": "text",
-          "labelKey": "questions.smokingAmount",
-          "placeholderKey": "placeholders.smokingAmount",
-          "conditions": [
-            {
-              "questionId": "smoking",
-              "operator": "equals",
-              "value": "current"
-            }
+          "labelKey": "questions.6014",
+          "placeholderKey": "placeholders.sonstige_implantate"
+        },
+        {
+          "id": "6100",
+          "type": "select",
+          "labelKey": "questions.6100",
+          "options": [
+            { "value": 1, "labelKey": "options.ja" },
+            { "value": 2, "labelKey": "options.nein" }
           ]
         },
         {
-          "id": "alcohol",
-          "type": "radio",
-          "labelKey": "questions.alcohol",
-          "required": true,
+          "id": "6101",
+          "type": "textarea",
+          "labelKey": "questions.6101",
+          "placeholderKey": "placeholders.allergien_freitext",
+          "conditions": [{ "questionId": "6100", "operator": "equals", "value": 1 }]
+        },
+        {
+          "id": "6102",
+          "type": "select",
+          "labelKey": "questions.6102",
           "options": [
-            { "value": "never", "labelKey": "options.never" },
-            { "value": "occasionally", "labelKey": "options.occasionally" },
-            { "value": "regularly", "labelKey": "options.regularly" }
+            { "value": 1, "labelKey": "options.ja" },
+            { "value": 2, "labelKey": "options.nein" }
           ]
         },
         {
-          "id": "exercise",
-          "type": "radio",
-          "labelKey": "questions.exercise",
+          "id": "6103",
+          "type": "select",
+          "labelKey": "questions.6103",
           "options": [
-            { "value": "never", "labelKey": "options.never" },
-            { "value": "1-2_per_week", "labelKey": "options.exercise1to2" },
-            { "value": "3-4_per_week", "labelKey": "options.exercise3to4" },
-            { "value": "daily", "labelKey": "options.daily" }
+            { "value": 1, "labelKey": "options.ja" },
+            { "value": 2, "labelKey": "options.nein" }
           ]
         },
         {
-          "id": "occupation",
-          "type": "text",
-          "labelKey": "questions.occupation",
-          "placeholderKey": "placeholders.occupation"
+          "id": "6104",
+          "type": "select",
+          "labelKey": "questions.6104",
+          "options": [
+            { "value": 1, "labelKey": "options.ja" },
+            { "value": 2, "labelKey": "options.nein" }
+          ]
         },
         {
-          "id": "stress_level",
-          "type": "radio",
-          "labelKey": "questions.stressLevel",
+          "id": "6105",
+          "type": "select",
+          "labelKey": "questions.6105",
           "options": [
-            { "value": "low", "labelKey": "options.low" },
-            { "value": "moderate", "labelKey": "options.moderate" },
-            { "value": "high", "labelKey": "options.high" }
+            { "value": 1, "labelKey": "options.ja" },
+            { "value": 2, "labelKey": "options.nein" }
           ]
         }
       ]
     },
     {
-      "id": "womens_health",
-      "titleKey": "sections.womensHealth",
+      "id": "q7000",
+      "titleKey": "sections.gesundheitsstoerungen",
+      "descriptionKey": "sections.gesundheitsstoerungen_description",
       "order": 8,
       "questions": [
         {
-          "id": "pregnant",
-          "type": "radio",
-          "labelKey": "questions.pregnant",
+          "id": "7000",
+          "type": "select",
+          "labelKey": "questions.7000",
           "options": [
-            { "value": "yes", "labelKey": "options.yes" },
-            { "value": "no", "labelKey": "options.no" },
-            { "value": "unknown", "labelKey": "options.unknown" }
-          ],
-          "conditions": [
-            {
-              "questionId": "gender",
-              "operator": "equals",
-              "value": "female"
-            }
+            { "value": 1, "labelKey": "options.ja" },
+            { "value": 2, "labelKey": "options.nein" }
           ]
         },
         {
-          "id": "pregnancy_week",
+          "id": "7001",
+          "type": "select",
+          "labelKey": "questions.7001",
+          "options": [
+            { "value": 1, "labelKey": "options.ja" },
+            { "value": 2, "labelKey": "options.nein" }
+          ]
+        },
+        {
+          "id": "7002",
+          "type": "select",
+          "labelKey": "questions.7002",
+          "options": [
+            { "value": 1, "labelKey": "options.ja" },
+            { "value": 2, "labelKey": "options.nein" }
+          ]
+        },
+        {
+          "id": "7003",
+          "type": "select",
+          "labelKey": "questions.7003",
+          "options": [
+            { "value": 1, "labelKey": "options.ja" },
+            { "value": 2, "labelKey": "options.nein" }
+          ]
+        },
+        {
+          "id": "7004",
+          "type": "select",
+          "labelKey": "questions.7004",
+          "options": [
+            { "value": 1, "labelKey": "options.ja" },
+            { "value": 2, "labelKey": "options.nein" }
+          ]
+        },
+        {
+          "id": "7005",
+          "type": "select",
+          "labelKey": "questions.7005",
+          "options": [
+            { "value": 1, "labelKey": "options.ja" },
+            { "value": 2, "labelKey": "options.nein" }
+          ]
+        },
+        {
+          "id": "7006",
+          "type": "select",
+          "labelKey": "questions.7006",
+          "options": [
+            { "value": 1, "labelKey": "options.ja" },
+            { "value": 2, "labelKey": "options.nein" }
+          ]
+        },
+        {
+          "id": "7007",
+          "type": "select",
+          "labelKey": "questions.7007",
+          "options": [
+            { "value": 1, "labelKey": "options.ja" },
+            { "value": 2, "labelKey": "options.nein" }
+          ]
+        },
+        {
+          "id": "7008",
+          "type": "select",
+          "labelKey": "questions.7008",
+          "options": [
+            { "value": 1, "labelKey": "options.ja" },
+            { "value": 2, "labelKey": "options.nein" }
+          ]
+        },
+        {
+          "id": "7009",
+          "type": "select",
+          "labelKey": "questions.7009",
+          "options": [
+            { "value": 1, "labelKey": "options.ja" },
+            { "value": 2, "labelKey": "options.nein" }
+          ]
+        },
+        {
+          "id": "7010",
+          "type": "select",
+          "labelKey": "questions.7010",
+          "options": [
+            { "value": 1, "labelKey": "options.ja" },
+            { "value": 2, "labelKey": "options.nein" }
+          ]
+        },
+        {
+          "id": "7100",
+          "type": "select",
+          "labelKey": "questions.7100",
+          "options": [
+            { "value": 1, "labelKey": "options.ja" },
+            { "value": 2, "labelKey": "options.nein" }
+          ],
+          "conditions": [{ "questionId": "0002", "operator": "equals", "value": 2 }]
+        },
+        {
+          "id": "7101",
           "type": "number",
-          "labelKey": "questions.pregnancyWeek",
-          "placeholderKey": "placeholders.pregnancyWeek",
-          "validation": {
-            "min": 1,
-            "max": 42
-          },
-          "conditions": [
-            {
-              "questionId": "pregnant",
-              "operator": "equals",
-              "value": "yes"
-            }
-          ]
+          "labelKey": "questions.7101",
+          "placeholderKey": "placeholders.ssw",
+          "conditions": [{ "questionId": "7100", "operator": "equals", "value": 1 }]
         },
         {
-          "id": "breastfeeding",
-          "type": "radio",
-          "labelKey": "questions.breastfeeding",
+          "id": "7102",
+          "type": "select",
+          "labelKey": "questions.7102",
           "options": [
-            { "value": "yes", "labelKey": "options.yes" },
-            { "value": "no", "labelKey": "options.no" }
+            { "value": 1, "labelKey": "options.ja" },
+            { "value": 2, "labelKey": "options.nein" }
           ],
-          "conditions": [
-            {
-              "questionId": "gender",
-              "operator": "equals",
-              "value": "female"
-            }
+          "conditions": [{ "questionId": "0002", "operator": "equals", "value": 2 }]
+        }
+      ]
+    },
+    {
+      "id": "q8000",
+      "titleKey": "sections.vorerkrankungen",
+      "descriptionKey": "sections.vorerkrankungen_description",
+      "order": 9,
+      "questions": [
+        {
+          "id": "8000",
+          "type": "select",
+          "labelKey": "questions.8000",
+          "options": [
+            { "value": 1, "labelKey": "options.ja" },
+            { "value": 2, "labelKey": "options.nein" }
           ]
         },
         {
-          "id": "last_menstruation",
-          "type": "date",
-          "labelKey": "questions.lastMenstruation",
-          "conditions": [
-            {
-              "questionId": "gender",
-              "operator": "equals",
-              "value": "female"
-            }
+          "id": "8001",
+          "type": "select",
+          "labelKey": "questions.8001",
+          "options": [
+            { "value": 1, "labelKey": "options.ja" },
+            { "value": 2, "labelKey": "options.nein" }
           ]
+        },
+        {
+          "id": "8002",
+          "type": "select",
+          "labelKey": "questions.8002",
+          "options": [
+            { "value": 1, "labelKey": "options.ja" },
+            { "value": 2, "labelKey": "options.nein" }
+          ]
+        },
+        {
+          "id": "8003",
+          "type": "select",
+          "labelKey": "questions.8003",
+          "options": [
+            { "value": 1, "labelKey": "options.ja" },
+            { "value": 2, "labelKey": "options.nein" }
+          ]
+        },
+        {
+          "id": "8004",
+          "type": "select",
+          "labelKey": "questions.8004",
+          "options": [
+            { "value": 1, "labelKey": "options.ja" },
+            { "value": 2, "labelKey": "options.nein" }
+          ]
+        },
+        {
+          "id": "8005",
+          "type": "select",
+          "labelKey": "questions.8005",
+          "options": [
+            { "value": 1, "labelKey": "options.ja" },
+            { "value": 2, "labelKey": "options.nein" }
+          ]
+        },
+        {
+          "id": "8006",
+          "type": "select",
+          "labelKey": "questions.8006",
+          "options": [
+            { "value": 1, "labelKey": "options.ja" },
+            { "value": 2, "labelKey": "options.nein" }
+          ]
+        },
+        {
+          "id": "8007",
+          "type": "select",
+          "labelKey": "questions.8007",
+          "options": [
+            { "value": 1, "labelKey": "options.ja" },
+            { "value": 2, "labelKey": "options.nein" }
+          ]
+        },
+        {
+          "id": "8008",
+          "type": "select",
+          "labelKey": "questions.8008",
+          "options": [
+            { "value": 1, "labelKey": "options.ja" },
+            { "value": 2, "labelKey": "options.nein" }
+          ]
+        },
+        {
+          "id": "8009",
+          "type": "select",
+          "labelKey": "questions.8009",
+          "options": [
+            { "value": 1, "labelKey": "options.ja" },
+            { "value": 2, "labelKey": "options.nein" }
+          ]
+        },
+        {
+          "id": "8010",
+          "type": "select",
+          "labelKey": "questions.8010",
+          "options": [
+            { "value": 1, "labelKey": "options.ja" },
+            { "value": 2, "labelKey": "options.nein" }
+          ]
+        },
+        {
+          "id": "8011",
+          "type": "select",
+          "labelKey": "questions.8011",
+          "options": [
+            { "value": 1, "labelKey": "options.ja" },
+            { "value": 2, "labelKey": "options.nein" }
+          ]
+        },
+        {
+          "id": "8012",
+          "type": "select",
+          "labelKey": "questions.8012",
+          "options": [
+            { "value": 1, "labelKey": "options.ja" },
+            { "value": 2, "labelKey": "options.nein" }
+          ]
+        },
+        {
+          "id": "8013",
+          "type": "select",
+          "labelKey": "questions.8013",
+          "options": [
+            { "value": 1, "labelKey": "options.ja" },
+            { "value": 2, "labelKey": "options.nein" }
+          ]
+        },
+        {
+          "id": "8014",
+          "type": "select",
+          "labelKey": "questions.8014",
+          "options": [
+            { "value": 1, "labelKey": "options.ja" },
+            { "value": 2, "labelKey": "options.nein" }
+          ]
+        },
+        {
+          "id": "8015",
+          "type": "select",
+          "labelKey": "questions.8015",
+          "options": [
+            { "value": 1, "labelKey": "options.ja" },
+            { "value": 2, "labelKey": "options.nein" }
+          ]
+        },
+        {
+          "id": "8016",
+          "type": "select",
+          "labelKey": "questions.8016",
+          "options": [
+            { "value": 1, "labelKey": "options.ja" },
+            { "value": 2, "labelKey": "options.nein" }
+          ]
+        },
+        {
+          "id": "8017",
+          "type": "select",
+          "labelKey": "questions.8017",
+          "options": [
+            { "value": 1, "labelKey": "options.ja" },
+            { "value": 2, "labelKey": "options.nein" }
+          ]
+        },
+        {
+          "id": "8018",
+          "type": "select",
+          "labelKey": "questions.8018",
+          "options": [
+            { "value": 1, "labelKey": "options.ja" },
+            { "value": 2, "labelKey": "options.nein" }
+          ]
+        },
+        {
+          "id": "8019",
+          "type": "select",
+          "labelKey": "questions.8019",
+          "options": [
+            { "value": 1, "labelKey": "options.ja" },
+            { "value": 2, "labelKey": "options.nein" }
+          ]
+        },
+        {
+          "id": "8020",
+          "type": "select",
+          "labelKey": "questions.8020",
+          "options": [
+            { "value": 1, "labelKey": "options.ja" },
+            { "value": 2, "labelKey": "options.nein" }
+          ]
+        },
+        {
+          "id": "8021",
+          "type": "select",
+          "labelKey": "questions.8021",
+          "options": [
+            { "value": 1, "labelKey": "options.ja" },
+            { "value": 2, "labelKey": "options.nein" }
+          ]
+        },
+        {
+          "id": "8022",
+          "type": "select",
+          "labelKey": "questions.8022",
+          "options": [
+            { "value": 1, "labelKey": "options.ja" },
+            { "value": 2, "labelKey": "options.nein" }
+          ]
+        },
+        {
+          "id": "8023",
+          "type": "text",
+          "labelKey": "questions.8023",
+          "placeholderKey": "placeholders.sonstige_erkrankungen"
+        },
+        {
+          "id": "8100",
+          "type": "select",
+          "labelKey": "questions.8100",
+          "options": [
+            { "value": 1, "labelKey": "options.ja" },
+            { "value": 2, "labelKey": "options.nein" }
+          ]
+        },
+        {
+          "id": "8101",
+          "type": "textarea",
+          "labelKey": "questions.8101",
+          "placeholderKey": "placeholders.operationen_freitext",
+          "conditions": [{ "questionId": "8100", "operator": "equals", "value": 1 }]
+        }
+      ]
+    },
+    {
+      "id": "q8900",
+      "titleKey": "sections.medikamente",
+      "descriptionKey": "sections.medikamente_description",
+      "order": 10,
+      "questions": [
+        {
+          "id": "8900",
+          "type": "select",
+          "labelKey": "questions.8900",
+          "required": true,
+          "options": [
+            { "value": 1, "labelKey": "options.ja" },
+            { "value": 2, "labelKey": "options.nein" }
+          ]
+        },
+        {
+          "id": "8901",
+          "type": "textarea",
+          "labelKey": "questions.8901",
+          "placeholderKey": "placeholders.medikamente_liste",
+          "conditions": [{ "questionId": "8900", "operator": "equals", "value": 1 }]
+        },
+        {
+          "id": "8902",
+          "type": "select",
+          "labelKey": "questions.8902",
+          "options": [
+            { "value": 1, "labelKey": "options.ja" },
+            { "value": 2, "labelKey": "options.nein" }
+          ],
+          "conditions": [{ "questionId": "8900", "operator": "equals", "value": 1 }]
+        },
+        {
+          "id": "8902_text",
+          "type": "text",
+          "labelKey": "questions.8902_text",
+          "placeholderKey": "placeholders.blutverd_medikament",
+          "conditions": [{ "questionId": "8902", "operator": "equals", "value": 1 }]
+        },
+        {
+          "id": "8903",
+          "type": "select",
+          "labelKey": "questions.8903",
+          "options": [
+            { "value": 1, "labelKey": "options.ja" },
+            { "value": 2, "labelKey": "options.nein" }
+          ],
+          "conditions": [{ "questionId": "8900", "operator": "equals", "value": 1 }]
+        },
+        {
+          "id": "8903_text",
+          "type": "text",
+          "labelKey": "questions.8903_text",
+          "placeholderKey": "placeholders.betablocker_medikament",
+          "conditions": [{ "questionId": "8903", "operator": "equals", "value": 1 }]
+        }
+      ]
+    },
+    {
+      "id": "q9000",
+      "titleKey": "sections.kontakt",
+      "descriptionKey": "sections.kontakt_description",
+      "order": 11,
+      "questions": [
+        {
+          "id": "9000",
+          "type": "select",
+          "labelKey": "questions.9000",
+          "options": [
+            { "value": 1, "labelKey": "options.ja" },
+            { "value": 2, "labelKey": "options.nein" }
+          ]
+        },
+        {
+          "id": "9001",
+          "type": "text",
+          "labelKey": "questions.9001",
+          "placeholderKey": "placeholders.kontakt_name",
+          "conditions": [{ "questionId": "9000", "operator": "equals", "value": 1 }]
+        },
+        {
+          "id": "9002",
+          "type": "text",
+          "labelKey": "questions.9002",
+          "placeholderKey": "placeholders.kontakt_telefon",
+          "conditions": [{ "questionId": "9000", "operator": "equals", "value": 1 }]
+        },
+        {
+          "id": "9003",
+          "type": "text",
+          "labelKey": "questions.9003",
+          "placeholderKey": "placeholders.kontakt_beziehung",
+          "conditions": [{ "questionId": "9000", "operator": "equals", "value": 1 }]
+        },
+        {
+          "id": "9100",
+          "type": "checkbox",
+          "labelKey": "questions.9100",
+          "required": true
+        },
+        {
+          "id": "9101",
+          "type": "date",
+          "labelKey": "questions.9101"
+        },
+        {
+          "id": "9102",
+          "type": "text",
+          "labelKey": "questions.9102",
+          "placeholderKey": "placeholders.unterschrift"
         }
       ]
     }

@@ -1,0 +1,12 @@
+
+> anamnese-mobile@1.0.0 postinstall
+> patch-package
+
+patch-package 8.0.1
+Applying patches...
+@react-native-windows/cli@0.73.6 ✔
+react-native-document-picker@9.3.1 ✔
+react-native-share@10.2.1 ✔
+react-native-sqlite-storage@6.0.1 ✔
+
+up to date in 11s

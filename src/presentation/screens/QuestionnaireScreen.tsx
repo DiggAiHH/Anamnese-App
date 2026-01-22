@@ -1,5 +1,6 @@
 /**
  * QuestionnaireScreen - Hauptbildschirm für Fragebogen
+ * ISO/WCAG: Token-based design system
  * 
  * VOLLSTÄNDIGER DATENFLUSS:
  * 
@@ -31,12 +32,19 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Alert,
+  Modal,
+  Pressable,
+  Platform,
 } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/RootNavigator';
 import { QuestionCard } from '../components/QuestionCard';
 import { useQuestionnaireStore, selectCurrentSection, selectVisibleQuestions, selectProgress } from '../state/useQuestionnaireStore';
 import { AnswerValue } from '@domain/entities/Answer';
+import type { Question } from '@domain/entities/Questionnaire';
+import { colors, spacing, radius } from '../theme/tokens';
+import { logWarn } from '../../shared/logger';
 
 // Use Cases
 import { LoadQuestionnaireUseCase } from '@application/use-cases/LoadQuestionnaireUseCase';
@@ -46,12 +54,13 @@ import { SaveAnswerUseCase } from '@application/use-cases/SaveAnswerUseCase';
 import { SQLiteQuestionnaireRepository } from '@infrastructure/persistence/SQLiteQuestionnaireRepository';
 import { SQLiteAnswerRepository } from '@infrastructure/persistence/SQLiteAnswerRepository';
 import { SQLitePatientRepository } from '@infrastructure/persistence/SQLitePatientRepository';
-import { encryptionService } from '@infrastructure/encryption/NativeEncryptionService';
+import { encryptionService } from '@infrastructure/encryption/encryptionService';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Questionnaire'>;
 
 export const QuestionnaireScreen = ({ route, navigation }: Props): React.JSX.Element => {
-  const { questionnaireId } = route.params;
+  const { t } = useTranslation();
+  const questionnaireId = route.params?.questionnaireId;
   
   // Zustand Store
   const {
@@ -60,24 +69,29 @@ export const QuestionnaireScreen = ({ route, navigation }: Props): React.JSX.Ele
     answers,
     currentSectionIndex,
     encryptionKey,
+    activePatientId,
+    activeQuestionnaireId,
     isLoading,
     error,
     setQuestionnaire,
     setAnswers,
     setAnswer,
+    setPatient,
     setLoading,
     setError,
     nextSection,
     previousSection,
+    goToSection,
   } = useQuestionnaireStore();
 
-  // Selectors
-  const currentSection = selectCurrentSection(useQuestionnaireStore.getState());
-  const visibleQuestions = selectVisibleQuestions(useQuestionnaireStore.getState());
-  const progress = selectProgress(useQuestionnaireStore.getState());
+  // Selectors (reactive - subscribe to store changes)
+  const currentSection = useQuestionnaireStore(selectCurrentSection);
+  const visibleQuestions = useQuestionnaireStore(selectVisibleQuestions);
+  const progress = useQuestionnaireStore(selectProgress);
 
   // Local State
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
+  const [showSectionNav, setShowSectionNav] = useState(false);
 
   // Use Cases (Dependency Injection)
   const loadQuestionnaireUseCase = new LoadQuestionnaireUseCase(
@@ -102,28 +116,206 @@ export const QuestionnaireScreen = ({ route, navigation }: Props): React.JSX.Ele
    * Load Questionnaire + Answers
    */
   const loadQuestionnaire = async (): Promise<void> => {
-    if (!patient || !encryptionKey) {
-      setError('Patient or encryption key missing');
+    setLoading(true);
+    setError(null);
+
+    const storedPatientId = patient?.id ?? activePatientId;
+    let resolvedPatient = patient;
+
+    if (!resolvedPatient && storedPatientId && encryptionKey) {
+      try {
+        const patientRepo = new SQLitePatientRepository();
+        const loaded = await patientRepo.findById(storedPatientId);
+        if (loaded) {
+          setPatient(loaded);
+          resolvedPatient = loaded;
+        }
+      } catch {
+        // ignore: fallback to error handling below
+      }
+    }
+
+    if (!resolvedPatient || !encryptionKey) {
+      setError(t('questionnaire.patientMissing'));
+      setLoading(false);
       return;
     }
 
-    setLoading(true);
+    try {
+      const resumeQuestionnaireId = questionnaireId ?? activeQuestionnaireId ?? undefined;
+      const withTimeout = async <T,>(promise: Promise<T>, ms: number): Promise<T> => {
+        let timeoutId: ReturnType<typeof setTimeout> | undefined;
+        try {
+          return await Promise.race([
+            promise,
+            new Promise<T>((_, reject) => {
+              timeoutId = setTimeout(() => {
+                reject(new Error('Questionnaire load timeout'));
+              }, ms);
+            }),
+          ]);
+        } finally {
+          if (timeoutId) {
+            clearTimeout(timeoutId);
+          }
+        }
+      };
 
-    const result = await loadQuestionnaireUseCase.execute({
-      patientId: patient.id,
-      questionnaireId,
-      encryptionKey,
-    });
+      const result = await withTimeout(
+        loadQuestionnaireUseCase.execute({
+          patientId: resolvedPatient.id,
+          questionnaireId: resumeQuestionnaireId,
+          encryptionKey,
+        }),
+        10000,
+      );
 
-    if (result.success && result.questionnaire && result.answers) {
-      setQuestionnaire(result.questionnaire);
-      setAnswers(result.answers);
-    } else {
-      setError(result.error ?? 'Failed to load questionnaire');
-      Alert.alert('Error', result.error ?? 'Failed to load questionnaire');
+      if (result.success && result.questionnaire && result.answers) {
+        const questionnaireEntity = result.questionnaire;
+
+        const parseIsoDateParts = (iso: string): { year: number; month: number; day: number } | null => {
+          const m = /^\s*(\d{4})-(\d{2})-(\d{2})/.exec(iso);
+          if (!m) return null;
+          const year = Number(m[1]);
+          const month = Number(m[2]);
+          const day = Number(m[3]);
+          if (!Number.isInteger(year) || !Number.isInteger(month) || !Number.isInteger(day)) return null;
+          if (month < 1 || month > 12) return null;
+          if (day < 1 || day > 31) return null;
+          return { year, month, day };
+        };
+
+        const isMissingAnswerValue = (q: Question, v: AnswerValue | undefined): boolean => {
+          if (v === null || v === undefined) return true;
+          if (typeof v === 'string') return v.trim().length === 0;
+
+          if (typeof v === 'number') {
+            // Placeholder (e.g. Tag/Monat/Jahr) and "no selection" for bitsets
+            if (q.type === 'select' || q.type === 'radio') return v === 0;
+            if (q.type === 'checkbox' || q.type === 'multiselect') return v === 0;
+            return false;
+          }
+
+          if (Array.isArray(v)) return v.length === 0;
+
+          return false;
+        };
+
+        const prefillBasisdatenIfNeeded = async (
+          answersIn: Map<string, AnswerValue>,
+        ): Promise<Map<string, AnswerValue>> => {
+          if (!patient || !encryptionKey) return answersIn;
+
+          const basisSection = questionnaireEntity.sections.find((s) => s.id === 'q0000');
+          if (!basisSection) return answersIn;
+
+          const byFieldName = new Map<string, string>();
+          for (const q of basisSection.questions) {
+            const md = (q.metadata ?? {}) as Record<string, unknown>;
+            const fieldName = typeof md.fieldName === 'string' ? md.fieldName : undefined;
+            const compartmentCode = typeof md.compartmentCode === 'string' ? md.compartmentCode : undefined;
+            const key = (fieldName ?? compartmentCode)?.trim();
+            if (key) byFieldName.set(key, q.id);
+          }
+
+          const nextAnswers = new Map(answersIn);
+          const changedQuestionIds: string[] = [];
+
+          const setIfMissing = (field: string, value: AnswerValue): void => {
+            const questionId = byFieldName.get(field);
+            if (!questionId) return;
+            const question = questionnaireEntity.findQuestion(questionId);
+            if (!question) return;
+
+            const existing = nextAnswers.get(questionId);
+            if (!isMissingAnswerValue(question, existing)) return;
+
+            nextAnswers.set(questionId, value);
+            changedQuestionIds.push(questionId);
+          };
+
+          setIfMissing('0', patient.encryptedData.lastName);
+          setIfMissing('1', patient.encryptedData.firstName);
+
+          if (patient.encryptedData.gender) {
+            const genderValue =
+              patient.encryptedData.gender === 'male'
+                ? 1
+                : patient.encryptedData.gender === 'female'
+                  ? 2
+                  : 3;
+            setIfMissing('2', genderValue);
+          }
+
+          const birth = parseIsoDateParts(patient.encryptedData.birthDate);
+          if (birth) {
+            setIfMissing('0003_tag', birth.day);
+            setIfMissing('0003_monat', birth.month);
+            setIfMissing('0003_jahr', birth.year);
+            setIfMissing('3', patient.encryptedData.birthDate);
+          }
+
+          // PERFORMANCE FIX: Persist prefilled answers in the background (non-blocking).
+          // The UI will use the in-memory `nextAnswers` immediately, while DB writes happen async.
+          if (changedQuestionIds.length > 0) {
+            const failedSaves: string[] = [];
+            // Fire-and-forget background save (do not block UI)
+            Promise.all(
+              changedQuestionIds.map(async (qid) => {
+                const question = questionnaireEntity.findQuestion(qid);
+                if (!question) return;
+
+                const value = nextAnswers.get(qid);
+                const persistValue = value === undefined ? null : value;
+
+                try {
+                  await saveAnswerUseCase.execute({
+                    questionnaireId: questionnaireEntity.id,
+                    question,
+                    value: persistValue,
+                    encryptionKey,
+                    sourceType: 'manual',
+                  });
+                } catch (err) {
+                  // Track failed saves - user can still proceed; next interaction will persist
+                  failedSaves.push(qid);
+                }
+              }),
+            ).then(() => {
+              // Notify user if any saves failed (non-blocking)
+              if (failedSaves.length > 0) {
+                logWarn(`[QuestionnaireScreen] ${failedSaves.length} prefill saves failed`);
+                // Non-blocking toast/alert - user can continue, data will re-save on interaction
+                Alert.alert(
+                  t('common.warning', 'Warning'),
+                  t('questionnaire.prefillSaveWarning', 'Some auto-filled data may not have been saved. Your answers will be saved when you continue.'),
+                  [{ text: t('common.ok', 'OK') }],
+                );
+              }
+            }).catch(() => {
+              // Catch to prevent unhandled rejection warnings
+            });
+          }
+
+          return nextAnswers;
+        };
+
+        const mergedAnswers = await prefillBasisdatenIfNeeded(result.answers);
+
+        setQuestionnaire(questionnaireEntity);
+        setAnswers(mergedAnswers);
+      } else {
+        const message = result.error ?? t('questionnaire.failedToLoad');
+        setError(message);
+        Alert.alert(t('common.error'), message);
+      }
+    } catch (err) {
+      const message = err instanceof Error ? err.message : t('questionnaire.failedToLoad');
+      setError(message);
+      Alert.alert(t('common.error'), message);
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   /**
@@ -163,7 +355,7 @@ export const QuestionnaireScreen = ({ route, navigation }: Props): React.JSX.Ele
           [questionId]: result.validationErrors![0],
         }));
       } else {
-        Alert.alert('Error', result.error ?? 'Failed to save answer');
+        Alert.alert(t('common.error'), result.error ?? t('questionnaire.failedToSave'));
       }
     }
   };
@@ -176,19 +368,32 @@ export const QuestionnaireScreen = ({ route, navigation }: Props): React.JSX.Ele
     if (!currentSection || !questionnaire) return;
 
     const requiredQuestions = visibleQuestions.filter((q) => q.required);
-    const missingAnswers = requiredQuestions.filter((q) => !answers.has(q.id));
+    const isMissing = (q: Question): boolean => {
+      const v = answers.get(q.id);
+      if (v === null || v === undefined) return true;
+      if (typeof v === 'string') return v.trim().length === 0;
+      if (typeof v === 'number') {
+        if (q.type === 'select' || q.type === 'radio') return v === 0;
+        if (q.type === 'checkbox' || q.type === 'multiselect') return v === 0;
+        return false;
+      }
+      if (Array.isArray(v)) return v.length === 0;
+      return false;
+    };
+
+    const missingAnswers = requiredQuestions.filter(isMissing);
 
     if (missingAnswers.length > 0) {
       // Show validation errors
       const errors: Record<string, string> = {};
       missingAnswers.forEach((q) => {
-        errors[q.id] = 'This field is required';
+        errors[q.id] = t('questionnaire.requiredField');
       });
       setValidationErrors(errors);
       
       Alert.alert(
-        'Missing Required Fields',
-        `Please answer all required questions (${missingAnswers.length} missing)`,
+        t('questionnaire.missingRequiredTitle'),
+        t('questionnaire.missingRequiredMessage', { count: missingAnswers.length }),
       );
       return;
     }
@@ -218,13 +423,109 @@ export const QuestionnaireScreen = ({ route, navigation }: Props): React.JSX.Ele
   };
 
   /**
+   * Navigate to specific section
+   */
+  const handleGoToSection = (index: number): void => {
+    setShowSectionNav(false);
+    goToSection(index);
+  };
+
+  /**
+   * Calculate section completion status
+   */
+  const getSectionCompletion = (sectionIndex: number): { answered: number; total: number; percent: number } => {
+    if (!questionnaire) return { answered: 0, total: 0, percent: 0 };
+    
+    const section = questionnaire.sections[sectionIndex];
+    if (!section) return { answered: 0, total: 0, percent: 0 };
+
+    const questions = section.questions;
+    const total = questions.length;
+    
+    let answered = 0;
+    for (const q of questions) {
+      const value = answers.get(q.id);
+      if (value !== null && value !== undefined && value !== '') {
+        answered++;
+      }
+    }
+
+    const percent = total > 0 ? Math.round((answered / total) * 100) : 0;
+    return { answered, total, percent };
+  };
+
+  /**
+   * Helper: Render Section Navigation Content
+   * extracted to allow conditional wrapping (Modal vs Absolute View)
+   */
+  const renderSectionNavContent = () => (
+    <View style={styles.modalContent}>
+      <View style={styles.modalHeader}>
+        <Text style={styles.modalTitle}>{t('questionnaire.sections')}</Text>
+        <TouchableOpacity 
+          onPress={() => setShowSectionNav(false)}
+          style={styles.modalCloseButton}
+        >
+          <Text style={styles.modalCloseText}>✕</Text>
+        </TouchableOpacity>
+      </View>
+      <ScrollView style={styles.sectionList}>
+        {questionnaire && questionnaire.sections.map((section, index) => {
+          const completion = getSectionCompletion(index);
+          const isActive = index === currentSectionIndex;
+          
+          return (
+            <TouchableOpacity
+              key={section.id}
+              style={[
+                styles.sectionItem,
+                isActive && styles.sectionItemActive,
+              ]}
+              onPress={() => handleGoToSection(index)}
+            >
+              <View style={styles.sectionItemContent}>
+                <Text style={styles.sectionItemNumber}>{index + 1}</Text>
+                <View style={styles.sectionItemText}>
+                  <Text 
+                    style={[
+                      styles.sectionItemTitle,
+                      isActive && styles.sectionItemTitleActive,
+                    ]}
+                    numberOfLines={2}
+                  >
+                    {t(section.titleKey, { defaultValue: section.titleKey })}
+                  </Text>
+                  <Text style={styles.sectionItemMeta}>
+                    {t('questionnaire.questionsAnswered', { 
+                      answered: completion.answered, 
+                      total: completion.total 
+                    })}
+                  </Text>
+                </View>
+              </View>
+              <View style={styles.sectionItemProgress}>
+                <View 
+                  style={[
+                    styles.sectionItemProgressFill, 
+                    { width: `${completion.percent}%` }
+                  ]} 
+                />
+              </View>
+            </TouchableOpacity>
+          );
+        })}
+      </ScrollView>
+    </View>
+  );
+
+  /**
    * Render Loading State
    */
   if (isLoading) {
     return (
-      <View style={styles.centerContainer}>
-        <ActivityIndicator size="large" color="#2563eb" />
-        <Text style={styles.loadingText}>Loading questionnaire...</Text>
+      <View style={styles.centerContainer} accessibilityRole="progressbar" accessibilityLabel={t('questionnaire.loading')}>
+        <ActivityIndicator size="large" color={colors.primary} />
+        <Text style={styles.loadingText}>{t('questionnaire.loading')}</Text>
       </View>
     );
   }
@@ -237,7 +538,7 @@ export const QuestionnaireScreen = ({ route, navigation }: Props): React.JSX.Ele
       <View style={styles.centerContainer}>
         <Text style={styles.errorText}>{error}</Text>
         <TouchableOpacity style={styles.retryButton} onPress={loadQuestionnaire}>
-          <Text style={styles.retryButtonText}>Retry</Text>
+          <Text style={styles.retryButtonText}>{t('common.retry')}</Text>
         </TouchableOpacity>
       </View>
     );
@@ -249,7 +550,7 @@ export const QuestionnaireScreen = ({ route, navigation }: Props): React.JSX.Ele
   if (!currentSection || !questionnaire) {
     return (
       <View style={styles.centerContainer}>
-        <Text>No questionnaire loaded</Text>
+        <Text>{t('questionnaire.noneLoaded')}</Text>
       </View>
     );
   }
@@ -259,21 +560,79 @@ export const QuestionnaireScreen = ({ route, navigation }: Props): React.JSX.Ele
    */
   return (
     <View style={styles.container}>
+      {/* Section Navigation Modal */}
+      {Platform.OS === 'windows' ? (
+        // Windows specific: Absolute overlay instead of Native Modal to avoid crashes
+        showSectionNav && (
+          <View style={[StyleSheet.absoluteFill, { zIndex: 1000 }]}>
+            <Pressable 
+              style={styles.modalOverlay} 
+              onPress={() => setShowSectionNav(false)}
+            >
+              <View 
+                onStartShouldSetResponder={() => true} 
+                onTouchEnd={(e) => e.stopPropagation()}
+              >
+                {renderSectionNavContent()}
+              </View>
+            </Pressable>
+          </View>
+        )
+      ) : (
+        // Android/iOS: Native Modal
+        <Modal
+          visible={showSectionNav}
+          animationType="slide"
+          transparent={true}
+          onRequestClose={() => setShowSectionNav(false)}
+        >
+          <Pressable 
+            style={styles.modalOverlay} 
+            onPress={() => setShowSectionNav(false)}
+          >
+            <View 
+              onStartShouldSetResponder={() => true} 
+              onTouchEnd={(e) => e.stopPropagation()}
+            >
+              {renderSectionNavContent()}
+            </View>
+          </Pressable>
+        </Modal>
+      )}
+
       {/* Progress Bar */}
       <View style={styles.progressContainer}>
         <View style={styles.progressBar}>
           <View style={[styles.progressFill, { width: `${progress}%` }]} />
         </View>
-        <Text style={styles.progressText}>{Math.round(progress)}% Complete</Text>
-      </View>
-
-      {/* Section Title */}
-      <View style={styles.sectionHeader}>
-        <Text style={styles.sectionTitle}>{currentSection.titleKey}</Text>
-        <Text style={styles.sectionNumber}>
-          Section {currentSectionIndex + 1} of {questionnaire.sections.length}
+        <Text style={styles.progressText}>
+          {t('questionnaire.progress', { percent: Math.round(progress) })}
         </Text>
       </View>
+
+      {/* Section Title with Menu Button */}
+      <TouchableOpacity 
+        style={styles.sectionHeader}
+        onPress={() => setShowSectionNav(true)}
+        activeOpacity={0.7}
+      >
+        <View style={styles.sectionHeaderRow}>
+          <View style={styles.sectionHeaderText}>
+            <Text style={styles.sectionTitle}>
+              {t(currentSection.titleKey, { defaultValue: currentSection.titleKey })}
+            </Text>
+            <Text style={styles.sectionNumber}>
+              {t('questionnaire.sectionNumber', {
+                current: currentSectionIndex + 1,
+                total: questionnaire.sections.length,
+              })}
+            </Text>
+          </View>
+          <View style={styles.sectionMenuButton}>
+            <Text style={styles.sectionMenuIcon}>☰</Text>
+          </View>
+        </View>
+      </TouchableOpacity>
 
       {/* Questions */}
       <ScrollView style={styles.scrollContainer} contentContainerStyle={styles.scrollContent}>
@@ -293,7 +652,7 @@ export const QuestionnaireScreen = ({ route, navigation }: Props): React.JSX.Ele
         <TouchableOpacity
           style={[styles.navButton, styles.prevButton]}
           onPress={handlePrevious}>
-          <Text style={styles.navButtonText}>← Previous</Text>
+          <Text style={styles.navButtonText}>← {t('questionnaire.previous')}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -301,8 +660,8 @@ export const QuestionnaireScreen = ({ route, navigation }: Props): React.JSX.Ele
           onPress={handleNext}>
           <Text style={styles.navButtonText}>
             {currentSectionIndex === questionnaire.sections.length - 1
-              ? 'Complete →'
-              : 'Next →'}
+              ? `${t('questionnaire.complete')} →`
+              : `${t('questionnaire.next')} →`}
           </Text>
         </TouchableOpacity>
       </View>
@@ -313,103 +672,214 @@ export const QuestionnaireScreen = ({ route, navigation }: Props): React.JSX.Ele
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: colors.background,
   },
   centerContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 20,
+    padding: spacing.lg,
   },
   loadingText: {
-    marginTop: 16,
+    marginTop: spacing.md,
     fontSize: 16,
-    color: '#6b7280',
+    color: colors.textMuted,
   },
   errorText: {
     fontSize: 16,
-    color: '#ef4444',
+    color: colors.danger,
     textAlign: 'center',
-    marginBottom: 16,
+    marginBottom: spacing.md,
   },
   retryButton: {
-    backgroundColor: '#2563eb',
-    paddingHorizontal: 24,
-    paddingVertical: 12,
-    borderRadius: 8,
+    backgroundColor: colors.primary,
+    paddingHorizontal: spacing.xl,
+    paddingVertical: spacing.sm,
+    borderRadius: radius.md,
   },
   retryButtonText: {
-    color: '#fff',
+    color: colors.textInverse,
     fontSize: 16,
     fontWeight: '600',
   },
-  progressContainer: {
-    padding: 16,
-    backgroundColor: '#fff',
+  // Modal styles for Section Navigation
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: colors.overlay,
+    justifyContent: 'flex-end',
+  },
+  modalContent: {
+    backgroundColor: colors.surface,
+    borderTopLeftRadius: radius.xl,
+    borderTopRightRadius: radius.xl,
+    maxHeight: '80%',
+    paddingBottom: spacing.lg,
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: spacing.md,
     borderBottomWidth: 1,
-    borderBottomColor: '#e5e7eb',
+    borderBottomColor: colors.border,
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: colors.text,
+  },
+  modalCloseButton: {
+    padding: spacing.sm,
+  },
+  modalCloseText: {
+    fontSize: 20,
+    color: colors.textMuted,
+  },
+  sectionList: {
+    padding: spacing.md,
+  },
+  sectionItem: {
+    backgroundColor: colors.surfaceAlt,
+    borderRadius: radius.lg,
+    padding: spacing.md,
+    marginBottom: spacing.sm,
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
+  sectionItemActive: {
+    backgroundColor: colors.primaryLight,
+    borderColor: colors.primary,
+  },
+  sectionItemContent: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    marginBottom: spacing.sm,
+  },
+  sectionItemNumber: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: colors.primary,
+    color: colors.textInverse,
+    textAlign: 'center',
+    lineHeight: 28,
+    fontSize: 14,
+    fontWeight: '700',
+    marginRight: spacing.sm,
+  },
+  sectionItemText: {
+    flex: 1,
+  },
+  sectionItemTitle: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: colors.textSecondary,
+    marginBottom: spacing.xs,
+  },
+  sectionItemTitleActive: {
+    color: colors.primaryDark,
+  },
+  sectionItemMeta: {
+    fontSize: 12,
+    color: colors.textMuted,
+  },
+  sectionItemProgress: {
+    height: 4,
+    backgroundColor: colors.border,
+    borderRadius: 2,
+    overflow: 'hidden',
+  },
+  sectionItemProgressFill: {
+    height: '100%',
+    backgroundColor: colors.success,
+  },
+  progressContainer: {
+    padding: spacing.md,
+    backgroundColor: colors.surface,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border,
   },
   progressBar: {
     height: 8,
-    backgroundColor: '#e5e7eb',
-    borderRadius: 4,
+    backgroundColor: colors.border,
+    borderRadius: radius.sm,
     overflow: 'hidden',
   },
   progressFill: {
     height: '100%',
-    backgroundColor: '#2563eb',
+    backgroundColor: colors.primary,
   },
   progressText: {
-    marginTop: 8,
+    marginTop: spacing.sm,
     fontSize: 14,
-    color: '#6b7280',
+    color: colors.textMuted,
     textAlign: 'center',
   },
   sectionHeader: {
-    padding: 16,
-    backgroundColor: '#fff',
+    padding: spacing.md,
+    backgroundColor: colors.surface,
     borderBottomWidth: 1,
-    borderBottomColor: '#e5e7eb',
+    borderBottomColor: colors.border,
+  },
+  sectionHeaderRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  sectionHeaderText: {
+    flex: 1,
   },
   sectionTitle: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#1f2937',
+    color: colors.text,
   },
   sectionNumber: {
-    marginTop: 4,
+    marginTop: spacing.xs,
     fontSize: 14,
-    color: '#6b7280',
+    color: colors.textMuted,
+  },
+  sectionMenuButton: {
+    width: 40,
+    height: 40,
+    borderRadius: radius.md,
+    backgroundColor: colors.surfaceAlt,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  sectionMenuIcon: {
+    fontSize: 20,
+    color: colors.textSecondary,
   },
   scrollContainer: {
     flex: 1,
   },
   scrollContent: {
-    padding: 16,
+    padding: spacing.md,
   },
   navigationContainer: {
     flexDirection: 'row',
-    padding: 16,
-    backgroundColor: '#fff',
+    padding: spacing.md,
+    backgroundColor: colors.surface,
     borderTopWidth: 1,
-    borderTopColor: '#e5e7eb',
-    gap: 12,
+    borderTopColor: colors.border,
+    gap: spacing.sm,
   },
   navButton: {
     flex: 1,
     paddingVertical: 14,
-    borderRadius: 8,
+    borderRadius: radius.md,
     alignItems: 'center',
   },
   prevButton: {
-    backgroundColor: '#f3f4f6',
+    backgroundColor: colors.surfaceAlt,
   },
   nextButton: {
-    backgroundColor: '#2563eb',
+    backgroundColor: colors.primary,
   },
   navButtonText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#1f2937',
+    color: colors.text,
   },
 });

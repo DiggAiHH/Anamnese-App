@@ -1,0 +1,4 @@
+// SECURITY/PRIVACY: IDL syntax requires valid C++ identifiers (no hyphens)
+namespace AnamneseMobile
+{
+}

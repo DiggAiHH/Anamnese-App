@@ -5,13 +5,39 @@
  * DSGVO-konform: Alle Operationen lokal, keine externen APIs
  */
 
-import { randomBytes, pbkdf2, createCipheriv, createDecipheriv } from 'react-native-quick-crypto';
 import { EncryptedDataVO } from '@domain/value-objects/EncryptedData';
 import { IEncryptionService } from '@domain/repositories/IEncryptionService';
 import {
   PBKDF2_ITERATIONS as SHARED_PBKDF2_ITERATIONS,
   validatePasswordStrength,
 } from '@shared/SharedEncryptionBridge';
+
+type QuickCryptoModule = {
+  randomBytes: (size: number, cb: (err: unknown, buf: Buffer) => void) => void;
+  pbkdf2: (
+    password: string,
+    salt: Buffer,
+    iterations: number,
+    keylen: number,
+    digest: string,
+    cb: (err: unknown, derivedKey: Buffer) => void,
+  ) => void;
+  createCipheriv: (algorithm: string, key: Buffer, iv: Buffer) => any;
+  createDecipheriv: (algorithm: string, key: Buffer, iv: Buffer) => any;
+  createHash: (algorithm: string) => { update: (s: string) => void; digest: (enc: string) => string };
+};
+
+function getQuickCryptoOrThrow(): QuickCryptoModule {
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    return require('react-native-quick-crypto') as QuickCryptoModule;
+  } catch {
+    throw new Error(
+      'Crypto provider is not available. react-native-quick-crypto native module was not found. ' +
+        'On Windows, use the WebCrypto-based encryption provider instead.',
+    );
+  }
+}
 
 /**
  * Encryption Service Implementation
@@ -34,6 +60,8 @@ export class NativeEncryptionService implements IEncryptionService {
   ): Promise<{ key: string; salt: string }> {
     this.ensurePasswordStrength(password);
 
+    const qc = getQuickCryptoOrThrow();
+
     // Generate salt if not provided
     const saltBuffer = salt
       ? Buffer.from(salt, 'base64')
@@ -41,7 +69,7 @@ export class NativeEncryptionService implements IEncryptionService {
 
     // Derive key using PBKDF2
     const keyBuffer = await new Promise<Buffer>((resolve, reject) => {
-      pbkdf2(
+      qc.pbkdf2(
         password,
         saltBuffer,
         this.PBKDF2_ITERATIONS,
@@ -65,6 +93,8 @@ export class NativeEncryptionService implements IEncryptionService {
    */
   async encrypt(data: string, key: string): Promise<EncryptedDataVO> {
     try {
+      const qc = getQuickCryptoOrThrow();
+
       // Convert key from base64
       const keyBuffer = Buffer.from(key, 'base64');
 
@@ -76,7 +106,7 @@ export class NativeEncryptionService implements IEncryptionService {
       const iv = await this.generateRandomBytes(this.IV_LENGTH);
 
       // Create cipher
-      const cipher = createCipheriv(this.ALGORITHM, keyBuffer, iv);
+      const cipher = qc.createCipheriv(this.ALGORITHM, keyBuffer, iv);
 
       // Encrypt data
       const encryptedChunks: Buffer[] = [];
@@ -108,6 +138,8 @@ export class NativeEncryptionService implements IEncryptionService {
    */
   async decrypt(encryptedData: EncryptedDataVO, key: string): Promise<string> {
     try {
+      const qc = getQuickCryptoOrThrow();
+
       // Convert from base64
       const keyBuffer = Buffer.from(key, 'base64');
       const ciphertext = Buffer.from(encryptedData.ciphertext, 'base64');
@@ -119,7 +151,7 @@ export class NativeEncryptionService implements IEncryptionService {
       }
 
       // Create decipher
-      const decipher = createDecipheriv(this.ALGORITHM, keyBuffer, iv);
+      const decipher = qc.createDecipheriv(this.ALGORITHM, keyBuffer, iv);
 
       // Set auth tag
       decipher.setAuthTag(authTag);
@@ -141,8 +173,8 @@ export class NativeEncryptionService implements IEncryptionService {
    * Passwort hashen (SHA-256)
    */
   async hashPassword(password: string): Promise<string> {
-    const crypto = await import('react-native-quick-crypto');
-    const hash = crypto.createHash('sha256');
+    const qc = getQuickCryptoOrThrow();
+    const hash = qc.createHash('sha256');
     hash.update(password);
     return hash.digest('hex');
   }
@@ -167,8 +199,9 @@ export class NativeEncryptionService implements IEncryptionService {
    * Random Bytes generieren (helper)
    */
   private async generateRandomBytes(length: number): Promise<Buffer> {
+    const qc = getQuickCryptoOrThrow();
     return new Promise((resolve, reject) => {
-      randomBytes(length, (err, buffer) => {
+      qc.randomBytes(length, (err, buffer) => {
         if (err) reject(err);
         else resolve(buffer);
       });
@@ -186,4 +219,3 @@ export class NativeEncryptionService implements IEncryptionService {
 /**
  * Singleton Instance
  */
-export const encryptionService = new NativeEncryptionService();

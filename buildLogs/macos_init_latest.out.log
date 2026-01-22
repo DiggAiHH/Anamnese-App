@@ -1,0 +1,25 @@
+Reading application name from package.json…
+Reading react-native version from node_modules…
+Reading react-native-macos version from node_modules…
+Latest matching version of react-native-macos for react-native@0.73.11 is react-native-macos@0.73.36.
+Latest version of react-native-macos@^0.73.0-0 already installed.
+new macos\Podfile
+new macos\.gitignore
+new macos\anamnese-mobile-macOS\AppDelegate.h
+new macos\anamnese-mobile-macOS\AppDelegate.mm
+new macos\anamnese-mobile-macOS\Assets.xcassets\AppIcon.appiconset\Contents.json
+new macos\anamnese-mobile-macOS\Assets.xcassets\Contents.json
+new macos\anamnese-mobile-macOS\Base.lproj\Main.storyboard
+new macos\anamnese-mobile-macOS\anamnese-mobile.entitlements
+new macos\anamnese-mobile-macOS\Info.plist
+new macos\anamnese-mobile-macOS\main.m
+new macos\anamnese-mobile.xcodeproj\project.pbxproj
+new macos\anamnese-mobile.xcodeproj\xcshareddata\xcschemes\anamnese-mobile-macOS.xcscheme
+
+  Run instructions for macOS:
+    • npx react-native run-macos
+    - or -
+    • Open macos\anamnese-mobile.xcworkspace in Xcode or run "xed -b macos"
+    • yarn start:macos
+    • Hit the Run button
+

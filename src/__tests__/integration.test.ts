@@ -11,6 +11,7 @@ import { IQuestionnaireRepository } from '../domain/repositories/IQuestionnaireR
 import { IPatientRepository } from '../domain/repositories/IPatientRepository';
 import { IGDPRConsentRepository } from '../domain/repositories/IGDPRConsentRepository';
 import { IEncryptionService } from '../domain/repositories/IEncryptionService';
+import { GDPRConsent, GDPRConsentEntity } from '../domain/entities/GDPRConsent';
 
 class MockEncryptionService implements IEncryptionService {
   async deriveKey(password: string): Promise<{ key: string; salt: string }> {
@@ -78,13 +79,13 @@ class MockPatientRepository implements IPatientRepository {
 
 class MockGDPRConsentRepository implements IGDPRConsentRepository {
   async save(): Promise<void> {}
-  async findById(): Promise<any> { return null; }
-  async findByPatientId(): Promise<any[]> { return []; }
-  async findByPatientIdAndType(): Promise<any> { return null; }
+  async findById(): Promise<GDPRConsentEntity | null> { return null; }
+  async findByPatientId(): Promise<GDPRConsentEntity[]> { return []; }
+  async findByPatientIdAndType(): Promise<GDPRConsentEntity | null> { return null; }
   async hasActiveConsent(): Promise<boolean> { return true; }
   async deleteByPatientId(): Promise<void> {}
-  async getAllActiveConsents(): Promise<any[]> { return []; }
-  async getConsentHistory(): Promise<any[]> { return []; }
+  async getAllActiveConsents(): Promise<GDPRConsentEntity[]> { return []; }
+  async getConsentHistory(_patientId: string, _type?: GDPRConsent['type']): Promise<GDPRConsentEntity[]> { return []; }
 }
 
 class MockQuestionnaireRepository implements IQuestionnaireRepository {
@@ -108,8 +109,8 @@ class MockQuestionnaireRepository implements IQuestionnaireRepository {
           labelKey: 'questions.gender',
           required: true,
           options: [
-            { value: 'male', labelKey: 'male' },
-            { value: 'female', labelKey: 'female' },
+            { value: 1, labelKey: 'male' },
+            { value: 2, labelKey: 'female' },
           ],
         },
       ],
@@ -125,10 +126,10 @@ class MockQuestionnaireRepository implements IQuestionnaireRepository {
           labelKey: 'questions.pregnancy',
           required: false,
           options: [
-            { value: 'yes', labelKey: 'yes' },
-            { value: 'no', labelKey: 'no' },
+            { value: 1, labelKey: 'yes' },
+            { value: 0, labelKey: 'no' },
           ],
-          conditions: [{ questionId: 'gender', operator: 'equals', value: 'female' }],
+          conditions: [{ questionId: 'gender', operator: 'equals', value: 2 }],
         },
       ],
     },

@@ -1,0 +1,379 @@
+
+> anamnese-mobile@1.0.0 test
+> jest
+
+PASS __tests__/application/services/PDFTemplateService.test.ts
+PASS __tests__/presentation/components/EmptyState.test.ts
+PASS __tests__/presentation/components/AppText.test.ts
+PASS __tests__/presentation/ToastProvider.test.ts
+PASS __tests__/infrastructure/analytics/LocalAnalyticsService.test.ts
+PASS src/__tests__/integration.test.ts
+PASS src/infrastructure/speech/__tests__/TTSService.test.ts
+  ● Console
+
+    console.log
+      [TTS] TTS Service initialized
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:97:15)
+
+    console.log
+      [TTS] TTS Service initialized
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:97:15)
+
+    console.log
+      [TTS] TTS Service initialized
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:97:15)
+
+    console.log
+      [TTS] TTS Service initialized
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:97:15)
+
+    console.log
+      [TTS] Speaking in de-DE (10 chars)
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:97:15)
+
+    console.log
+      [TTS] TTS Service initialized
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:97:15)
+
+    console.log
+      [TTS] Speaking in en-US (11 chars)
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:97:15)
+
+    console.log
+      [TTS] TTS Service initialized
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:97:15)
+
+    console.log
+      [TTS] Empty text, skipping
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:97:15)
+
+    console.log
+      [TTS] Empty text, skipping
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:97:15)
+
+    console.log
+      [TTS] TTS Service initialized
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:97:15)
+
+    console.log
+      [TTS] Speaking in de-DE (4003 chars)
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:97:15)
+
+    console.log
+      [TTS] TTS Service initialized
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:97:15)
+
+    console.log
+      [TTS] Speaking in de-DE (4 chars)
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:97:15)
+
+    console.log
+      [TTS] Speaking in en-US (4 chars)
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:97:15)
+
+    console.log
+      [TTS] Speaking in ar-SA (4 chars)
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:97:15)
+
+    console.log
+      [TTS] Speaking in el-GR (4 chars)
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:97:15)
+
+    console.log
+      [TTS] Speaking in es-ES (4 chars)
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:97:15)
+
+    console.log
+      [TTS] Speaking in fa-IR (4 chars)
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:97:15)
+
+    console.log
+      [TTS] Speaking in fr-FR (4 chars)
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:97:15)
+
+    console.log
+      [TTS] Speaking in it-IT (4 chars)
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:97:15)
+
+    console.log
+      [TTS] Speaking in ja-JP (4 chars)
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:97:15)
+
+    console.log
+      [TTS] Speaking in ko-KR (4 chars)
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:97:15)
+
+    console.log
+      [TTS] Speaking in nl-NL (4 chars)
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:97:15)
+
+    console.log
+      [TTS] Speaking in pl-PL (4 chars)
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:97:15)
+
+    console.log
+      [TTS] Speaking in pt-BR (4 chars)
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:97:15)
+
+    console.log
+      [TTS] Speaking in ro-RO (4 chars)
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:97:15)
+
+    console.log
+      [TTS] Speaking in ru-RU (4 chars)
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:97:15)
+
+    console.log
+      [TTS] Speaking in tr-TR (4 chars)
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:97:15)
+
+    console.log
+      [TTS] Speaking in uk-UA (4 chars)
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:97:15)
+
+    console.log
+      [TTS] Speaking in vi-VN (4 chars)
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:97:15)
+
+    console.log
+      [TTS] Speaking in zh-CN (4 chars)
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:97:15)
+
+    console.log
+      [TTS] TTS Service initialized
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:97:15)
+
+    console.log
+      [TTS] Speaking in de-DE (4 chars)
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:97:15)
+
+    console.log
+      [TTS] TTS Service initialized
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:97:15)
+
+    console.log
+      [TTS] Speech stopped
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:97:15)
+
+    console.log
+      [TTS] TTS Service initialized
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:97:15)
+
+    console.log
+      [TTS] Found 2 voices
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:97:15)
+
+    console.log
+      [TTS] TTS Service initialized
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:97:15)
+
+    console.error
+      [TTS] Failed to get voices Error: No voices
+          at Object.<anonymous> (C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\src\infrastructure\speech\__tests__\TTSService.test.ts:142:61)
+          at Generator.next (<anonymous>)
+          at asyncGeneratorStep (C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\@babel\runtime\helpers\asyncToGenerator.js:3:17)
+          at _next (C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\@babel\runtime\helpers\asyncToGenerator.js:17:9)
+          at C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\@babel\runtime\helpers\asyncToGenerator.js:22:7
+          at new Promise (<anonymous>)
+          at Object.<anonymous> (C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\@babel\runtime\helpers\asyncToGenerator.js:14:12)
+          at Promise.then.completed (C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\jest-circus\build\utils.js:298:28)
+          at new Promise (<anonymous>)
+          at callAsyncCircusFn (C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\jest-circus\build\utils.js:231:10)
+          at _callCircusTest (C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\jest-circus\build\run.js:316:40)
+          at processTicksAndRejections (node:internal/process/task_queues:103:5)
+          at _runTest (C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\jest-circus\build\run.js:252:3)
+          at _runTestsForDescribeBlock (C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\jest-circus\build\run.js:126:9)
+          at _runTestsForDescribeBlock (C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\jest-circus\build\run.js:121:9)
+          at _runTestsForDescribeBlock (C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\jest-circus\build\run.js:121:9)
+          at run (C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\jest-circus\build\run.js:71:3)
+          at runAndTransformResultsToJestFormat (C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+          at jestAdapter (C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+          at runTestInternal (C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\jest-runner\build\runTest.js:367:16)
+          at runTest (C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\jest-runner\build\runTest.js:444:34)
+          at Object.worker (C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\jest-runner\build\testWorker.js:106:12)
+
+    [0m [90m 103 |[39m     [36mif[39m ([36mtypeof[39m __DEV__ [33m!==[39m [32m'undefined'[39m [33m&&[39m __DEV__) {
+     [90m 104 |[39m       [90m// eslint-disable-next-line no-console[39m
+    [31m[1m>[22m[39m[90m 105 |[39m       console[33m.[39merror([32m`[TTS] ${message}`[39m[33m,[39m error)[33m;[39m
+     [90m     |[39m               [31m[1m^[22m[39m
+     [90m 106 |[39m     }
+     [90m 107 |[39m     [90m// Production: no logging to avoid any PII leak[39m
+     [90m 108 |[39m   }[0m
+
+      at TTSService.error [as logError] (src/infrastructure/speech/TTSService.ts:105:15)
+      at TTSService.logError (src/infrastructure/speech/TTSService.ts:236:12)
+          at Generator.throw (<anonymous>)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _throw (node_modules/@babel/runtime/helpers/asyncToGenerator.js:20:9)
+
+    console.log
+      [TTS] TTS Service initialized
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:97:15)
+
+    console.log
+      [TTS] TTS Service initialized
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:97:15)
+
+    console.log
+      [TTS] Rate set to 0.7
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:97:15)
+
+    console.log
+      [TTS] TTS Service initialized
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:97:15)
+
+    console.log
+      [TTS] Rate set to 1
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:97:15)
+
+    console.log
+      [TTS] Rate set to 0.1
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:97:15)
+
+    console.log
+      [TTS] TTS Service initialized
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:97:15)
+
+    console.log
+      [TTS] Pitch set to 1.5
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:97:15)
+
+    console.log
+      [TTS] TTS Service initialized
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:97:15)
+
+    console.log
+      [TTS] Pitch set to 2
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:97:15)
+
+    console.log
+      [TTS] Pitch set to 0.5
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:97:15)
+
+    console.log
+      [TTS] TTS Service initialized
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:97:15)
+
+    console.log
+      [TTS] TTS Service initialized
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:97:15)
+
+    console.log
+      [TTS] TTS Service initialized
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:97:15)
+
+    console.log
+      [TTS] TTS Service initialized
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:97:15)
+
+    console.log
+      [TTS] TTS Service destroyed
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:97:15)
+
+    console.log
+      [TTS] TTS Service initialized
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:97:15)
+
+    console.log
+      [TTS] Speaking in de-DE (9 chars)
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:97:15)
+
+    console.log
+      [TTS] Speech started
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:97:15)
+
+    console.log
+      [TTS] TTS Service destroyed
+
+      at TTSService.log [as logDebug] (src/infrastructure/speech/TTSService.ts:97:15)
+
+PASS __tests__/shared/seedData.test.ts
+PASS src/infrastructure/encryption/__tests__/WebCryptoEncryptionService.test.ts
+PASS src/application/use-cases/__tests__/SaveAnswerUseCase.test.ts
+PASS src/presentation/i18n/__tests__/locales.test.ts
+PASS __tests__/presentation/components/AppInput.test.ts
+PASS __tests__/infrastructure/persistence/SQLiteAnswerRepository.test.ts
+PASS __tests__/infrastructure/persistence/SQLiteQuestionnaireRepository.test.ts
+PASS __tests__/domain/value-objects/GDTExport.test.ts
+PASS __tests__/presentation/components/Section.test.ts
+PASS src/domain/entities/__tests__/Questionnaire.test.ts
+PASS src/domain/entities/__tests__/QuestionnaireCompartmentMapping.test.ts
+PASS src/domain/services/__tests__/ClinicalCalculators.test.ts
+PASS __tests__/presentation/components/Card.test.ts
+PASS __tests__/infrastructure/persistence/SQLitePatientRepository.test.ts
+PASS __tests__/presentation/components/AppButton.test.ts
+PASS src/domain/services/__tests__/FeedbackTextBuilder.test.ts
+PASS __tests__/shared/sanitizeError.test.ts
+PASS __tests__/application/use-cases/SaveAnswerUseCase.test.ts
+PASS __tests__/domain/entities/Questionnaire.test.ts
+PASS src/domain/entities/__tests__/Patient.test.ts
+PASS __tests__/integration/DeleteAllData.test.ts
+PASS src/domain/entities/__tests__/AnswerDateValidation.test.ts
+PASS src/domain/services/__tests__/PasswordGenerator.test.ts
+PASS __tests__/domain/entities/Answer.test.ts
+PASS __tests__/shared/rnfsSafe.test.ts
+PASS src/domain/value-objects/__tests__/CompartmentAnswerEncoding.test.ts
+
+Test Suites: 2 skipped, 33 passed, 33 of 35 total
+Tests:       29 skipped, 230 passed, 259 total
+Snapshots:   0 total
+Time:        21.702 s
+Ran all test suites.

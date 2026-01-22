@@ -1,0 +1,12 @@
+diff --git a/node_modules/react-native-windows/Shared/Networking/OriginPolicyHttpFilter.cpp b/node_modules/react-native-windows/Shared/Networking/OriginPolicyHttpFilter.cpp
+index 0d3a0c2..3a4b8a5 100644
+--- a/node_modules/react-native-windows/Shared/Networking/OriginPolicyHttpFilter.cpp
++++ b/node_modules/react-native-windows/Shared/Networking/OriginPolicyHttpFilter.cpp
+@@ -758,6 +758,6 @@
+     if (originPolicy == OriginPolicy::CrossOriginResourceSharing) {
+       // If inner filter can AllowRedirect, disable for preflight.
+       winrt::impl::com_ref<IHttpBaseProtocolFilter> baseFilter;
+-      if (baseFilter = m_innerFilter.try_as<IHttpBaseProtocolFilter>()) {
++      if ((baseFilter = m_innerFilter.try_as<IHttpBaseProtocolFilter>())) {
+         baseFilter.AllowAutoRedirect(false);
+       }

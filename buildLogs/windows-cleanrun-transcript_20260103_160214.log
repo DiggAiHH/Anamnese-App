@@ -1,0 +1,150 @@
+﻿**********************
+nStart der Windows PowerShell-Aufzeichnung
+Startzeit: 20260103160214
+Benutzername: DESKTOP-U1FPK9S\tubbeTEC
+RunAs-Benutzer: DESKTOP-U1FPK9S\tubbeTEC
+Konfigurationsname: 
+Computer: DESKTOP-U1FPK9S (Microsoft Windows NT 10.0.19045.0)
+Hostanwendung: powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts\windows-cleanrun.ps1
+Prozess-ID: 18572
+PSVersion: 5.1.19041.6456
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.19041.6456
+BuildVersion: 10.0.19041.6456
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+\n==> Clean rebuild starting (Configuration=Debug, Platform=x64)
+\n==> Repo root: C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App
+\n==> Stopping Metro (port 8081) + app process
+\n==> Uninstalling existing AppX (if installed)
+No installed package found.
+\n==> Deleting repo build artifacts + caches
+PS>TerminatingError(Rename-Item): "Der ausgeführte Befehl wurde beendet, da die Einstellungsvariable "ErrorActionPreference" oder ein allgemeiner Parameter auf "Stop" festgelegt ist: Der Zugriff auf den Pfad "C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules" wurde verweigert.."
+Deleting: C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules
+WARNING: Could not fully delete: C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules
+\n==> Reinstalling JS dependencies
+PS>TerminatingError(): "npm failed with exit code -4048. See logs: C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\buildLogs\npm-deps_20260103_163518.out.log / C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\buildLogs\npm-deps_20260103_163518.err.log"
+>> TerminatingError(): "npm failed with exit code -4048. See logs: C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\buildLogs\npm-deps_20260103_163518.out.log / C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\buildLogs\npm-deps_20260103_163518.err.log"
+npm failed with exit code -4048. See logs: C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\buildLogs\npm-deps_20260103_163518.out.log / C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\buildLogs\npm-deps_20260103_163518.err.log
+npm failed
+with exit
+code
+-4048. See
+logs: C:\Us
+ers\tubbeTE
+C\Desktop\P
+rojects\Ana
+mnese-App\A
+namnese-App
+\buildLogs\
+npm-deps_20
+260103_1635
+18.out.log
+/ C:\Users\
+tubbeTEC\De
+sktop\Proje
+cts\Anamnes
+e-App\Anamn
+ese-App\bui
+ldLogs\npm-
+deps_202601
+03_163518.e
+rr.log
+In C:\Users
+\tubbeTEC\D
+esktop\Proj
+ects\Anamne
+se-App\Anam
+nese-App\sc
+ripts\windo
+ws-cleanrun
+.ps1:93
+Zeichen:5
++
+throw "npm
+failed
+with exit
+code $($p.E
+xitCode).
+See logs:
+$StdOu ...
++     ~~~~~
+~~~~~~~~~~~
+~~~~~~~~~~~
+~~~~~~~~~~~
+~~~~~~~~~~~
+~~~~~~~~~~~
+~~~~~
+    + Cate
+   goryIn
+  fo
+
+: Oper
+ationS
+topped
+: (npm
+faile    d
+with
+..._16
+3518.e
+rr.log
+:Strin
+g) [],
+Runti
+meExce
+ption
+    + Full
+   yQuali
+  fiedEr
+ rorId
+: npm
+failed
+with
+exit c
+ode -4
+048. S
+ee log
+s: C:\
+Users\
+tubbeT
+EC\Des
+ktop\P
+roject
+s\Anam
+nese-A
+pp\Ana
+mnese-
+App\bu
+ildLog
+s\npm-
+deps_2
+026010
+3_1635
+18.out
+.log /
+C:\Us
+ers\tu
+bbeTEC
+\Deskt
+op\Pro
+jects\
+Anamne
+se-App
+\Anamn
+ese-Ap
+p\buil
+dLogs\
+npm-de
+ps_202
+60103_
+163518
+.err.l
+og
+
+**********************
+Ende der Windows PowerShell-Aufzeichnung
+Endzeit: 20260103163718
+**********************

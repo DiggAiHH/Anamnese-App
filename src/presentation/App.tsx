@@ -16,11 +16,17 @@ import { StyleSheet } from 'react-native';
 // Navigation
 import { RootNavigator } from './navigation/RootNavigator';
 
+import { ToastProvider } from './components/ToastProvider';
+
 // i18n
 import './i18n/config';
 
 // Database initialization
 import { database } from '@infrastructure/persistence/DatabaseConnection';
+import { logDebug, logError } from '@shared/logger';
+import { useQuestionnaireStore } from './state/useQuestionnaireStore';
+import { loadActiveSession } from '@shared/sessionPersistence';
+import { loadPersistedEncryptionKeyIfOptedIn } from '@shared/keyManager';
 
 const App = (): React.JSX.Element => {
   useEffect(() => {
@@ -28,9 +34,21 @@ const App = (): React.JSX.Element => {
     const initializeApp = async (): Promise<void> => {
       try {
         await database.connect();
-        console.warn('Database initialized successfully');
+        logDebug('Database initialized successfully');
+
+        const session = await loadActiveSession();
+        if (session?.patientId || session?.questionnaireId) {
+          useQuestionnaireStore
+            .getState()
+            .setActiveSessionIds(session.patientId ?? null, session.questionnaireId ?? null);
+        }
+
+        const storedKey = await loadPersistedEncryptionKeyIfOptedIn();
+        if (storedKey) {
+          useQuestionnaireStore.getState().setEncryptionKey(storedKey);
+        }
       } catch (error) {
-        console.error('Failed to initialize database:', error);
+        logError('Failed to initialize database', error);
       }
     };
 
@@ -39,7 +57,7 @@ const App = (): React.JSX.Element => {
     // Cleanup on unmount
     return () => {
       database.close().catch(error => {
-        console.error('Failed to close database:', error);
+        logError('Failed to close database', error);
       });
     };
   }, []);
@@ -47,9 +65,11 @@ const App = (): React.JSX.Element => {
   return (
     <GestureHandlerRootView style={styles.container}>
       <SafeAreaProvider>
-        <NavigationContainer>
-          <RootNavigator />
-        </NavigationContainer>
+        <ToastProvider>
+          <NavigationContainer>
+            <RootNavigator />
+          </NavigationContainer>
+        </ToastProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>
   );

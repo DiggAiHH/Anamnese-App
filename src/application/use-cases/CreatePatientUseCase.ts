@@ -13,12 +13,16 @@ import { PatientEntity, Patient } from '@domain/entities/Patient';
 import { GDPRConsentEntity } from '@domain/entities/GDPRConsent';
 import { IPatientRepository } from '@domain/repositories/IPatientRepository';
 import { IGDPRConsentRepository } from '@domain/repositories/IGDPRConsentRepository';
+import { setActiveEncryptionKey } from '@shared/keyManager';
 
 export interface CreatePatientInput {
   firstName: string;
   lastName: string;
   birthDate: string; // ISO 8601
   language: Patient['language'];
+  gender?: 'male' | 'female' | 'other';
+  email?: string;
+  phone?: string;
   insurance?: string;
   insuranceNumber?: string;
   encryptionKey: string;
@@ -62,9 +66,15 @@ export class CreatePatientUseCase {
         lastName: input.lastName,
         birthDate: input.birthDate,
         language: input.language,
+        gender: input.gender,
+        email: input.email,
+        phone: input.phone,
         insurance: input.insurance,
         insuranceNumber: input.insuranceNumber,
       });
+
+      // Step 2b: Ensure encryption key is available for persistence
+      await setActiveEncryptionKey(input.encryptionKey, { persist: false });
 
       // Step 3: Add GDPR Consents
       patient = this.addConsents(patient, input.consents);

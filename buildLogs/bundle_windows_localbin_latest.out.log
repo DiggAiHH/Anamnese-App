@@ -1,0 +1,9 @@
+                Welcome to Metro v0.80.12
+              Fast - Scalable - Integrated
+
+
+Error: Failed to start watch mode.
+    at Timeout._onTimeout (C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\metro-file-map\src\Watcher.js:176:24)
+    at listOnTimeout (node:internal/timers:605:17)
+    at process.processTimers (node:internal/timers:541:7)
+info Run CLI with --verbose flag for more details.

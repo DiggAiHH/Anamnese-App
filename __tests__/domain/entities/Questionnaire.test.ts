@@ -41,9 +41,7 @@ describe('QuestionnaireEntity', () => {
             { value: 'yes', labelKey: 'options.yes' },
             { value: 'no', labelKey: 'options.no' },
           ],
-          conditions: [
-            { questionId: 'gender', operator: 'equals', value: 'female' },
-          ],
+          conditions: [{ questionId: 'gender', operator: 'equals', value: 'female' }],
         },
       ],
     },
@@ -61,19 +59,31 @@ describe('QuestionnaireEntity', () => {
   });
 
   it('shows conditional questions when criteria met', () => {
-    const questionnaire = QuestionnaireEntity.create('11111111-1111-1111-1111-111111111111', sections, '1.0.0');
+    const questionnaire = QuestionnaireEntity.create(
+      '11111111-1111-1111-1111-111111111111',
+      sections,
+      '1.0.0',
+    );
     const visible = questionnaire.getVisibleQuestions(new Map([['gender', 'female']]));
     expect(visible.some(q => q.id === 'is_pregnant')).toBe(true);
   });
 
   it('hides conditional questions when criteria not met', () => {
-    const questionnaire = QuestionnaireEntity.create('11111111-1111-1111-1111-111111111111', sections, '1.0.0');
+    const questionnaire = QuestionnaireEntity.create(
+      '11111111-1111-1111-1111-111111111111',
+      sections,
+      '1.0.0',
+    );
     const visible = questionnaire.getVisibleQuestions(new Map([['gender', 'male']]));
     expect(visible.some(q => q.id === 'is_pregnant')).toBe(false);
   });
 
   it('computes progress based on visible answers', () => {
-    const questionnaire = QuestionnaireEntity.create('11111111-1111-1111-1111-111111111111', sections, '1.0.0');
+    const questionnaire = QuestionnaireEntity.create(
+      '11111111-1111-1111-1111-111111111111',
+      sections,
+      '1.0.0',
+    );
     const answers = new Map<string, unknown>([
       ['first_name', 'John'],
       ['gender', 'male'],

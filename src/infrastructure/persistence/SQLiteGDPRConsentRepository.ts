@@ -140,7 +140,8 @@ export class SQLiteGDPRConsentRepository implements IGDPRConsentRepository {
       return false;
     }
 
-    return results.rows.item(0).count > 0;
+    const row = results.rows.item(0) as { count?: number | null };
+    return (row.count ?? 0) > 0;
   }
 
   /**
@@ -221,12 +222,17 @@ export class SQLiteGDPRConsentRepository implements IGDPRConsentRepository {
       return { total: 0, granted: 0, revoked: 0, pending: 0 };
     }
 
-    const row = results.rows.item(0);
+    const row = results.rows.item(0) as {
+      total?: number | null;
+      granted?: number | null;
+      revoked?: number | null;
+      pending?: number | null;
+    };
     return {
-      total: row.total || 0,
-      granted: row.granted || 0,
-      revoked: row.revoked || 0,
-      pending: row.pending || 0,
+      total: row.total ?? 0,
+      granted: row.granted ?? 0,
+      revoked: row.revoked ?? 0,
+      pending: row.pending ?? 0,
     };
   }
 
@@ -265,21 +271,21 @@ export class SQLiteGDPRConsentRepository implements IGDPRConsentRepository {
   /**
    * Map database row to GDPRConsentEntity
    */
-  private mapRowToEntity(row: any): GDPRConsentEntity {
+  private mapRowToEntity(row: Record<string, unknown>): GDPRConsentEntity {
     return GDPRConsentEntity.fromJSON({
-      id: row.id,
-      patientId: row.patient_id,
-      type: row.type,
+      id: row.id as string,
+      patientId: row.patient_id as string,
+      type: row.type as GDPRConsent['type'],
       granted: row.granted === 1,
-      grantedAt: row.granted_at ? new Date(row.granted_at) : undefined,
-      revokedAt: row.revoked_at ? new Date(row.revoked_at) : undefined,
-      privacyPolicyVersion: row.privacy_policy_version,
-      legalBasis: row.legal_basis,
-      purpose: row.purpose,
-      dataCategories: JSON.parse(row.data_categories),
-      recipients: row.recipients ? JSON.parse(row.recipients) : undefined,
-      retentionPeriod: row.retention_period,
-      auditLog: JSON.parse(row.audit_log),
+      grantedAt: row.granted_at ? new Date(row.granted_at as number) : undefined,
+      revokedAt: row.revoked_at ? new Date(row.revoked_at as number) : undefined,
+      privacyPolicyVersion: row.privacy_policy_version as string,
+      legalBasis: row.legal_basis as GDPRConsent['legalBasis'],
+      purpose: row.purpose as string,
+      dataCategories: JSON.parse(row.data_categories as string),
+      recipients: row.recipients ? JSON.parse(row.recipients as string) : undefined,
+      retentionPeriod: row.retention_period as string,
+      auditLog: JSON.parse(row.audit_log as string),
     });
   }
 }

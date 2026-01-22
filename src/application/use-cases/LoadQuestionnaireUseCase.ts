@@ -15,6 +15,7 @@ import { AnswerValue } from '@domain/entities/Answer';
 import { IQuestionnaireRepository } from '@domain/repositories/IQuestionnaireRepository';
 import { IAnswerRepository } from '@domain/repositories/IAnswerRepository';
 import { IPatientRepository } from '@domain/repositories/IPatientRepository';
+import { logWarn } from '@shared/logger';
 
 export interface LoadQuestionnaireInput {
   patientId: string;
@@ -67,34 +68,60 @@ export class LoadQuestionnaireUseCase {
 
         questionnaire = existingQuestionnaire;
       } else {
-        // Create new questionnaire from template
-        const template = await this.questionnaireRepository.loadTemplate();
-        const version = await this.questionnaireRepository.getLatestTemplateVersion();
+        // Resume latest questionnaire if available
+        const existing = await this.questionnaireRepository.findByPatientId(input.patientId);
+        const latest = existing
+          .slice()
+          .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime())[0];
 
-        questionnaire = QuestionnaireEntity.create({
-          patientId: input.patientId,
-          sections: template,
-          version,
-        });
+        if (latest) {
+          questionnaire = latest;
+        } else {
+          // Create new questionnaire from template
+          const template = await this.questionnaireRepository.loadTemplate();
+          const version = await this.questionnaireRepository.getLatestTemplateVersion();
 
-        // Save new questionnaire
-        await this.questionnaireRepository.save(questionnaire);
+          questionnaire = QuestionnaireEntity.create({
+            patientId: input.patientId,
+            sections: template,
+            version,
+          });
+
+          // Save new questionnaire
+          await this.questionnaireRepository.save(questionnaire);
+        }
       }
 
       // Step 2: Load answers (if questionnaire exists)
-      let answers: Map<string, AnswerValue> | undefined;
+      const loadAnswersSafe = async (): Promise<Map<string, AnswerValue>> => {
+        if (!input.questionnaireId) return new Map();
 
-      if (input.questionnaireId) {
-        answers = await this.answerRepository.getAnswersMap(
-          input.questionnaireId,
-          input.encryptionKey,
-        );
-      }
+        const timeoutMs = 4000;
+        let timeoutId: ReturnType<typeof setTimeout> | undefined;
+
+        try {
+          return await Promise.race([
+            this.answerRepository.getAnswersMap(input.questionnaireId, input.encryptionKey),
+            new Promise<Map<string, AnswerValue>>((_, reject) => {
+              timeoutId = setTimeout(() => {
+                reject(new Error('Answer load timeout'));
+              }, timeoutMs);
+            }),
+          ]);
+        } catch {
+          logWarn('[LoadQuestionnaireUseCase] Failed to load/decrypt answers; continuing with empty answers.');
+          return new Map();
+        } finally {
+          if (timeoutId) clearTimeout(timeoutId);
+        }
+      };
+
+      const answers = await loadAnswersSafe();
 
       return {
         success: true,
         questionnaire,
-        answers: answers ?? new Map(),
+        answers,
       };
     } catch (error) {
       return {

@@ -63,6 +63,26 @@ adb devices
 npm.cmd ci --legacy-peer-deps
 ```
 
+###  Install Integrity Check (30–60s)
+
+> Ziel: schnell beweisen, dass **devDependencies wirklich installiert** sind (insb. TypeScript/Jest), ohne von `npm`/Shell-Policies abhängig zu sein.
+
+```powershell
+cd "c:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App"
+
+# 1) node_modules vorhanden?
+Test-Path .\node_modules
+
+# 2) Tooling direkt aus node_modules ausführen (keine npm.cmd Wrapper)
+node .\node_modules\typescript\bin\tsc --noEmit
+node .\node_modules\eslint\bin\eslint.js . --ext .js,.jsx,.ts,.tsx
+node .\node_modules\jest\bin\jest.js --runInBand --silent
+```
+
+Wenn einer der Befehle fehlschlägt:
+- Neu installieren: `npm.cmd ci --legacy-peer-deps --include=dev`
+- Falls du zuvor einen Install abgebrochen hast ("Batchvorgang abbrechen (J/N)?"), immer einmal komplett neu `ci` laufen lassen.
+
 ### Quality Gates
 ```powershell
 npm.cmd run type-check

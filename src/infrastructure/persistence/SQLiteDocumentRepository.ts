@@ -1,6 +1,6 @@
 import { DatabaseConnection } from './DatabaseConnection';
 import { IDocumentRepository } from '@domain/repositories/IDocumentRepository';
-import { DocumentEntity } from '@domain/entities/Document';
+import { Document, DocumentEntity } from '@domain/entities/Document';
 
 /**
  * SQLite implementation of Document Repository
@@ -166,7 +166,8 @@ export class SQLiteDocumentRepository implements IDocumentRepository {
       return 0;
     }
 
-    return results.rows.item(0).total || 0;
+    const row = results.rows.item(0) as { total?: number | null };
+    return row.total ?? 0;
   }
 
   /**
@@ -180,7 +181,8 @@ export class SQLiteDocumentRepository implements IDocumentRepository {
       return 0;
     }
 
-    return results.rows.item(0).count || 0;
+    const row = results.rows.item(0) as { count?: number | null };
+    return row.count ?? 0;
   }
 
   async getFilePath(id: string): Promise<string | null> {
@@ -191,7 +193,8 @@ export class SQLiteDocumentRepository implements IDocumentRepository {
       return null;
     }
 
-    return results.rows.item(0).encrypted_file_path;
+    const row = results.rows.item(0) as { encrypted_file_path?: string | null };
+    return row.encrypted_file_path ?? null;
   }
 
   async getStorageStats(patientId: string): Promise<{
@@ -213,9 +216,12 @@ export class SQLiteDocumentRepository implements IDocumentRepository {
 
     for (let i = 0; i < results.rows.length; i++) {
       const row = results.rows.item(i);
-      totalFiles += row.count || 0;
-      totalSize += row.totalSize || 0;
-      fileTypes[row.mime_type] = row.count || 0;
+      const mimeType = row.mime_type as string;
+      const count = (row.count as number | undefined) ?? 0;
+      const totalForType = (row.totalSize as number | undefined) ?? 0;
+      totalFiles += count;
+      totalSize += totalForType;
+      fileTypes[mimeType] = count;
     }
 
     return { totalFiles, totalSize, fileTypes };
@@ -224,21 +230,21 @@ export class SQLiteDocumentRepository implements IDocumentRepository {
   /**
    * Map database row to DocumentEntity
    */
-  private mapRowToEntity(row: any): DocumentEntity {
+  private mapRowToEntity(row: Record<string, unknown>): DocumentEntity {
     return DocumentEntity.fromPersistence({
-      id: row.id,
-      patientId: row.patient_id,
-      questionnaireId: row.questionnaire_id,
-      type: row.type,
-      mimeType: row.mime_type,
-      fileName: row.file_name,
-      fileSize: row.file_size,
-      encryptedFilePath: row.encrypted_file_path,
-      ocrData: row.ocr_data,
+      id: row.id as string,
+      patientId: row.patient_id as string,
+      questionnaireId: (row.questionnaire_id as string | null) ?? undefined,
+      type: row.type as Document['type'],
+      mimeType: row.mime_type as string,
+      fileName: row.file_name as string,
+      fileSize: row.file_size as number,
+      encryptedFilePath: row.encrypted_file_path as string,
+      ocrData: (row.ocr_data as string | null) ?? undefined,
       ocrConsentGranted: row.ocr_consent_granted === 1,
-      uploadedAt: row.uploaded_at,
-      updatedAt: row.updated_at,
-      auditLog: row.audit_log,
+      uploadedAt: row.uploaded_at as number,
+      updatedAt: row.updated_at as number,
+      auditLog: row.audit_log as string,
     });
   }
 }

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project>
+  <PropertyGroup>
+    <!-- Force MSBuild to use an installed Windows SDK version.
+         This machine only has Windows 10/11 SDK 10.0.26100.0, while many RNW
+         templates default to 10.0.19041.0. -->
+    <WindowsTargetPlatformVersion Condition="'$(WindowsTargetPlatformVersion)' == '' or '$(WindowsTargetPlatformVersion)' == '10.0.19041.0'">10.0.26100.0</WindowsTargetPlatformVersion>
+
+        <!-- Some build environments (esp. non-developer command prompts) may leave these unset.
+          When empty, older CppWinRT targets can end up globbing from drive root (e.g. \**\*.winmd),
+          which is extremely slow and can look like a hung build. -->
+        <WindowsSdkDir Condition="'$(WindowsSdkDir)' == '' and '$(KitsRoot10)' != ''">$(KitsRoot10)</WindowsSdkDir>
+        <WindowsSdkDir Condition="'$(WindowsSdkDir)' == '' and '$(ProgramFiles(x86))' != ''">$(ProgramFiles(x86))\Windows Kits\10\</WindowsSdkDir>
+        <WindowsSDK_MetadataPathVersioned Condition="'$(WindowsSDK_MetadataPathVersioned)' == '' and '$(WindowsSdkDir)' != '' and '$(WindowsTargetPlatformVersion)' != ''">$(WindowsSdkDir)References\$(WindowsTargetPlatformVersion)</WindowsSDK_MetadataPathVersioned>
+  </PropertyGroup>
+
+  <!-- Ensure C++/WinRT (cppwinrt) headers are on the include path.
+       RNW uses #include <winrt/...>, which lives under Windows Kits ...\Include\<ver>\cppwinrt\winrt\... -->
+  <ItemDefinitionGroup Condition="'$(MSBuildProjectExtension)' == '.vcxproj'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(WindowsSdkDir)Include\$(WindowsTargetPlatformVersion)\cppwinrt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+</Project>

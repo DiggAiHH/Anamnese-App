@@ -1,0 +1,684 @@
+Fragenkatalog 
+
+
+
+? Daten
+0000	Nachname
+0001	Vorname
+0002	Geschlecht
+0003	tag
+0003	monat
+0003 Jahr
+
+Termin > 1000 > 2000 >2001
+Rezept/Verordnung: Auswahl  _ freitext >3003 >3004
+sonst. Anliegen: _ freitext  >3003 >3004
+
+
+? Beschwerden	1000	Haben Sie Beschwerden? ja/nein   
+
+wenn 1000 = ja
+1001	Wie lange bestehen Ihre Beschwerden? 
+	wenige Tage,weniger als 1 Woche,wenige Wochen,wenige Monate,länger als ein 	halbes Jahr,seit Jahren,weiß nicht
+
+1002	Wie häufig treten diese Beschwerden auf?
+selten,unregelmäßig,episodisch,periodisch/regelmäßig,täglich,ständig/ununterbrochen
+
+1003 	Wodurch werden Ihre Beschwerden ausgelöst?
+Belastung/Gehen,Kälteexposition,Längeres Stehen oder Sitzen,Nahrungsaufnahme,Wärme,ohne Auslöser
+
+1004 	Haben sich Ihre Beschwerden verändert? (select)
+abgeklungen,gebessert,unverändert,wechselnd,zunehmend
+
+1005	Haben Sie sonstige Auffälligkeiten? (multiselect)
+Fieber,Kraftlosigkeit,Nachtschweiß,ungewollter Gewichtsverlust,_(andere Auffälligkeiten)
+
+wenn 1005 Fieber
+1105	Fieber Tagesprofil (multiselect)
+	kontinuierlich,remittierend,intermittierend, Schüttelfrost Ja/Nein
+
+1205	Fieber -Temperatur&Messmethode 
+	z. B. 39.2,rektal,oral,Gehörgang
+
+1305	Fieber-Begleitsymptome (muliselect)
+	Nachensteifigkeit,Lichtempfindlichkeit
+
+1405 Fieber-auslösende Ursache Exposition (muliselect)
+Reise (letzte 4–6Wochen), Tier-/Zeckenkontakt, Insektenstiche,Rohmilch, Meeresfrüchte,Sexuelle Kontakte,i.v.-Droge
+
+wenn 1005 Gewicht
+	1505	Gewichtsverlust-Appetit: normal,vermindert,frühe Sättigung 
+
+	1605 Gewichtsverlust – mahlzeiten_tag:
+
+	1605 Gewichtsverlust _trinkmenge_l:
+		
+	1705 Gewichtsverlust-Symptome: Heiserkeit >3 Wo,Kauprobleme,neu aufgetretene 	Hyperpigmentierung,orthostatische Beschwerden,rektaleBlutung,Schluckstörungen,	Schmerzhafte/tastbare Lymphknoten,Soor,TBC-Kontakt,vermehrtes Durstgefühl
+
+wenn 1005 Kraft
+	1805 Kraftlosigkeit- Erschöpfungsgefühl Ja/Nein
+
+	1815 Kraftlosigkeit- spontanes ungewolltes Einschlafen Ja/Nein
+
+	1825 Kraftlosigkeit - Aufstehen vom Stuhl ohne Armeinsatz möglich Ja/Nein
+
+	1835  Kraftlosigkeit- Stürze in  4 Wochen
+
+
+1006	Welche Beschwerden haben Sie?   (muliselect)
+Angiologische Beschwerden - Durchblutungsprobleme (Blut und Lymphgefäße),Atemwegs- und Lungenbeschwerden,Magen-Darm-Beschwerden,Haut und Weichteilbeschwerden (z.B. Wunden/Ekzem),Herz-Kreislaufbeschwerden,Metabolische/Hormonelle,Muskuloskelettale Beschwerden,Neurologische Beschwerden,Urologische/Gynäkologische Beschwerden,Augenbeschwerden,HNO Beschwerden,Psychische/Psychosomatische Beschwerden
+
+
+wenn 1006 Angio
+1010	Welche angiologischen Beschwerden haben Sie? (muliselect)
+	Einschränkung der Gehstrecke,Gefühlsstörungen,Venenerkrankungen und 	Gefäßfehlbildungen,Ödeme,Schmerzen,Wunden/Geschwüre,Shuntprobleme,_ Bitte 	schildern Sie Ihre Beschwerden genauer
+
+wenn 1010 Gehstrecke
+	1110 Gehleistung (select)
+	Schmerzen beim Gehen ohne notwendige Unterbrechung,Gehstrecke über 200 	m,Gehstrecke weniger als 200 m,Schmerzen schon nach wenigen Schritten 	(weniger als 50 m)
+
+wenn 1010 Venen
+	1111 Venenerkrankungen	(select)
+Schmerzen entlang geschlängelter Venen,Juckreiz oder Brennen,Im Tagesverlauf zunehmende Schwellneigung,Schwere Beine,Optisch störend (Besenreiser),Gefäßmalformation (Blutschwamm)
+
+wenn 1010 Ödem
+1112 Ödeme (multiselect)
+Arme/Hände,Gesicht,Fußrücken,Knöchel,Waden,Zehen
+wenn 1010 Schmerz
+1113 Schmerzcharakter (multiselect)
+bohrend,brennend,drückend,dumpf,einschnürend,elektrisierend,krampfartig, pochend,schneidend,stechend
+_ freitext (machen Sie weitere Angaben z.B. über Ausstrahlung)
+
+1114 Ordnen Sie Ihre Schmerzen auf einer Skala von 0 – 10 ein: 0-10
+
+1115 Schmerzlokalisation (multiselect)
+Kopf/Gesicht,Hals/Nacken,Brustkorb/Thorax,Bauch/Abdomen,Lenden-/Kreuzbereich,Becken/Genitalbereich,Schulter/Arm,Hand/Finger,Hüfte/Oberschenkel,Knie/Unterschenkel,Fuß/Zehen,diffus/ganzer Körper,_ machen Sie weitere Angaben z.B. über Ausstrahlung
+wenn 1010 Wund
+	1116 Wundlokalisation (multiselect)
+	Fuß,Hand,Rumpf,Unterschenkel,_ sonstiges
+1117 Wunddauer (select)	
+weniger als 3 Wochen,3 Wochen bis 3 Monate,mehr als 3 Monate
+wenn 1006 Atem
+	1020	Welche Atembeschwerden haben Sie? (multiselect)
+Atemnot,Erkältung,Husten,Infektion mit Fieber (Bronchitis/Lungenentzündung),Nächtliche Atemaussetzer,Schnarchen,Beklemmung im Brustkorb
+
+1121 Belastungsbezug der Atemnot (multiselect)
+Atemnot nur bei starker Anstrengung,Atemnot beim Eilen auf ebener Strecke oder bei leichter Steigung,Notwendigkeit auf ebener Strecke langsamer zu gehen,Pause nach ~100 m oder wenigen Minuten Gehen,Zu atemlos, um das Haus zu verlassen,Atemnot beim An-/Auskleiden,nächtliche Atemnot,Abhängigkeit vom Respirator
+
+wenn 1006 Magen
+	1030	Welche Verdauungs-/Bauchbeschwerden haben Sie? (multiselect)
+Erbrechen,Bauchschmerz,Blähungen,Durchfall,Koliken,Reflux,Verstopfung,_ machen Sie weitere Angaben z.B. über Lokalisation und Ausdehnung
+
+wenn 1030 Erbrechen
+1130_freq_per_day: 
+1131_nahrungsabhaengig:  Ppostprandial/nüchtern
+1132_uebelkeit: Ja/nein
+1133_inhalt: Nahrungsreste, gallig, kaffeesatzartig, blutig
+1134_kolik: Ja/nein
+1135_stuhl: Diarrhö, Obstipation, Meteorismus
+1136_expo: verdorbene Speisen, Mitbetroffene, Reise, Kontakt zu Erkrankten
+1136_fieber: Ja/nein
+1136_neuro Schwindel: lagewechsel-getriggert, Doppelbilder, Nackensteifigkeit
+1137_schwangerschaft: Ja/nein
+1230_dranginko
+
+wenn 1030 Durchfall
+1230_dranginko:Ja/nein
+1230_durst
+1230_nacht: Ja/nein
+1230_oligurie: Ja/nein
+1230_orthostat
+1230_stuehle_24h
+1230_tenesmen
+1231_char:Blut, Schleim, Eiter, wässrig, breiig, fettig/ölig, übel riechend, „klebt“ (Steatorrhoe), hell, schwarz
+1232_expo: Reise letzte 4 Wochen, Trinkwasser/Eiswürfel, Street-Food, Geflügel, Eier, Meeresfrüchte, Rohmilch
+1233_umfeld: Erkrankte im Umfeld, Gemeinschaftsverpflegung, Kita/Heim, Tierkontakte (insb. Reptilien)
+
+wenn 1030 Koliken
+1330_ausstrahl: Rücken, rechte Schulter, Leiste, Genitale
+1330_lokal:rechter Oberbauch, Oberbauch, Flanke, Mittelbauch, Unterbauch
+1331_begleit:Gelbe Bindehäute, dunkler Urin, heller Stuhl, Hautjucken, Harndrang, verminderte Urinmenge
+1332_vor: Gallensteine, Nierensteine, Bauchspeicheldrüseentzündung, Hernien, Darm-OP, Verwachsungen
+wenn weiblich
+1334_gyn: vaginale Blutung, Ausfluss, Schwangerschaftstest positiv
+
+wenn 1030 Verstopfung
+1430_freq_woche:
+1430_letzte_normale_entleerung
+1431_sympt harte Klumpen, schmerzhafte Defäkation, dünner „Bleistiftstuhl“, Blutauflagerung, unvollständige Entleerung, fehlende Windabgänge, Blähbauch, Harnverhalt
+
+
+wenn 1006 Haut
+	1040	Welche Hautveränderungen haben Sie? (multiselect)
+Ausschlag,Ekzem,Juckreiz,Wunden/Geschwüre,_ machen Sie weitere Angaben z.B. über Lokalisation und Ausdehnung
+	1141_select Dauer: weniger als 3 Wochen, 3 Wochen bis 3 Monate, mehr als 3 	Monate, seit Jahren
+	
+	
+
+
+wenn 1006 Herz
+	1050	Welche Herz-Kreislauf Beschwerden haben Sie? (multiselect)
+Bluthochdruck,Brustschmerz/Angina Pectoris,Herzstolpern,Hypotonie/niedriger Blutdruck,Ohnmachtsanfälle/Schwindel
+1150_ausstrahlung:linker Arm, rechter Arm, Schulter, Rücken, Hals/Kiefer, epigastrisch
+1150_qualitaet: drückend, beklemmend, brennend, stechend
+1150_redflags: Anhaltender Druck >20 Minuten, rasch progredient, Ruheangina neu, schlimmster Schmerz, neu aufgetretene Dyspnoe, Synkope
+1151_ntg Wirkung: Ja/nein
+1151_ntg Wirkeintritt_min:
+1151_ruhebesserung: Ja/nein
+1151_trigger:körperliche Belastung, emotionaler Stress, Kälte, Wind, schwere Mahlzeiten, Ruheangina vorhanden, morgens in Ruhe, nachts in Ruhe
+1152_dauer_min:
+1152_erstauftreten_select: akut, wenige Tage, länger als 1 Woche
+1152_verlauf_select: neu, progredient, gleichbleibend
+1153_begleit: Dyspnoe, Schwitzen, Übelkeit/Erbrechen, Schwindel/Präsynkope/Synkope, Palpitationen
+1153_nicht_isch:atemabhängig, lageabhängig, Palpationsschmerz, Hustenassoziation, Schluckassoziation, Sodbrennen
+
+
+wenn 1006 Hormon
+	1060	Welche hormonell bedingten Beschwerden haben Sie? (multiselect)
+Gewichtsschwankungen,Appetitstörungen,Osteoporose,polyzystisches Ovar,Hitzewallungen,Wechseljahrbeschwerden,_ machen Sie weitere Angaben
+
+
+wenn 1006 Muskul
+	1070	Wo bestehen Beschwerden im Bewegungsapparat? (multiselect)
+Gelenke,Muskeln,Wirbelsäule
+	1171 Art der Gelenkeschwerden
+Berührungsschmerz, Bewegungsschmerz, Formabweichung/Auftreibung, Instabilität, Schmerzen, Schwellungen, Steifigkeit, Überwärmung
+
+wenn 1171 Schmerz
+	1172 Schmerzcharakter: bohrend, brennend, drückend, dumpf, 	einschnürend, elektrisierend, krampfartig, pochend, schneidend, stechend
+
+	1173 Ordnen Sie Ihre Schmerzen auf einer Skala von 0 – 10 ein: 0-10
+
+wenn 1170 Muskel
+	1174 Art der Muskelbeschwerden: Kraftverlust, Muskelkrämpfe, 	Muskelschwund, Muskelverhärtung, plötzliche Formänderung
+
+wenn 1170 Wirbel
+	1175 Art der Wirbelsäulenbeschwerden: Bekannte Osteoporose, 	Bewegungsschmerz, Fehlhaltung (Skoliose), Heben und Bücken 	eingeschränkt, Instabilitätsgefühl, Muskelverspannung, Probleme beim 	Wasserlassen oder Stuhlgang (Harnverhalt, Inkontinenz), Plötzlich und sehr 	stark aufgetretener Schmerz, Schmerzverstärkung beim Husten oder Niesen, 	Schwäche oder Gefühlsstörung in den Beinen, Steifigkeit
+
+wenn 1006 Neuro
+	1080	Welche neurologischen Beeinträchtigungen haben Sie? (multiselect)
+Kopfschmerzen,Gefühlsstörungen,Kontrollverlust,Gleichgewicht/Schwindel,Konzentration/Merkfähigkeit
+	
+wenn 1080 Kopf
+	1181	Was begleitet den Kofschmerz
+Fieber, Nackensteife oder Bewusstseinsstörungen, Halbseitenkopfschmerz, Hinterhauptschmerz, Krampfanfälle, Kopfschmerz nach Trauma, Licht- oder Lärmempfindlichkeit während des Schmerzes, Plötzlicher, heftigster Kopfschmerz (Donnerschlagkopfschmerz), Sehstörungen, Sprachstörungen oder Lähmungserscheinungen, Spannungsgefühl, Stirnkopfschmerz, Schläfenschmerz, Übelkeit und Erbrechen
+
+1182 Schmerzcharakter
+bohrend, drückend, dumpf, pochend, stechend
+1183 Ordnen Sie Ihre Schmerzen auf einer Skala von 0 – 10 ein: 0-10
+
+wenn 1080 Gefühl
+1184 Gefühlsstörungen
+herabgesetzte Empfindung, vollständiger Empfindungsausfall/Taubheitsgefühl, übersteigerte Empfindlichkeit, unangenehm veränderte Wahrnehmung (z. B. Berührung schmerzhaft), Missempfindungen ohne adäquaten Reiz (Kribbeln, Ameisenlaufen), übermäßiges Schmerzempfinden durch normalerweise nicht schmerzhafte Reize
+wenn 1080 Kontroll
+1185 Kontrollstörung
+Bewusstseinsverlust, Gang- und Standunsicherheit, Harn- und/oder Stuhlinkontinenz, Impulskontrollverlust/Enthemmung, Lähmungserscheinungen, Sprachkontrollverlust
+wenn 1080 Schwindel
+1186 Art des Schwindels
+Drehschwindel (wie im Karussell), Liftschwindel (wie im Aufzug), Schwankschwindel (wie auf einem Schiff), Benommenheit, Schwarzwerden vor den Augen, Unsicher auf den Beinen, Wie auf Watte gehen
+1187 Schwindelauslöser
+Dunkelheit, Flackerlicht, Lagewechsel (z. B. Aufstehen), Lärm, Kopfbewegungen, körperliche Anstrengung, Stress/Schlafmangel, Überkopfarbeiten, sonstige (z. B. bestimmte Nahrungsmittel)
+1188 Auftreten
+Plötzlich einsetzend, Langsam, allmählich, schleichend, Sekunden bis Minuten, Minuten bis Stunden, Mehrere Tage, Wochen bis Monate, Schwindelattacken, Dauerschwindel
+
+1189 Schwindelbegleitsymptomatik
+Bewusstseinsverlust, Gefühlsstörungen, Herzrasen, Hörminderung, Kopfschmerzen, Kribbelmissempfindungen, Lähmungen, Nystagmus/Augenpendeln, Ohrgeräusche, Sprachstörungen, Schweißausbruch, Verwirrtheit
+
+wenn 1006 Uro
+	1090	Welche urologischen/gynäkologischen Störungen treten auf?
+
+Wenn 0002 = Weiblich
+Schwangerschaftsprobleme,Abschwächung oder erschwertes Wasserlassen,Blutiger Urin,Brennen beim Wasserlassen,Dranginkontinenz,Harndrang,Häufiges Wasserlassen in kleinen Mengen,Nierenkolik,Restharngefühl,Sekretion der Harnröhre,Übelriechender Urin,klimakterische Beschwerden,Zyklusstörungen,Vaginaler Ausfluss,Juckreiz im Genitalbereich,Dyspareunie (Schmerzen beim Geschlechtsverkehr),Postmenopausale Blutung,Zwischenblutungen,starke oder verlängerte Regelblutungen,schmerzhafte Menstruation,
+1190_lmp
+1190_menarche_j
+	
+
+	wenn 1090 Blutung/Menstruation
+	1191_flags: Länge 24–38 Tage, Schwankung >7–9 Tage, Dauer der Blutung >8 	Tage
+	1193_pads_per_day:
+	1194_abbrueche:
+	1194_endo: Ja/Nein
+	1194_geburten:
+	1194_myome: Ja/nein
+	1194_ops: Ja/Nein
+	1194_pcos: Ja/nein
+
+	wenn 1090 Schwanger
+	1290_flags: Vaginale Blutung, starke Unterbauchschmerzen/Wehen vor SSW 37, 	Flüssigkeitsabgang 	(Verdacht Blasensprung), Deutlich weniger/keine 	Kindsbewegungen ab SSW 24, Starke 	Kopfschmerzen, Sehstörungen, plötzliche 	Ödeme, Symphysenschmerz, Sodbrennen, Hämorrhoiden
+	1390_abortus
+	1390_gdm: Ja/nein
+	
+		1390_gravida: 
+		1390_preeclampsia: Ja/nein
+		1390_preterm
+		1390_rh: Ja/nein
+		1390_sectio:Ja/nein
+
+
+wenn 0002 =Männlich
+Abschwächung oder erschwertes Wasserlassen,Blutiger Urin,Brennen beim Wasserlassen,Dranginkontinenz,Erektionsstörungen,Harndrang,Häufiges Wasserlassen in kleinen Mengen,Hodenbeschwerden,Nierenkolik,Restharngefühl,Retrograder Samenerguss,Sekretion der Harnröhre,Übelriechender Urin,Varikozele/Hodenkrampfader,häufiges nächtliches Wasserlassen,Juckreiz im Genitalbereich
+
+		
+wenn 1006 Auge
+	1A00	Welche Augenbeschwerden haben Sie?
+Aderhautrötung,Blendempfindlichkeit,Doppelbilder,eingeschränkte Beweglichkeit,Gesichtsfeldausfälle,Lichtblitze,Lidschluss nicht möglich,Rotes schmerzhaftes Auge,Rußregen,plötzlicher Sehverlust,Schmerz hinter dem Auge,Schwellung und Rötung,vermehrter Tränenfluss,verminderte Augenbeweglichkeit,verschwommenes/unscharfes Sehen,Schleiersehen
+
+wenn 1006 HNO
+	1B00	Welche HNO-Beschwerden haben Sie? 
+	Hörstörung,Nase,Ohren,Rachen,Schlucken,Schwindel,Stimmstörung
+	
+	wenn 1B00 Hör
+	1B01 Hörsturz,Überempfindlichkeit,vermindertes Hörvermögen,	Ohrgeräusche/Tinnitus,Tonhöhenverzerrung
+
+	wenn 1B00 Nase
+	1B02 	Geruchsstörung,Borkenbildung,Eiterabsonderung,Formveränderung,Laufende 	Nase,Nasenbluten,Verstopfte Nase
+
+	wenn 1B00 Nase
+	1B03 Ausfluss,Fremdkörper,Ohrenbluten,Ohrmuschelentzündung,Verstopfte Ohren
+
+	wenn 1B00 Rachen
+	1B04 Beläge,Blutung,Geschwollene Rachenmandeln,Kratzen,Halslymphknoten 		(Schwellung/Schmerzen),Heiserkeit,Hustenreiz,Mundgeruch,Räusperzwang
+
+	wenn 1B00 Schlucken
+1B05Regurgitation,Fremdkörpergefühl,Kloßgefühl,Schluckschmerz,Steckenbleiben,Verschlucken,Würgreiz
+	
+	wenn 1B00 Stimm
+	1B06 Abhusten erschwert,Heiserkeit,Kraftlose Stimme,Rauhe Stimme,Totaler 	Stimmverlust
+	
+	wenn 1B00 Schwindel 
+	1186 Schwindel  > 1187 > 1188 > 1189
+
+
+wenn 1006 Psych
+1C00 Fühlten Sie sich in den letzten 2 Wochen häufig traurig oder hoffnungslos? 
+1C01 Hatten Sie deutlich weniger Freude an Aktivitäten? 
+1C02 Fühlten Sie sich oft antriebslos oder erschöpft? 
+1C03 Leiden Sie unter ständiger Nervosität oder Sorgen? 
+1C04 Hatten Sie schon einmal plötzliche Angstanfälle (Herzrasen, Atemnot, Schwindel)? 1C05 Vermeiden Sie Orte oder Situationen aus Angst? 
+1C06 Haben Sie Ein- oder Durchschlafstörungen? 
+1C07 Fühlen Sie sich morgens unausgeruht? 
+1C08 Haben Sie Schwierigkeiten, sich zu konzentrieren? 
+1C09 Vergessen Sie häufiger Dinge? 
+1C10 Hören oder sehen Sie Dinge, die andere nicht wahrnehmen? 
+1C11 Haben Sie Überzeugungen, die andere als ungewöhnlich ansehen? 
+1C12 Trinken Sie regelmäßig Alkohol oder nehmen Sie Drogen/Medikamente außerhalb ärztlicher Vorgaben? 
+1C13 Haben Sie das Gefühl, die Kontrolle über den Konsum zu verlieren? 
+1C14 Hatten Sie schon einmal Gedanken, nicht mehr leben zu wollen? 
+1C15Haben Sie konkrete Pläne, sich etwas anzutun?
+
+
+wenn Alter < 7 Jahre
+1P00_ernaehrung1LJ:  Auswahlsliste: Stillen, Mischform (Stillen/Flasche), Flasche, Beikost altersgerecht, und es gibt noch ein _freitext
+1P00_frueh_neonatal: Startprobleme Ja/nein
+1P00_geburtsgewicht_g: das ist ein Zahl
+1P00_geburtslaenge_cm:
+1P00_geburtsmodus: Spontan, Sectio, Saugglocke, Forceps
+1P00_ssw:
+1P10_freitext (Auffälligkeiten):
+1P10_Lern- oder Konzentrationsprobleme?:
+1P10_motorik: Unauffällig, Verzögert, Unsicher
+1P10_sprache: unauffällig,verzögert
+1P10_wachstum: unauffällig,verzögert
+1P20_bronchitiden: Bronchitiden wiederkehrend? ja/nein
+1P20_freitext zu Impfungen:
+1P20_hno: Ohrentzündungen wiederkehrend? ja/nein
+1P20_infekte: Mehr als 6 Infekte pro Jahr? ja/nein
+1P20_mmrw_stiko:Vollständig, Unvollständig, Unbekannt
+1P20_tonsillitis: wiederkehrend? ja/nein
+1P30_allergien: Allergien/Nahrungsmittelunverträglichkeiten? 
+1P30_asthma: ja/nein
+1P30_dermatitis:ja/nein
+1P30_fehlbildungen: ja/nein _freitext
+1P30_herz: herzfehler ja/nein _freitext
+1P30_medikation: _freitext
+1P30_stoffwechsel: _freitext
+1P40_aengste: ja/nein
+1P40_betreuung: Kindergarten, Schule, Tagesstätte, Keine Einrichtung
+1P40_bewegung: ausreichend, zu wenig
+1P40_ernaehrung: ausgewogen,verbesserungsbedürftig
+1P40_familie: besondere Belastung
+1P40_schlaf: Störungen ja/nein
+1P51_beatmung: Beatmung/intensivaufenthalt? ja/nein
+1P15_pgar_1min: 0–3 (Poor), 4–6 (Mittelgradig beeinträchtigt), 7–10 (Gut)
+1P15_pgar_5min: 0–3 (Poor), 4–6 (Mittelgradig beeinträchtigt), 7–10 (Gut)
+1P15_pgar_10min: 0–3 (Poor), 4–6 (Mittelgradig beeinträchtigt), 7–10 (Gut)
+1P53_atopie_familie: ja/nein
+
+
+? Terminvereinbarung
+2000 Versicherungsstatus:	Privat/selbstzahler – gesetzlich
+2001 Haben Sie bereits einen Termin bei uns?  Ja/nein
+
+wenn 2001 ja	
+	2002 Termin am: Datumauswahl 
+
+wenn 2001 nein	
+	2003 Welche Uhrzeit kommt für Ihren Terminwunsch in Frage?: vormittags, 			nachmittags, egal
+
+	2004 Welche Wochentage bevorzugen Sie? (multriselct) : Montag, Dienstag, 		Mittwoch, Donnerstag, Freitag, egal
+
+2005 Waren Sie schon einmal bei uns? ja/nein
+
+2006 Weshalb kommen Sie zu uns? Abklärung oben genannter Beschwerden, Kontrolluntersuchung, Vorsorge/Prävention, Abklärung auffälliger Befunde, Abklärung chron. Erkrankungen, Tumorverdacht, Neurologische Symptome, Orthopädische Probleme, Therapieanpassung/Medikamentenkontrolle, Unfallfolgen (Arbeitsunfall), Begutachtung/Anträge, Einholung einer Zweitmeinung, anderer Anlass z. B. Behandlung, neues Symptom _(Freitext)
+
+
+wenn 2006 Kontrolluntersuchung
+	2010: Blutzucker/Diabeteskontrolle, Laborwerte allgemein, sonstige 		Kontrolle_freitext
+
+wenn 2006 Vorsorge
+	2020: Aortenaneurysma-Screening (für Männer ab 65), Gefäßalter-Bestimmung 	(IgeL), Kontrolle periphere arterielle Verschlusskrankheit (pAVK), Schlaganfallrisiko-	Check (IgeL), Thrombose-Risikoeinschätzung, Gesundheits-Check-up (IgeL), 	Impfstatus-Kontrolle, Bluthochdruck-Screening, Blutzucker-/Diabetes-Screening, 	Lipidstoffwechsel-/Cholesterin-Screening, Hautkrebs-Screening, Darmkrebs-	Screening, Prostata-Vorsorge (PSA, Tastuntersuchung), Gynäkologische Vorsorge, 	Osteoporose-/Knochendichte-Messung, Lungengesundheit (z. B. COPD-/Raucher-	Screening), Lebensstil-Check (Bewegung, Ernährung, Gewicht, Stress)
+
+wenn 2006 Befunde
+	2030: Bildgebung (Röntgen, CT, MRT, Ultraschall), Laborauffälligkeiten, weitere 	Vorbefunde _freitext
+
+	
+wenn 2006 chronisch
+	2040 Herz-Kreislauf (Hypertonie, KHK, Herzrhythmus), Gefäßerkrankung, 		Stoffwechsel (Diabetes, Schilddrüse), Atemwege (Asthma, COPD), sonstige 		Erkrankungen 
+
+wenn 2006 Tumor
+	2045 Tumorverdacht: Knoten/Schwellung, Blut im Stuhl, Gewichtsverlust, 		andere Anhaltspunkte _freitext
+
+wenn 2006 Neurologie
+	2060 Neurologische Symptome: Schwindel, Lähmungen, Sensibilitätsstörungen, 		Krampfanfälle, sonstige Symptome _freitext
+
+	wenn 2040 Herz
+	2041 Herz-Kreislauferkrankung: Bluthochdruck, Angina pectoris, 				Herzrhythmusstörung, andere Herz-Kreislauferkrankungen _freitext 
+
+	wenn 2040 Gefäß
+	2042 Gefäßerkrankung: Aneurysma, pAVK, Krampfadern, Lymphödem, 			Lipödem, Raynaud-Syndrom, Thrombose, Vaskulitis, andere 				Gefäßerkrankungen _freitext
+	
+	wenn 2040 Stoffwechsel
+	2043 Stoffwechselstörung: Diabeteseinstellung, Fettstoffwechseleinstellung, 		Überwachung/Kontrolle der Schilddrüsenfunktion, andere					Stoffwechselerkrankungen _freitext
+
+	wenn 2040 Asthma	
+	2044 Asthma/COPD: Verschlechterung der Atemfunktion, Inhalationstechnik, 		Nebenwirkungen, Rauchstopp-Intervention, andere Probleme _freitext
+
+wenn 2006 Neurologie
+	2070 Orthopädische Probleme: Arthrose, Bandscheibenbeschwerden, 	Fehlstellungen/Bewegungseinschränkung, Deformitäten/Mißbildungen, sonstige 	Probleme _freitext	
+
+
+wenn 2006 Unfall
+	2080 Unfallfolgen (Arbeitsunfall): Welchen Beruf bzw. welche Tätigkeit üben Sie 	aus?
+
+	2081 Wer ist Ihr Arbeitgeber (Name, Anschrift)?
+
+	2082 Seit wann sind Sie bei diesem Arbeitgeber beschäftigt?
+
+2083 Welche Berufsgenossenschaft ist für Sie zuständig? (select)
+Berufsgenossenschaft der Bauwirtschaft, Berufsgenossenschaft Energie Textil Elektro Medienerzeugnisse, Berufsgenossenschaft Holz und Metall, Berufsgenossenschaft Handel und Warenlogistik, Berufsgenossenschaft Nahrungsmittel und Gastgewerbe, Berufsgenossenschaft Rohstoffe und chemische Industrie, Berufsgenossenschaft Verkehrswirtschaft Post-Logistik Telekommunikation, Berufsgenossenschaft für Gesundheitsdienst und Wohlfahrtspflege, Verwaltungs-Berufsgenossenschaft, Sozialversicherung für Landwirtschaft Forsten und Gartenbau (Landwirtschaftliche Berufsgenossenschaft), Unfallversicherung Bund und Bahn, Unfallkassen der Länder, Gemeindeunfallversicherungsverbände/Kommunale Unfallkassen, Feuerwehr-Unfallkasse	
+
+2084 An welchem Tag ist der Unfall passiert?
+
+2085 Zu welcher Uhrzeit ist der Unfall passiert?
+2086 Es handelt sich um: Arbeitszeit, Wegeunfall, Pause
+
+	2087 Unfallort? Betriebsgelände, Baustelle, Arbeitsweg, anderer Ort _freitext
+
+	2088	Unfallhergang? 
+
+	2089  Beschreiben Sie hier Ihre Verletzungen	
+
+	2090 Wurde der Unfall im Betrieb gemeldet? ja/nein
+
+	2091	Wurde eine ärztliche Erstversorgung durchgeführt? ja/nein
+
+	2092	Wer hat die ärztliche Erstversorgung durchgeführt?
+
+Wenn 2006 Begutachtung
+	2100 Freies Gutachten/Versicherungsgutachten, GdB Gutachten, Reha Antrag, 	_machen Sie hier nähere Angaben
+
+
+
+?  – Adressdaten 
+
+wenn 2005 = nein
+3000 Wie lautet Ihre PLZ?   
+
+wenn 2005 = nein
+3001 Wohnort   
+
+wenn 2005 = nein
+3002 Wohnanschrift 
+
+immer
+3003 E-Mail für Ihre Terminbestätigung
+
+immer
+3004 Mobilrufnummer für Rückfragen?
+
+3005 Geben Sie hier – wenn bekannt – Ihre Patienten-ID ein  (optional)
+
+?Körpermaße-Rauchverhalten  (nur wenn 2005 = nein)
+
+4000 Wie groß sind Sie?
+
+4001 Wie schwer sind Sie (in kg)?
+
+4002 Haben Sie jemals geraucht?
+
+Wenn 4002 ja
+	4003 Durchschnittlich wie viele Zigaretten pro Tag?
+	4004 Wie viele Jahre haben Sie geraucht?
+	4005 Rauchen Sie immer noch?
+	
+Wenn 4002 nein
+	4006 Wann (Jahr) haben Sie aufgehört?	
+
+
+4100 Haben Sie eine der folgenden Impfungen erhalten? COVID-19, Diphtherie, FSME, Hepatitis B, Herpes Zoster (Gürtelrose), Influenza (Grippe), Masern, Mumps, Röteln (MMR), Pneumokokken, RSV, Tetanus, keine der aufgeführten Impfungen erhalten, _freitext
+
+4120 Berufliche Situation: Vollzeit, Teilzeit, Rentner/in, arbeitslos, in Ausbildung/Studium, keine Angabe
+
+4121 Stressbelastung: nicht gestresst, leicht gestresst, mäßig gestresst, stark gestresst
+
+4122 Schlafqualität: erholsam, keine Probleme, gelegentlich Probleme, häufig Probleme, starke Schlafstörungen
+
+4123 Bewegung im Alltag: unter 150 Minuten/Woche, 150–300 Minuten/Woche, über 300 Minuten/Woche, keine Angabe
+
+4130 Alkoholkonsum: nie, selten, 1–2× pro Woche, fast täglich, täglich
+
+4131 Drogen: nie konsumiert, früher, aktuell nicht mehr, gelegentlich, regelmäßig
+
+
+nach Bedingung (Alter, Geschlecht)
+4140 Vorsorgeuntersuchungen: Gesundheits-Check-up alle 3 Jahre ab 35, Krebsfrüherkennung Abstrich Gebärmutterhals jährlich, Hautkrebs-Screening alle 2 Jahre ab 35 Jahren, Mammographie alle 2 Jahre ab 50, Prostata Tastuntersuchung ab 45 Jahren jährlich, Darmkrebsvorsorge ab 55 Jahren, Bauchaortenaneurysma-Screening Männer über 65, Hepatitis B/C Screening einmalig ab 35 Jahren möglich   
+
+? Diabetes (nur wenn 2005 = nein)
+5000 Leiden Sie an Diabetes? 
+Wenn 5000 Ja
+	5001 Typ: Typ-1-Diabetes, Typ-2-Diabetes, Gestationsdiabetes, Spezifische 	Diabetesformen (MODY; Pankreaserkrankung; Endokrinopathien; 	medikamenteninduziert), Prädiabetes, Unklar / in Abklärung 
+	
+	5002 Behandlung (multiselect): Metformin (Glucophage; Metformin AL; Siofor), 	SGLT2-Hemmer (Jardiance; Forxiga; Invokana; Steglatro), GLP-1-Rezeptor-	Agonisten (Ozempic; Rybelsus; Victoza; Trulicity; Byetta), DPP-4-Hemmer (Januvia; 	Xelevia; Trajenta; 	Onglyza; Galvus), Sulfonylharnstoffe (Amaryl; Gliben-HEXAL; 	Euglucon N), Glinide (NovoNorm; Starlix), Thiazolidindione (Actos), Basalinsulin 	(Lantus; Toujeo; Levemir; Tresiba; Insulatard), Bolusinsulin (NovoRapid; Humalog; 	Fiasp; Apidra), Mischinsulin (NovoMix; Humalog Mix; Insuman Comb), Insulinpumpe 	(Omnipod; Accu-Chek Insight; Medtronic MiniMed), Sensorunterstützte 	Insulintherapie (Dexcom; FreeStyle Libre; Medtronic Guardian), 	Kombinationstherapie oral 	(Janumet; Jentadueto; Segluromet; Xigduo), Insulin + 	Tablette (z. B. Basalinsulin + Metformin oder GLP-1-Analogon), Andere Antidiabetika 	(Setmelanotid; Imeglimin), Keine medikamentöse Therapie, Diät, Forxiga, 	Glibenclamid, Insulin, Januvia, 	Jardiance, Metformin, weitere Präparate oder 	Kombinationen eingeben_freitext
+
+	5003 Komplikationen: Diabetisches Fußsyndrom, Retinopathie, Neuropathie, 	Nephropathie
+
+
+? Mobilität, Implantate, Blutverdünner, Allergien (nur wenn 2005 = nein)
+
+6000 Haben Sie körperliche Beeinträchtigungen?
+Wenn 6000 Ja
+	6000_gdb: _
+
+	6000_merkzeichen (multiselct): G – erhebliche Gehbeeinträchtigung, aG – 	außergewöhnliche Gehbehinderung, B – Begleitperson erforderlich, H – hilflos, Bl – 	blind, Gl – gehörlos, TBl – taubblind, RF – Ermäßigung beim Rundfunkbeitrag
+
+6000_pflegegrad: Pflegegrad 1 – geringe Beeinträchtigung der Selbstständigkeit, Pflegegrad 2 – erhebliche Beeinträchtigung der Selbstständigkeit, Pflegegrad 3 – schwere Beeinträchtigung der Selbstständigkeit, Pflegegrad 4 – schwerste Beeinträchtigung der Selbstständigkeit, Pflegegrad 5 – schwerste Beeinträchtigung der Selbstständigkeit mit besonderen Anforderungen an die pflegerische Versorgung
+
+6001 Welche Beeinträchtigungen haben Sie? (multiselect): Künstlicher Darmausgang, Am Rollator mobil, Auf Rollstuhl angewiesen, Gehbehinderung, Oberschenkel-Amputiert, Unterschenkel-Amputiert, Hilfe beim An- und Auskleiden benötigt, (Teil)Lähmung an den Extremitäten, Schwerhörigkeit/Ertaubung, Sehkraftverlust, Urininkontinenz, Stuhlinkontinenz, andere Beeinträchtigungen
+
+6002 Tragen Sie Implantate? (multiselct)
+Wenn 6002 Ja
+6003 Blasensphinkter, Cochleaimplantat, Defibrillator, Gelenkendoprothese, Herzschrittmacher, Künstliche Herzklappe, andere Implantate
+
+6004 Erhalten Sie blutverdünnende Medikamente? (multiselect)
+Wenn 6004 Ja
+6005 ASS, Brilique, Clopidogrel, Efient, Eliquis, Lixiana, Marcumar, Pradaxa, Xarelto
+
+6006 Leiden Sie unter Allergien?
+Wenn 6006 Ja
+6007 (multiselect): Antibiotika, Latex, Röntgenkontrastmittel, Schmerzmedikamente, Glutenunverträglichkeit, Lactoseintoleranz, Pollen, Milben, Tierhaare, Nahrungsmittel (z. B. Nüsse, Obst, Gluten, Milch), _Andere Allergien hier eintragen
+
+wenn Alter > 60 Jahre
+6008 Mobilität: ohne Hilfsmittel mobil, Gehstock, Rollator, Rollstuhl, bettlägerig, _weitere Angaben zur Mobilität
+
+6009 Stürze im letzten Jahr: keine Stürze,1-2 Stürze,?3 Stürze
+
+6010 Selbstversorgung (z.?B. Waschen, Ankleiden, Essen): vollständig selbstständig, teilweise auf Hilfe angewiesen, weitgehend hilfsbedürftig
+
+6011 Kognitive Einschränkung (Gedächtnis / Orientierung): keine Einschränkungen bekannt, Gedächtnisprobleme, Orientierungsprobleme, Konzentrations-/Aufmerksamkeitsstörungen, _weitere Angaben (z. B. Demenzdiagnose)
+
+
+
+?? Gesundheitliche Störungen & Begleiterkrankungen (nur wenn 2005 = nein)
+
+7000 Haben Sie eine der folgenden Gesundheitsstörungen? (multiselect): Bluthochdruck, Blutung/Gerinnungsstörung, Chronische Lungenerkrankung (Asthma/COPD), Dialyseabhängigkeit, Depression/Gemütsstörung, Herzschwäche/Herzrhythmusstörung, Leber/Magen-Darm-Erkrankungen, MRSA-Infektion in der Vergangenheit, Nierenfunktionsstörung, Erkrankung des Nervensystems, Rheuma, Schilddrüsenerkrankung, Weitere Diagnosen oder Vorerkrankungen hier eintragen  _freitext
+
+	wenn 7000 Gerinnung
+7001 (checkbox): Antiphospholipidsyndrom, Antithrombin-III-Mangel, Faktor-V-Leiden-Mutation (APC-Resistenz), Hämophilie A, Heparin-induzierte Thrombozytopenie, Hyperhomocysteinämie, Protein-C-Mangel, Protein-S-Mangel, Von-Willebrand-Syndrom 
+andere Gerinnungsstörungen _freitext
+
+wenn 7000 Lunge
+7002 (checkbox): Asthma bronchiale, Chronisch obstruktive Lungenerkrankung (COPD), Lungenemphysem, Bronchiektasen, Chronische Bronchitis (nicht obstruktiv), Idiopathische pulmonale Fibrose (IPF), Pneumokoniosen (z. B. Silikose, Asbestose), Sarkoidose (Lunge)
+weitere Lungenerkrankung _freitext
+	wenn 7002 Asthma
+	7102_activity: Aktivität (select): nein,leicht deutlich
+
+	7102_exac_count: Exacerbation/Jahr:
+
+	7102_exac_hosp: Klinikaufnahme ja/nein
+
+	7102_exac_intub: Intubation/Beatmung ja/nein
+
+	7102_exac_ocs: Asthmaspray Ja/nein
+
+	wenn  7102_exac_ocs = ja
+		7102_freq_day (select): täglich, ?2×/Woche, >2×/Woche
+
+	7102_hustenart (selcct): trocken, produktiv, wechselnd
+
+	7102_leitsymptome (checkbox): Husten, pfeifende Atmung, Luftnot, 	Brustenge
+
+	7102_pneumothorax: Pneumothorax in der Vergangenheit? ja/nein
+
+	7102_saison (Checkbox): Frühling, Sommer, Herbst, Winter
+
+	7102_trigger_allergie (Checkbox): Anstrengung, Arbeit, Pollen, Hausstaub, 	Tier, Schimmel/Feuchte, Kälte, Reizstoffe, Wetterwechsel, Infekte, Allergene 	(Pollen/Tier/Staub), Rauch/Dämpfe
+
+
+wenn 7000 Dialyse
+7003 (checkbox): Hämodialyse, Peritonealdialyse, über funktionierenden AV-Shunt, über Dialysekatheter
+
+wenn 7000 Gemüt
+7004 (Checkbox): Major Depression (rezidivierende depressive Störung) Dysthymie - anhaltende depressive Störung Schizoaffektive Störung, depressive Form Saisonal abhängige Depression (Winterdepression) Bipolare affektive Störung (manisch-depressiv) Anpassungsstörung mit depressiver Reaktion Major Depression (rezidivierende depressive Störung) Dysthymie - anhaltende depressive Störung Schizoaffektive Störung, depressive Form Saisonal abhängige Depression (Winterdepression) Bipolare affektive Störung (manisch-depressiv) Anpassungsstörung mit depressiver Reaktion
+_ weitere Gemütsstörung (Freitext)
+
+wenn 7000 Herz
+7005 (checkbox): Herzklappenerkrankung, Kardiomyopathie, Offenes Foramen ovale, Vorhofflimmern
+weitere Herzerkrankung _freietxt
+
+wenn 7000 Magen	
+7006 (checkbox): biliäre Zirrhose, chron. Hepatitis, Colitis ulcerosa, Divertikelentzündungen, Fettleber, GERD – Gastroösophagealer Reflux, Gallensteinleiden, Leberzirrhose, Morbus Crohn, Pankreatitis, Pfortaderthrombose weitere Magen-Darm-Erkrankung _freitext
+
+wenn 7000 MRSA	
+7007 (select): erfolgreich eradiziert, weiterhin vorhanden, weiß nicht
+
+wenn 7000 Niere	
+7008 (checkbox): Niereninsuffizienz (nicht dialysepflichtig), Zystennieren, Nierenbeckenentzündungen rezidivierend, Glomerulonephritis 
+weitere Nierenerkrankung _freitext
+
+wenn 7000 Nerven	
+7009 (Checkbox): Krampfleiden/Epilepsie, Migräne, Morbus Parkinson, Multiple Sklerose, Neuropathische Schmerzen, Polyneuropathie
+weitere Nervenerkrankung _freitext
+
+wenn 7000 Rheuma	
+7010 (checkbox): Rheumatoide Arthritis (chronische Polyarthritis), Morbus Bechterew, Psoriasis-Arthritis, Systemischer Lupus erythematodes (SLE), Gichtarthritis
+weitere Rheumaerkrankung _freitext
+
+wenn 7000 Schild	
+7011 (checkbox): Autonomie, Hashimoto, Morbus Basedow, Schilddrüsenvergrößerung, Überfunktion, Unterfunktion
+weitere Schilddrüsenerkrankung _freitext
+
+
+
+? Vorerkrankungen, Operationen & Medikamente (nur wenn 2005 = nein)
+8000 (Checkbox) Gab es bei Ihnen bereits folgende Erkrankungen oder Eingriffe? Aneurysma, Arterielle Durchblutungsstörung, Beinvenenthrombose, Gefäßeingriffe/Herzoperation (OP), Herzinfarkt, Infektionskrankheiten, Krebs, Lungenarterienembolie, Organtransplantation, Schlaganfall, keine, Freitextfeld – hier können Sie weitere Angaben machen
+wenn 8000 Aneurysma
+8001 (checkbox) wo befand sich das Aneurysma? Bauch, Brustkorb, Leiste, Kniekehle, Kopf
+an anderer Stelle _freitext 
+8002 (select) Wie wurde das Aneurysma behandelt? Operation, Endoprothese, ohne Behandlung – Beobachtung
+
+wenn 8000 Arteriell
+8003 (checkbox) Welche Arterienerkrankung hatten Sie? Arterienverkalkung (Gefäßverengung/-verschluss), Dissektion, Schaufensterkrankheit, Embolie
+_freitext (andere Gefäßerkrankung)
+8004 (checkbox) Welche Behandlungen wurden durchgeführt? Gefäßausschälung (TEA) Bypassoperation Embolektomie Gefäßaufdehnung mit Ballon (PTA) Stent Y-Prothese 
+_ freitext (Andere Behandlung)
+
+wenn 8000 thrombose
+8005 Wie oft hatten Sie eine Thrombose?
+8006 Wann und wo (Bein/Arm) hatten Sie eine Thrombose? _Texteingabe (z.?B. 05/2021, linkes Bein – V. Poplitea)
+
+wenn 8000 eingriffe
+8007 (checkbox) Welche Gefäß- oder Herzoperationen wurden durchgeführt?
+Krampfaderoperation (Stripping/Laser), Operation an der Halsschlagader (TEA/Stent), ACVB (Herzbypass), Herzklappenersatz
+_freiext (andere Operationen)
+
+wenn 8000 infarkt
+8008 Wann hatten Sie einen Herzinfarkt? (z.?B. 05/2021 Mehrfachnennung möglich)
+8009 (checkbox): Welche Behandlung wurde durchgeführt? Stent Bypassoperation Lysetherapie Stent Bypassoperation Lysetherapie 
+_ Freitextfeld
+
+wenn 8000 Krebs
+8010 (checkbox): Welche Krebserkrankungen hatten Sie? Blutkrebs, Brustkrebs, Bronchialkrebs, Darmkrebs, Gebärmutterhalskrebs, Hautkrebs, Lymphdrüsenkrebs, Magenkrebs, Ovarialkrebs, Prostatakrebs
+_freitext (andere Krebserkrankungen)
+
+8011 (checkbox): Welche Behandlung wurde durchgeführt? Chemotherapie, Immuntherapie, Operation, Strahlentherapie
+_ Freitextfeld
+
+8012 Ist die Krebsbehandlung abgeschlossen? ja/nein
+
+wenn 8000 embolie
+8013 Wann hatten Sie eine Lungenarterienembolie?   (Mehrfachnennung möglich z.?B. 07/2019; 01/2024)
+
+
+wenn 8000 transplant
+8014 (Checkbox) Welches Organ wurde transplantiert? Herz, Leber, Lunge, Niere, Pankreas
+_ergänzende Angabe (Jahr)
+
+
+wenn 8000 Schlaganfall
+8015 Wann hatten Sie Ihren Schlaganfall?  (z.?B. 05/2021 Mehrfachnennung möglich)
+
+
+wenn 8000 Infektion
+8016 (checkbox) Welche Infektionskrankheiten hatten Sie? Borreliose, Hepatitis B, Hepatitis C, HIV-Infektion / AIDS, Malaria, Tuberkulose
+_freitext (andere Infektionskrankheiten)
+
+
+wenn 0002 weiblich Alter ? 50 Jahre 
+8501 (select) Mammographie-Screening: Teilnahme in den letzten 2 Jahren, keine Teilnahme in den letzten 2 Jahren, Hinweise/Wunsch nach Terminvermittlung
+
+wenn 0002 männlich Alter ? 45 Jahre 
+8502 (select) Prostata-Tastuntersuchung: in den letzten 12 Monaten erfolgt, > 12 Monate oder noch nie, Beschwerden/Anmerkungen
+
+wenn 0002 männlich Alter ? 65 Jahre
+8503 (select) Bauchaortenaneurysma-Screening: bereits durchgeführt (einmalig), noch nicht durchgeführt, Befunde/Terminwunsch
+
+wenn 0002 weiblich Alter ? 45 Jahre 
+8504 (select) Menopausen-Status (optional): prämenopausal, perimenopausal, postmenopausal, nicht angeben
+
+wenn 0002 weiblich Alter 16- 45 Jahre
+8800 Nehmen Sie die Antibabypille? ja/nein
+
+
+?  Medikamente 
+
+8900 (checkbox) Welche Medikamente erhalten Sie?: Keine Medikamente, Antihypertensiva (ACE-Hemmer; AT1-Blocker; Betablocker; Calciumantagonisten; Diuretika), Lipidsenker (Statine; Ezetimib), Antikoagulanzien (DOAK; Marcumar), Thrombozytenaggregationshemmer (ASS; Clopidogrel), Antidiabetika (Metformin; Insulin; SGLT2-Hemmer; GLP-1-Analoga), Schilddrüsenpräparate (Levothyroxin), Kortikosteroide (systemisch; inhalativ), Osteoporosemittel (Bisphosphonate; Denosumab), Inhalative Glukokortikoide, Beta-2-Sympathomimetika (langwirksam), Anticholinergika (LAMA), Leukotrienantagonisten (Lukaste), Protonenpumpenhemmer (Pantoprazol; Omeprazol), Analgetika (NSAR; Paracetamol; Metamizol), Opioide (chronische Schmerztherapie), Antidepressiva (SSRI; SNRI; trizyklisch), Antipsychotika, Antiepileptika, Sedativa / Hypnotika, Antidementiva, Prostatamedikamente (Alphablocker; 5-Alpha-Reduktasehemmer), Hormonpräparate (Östrogene; Gestagene; Testosteron; Schilddrüsenhormone), Immunsuppressiva / Immunmodulatoren (Methotrexat; Biologika), Vitamine / Mineralstoffe (Vitamin D; Calcium; B12)
+
+Hinweis: Bitte bringen Sie Ihren Medikamentenplan zum Besuch mit 
+
+
+
+Kontaktdaten vor Versand prüfen
+9000 email name@example.com   Abgleich mit 3003
+9001 mobil +49 …   Abgleich mit 3004
+
+9900 Wie zufrieden sind Sie mit diesem Fragebogen?: Skala 1-5 Sterne

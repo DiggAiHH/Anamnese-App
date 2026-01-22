@@ -1,0 +1,13 @@
+
+> anamnese-mobile@1.0.0 type-check
+> tsc --noEmit
+
+__tests__/shared/keyManager.test.ts(40,14): error TS2454: Variable 'storage' is used before being assigned.
+__tests__/shared/keyManager.test.ts(41,9): error TS2454: Variable 'module' is used before being assigned.
+__tests__/shared/keyManager.test.ts(58,14): error TS2339: Property 'setItem' does not exist on type 'typeof import("C:/Users/tubbeTEC/Desktop/Projects/Anamnese-App/Anamnese-App/node_modules/@react-native-async-storage/async-storage/lib/typescript/index")'.
+__tests__/shared/keyManager.test.ts(62,20): error TS2339: Property 'setItem' does not exist on type 'typeof import("C:/Users/tubbeTEC/Desktop/Projects/Anamnese-App/Anamnese-App/node_modules/@react-native-async-storage/async-storage/lib/typescript/index")'.
+__tests__/shared/keyManager.test.ts(74,14): error TS2339: Property 'getItem' does not exist on type 'typeof import("C:/Users/tubbeTEC/Desktop/Projects/Anamnese-App/Anamnese-App/node_modules/@react-native-async-storage/async-storage/lib/typescript/index")'.
+__tests__/shared/keyManager.test.ts(86,14): error TS2339: Property 'setItem' does not exist on type 'typeof import("C:/Users/tubbeTEC/Desktop/Projects/Anamnese-App/Anamnese-App/node_modules/@react-native-async-storage/async-storage/lib/typescript/index")'.
+__tests__/shared/keyManager.test.ts(90,20): error TS2339: Property 'setItem' does not exist on type 'typeof import("C:/Users/tubbeTEC/Desktop/Projects/Anamnese-App/Anamnese-App/node_modules/@react-native-async-storage/async-storage/lib/typescript/index")'.
+src/presentation/navigation/RootNavigator.tsx(61,35): error TS2349: This expression is not callable.
+  Type '{}' has no call signatures.

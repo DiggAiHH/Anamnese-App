@@ -1,0 +1,189 @@
+﻿**********************
+nStart der Windows PowerShell-Aufzeichnung
+Startzeit: 20260105150840
+Benutzername: DESKTOP-U1FPK9S\tubbeTEC
+RunAs-Benutzer: DESKTOP-U1FPK9S\tubbeTEC
+Konfigurationsname: 
+Computer: DESKTOP-U1FPK9S (Microsoft Windows NT 10.0.19045.0)
+Hostanwendung: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -NoProfile -NonInteractive -ExecutionPolicy Bypass -File scripts\diagnose-app-launch.ps1 -Aumid cc3a5ac8-ac09-4f03-b6c9-0cfd812841a0_4dnmwfyw5v01r!App -Minutes 20
+Prozess-ID: 13348
+PSVersion: 5.1.19041.6456
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.19041.6456
+BuildVersion: 10.0.19041.6456
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+
+==== Launch diagnostic ====\n
+Time:        2026-01-05T15:08:47.2563433+01:00
+AUMID:       cc3a5ac8-ac09-4f03-b6c9-0cfd812841a0_4dnmwfyw5v01r!App
+PFN:         cc3a5ac8-ac09-4f03-b6c9-0cfd812841a0_4dnmwfyw5v01r
+Start window: 01/05/2026 14:48:40
+
+==== Installed package details ====\n
+
+
+Name              : cc3a5ac8-ac09-4f03-b6c9-0cfd812841a0
+PackageFullName   : cc3a5ac8-ac09-4f03-b6c9-0cfd812841a0_1.0.0.0_x64__4dnmwfyw5v01r
+PackageFamilyName : cc3a5ac8-ac09-4f03-b6c9-0cfd812841a0_4dnmwfyw5v01r
+Status            : Ok
+IsDevelopmentMode : False
+InstallLocation   : C:\Program Files\WindowsApps\cc3a5ac8-ac09-4f03-b6c9-0cfd812841a0_1.0.0.0_x64__4dnmwfyw5v01r
+
+==== Installed manifest + executable check ====\n
+AppxManifest.xml: C:\Program Files\WindowsApps\cc3a5ac8-ac09-4f03-b6c9-0cfd812841a0_1.0.0.0_x64__4dnmwfyw5v01r\AppxManifest.xml
+Executable:  anamnese-mobile.exe
+EntryPoint:  anamnese-mobile.App
+
+==== Manifest dependency sanity (Debug framework detection) ====\n
+âœ… No obvious Debug dependencies found in PackageDependency list.
+
+==== Manifest dependencies (PackageDependency) ====\n
+
+Name                          
+----                          
+Microsoft.NET.CoreFramework...
+Microsoft.NET.CoreRuntime.2.2 
+Microsoft.UI.Xaml.2.8         
+Microsoft.VCLibs.140.00.Debug 
+Microsoft.VCLibs.140.00.Deb...
+
+==== Dependency install check (Get-AppxPackage) ====\n
+OK   Microsoft.NET.CoreFramework.Debug.2.2  2.2.31327.1  (X64)  Microsoft.NET.CoreFramework.Debug.2.2_2.2.31327.1_x64__8wekyb3d8bbwe
+OK   Microsoft.NET.CoreRuntime.2.2  2.2.31331.1  (X64)  Microsoft.NET.CoreRuntime.2.2_2.2.31331.1_x64__8wekyb3d8bbwe
+OK   Microsoft.UI.Xaml.2.8  8.2501.31001.0  (X64)  Microsoft.UI.Xaml.2.8_8.2501.31001.0_x64__8wekyb3d8bbwe
+OK   Microsoft.VCLibs.140.00.Debug  14.0.33519.0  (X64)  Microsoft.VCLibs.140.00.Debug_14.0.33519.0_x64__8wekyb3d8bbwe
+OK   Microsoft.VCLibs.140.00.Debug.UWPDesktop  14.0.33728.0  (X64)  Microsoft.VCLibs.140.00.Debug.UWPDesktop_14.0.33728.0_x64__8wekyb3d8bbwe
+Exe path:    C:\Program Files\WindowsApps\cc3a5ac8-ac09-4f03-b6c9-0cfd812841a0_1.0.0.0_x64__4dnmwfyw5v01r\anamnese-mobile.exe
+Exe exists:  True
+
+==== Direct exe start (best-effort) ====\n
+PS>TerminatingError(Start-Process): "Dieser Befehl kann aufgrund des folgenden Fehlers nicht ausgeführt werden: Zugriff verweigert."
+Direct start ERROR: Dieser Befehl kann aufgrund des folgenden Fehlers nicht ausgeführt werden: Zugriff verweigert.
+
+==== Installed folder exe listing ====\n
+
+Name                 Length La
+                            st
+                            Wr
+                            it
+                            eT
+                            im
+                            e 
+----                 ------ --
+anamnese-mobile.exe 3558400 05
+UWPShim.exe           18312 05
+
+==== JS bundle presence (heuristic) ====\n
+No *.bundle/*.jsbundle files found under InstallLocation.
+
+==== Metro packager check (http://127.0.0.1:8081/status) ====\n
+Status: 200
+Body:   112 97 99 107 97 103 101 114 45 115 116 97 116 117 115 58 114 117 110 110 105 110 103
+
+==== Verdict ====\n
+âŒ FAIL:
+  - No JS bundle found inside installed package (expected for Release self-contained).
+
+==== Attempt launch (explorer.exe) ====\n
+explorer.exe launch invoked
+
+==== Attempt launch (Shell.Application COM) ====\n
+ShellExecute invoked
+
+==== Process check ====\n
+anamnese-mobile process: NOT RUNNING (never observed during polling)
+
+==== Post-launch process sniffer (CIM, 10s) ====\n
+PS>TerminatingError(Where-Object): "Ausnahme beim Aufrufen von "ToDateTime" mit 1 Argument(en):  "Das angegebene Argument liegt außerhalb des gültigen Wertebereichs.
+Parametername: dmtfDate""
+PS>TerminatingError(Where-Object): "Ausnahme beim Aufrufen von "ToDateTime" mit 1 Argument(en):  "Das angegebene Argument liegt außerhalb des gültigen Wertebereichs.
+Parametername: dmtfDate""
+PS>TerminatingError(Where-Object): "Ausnahme beim Aufrufen von "ToDateTime" mit 1 Argument(en):  "Das angegebene Argument liegt außerhalb des gültigen Wertebereichs.
+Parametername: dmtfDate""
+No new related processes observed via CIM.
+
+==== Related host processes (informational) ====\n
+
+Name                    Id StartTime          
+----                    -- ---------          
+ApplicationFrameHost  1292 05.01.2026 10:10:03
+RuntimeBroker         6692 05.01.2026 10:05:49
+RuntimeBroker        11060 05.01.2026 10:07:27
+RuntimeBroker        11772 05.01.2026 10:05:48
+RuntimeBroker        14476 05.01.2026 10:05:35
+RuntimeBroker        14752 05.01.2026 10:05:39
+RuntimeBroker        14912 05.01.2026 10:07:34
+RuntimeBroker        16212 05.01.2026 10:07:36
+RuntimeBroker        16876 05.01.2026 10:07:10
+
+==== Process scan by InstallLocation (CIM) ====\n
+
+
+Name        : MSBuild.exe
+ProcessId   : 14012
+CommandLine : "C:\Program Files\Microsoft Visual Studio\18\Community\MSBuild\Current\Bin\MSBuild.exe" C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\windows\anamnese-mobile.sln /restore /t:Build /p:Configuration=Release /p:Platform=x64 /p:AppxBundle=Never 
+              /p:UapAppxPackageBuildMode=SideloadOnly /p:GenerateAppxPackageOnBuild=true /p:AppxPackageDir=C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\windows\AppPackages\anamnese-mobile_x64_Release_20260105_142544_Test\\
+
+Name        : powershell.exe
+ProcessId   : 16512
+CommandLine : C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -Command powershell.exe -NoProfile -NonInteractive -ExecutionPolicy Bypass -File scripts\diagnose-app-launch.ps1 -Aumid cc3a5ac8-ac09-4f03-b6c9-0cfd812841a0_4dnmwfyw5v01r!App -Minutes 20
+
+Name        : powershell.exe
+ProcessId   : 13348
+CommandLine : "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe" -NoProfile -NonInteractive -ExecutionPolicy Bypass -File scripts\diagnose-app-launch.ps1 -Aumid cc3a5ac8-ac09-4f03-b6c9-0cfd812841a0_4dnmwfyw5v01r!App -Minutes 20
+
+==== Recent Application log (crash/wer) ====\n
+
+
+==== Recent Application Error/WER (unfiltered, first 15) ====\n
+
+
+==== Recent Application Error/WER (filtered by app/host, first 50) ====\n
+
+
+==== Recent AppModel-Runtime/Admin log ====\n
+
+
+==== Recent AppModel-Runtime/Operational log ====\n
+PS>TerminatingError(Get-WinEvent): "Der ausgeführte Befehl wurde beendet, da die Einstellungsvariable "ErrorActionPreference" oder ein allgemeiner Parameter auf "Stop" festgelegt ist: Auf dem Computer "localhost" wurde kein Ereignisprotokoll gefunden, das "Microsoft-Windows-AppModel-Runtime/Operational" entspricht.."
+AppModel-Runtime/Operational query ERROR: Auf dem Computer "localhost" wurde kein Ereignisprotokoll gefunden, das "Microsoft-Windows-AppModel-Runtime/Operational" entspricht.
+
+==== Recent TWinUI/Operational log ====\n
+PS>TerminatingError(Get-WinEvent): "Der ausgeführte Befehl wurde beendet, da die Einstellungsvariable "ErrorActionPreference" oder ein allgemeiner Parameter auf "Stop" festgelegt ist: Es wurden keine Ereignisse gefunden, die den angegebenen Auswahlkriterien entsprechen.."
+TWinUI/Operational query ERROR: Es wurden keine Ereignisse gefunden, die den angegebenen Auswahlkriterien entsprechen.
+
+==== Recent AppXDeploymentServer/Operational log ====\n
+PS>TerminatingError(Get-WinEvent): "Der ausgeführte Befehl wurde beendet, da die Einstellungsvariable "ErrorActionPreference" oder ein allgemeiner Parameter auf "Stop" festgelegt ist: Es wurden keine Ereignisse gefunden, die den angegebenen Auswahlkriterien entsprechen.."
+AppXDeploymentServer/Operational query ERROR: Es wurden keine Ereignisse gefunden, die den angegebenen Auswahlkriterien entsprechen.
+
+==== Recent AppReadiness/Admin log ====\n
+PS>TerminatingError(Get-WinEvent): "Der ausgeführte Befehl wurde beendet, da die Einstellungsvariable "ErrorActionPreference" oder ein allgemeiner Parameter auf "Stop" festgelegt ist: Es wurden keine Ereignisse gefunden, die den angegebenen Auswahlkriterien entsprechen.."
+AppReadiness/Admin query ERROR: Es wurden keine Ereignisse gefunden, die den angegebenen Auswahlkriterien entsprechen.
+
+==== Recent AppReadiness/Operational log ====\n
+PS>TerminatingError(Get-WinEvent): "Der ausgeführte Befehl wurde beendet, da die Einstellungsvariable "ErrorActionPreference" oder ein allgemeiner Parameter auf "Stop" festgelegt ist: Es wurden keine Ereignisse gefunden, die den angegebenen Auswahlkriterien entsprechen.."
+AppReadiness/Operational query ERROR: Es wurden keine Ereignisse gefunden, die den angegebenen Auswahlkriterien entsprechen.
+
+==== Recent AppHost/Admin log ====\n
+PS>TerminatingError(Get-WinEvent): "Der ausgeführte Befehl wurde beendet, da die Einstellungsvariable "ErrorActionPreference" oder ein allgemeiner Parameter auf "Stop" festgelegt ist: Es wurden keine Ereignisse gefunden, die den angegebenen Auswahlkriterien entsprechen.."
+AppHost/Admin query ERROR: Es wurden keine Ereignisse gefunden, die den angegebenen Auswahlkriterien entsprechen.
+
+==== Recent AppHost/Operational log ====\n
+PS>TerminatingError(Get-WinEvent): "Der ausgeführte Befehl wurde beendet, da die Einstellungsvariable "ErrorActionPreference" oder ein allgemeiner Parameter auf "Stop" festgelegt ist: Auf dem Computer "localhost" wurde kein Ereignisprotokoll gefunden, das "Microsoft-Windows-AppHost/Operational" entspricht.."
+AppHost/Operational query ERROR: Auf dem Computer "localhost" wurde kein Ereignisprotokoll gefunden, das "Microsoft-Windows-AppHost/Operational" entspricht.
+
+==== Recent CodeIntegrity/Operational log (blocked binaries) ====\n
+PS>TerminatingError(Get-WinEvent): "Der ausgeführte Befehl wurde beendet, da die Einstellungsvariable "ErrorActionPreference" oder ein allgemeiner Parameter auf "Stop" festgelegt ist: Es wurden keine Ereignisse gefunden, die den angegebenen Auswahlkriterien entsprechen.."
+CodeIntegrity/Operational query ERROR: Es wurden keine Ereignisse gefunden, die den angegebenen Auswahlkriterien entsprechen.
+
+==== Recent AppLocker/EXE and DLL log (blocked binaries) ====\n
+PS>TerminatingError(Get-WinEvent): "Der ausgeführte Befehl wurde beendet, da die Einstellungsvariable "ErrorActionPreference" oder ein allgemeiner Parameter auf "Stop" festgelegt ist: Es wurden keine Ereignisse gefunden, die den angegebenen Auswahlkriterien entsprechen.."
+AppLocker/EXE and DLL query ERROR: Es wurden keine Ereignisse gefunden, die den angegebenen Auswahlkriterien entsprechen.
+**********************
+Ende der Windows PowerShell-Aufzeichnung
+Endzeit: 20260105151358
+**********************

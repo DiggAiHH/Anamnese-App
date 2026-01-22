@@ -1,0 +1,9 @@
+windows:run:skipbuild:log failed with exit code 1
+In C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\scripts\windows-rea
+dy-to-test.ps1:20 Zeichen:5
++     throw "$what failed with exit code $exitCode"
++     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (windows:run:ski...ith exit code 1 
+   :String) [], RuntimeException
+    + FullyQualifiedErrorId : windows:run:skipbuild:log failed with exit code 1
+ 

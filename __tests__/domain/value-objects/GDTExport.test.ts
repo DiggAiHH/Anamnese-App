@@ -62,4 +62,3 @@ describe('GDTExportVO', () => {
     expect(parsed.validateChecksum()).toBe(true);
   });
 });
-

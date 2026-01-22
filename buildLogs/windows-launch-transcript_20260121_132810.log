@@ -1,0 +1,35 @@
+﻿**********************
+nStart der Windows PowerShell-Aufzeichnung
+Startzeit: 20260121132810
+Benutzername: DESKTOP-U1FPK9S\tubbeTEC
+RunAs-Benutzer: DESKTOP-U1FPK9S\tubbeTEC
+Konfigurationsname: 
+Computer: DESKTOP-U1FPK9S (Microsoft Windows NT 10.0.19045.0)
+Hostanwendung: powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts\windows-launch.ps1
+Prozess-ID: 25212
+PSVersion: 5.1.19041.6456
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.19041.6456
+BuildVersion: 10.0.19041.6456
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+
+==> Repo root: C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App
+
+==> Reading Identity from Package.appxmanifest
+Identity: cc3a5ac8-ac09-4f03-b6c9-0cfd812841a0
+
+==> Finding installed package
+AUMID: cc3a5ac8-ac09-4f03-b6c9-0cfd812841a0_4dnmwfyw5v01r!App
+
+==> Launching
+
+==> Process check
+App process is running (PID(s): 16304)
+**********************
+Ende der Windows PowerShell-Aufzeichnung
+Endzeit: 20260121132814
+**********************

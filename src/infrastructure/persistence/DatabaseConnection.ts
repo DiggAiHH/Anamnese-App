@@ -5,11 +5,43 @@
  * DSGVO-konform: Alle Daten lokal, verschlüsselt
  */
 
-import SQLite, { SQLiteDatabase } from 'react-native-sqlite-storage';
+import { isRNFSAvailable, requireRNFS } from '@shared/rnfsSafe';
+import { logWarn } from '@shared/logger';
+import { canUseSQLite, platformOS, supportsSQLite } from '@shared/platformCapabilities';
 
-// Enable debugging in development
-SQLite.DEBUG(__DEV__);
-SQLite.enablePromise(true);
+// Type imports only (no runtime evaluation)
+import type { SQLiteDatabase, SQLiteTransaction } from 'react-native-sqlite-storage';
+
+// Re-export types for consumers
+export type { SQLiteDatabase, SQLiteTransaction };
+
+// Define SQLiteExecuteResult interface locally to avoid import-time crash
+export interface SQLiteExecuteResult {
+  rows: {
+    length: number;
+    item: (index: number) => any;
+    raw?: () => any[];
+  };
+  rowsAffected: number;
+  insertId?: number;
+}
+
+// Conditional import: Only load react-native-sqlite-storage on non-Windows platforms
+// This prevents "cannot read undefined" crash at module load time on Windows
+let SQLite: typeof import('react-native-sqlite-storage').default | null = null;
+if (canUseSQLite()) {
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const mod = require('react-native-sqlite-storage');
+    SQLite = (mod?.default ?? mod) as typeof import('react-native-sqlite-storage').default;
+    if (SQLite) {
+      SQLite.DEBUG(typeof __DEV__ !== 'undefined' && __DEV__);
+      SQLite.enablePromise(true);
+    }
+  } catch {
+    // Module not available, SQLite remains null
+  }
+}
 
 /**
  * Database Schema Version
@@ -36,7 +68,39 @@ export class DatabaseConnection {
       return this.db;
     }
 
+    if (!supportsSQLite || !canUseSQLite()) {
+      logWarn(`[Database] SQLite is not supported on ${platformOS}. Using Mock DB.`);
+      // Return a skeletal mock that satisfies the minimal interface used here
+      // casting to unknown as SQLiteDatabase to satisfy TS
+      this.db = {
+        transaction: (_scope: (tx: SQLiteTransaction) => void) => {
+          logWarn('[Database] transaction called on Mock DB');
+          return Promise.resolve({
+             executeSql: (_sql: string, _params?: any[]) => {},
+          } as unknown as SQLiteTransaction); 
+        },
+        readTransaction: (_scope: (tx: SQLiteTransaction) => void) => Promise.resolve({
+             executeSql: (_sql: string, _params?: any[]) => {},
+        } as unknown as SQLiteTransaction),
+        executeSql: (_stat: string, _params?: any[]) => {
+           logWarn('[Database] executeSql called on Mock DB');
+           return Promise.resolve([{
+             rows: { length: 0, item: (_i: number) => null, raw: () => [] },
+             rowsAffected: 0,
+             insertId: 0,
+           } as unknown as SQLiteExecuteResult]);
+        },
+        attach: () => Promise.resolve(),
+        detach: () => Promise.resolve(),
+        close: () => Promise.resolve(),
+      } as unknown as SQLiteDatabase;
+      return this.db;
+    }
+
     try {
+      if (!SQLite) {
+        throw new Error('SQLite module not available');
+      }
       this.db = await SQLite.openDatabase({
         name: this.dbName,
         location: 'default',
@@ -53,22 +117,29 @@ export class DatabaseConnection {
   /**
    * SQL Helper that ensures connection and returns first result set
    */
-  async executeSql(statement: string, params?: any[]): Promise<any> {
+  async executeSql(statement: string, params: unknown[] = []): Promise<SQLiteExecuteResult> {
     const database = await this.connect();
     const [result] = await database.executeSql(statement, params);
-    return result;
+    // Ensure result conforms to our local interface
+    return {
+      rows: result.rows,
+      rowsAffected: result.rowsAffected ?? 0,
+      insertId: result.insertId,
+    };
   }
 
   /**
    * Run a transactional function if supported
    */
-  async transaction<T>(fn: (db: SQLiteDatabase) => Promise<T> | T): Promise<T> {
+  async transaction<T>(fn: (tx: SQLiteTransaction) => Promise<T> | T): Promise<T> {
     const database = await this.connect();
-    const tx = (database as any).transaction;
-    if (typeof tx === 'function') {
-      return tx.call(database, fn);
-    }
-    return fn(database);
+
+    let result: T | undefined;
+    await database.transaction(async tx => {
+      result = await fn(tx);
+    });
+
+    return result as T;
   }
 
   /**
@@ -255,17 +326,32 @@ export class DatabaseConnection {
     const [answersResult] = await this.db.executeSql('SELECT COUNT(*) as count FROM answers;');
     const [documentsResult] = await this.db.executeSql('SELECT COUNT(*) as count FROM documents;');
 
+    const safeCount = (result: SQLiteExecuteResult): number => {
+      if (!result?.rows || result.rows.length === 0) return 0;
+      const row = result.rows.item(0) as { count?: number } | null;
+      const count = row?.count ?? 0;
+      return Number.isFinite(count) ? count : 0;
+    };
+
     // Database size (approximation)
-    const RNFS = await import('react-native-fs');
-    const dbPath = `${RNFS.DocumentDirectoryPath}/${this.dbName}`;
-    const stats = await RNFS.stat(dbPath);
+    let dbSize = 0;
+    try {
+      if (isRNFSAvailable()) {
+        const RNFS = requireRNFS();
+        const dbPath = `${RNFS.DocumentDirectoryPath}/${this.dbName}`;
+        const stats = await RNFS.stat(dbPath);
+        dbSize = parseInt(String(stats.size), 10);
+      }
+    } catch {
+      dbSize = 0;
+    }
 
     return {
-      patients: patientsResult.rows.item(0).count,
-      questionnaires: questionnairesResult.rows.item(0).count,
-      answers: answersResult.rows.item(0).count,
-      documents: documentsResult.rows.item(0).count,
-      dbSize: parseInt(stats.size, 10),
+      patients: safeCount(patientsResult as SQLiteExecuteResult),
+      questionnaires: safeCount(questionnairesResult as SQLiteExecuteResult),
+      answers: safeCount(answersResult as SQLiteExecuteResult),
+      documents: safeCount(documentsResult as SQLiteExecuteResult),
+      dbSize,
     };
   }
 }

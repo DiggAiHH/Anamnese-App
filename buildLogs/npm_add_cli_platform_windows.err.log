@@ -1,0 +1,9 @@
+npm notice Access token expired or revoked. Please try logging in again.
+npm error code E404
+npm error 404 Not Found - GET https://registry.npmjs.org/@react-native-community%2fcli-platform-windows - Not found
+npm error 404
+npm error 404  The requested resource '@react-native-community/cli-platform-windows@12.3.6' could not be found or you do not have permission to access it.
+npm error 404
+npm error 404 Note that you can also install from a
+npm error 404 tarball, folder, http url, or git url.
+npm error A complete log of this run can be found in: C:\Users\tubbeTEC\AppData\Local\npm-cache\_logs\2026-01-05T12_27_11_298Z-debug-0.log

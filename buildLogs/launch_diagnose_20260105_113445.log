@@ -1,0 +1,331 @@
+﻿**********************
+nStart der Windows PowerShell-Aufzeichnung
+Startzeit: 20260105113445
+Benutzername: DESKTOP-U1FPK9S\tubbeTEC
+RunAs-Benutzer: DESKTOP-U1FPK9S\tubbeTEC
+Konfigurationsname: 
+Computer: DESKTOP-U1FPK9S (Microsoft Windows NT 10.0.19045.0)
+Hostanwendung: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -NoProfile -NonInteractive -ExecutionPolicy Bypass -File scripts\diagnose-app-launch.ps1 -Aumid cc3a5ac8-ac09-4f03-b6c9-0cfd812841a0_4dnmwfyw5v01r!App -Minutes 20
+Prozess-ID: 5056
+PSVersion: 5.1.19041.6456
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.19041.6456
+BuildVersion: 10.0.19041.6456
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+
+==== Launch diagnostic ====\n
+Time:        2026-01-05T11:34:45.6668735+01:00
+AUMID:       cc3a5ac8-ac09-4f03-b6c9-0cfd812841a0_4dnmwfyw5v01r!App
+PFN:         cc3a5ac8-ac09-4f03-b6c9-0cfd812841a0_4dnmwfyw5v01r
+Start window: 01/05/2026 11:14:45
+
+==== Installed package details ====\n
+
+
+Name              : cc3a5ac8-ac09-4f03-b6c9-0cfd812841a0
+PackageFullName   : cc3a5ac8-ac09-4f03-b6c9-0cfd812841a0_1.0.0.0_x64__4dnmwfyw5v01r
+PackageFamilyName : cc3a5ac8-ac09-4f03-b6c9-0cfd812841a0_4dnmwfyw5v01r
+Status            : Ok
+IsDevelopmentMode : False
+InstallLocation   : C:\Program Files\WindowsApps\cc3a5ac8-ac09-4f03-b6c9-0cfd812841a0_1.0.0.0_x64__4dnmwfyw5v01r
+
+==== Installed manifest + executable check ====\n
+AppxManifest.xml: C:\Program Files\WindowsApps\cc3a5ac8-ac09-4f03-b6c9-0cfd812841a0_1.0.0.0_x64__4dnmwfyw5v01r\AppxManifest.xml
+Executable:  anamnese-mobile.exe
+EntryPoint:  anamnese-mobile.App
+Exe path:    C:\Program Files\WindowsApps\cc3a5ac8-ac09-4f03-b6c9-0cfd812841a0_1.0.0.0_x64__4dnmwfyw5v01r\anamnese-mobile.exe
+Exe exists:  True
+
+==== Installed folder exe listing ====\n
+
+Name                 Length
+----                 ------
+anamnese-mobile.exe 3558400
+UWPShim.exe           18312
+
+==== JS bundle presence (heuristic) ====\n
+No *.bundle/*.jsbundle files found under InstallLocation.
+
+==== Metro packager check (http://127.0.0.1:8081/status) ====\n
+Status: 200
+Body:   112 97 99 107 97 103 101 114 45 115 116 97 116 117 115 58 114 117 110 110 105 110 103
+
+==== Attempt launch (explorer.exe) ====\n
+explorer.exe launch invoked
+
+==== Attempt launch (Shell.Application COM) ====\n
+ShellExecute invoked
+
+==== Process check ====\n
+anamnese-mobile process: NOT RUNNING (never observed during polling)
+
+==== Process scan by InstallLocation (CIM) ====\n
+
+
+Name        : powershell.exe
+ProcessId   : 13140
+CommandLine : C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -Command powershell.exe -NoProfile -NonInteractive -ExecutionPolicy Bypass -File scripts\diagnose-app-launch.ps1 -Aumid cc3a5ac8-ac09-4f03-b6c9-0cfd812841a0_4dnmwfyw5v01r!App -Minutes 20
+
+Name        : powershell.exe
+ProcessId   : 5056
+CommandLine : "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe" -NoProfile -NonInteractive -ExecutionPolicy Bypass -File scripts\diagnose-app-launch.ps1 -Aumid cc3a5ac8-ac09-4f03-b6c9-0cfd812841a0_4dnmwfyw5v01r!App -Minutes 20
+
+==== Recent Application log (crash/wer) ====\n
+
+
+==== Recent Application Error/WER (unfiltered, first 15) ====\n
+
+
+==== Recent AppModel-Runtime/Admin log ====\n
+
+
+TimeCreated      : 05.01.2026 11:30:28
+ProviderName     : Microsoft-Windows-AppModel-Runtime
+Id               : 40
+LevelDisplayName : Informationen
+Message          : AppContainer "onecore\ds\security\gina\profile\profext\appcontainer.cpp Line:1813 anamnese-mobile cc3a5ac8-ac09-4f03-b6c9-0cfd812841a0_4dnmwfyw5v01r" wurde nicht erstellt, da er bereits vorhanden ist.
+
+==== Recent AppModel-Runtime/Operational log ====\n
+PS>TerminatingError(Get-WinEvent): "Der ausgeführte Befehl wurde beendet, da die Einstellungsvariable "ErrorActionPreference" oder ein allgemeiner Parameter auf "Stop" festgelegt ist: Auf dem Computer "localhost" wurde kein Ereignisprotokoll gefunden, das "Microsoft-Windows-AppModel-Runtime/Operational" entspricht.."
+AppModel-Runtime/Operational query ERROR: Auf dem Computer "localhost" wurde kein Ereignisprotokoll gefunden, das "Microsoft-Windows-AppModel-Runtime/Operational" entspricht.
+
+==== Recent TWinUI/Operational log ====\n
+
+
+TimeCreated      : 05.01.2026 11:30:28
+ProviderName     : Microsoft-Windows-Immersive-Shell
+Id               : 1621
+LevelDisplayName : Informationen
+Message          : Aktivierung der App „cc3a5ac8-ac09-4f03-b6c9-0cfd812841a0_4dnmwfyw5v01r!App“ versucht. Ausführungsstatus: Attempted activation of the app, 0, Der Vorgang wurde erfolgreich beendet..
+
+TimeCreated      : 05.01.2026 11:30:27
+ProviderName     : Microsoft-Windows-Immersive-Shell
+Id               : 1621
+LevelDisplayName : Informationen
+Message          : Aktivierung der App „cc3a5ac8-ac09-4f03-b6c9-0cfd812841a0_4dnmwfyw5v01r!App“ versucht. Ausführungsstatus: Attempted activation of the app, 0, Der Vorgang wurde erfolgreich beendet..
+
+==== Recent AppXDeploymentServer/Operational log ====\n
+
+
+TimeCreated      : 05.01.2026 11:30:29
+ProviderName     : Microsoft-Windows-AppXDeployment-Server
+Id               : 857
+LevelDisplayName : Ausführlich
+Message          : Abruf des Registrierungsstatus für Paketfamilie cc3a5ac8-ac09-4f03-b6c9-0cfd812841a0_4dnmwfyw5v01r wurde beendet. Ergebnis: 0x0.(statusFound: false, Status: 0x0)
+
+TimeCreated      : 05.01.2026 11:30:29
+ProviderName     : Microsoft-Windows-AppXDeployment-Server
+Id               : 856
+LevelDisplayName : Ausführlich
+Message          : Registrierungsstatus für Paketfamilie cc3a5ac8-ac09-4f03-b6c9-0cfd812841a0_4dnmwfyw5v01r für Benutzer S-1-5-21-4244253877-375429984-2077537537-1001 wird abgerufen.
+
+TimeCreated      : 05.01.2026 11:30:29
+ProviderName     : Microsoft-Windows-AppXDeployment-Server
+Id               : 857
+LevelDisplayName : Ausführlich
+Message          : Abruf des Registrierungsstatus für Paketfamilie cc3a5ac8-ac09-4f03-b6c9-0cfd812841a0_4dnmwfyw5v01r wurde beendet. Ergebnis: 0x0.(statusFound: false, Status: 0x0)
+
+TimeCreated      : 05.01.2026 11:30:29
+ProviderName     : Microsoft-Windows-AppXDeployment-Server
+Id               : 856
+LevelDisplayName : Ausführlich
+Message          : Registrierungsstatus für Paketfamilie cc3a5ac8-ac09-4f03-b6c9-0cfd812841a0_4dnmwfyw5v01r für Benutzer S-1-5-21-4244253877-375429984-2077537537-1001 wird abgerufen.
+
+TimeCreated      : 05.01.2026 11:30:29
+ProviderName     : Microsoft-Windows-AppXDeployment-Server
+Id               : 613
+LevelDisplayName : Informationen
+Message          : Leistungszusammenfassung des Bereitstellungsvorgangs Register für Paket cc3a5ac8-ac09-4f03-b6c9-0cfd812841a0_1.0.0.0_x64__4dnmwfyw5v01r: 
+                   Overall time: 2093 ms
+                   Gap: 140 ms
+                   Enqueue cost: 63 ms
+                   Dequeue delay: 62 ms
+                   Bundle processing cost: 0 ms
+                   Indexing cost: 16 ms
+                   Resolve dependency cost: 125 ms
+                   Gap: 15 ms
+                   Check approval cost: 0 ms
+                   Evaluation cost: 16 ms
+                   Hardlinking evaluation cost: 0 ms
+                   Stage required cost: 0 ms
+                   Flushing and closing files cost: 0 ms
+                   Gap: 16 ms
+                   Machine register cost: 0 ms
+                   Stage user data cost: 0 ms
+                   Gap: 218 ms
+                   Registration cost: 516 ms
+                   Gap: 31 ms
+                   Repository commit transaction cost: 688 ms
+                   Gap: 172 ms
+                   Data flush cost: 0 ms
+                   Post DeStage repository commit transaction cost: 0 ms
+                   Remaining cost: 15 ms
+                   
+
+TimeCreated      : 05.01.2026 11:30:29
+ProviderName     : Microsoft-Windows-AppXDeployment-Server
+Id               : 649
+LevelDisplayName : Informationen
+Message          : Bereitstellungsvorgang Register für das Paket cc3a5ac8-ac09-4f03-b6c9-0cfd812841a0_1.0.0.0_x64__4dnmwfyw5v01r: PostDeploymentOperationCheck cost: 0 ms
+
+TimeCreated      : 05.01.2026 11:30:29
+ProviderName     : Microsoft-Windows-AppXDeployment-Server
+Id               : 400
+LevelDisplayName : Informationen
+Message          : Der Bereitstellungsvorgang "Register" mit Zielvolume "C:" für das Paket "cc3a5ac8-ac09-4f03-b6c9-0cfd812841a0_1.0.0.0_x64__4dnmwfyw5v01r" von " (AppxManifest.xml) " wurde erfolgreich abgeschlossen.
+
+TimeCreated      : 05.01.2026 11:30:29
+ProviderName     : Microsoft-Windows-AppXDeployment-Server
+Id               : 10001
+LevelDisplayName : Ausführlich
+Message          : Die Verarbeitung des Pakets "cc3a5ac8-ac09-4f03-b6c9-0cfd812841a0_1.0.0.0_x64__4dnmwfyw5v01r" wurde abgeschlossen. Für das Festlegen des Paketstatus auf "Aktiviert" wurde "0x0" zurückgegeben.
+
+TimeCreated      : 05.01.2026 11:30:29
+ProviderName     : Microsoft-Windows-AppXDeployment-Server
+Id               : 10001
+LevelDisplayName : Ausführlich
+Message          : Die Verarbeitung des Pakets "cc3a5ac8-ac09-4f03-b6c9-0cfd812841a0_1.0.0.0_x64__4dnmwfyw5v01r" wurde abgeschlossen. Für das Festlegen des Paketstatus auf "Aktiviert" wurde "0x0" zurückgegeben.
+
+TimeCreated      : 05.01.2026 11:30:29
+ProviderName     : Microsoft-Windows-AppXDeployment-Server
+Id               : 10001
+LevelDisplayName : Ausführlich
+Message          : Die Verarbeitung des Pakets "cc3a5ac8-ac09-4f03-b6c9-0cfd812841a0_1.0.0.0_x64__4dnmwfyw5v01r" wurde abgeschlossen. Für das Festlegen des Paketstatus auf "Aktiviert" wurde "0x0" zurückgegeben.
+
+TimeCreated      : 05.01.2026 11:30:29
+ProviderName     : Microsoft-Windows-AppXDeployment-Server
+Id               : 10001
+LevelDisplayName : Ausführlich
+Message          : Die Verarbeitung des Pakets "cc3a5ac8-ac09-4f03-b6c9-0cfd812841a0_1.0.0.0_x64__4dnmwfyw5v01r" wurde abgeschlossen. Für das Festlegen des Paketstatus auf "Aktiviert" wurde "0x0" zurückgegeben.
+
+TimeCreated      : 05.01.2026 11:30:28
+ProviderName     : Microsoft-Windows-AppXDeployment-Server
+Id               : 5507
+LevelDisplayName : Ausführlich
+Message          : cc3a5ac8-ac09-4f03-b6c9-0cfd812841a0_1.0.0.0_x64__4dnmwfyw5v01r : C:\Program Files\WindowsApps\cc3a5ac8-ac09-4f03-b6c9-0cfd812841a0_1.0.0.0_x64__4dnmwfyw5v01r\microsoft.system.package.metadata\Resources.????????.pri : No shared merged files found
+
+TimeCreated      : 05.01.2026 11:30:28
+ProviderName     : Microsoft-Windows-AppXDeployment-Server
+Id               : 5507
+LevelDisplayName : Ausführlich
+Message          : cc3a5ac8-ac09-4f03-b6c9-0cfd812841a0_1.0.0.0_x64__4dnmwfyw5v01r : C:\Program Files\WindowsApps\cc3a5ac8-ac09-4f03-b6c9-0cfd812841a0_1.0.0.0_x64__4dnmwfyw5v01r\microsoft.system.package.metadata\S-1-5-21-4244253877-375429984-2077537537-1001-MergedResources-*.pri : No user-specific 
+                   merged files found
+
+TimeCreated      : 05.01.2026 11:30:28
+ProviderName     : Microsoft-Windows-AppXDeployment-Server
+Id               : 5507
+LevelDisplayName : Ausführlich
+Message          : cc3a5ac8-ac09-4f03-b6c9-0cfd812841a0_1.0.0.0_x64__4dnmwfyw5v01r : C:\Program Files\WindowsApps\cc3a5ac8-ac09-4f03-b6c9-0cfd812841a0_1.0.0.0_x64__4dnmwfyw5v01r\microsoft.system.package.metadata\Resources.????????.pri : No shared merged files found
+
+TimeCreated      : 05.01.2026 11:30:28
+ProviderName     : Microsoft-Windows-AppXDeployment-Server
+Id               : 5507
+LevelDisplayName : Ausführlich
+Message          : cc3a5ac8-ac09-4f03-b6c9-0cfd812841a0_1.0.0.0_x64__4dnmwfyw5v01r : C:\Program Files\WindowsApps\cc3a5ac8-ac09-4f03-b6c9-0cfd812841a0_1.0.0.0_x64__4dnmwfyw5v01r\microsoft.system.package.metadata\S-1-5-21-4244253877-375429984-2077537537-1001-MergedResources-*.pri : No user-specific 
+                   merged files found
+
+TimeCreated      : 05.01.2026 11:30:28
+ProviderName     : Microsoft-Windows-AppXDeployment-Server
+Id               : 603
+LevelDisplayName : Informationen
+Message          : Der Bereitstellungsvorgang RegisterByPackageFamilyName wurde für ein Paket mit dem Hauptparameter cc3a5ac8-ac09-4f03-b6c9-0cfd812841a0_4dnmwfyw5v01r und den Optionen SkipReregisterIfPackageStatusOk,ImmediatePriorityRequest und 0 gestartet. Weitere Informationen zum 
+                   Diagnostizieren von Problemen bei der Bereitstellung von Apps finden Sie unter http://go.microsoft.com/fwlink/?LinkId=235160.
+
+TimeCreated      : 05.01.2026 11:30:28
+ProviderName     : Microsoft-Windows-AppXDeployment-Server
+Id               : 857
+LevelDisplayName : Ausführlich
+Message          : Abruf des Registrierungsstatus für Paketfamilie cc3a5ac8-ac09-4f03-b6c9-0cfd812841a0_4dnmwfyw5v01r wurde beendet. Ergebnis: 0x0.(statusFound: false, Status: 0x0)
+
+TimeCreated      : 05.01.2026 11:30:28
+ProviderName     : Microsoft-Windows-AppXDeployment-Server
+Id               : 856
+LevelDisplayName : Ausführlich
+Message          : Registrierungsstatus für Paketfamilie cc3a5ac8-ac09-4f03-b6c9-0cfd812841a0_4dnmwfyw5v01r für Benutzer S-1-5-21-4244253877-375429984-2077537537-1001 wird abgerufen.
+
+TimeCreated      : 05.01.2026 11:30:28
+ProviderName     : Microsoft-Windows-AppXDeployment-Server
+Id               : 10000
+LevelDisplayName : Ausführlich
+Message          : Das Paket "cc3a5ac8-ac09-4f03-b6c9-0cfd812841a0_1.0.0.0_x64__4dnmwfyw5v01r" wird jetzt verarbeitet. Für das Festlegen des Paketstatus auf "Deaktiviert" wurde "0x0" zurückgegeben.
+
+TimeCreated      : 05.01.2026 11:30:28
+ProviderName     : Microsoft-Windows-AppXDeployment-Server
+Id               : 573
+LevelDisplayName : Informationen
+Message          : Der Status "Synchronisierung aktiviert" wird festgelegt, Paketfamilienname cc3a5ac8-ac09-4f03-b6c9-0cfd812841a0_4dnmwfyw5v01r, false aktiviert.
+
+TimeCreated      : 05.01.2026 11:30:28
+ProviderName     : Microsoft-Windows-AppXDeployment-Server
+Id               : 855
+LevelDisplayName : Informationen
+Message          : Auflösen von Vorgangslisten beendet. DeploymentRequest-Vorgangslisten: addPackageList: cc3a5ac8-ac09-4f03-b6c9-0cfd812841a0_1.0.0.0_x64__4dnmwfyw5v01r.
+
+TimeCreated      : 05.01.2026 11:30:27
+ProviderName     : Microsoft-Windows-AppXDeployment-Server
+Id               : 629
+LevelDisplayName : Ausführlich
+Message          : Für Paket cc3a5ac8-ac09-4f03-b6c9-0cfd812841a0_1.0.0.0_x64__4dnmwfyw5v01r wurde kein anwendbares architekturübergreifendes Framework gefunden. Das Paket wird nur mit dem Matching-Architecture-Framework installiert.
+
+TimeCreated      : 05.01.2026 11:30:27
+ProviderName     : Microsoft-Windows-AppXDeployment-Server
+Id               : 629
+LevelDisplayName : Ausführlich
+Message          : Für Paket cc3a5ac8-ac09-4f03-b6c9-0cfd812841a0_1.0.0.0_x64__4dnmwfyw5v01r wurde kein anwendbares architekturübergreifendes Framework gefunden. Das Paket wird nur mit dem Matching-Architecture-Framework installiert.
+
+TimeCreated      : 05.01.2026 11:30:27
+ProviderName     : Microsoft-Windows-AppXDeployment-Server
+Id               : 629
+LevelDisplayName : Ausführlich
+Message          : Für Paket cc3a5ac8-ac09-4f03-b6c9-0cfd812841a0_1.0.0.0_x64__4dnmwfyw5v01r wurde kein anwendbares architekturübergreifendes Framework gefunden. Das Paket wird nur mit dem Matching-Architecture-Framework installiert.
+
+TimeCreated      : 05.01.2026 11:30:27
+ProviderName     : Microsoft-Windows-AppXDeployment-Server
+Id               : 629
+LevelDisplayName : Ausführlich
+Message          : Für Paket cc3a5ac8-ac09-4f03-b6c9-0cfd812841a0_1.0.0.0_x64__4dnmwfyw5v01r wurde kein anwendbares architekturübergreifendes Framework gefunden. Das Paket wird nur mit dem Matching-Architecture-Framework installiert.
+
+TimeCreated      : 05.01.2026 11:30:27
+ProviderName     : Microsoft-Windows-AppXDeployment-Server
+Id               : 854
+LevelDisplayName : Informationen
+Message          : Folgende zu verarbeitende(n) URI(s) wurde(n) erfolgreich hinzugefügt:  C:\Program Files\WindowsApps\cc3a5ac8-ac09-4f03-b6c9-0cfd812841a0_1.0.0.0_x64__4dnmwfyw5v01r\AppxManifest.xml.
+
+TimeCreated      : 05.01.2026 11:30:27
+ProviderName     : Microsoft-Windows-AppXDeployment-Server
+Id               : 607
+LevelDisplayName : Informationen
+Message          : Der Bereitstellungsvorgang Register für das Paket cc3a5ac8-ac09-4f03-b6c9-0cfd812841a0_1.0.0.0_x64__4dnmwfyw5v01r wurde aus der Warteschlange entfernt und wird für die Benutzer-SID S-1-5-21-4244253877-375429984-2077537537-1001 ausgeführt.
+
+TimeCreated      : 05.01.2026 11:30:27
+ProviderName     : Microsoft-Windows-AppXDeployment-Server
+Id               : 10002
+LevelDisplayName : Ausführlich
+Message          : Die Resilienzdatei "C:\ProgramData\Microsoft\Windows\AppRepository\deb328d5-3a97-4719-91fa-f6527e9e800e_S-1-5-21-4244253877-375429984-2077537537-1001_42.rslc" wird für den Vorgang "Register" im Paket "cc3a5ac8-ac09-4f03-b6c9-0cfd812841a0_1.0.0.0_x64__4dnmwfyw5v01r" erstellt.
+
+TimeCreated      : 05.01.2026 11:30:27
+ProviderName     : Microsoft-Windows-AppXDeployment-Server
+Id               : 603
+LevelDisplayName : Informationen
+Message          : Der Bereitstellungsvorgang RegisterByPackageFamilyName wurde für ein Paket mit dem Hauptparameter cc3a5ac8-ac09-4f03-b6c9-0cfd812841a0_4dnmwfyw5v01r und den Optionen SkipReregisterIfPackageStatusOk,ImmediatePriorityRequest und 0 gestartet. Weitere Informationen zum 
+                   Diagnostizieren von Problemen bei der Bereitstellung von Apps finden Sie unter http://go.microsoft.com/fwlink/?LinkId=235160.
+
+TimeCreated      : 05.01.2026 11:30:27
+ProviderName     : Microsoft-Windows-AppXDeployment-Server
+Id               : 857
+LevelDisplayName : Ausführlich
+Message          : Abruf des Registrierungsstatus für Paketfamilie cc3a5ac8-ac09-4f03-b6c9-0cfd812841a0_4dnmwfyw5v01r wurde beendet. Ergebnis: 0x0.(statusFound: false, Status: 0x0)
+
+TimeCreated      : 05.01.2026 11:30:27
+ProviderName     : Microsoft-Windows-AppXDeployment-Server
+Id               : 856
+LevelDisplayName : Ausführlich
+Message          : Registrierungsstatus für Paketfamilie cc3a5ac8-ac09-4f03-b6c9-0cfd812841a0_4dnmwfyw5v01r für Benutzer S-1-5-21-4244253877-375429984-2077537537-1001 wird abgerufen.
+**********************
+Ende der Windows PowerShell-Aufzeichnung
+Endzeit: 20260105113508
+**********************

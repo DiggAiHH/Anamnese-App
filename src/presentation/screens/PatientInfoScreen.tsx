@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   View,
   Text,
-  TextInput,
   TouchableOpacity,
   StyleSheet,
   ScrollView,
   Alert,
+  Platform,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import DatePicker from 'react-native-date-picker';
@@ -14,12 +14,23 @@ import { useQuestionnaireStore } from '../state/useQuestionnaireStore';
 import { PatientEntity, Patient } from '@domain/entities/Patient';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/RootNavigator';
+import { SUPPORTED_LANGUAGES } from '../i18n/config';
+import { AppButton } from '../components/AppButton';
+import { AppInput } from '../components/AppInput';
+import { colors, spacing, radius } from '../theme/tokens';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'PatientInfo'>;
 
 export const PatientInfoScreen: React.FC<Props> = ({ navigation }) => {
   const { t, i18n } = useTranslation();
   const { setPatient } = useQuestionnaireStore();
+
+  const normalizeLanguage = (language: string | null | undefined): Patient['language'] => {
+    const normalized = (language ?? '').split('-')[0].toLowerCase();
+    return (SUPPORTED_LANGUAGES as readonly string[]).includes(normalized)
+      ? (normalized as Patient['language'])
+      : 'de';
+  };
 
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -28,6 +39,9 @@ export const PatientInfoScreen: React.FC<Props> = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const [openDateDropdown, setOpenDateDropdown] = useState<'day' | 'month' | 'year' | null>(
+    null,
+  );
 
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -81,7 +95,7 @@ export const PatientInfoScreen: React.FC<Props> = ({ navigation }) => {
       return;
     }
 
-    const languageCode = (i18n.language?.split('-')[0] ?? 'de') as Patient['language'];
+    const languageCode = normalizeLanguage(i18n.language);
 
     // Store patient data in Zustand
     const patient = PatientEntity.create({
@@ -89,6 +103,9 @@ export const PatientInfoScreen: React.FC<Props> = ({ navigation }) => {
       lastName,
       birthDate: birthDate!.toISOString().split('T')[0],
       language: languageCode,
+      gender: gender ?? undefined,
+      email: email.trim() ? email.trim() : undefined,
+      phone: phone.trim() ? phone.trim() : undefined,
     });
 
     setPatient(patient);
@@ -120,6 +137,41 @@ export const PatientInfoScreen: React.FC<Props> = ({ navigation }) => {
     return regex.test(phone);
   };
 
+  const isWindows = Platform.OS === 'windows';
+  const today = useMemo(() => new Date(), []);
+  const minBirthDate = useMemo(() => new Date(1900, 0, 1), []);
+
+  const years = useMemo(() => {
+    const currentYear = today.getFullYear();
+    const minYear = 1900;
+    const out: number[] = [];
+    for (let y = currentYear; y >= minYear; y--) out.push(y);
+    return out;
+  }, [today]);
+
+  const clampDate = (date: Date): Date => {
+    if (date.getTime() > today.getTime()) return new Date(today);
+    if (date.getTime() < minBirthDate.getTime()) return new Date(minBirthDate);
+    return date;
+  };
+
+  const daysInMonth = (year: number, month1to12: number): number => {
+    return new Date(year, month1to12, 0).getDate();
+  };
+
+  const setBirthDatePart = (next: { year?: number; month?: number; day?: number }) => {
+    const base = birthDate ?? today;
+    const year = next.year ?? base.getFullYear();
+    const month1 = next.month ?? base.getMonth() + 1;
+    const maxDay = daysInMonth(year, month1);
+    const day = Math.min(next.day ?? base.getDate(), maxDay);
+
+    const nextDate = clampDate(new Date(year, month1 - 1, day));
+    setBirthDate(nextDate);
+  };
+
+  const closeDateDropdowns = () => setOpenDateDropdown(null);
+
   return (
     <ScrollView style={styles.container} testID="patient-info-screen">
       <View style={styles.header}>
@@ -129,51 +181,55 @@ export const PatientInfoScreen: React.FC<Props> = ({ navigation }) => {
 
       <View style={styles.form}>
         {/* First Name */}
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>
-            {t('patientInfo.firstName')} <Text style={styles.required}>*</Text>
-          </Text>
-          <TextInput
-            style={[styles.input, errors.firstName ? styles.inputError : undefined]}
-            value={firstName}
-            onChangeText={setFirstName}
-            placeholder={t('patientInfo.firstNamePlaceholder')}
-            testID="input-first_name"
-            autoCapitalize="words"
-            autoComplete="name"
-          />
-          {errors.firstName && (
-            <Text style={styles.errorText}>{errors.firstName}</Text>
-          )}
-        </View>
+        <AppInput
+          label={t('patientInfo.firstName')}
+          required
+          value={firstName}
+          onChangeText={setFirstName}
+          placeholder={t('patientInfo.firstNamePlaceholder')}
+          testID="input-first_name"
+          autoCapitalize="words"
+          autoComplete="name"
+          error={errors.firstName}
+        />
 
         {/* Last Name */}
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>
-            {t('patientInfo.lastName')} <Text style={styles.required}>*</Text>
-          </Text>
-          <TextInput
-            style={[styles.input, errors.lastName ? styles.inputError : undefined]}
-            value={lastName}
-            onChangeText={setLastName}
-            placeholder={t('patientInfo.lastNamePlaceholder')}
-            testID="input-last_name"
-            autoCapitalize="words"
-            autoComplete="name-family"
-          />
-          {errors.lastName && (
-            <Text style={styles.errorText}>{errors.lastName}</Text>
-          )}
-        </View>
+        <AppInput
+          label={t('patientInfo.lastName')}
+          required
+          value={lastName}
+          onChangeText={setLastName}
+          placeholder={t('patientInfo.lastNamePlaceholder')}
+          testID="input-last_name"
+          autoCapitalize="words"
+          autoComplete="name-family"
+          error={errors.lastName}
+        />
 
         {/* Birth Date */}
         <View style={styles.inputGroup}>
           <Text style={styles.label}>
             {t('patientInfo.birthDate')} <Text style={styles.required}>*</Text>
           </Text>
+          {isWindows && !birthDate && (
+            <Text style={styles.hintText}>{t('patientInfo.birthDateHint')}</Text>
+          )}
           <TouchableOpacity
               style={[styles.input, styles.dateButton, errors.birthDate ? styles.inputError : undefined]}
-            onPress={() => setShowDatePicker(true)}
+            onPress={() => {
+              if (isWindows) {
+                if (!showDatePicker && !birthDate) {
+                  // Match non-Windows behavior where the picker opens with today's date.
+                  setBirthDate(today);
+                }
+                const nextOpen = !showDatePicker;
+                setShowDatePicker(nextOpen);
+                if (!nextOpen) closeDateDropdowns();
+                return;
+              }
+
+              setShowDatePicker(true);
+            }}
             testID="input-birth_date"
           >
             <Text style={birthDate ? styles.dateText : styles.datePlaceholder}>
@@ -187,21 +243,109 @@ export const PatientInfoScreen: React.FC<Props> = ({ navigation }) => {
           )}
         </View>
 
-        {/* Date Picker Modal */}
-        <DatePicker
-          modal
-          open={showDatePicker}
-          date={birthDate || new Date()}
-          mode="date"
-          maximumDate={new Date()}
-          minimumDate={new Date(1900, 0, 1)}
-          onConfirm={(date: Date) => {
-            setShowDatePicker(false);
-            setBirthDate(date);
-          }}
-          onCancel={() => setShowDatePicker(false)}
-          title={t('patientInfo.selectBirthDate')}
-        />
+        {/* Date Input */}
+        {isWindows ? (
+          showDatePicker && (
+            <View style={styles.datePickerRow}>
+              {(() => {
+                const valueDate = birthDate ?? today;
+                const selectedDay = valueDate.getDate();
+                const selectedMonth = valueDate.getMonth() + 1;
+                const selectedYear = valueDate.getFullYear();
+                const dayOptions = Array.from(
+                  { length: daysInMonth(selectedYear, selectedMonth) },
+                  (_, i) => i + 1,
+                );
+
+                const renderDropdown = (
+                  kind: 'day' | 'month' | 'year',
+                  selected: number,
+                  options: number[],
+                  onSelect: (v: number) => void,
+                  testID: string,
+                ) => (
+                  <View
+                    style={[
+                      styles.dateDropdownCell,
+                      openDateDropdown === kind && styles.dateDropdownCellActive,
+                    ]}>
+                    <TouchableOpacity
+                      style={styles.dateDropdownButton}
+                      onPress={() =>
+                        setOpenDateDropdown((cur) => (cur === kind ? null : kind))
+                      }
+                      testID={testID}
+                    >
+                      <Text style={styles.dateDropdownText}>{String(selected)}</Text>
+                    </TouchableOpacity>
+
+                    {openDateDropdown === kind && (
+                      <View style={styles.dateDropdownMenu}>
+                        <ScrollView style={styles.dateDropdownScroll}>
+                          {options.map((opt) => (
+                            <TouchableOpacity
+                              key={opt}
+                              style={styles.dateDropdownOption}
+                              onPress={() => {
+                                onSelect(opt);
+                                closeDateDropdowns();
+                              }}
+                              testID={`${testID}-opt-${opt}`}
+                            >
+                              <Text style={styles.dateDropdownOptionText}>{String(opt)}</Text>
+                            </TouchableOpacity>
+                          ))}
+                        </ScrollView>
+                      </View>
+                    )}
+                  </View>
+                );
+
+                return (
+                  <>
+                    {/* Year first for better UX - helps determine valid days in month */}
+                    {renderDropdown(
+                      'year',
+                      selectedYear,
+                      years,
+                      (v) => setBirthDatePart({ year: v }),
+                      'dropdown-birth_year',
+                    )}
+                    {renderDropdown(
+                      'month',
+                      selectedMonth,
+                      Array.from({ length: 12 }, (_, i) => i + 1),
+                      (v) => setBirthDatePart({ month: v }),
+                      'dropdown-birth_month',
+                    )}
+                    {renderDropdown(
+                      'day',
+                      selectedDay,
+                      dayOptions,
+                      (v) => setBirthDatePart({ day: v }),
+                      'dropdown-birth_day',
+                    )}
+                  </>
+                );
+              })()}
+            </View>
+          )
+        ) : (
+          <DatePicker
+            modal
+            open={showDatePicker}
+            date={birthDate || new Date()}
+            mode="date"
+            maximumDate={new Date()}
+            minimumDate={new Date(1900, 0, 1)}
+            onConfirm={(date: Date) => {
+              setShowDatePicker(false);
+              setBirthDate(date);
+            }}
+            onCancel={() => setShowDatePicker(false)}
+            title={t('patientInfo.selectBirthDate')}
+          />
+        )}
 
         {/* Gender */}
         <View style={styles.inputGroup}>
@@ -257,49 +401,38 @@ export const PatientInfoScreen: React.FC<Props> = ({ navigation }) => {
         </View>
 
         {/* Email (Optional) */}
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>{t('patientInfo.email')}</Text>
-          <TextInput
-            style={[styles.input, errors.email ? styles.inputError : undefined]}
-            value={email}
-            onChangeText={setEmail}
-            placeholder={t('patientInfo.emailPlaceholder')}
-            testID="input-email"
-            keyboardType="email-address"
-            autoCapitalize="none"
-            autoComplete="email"
-          />
-          {errors.email && (
-            <Text style={styles.errorText}>{errors.email}</Text>
-          )}
-        </View>
+        <AppInput
+          label={t('patientInfo.email')}
+          value={email}
+          onChangeText={setEmail}
+          placeholder={t('patientInfo.emailPlaceholder')}
+          testID="input-email"
+          keyboardType="email-address"
+          autoCapitalize="none"
+          autoComplete="email"
+          error={errors.email}
+        />
 
         {/* Phone (Optional) */}
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>{t('patientInfo.phone')}</Text>
-          <TextInput
-            style={[styles.input, errors.phone ? styles.inputError : undefined]}
-            value={phone}
-            onChangeText={setPhone}
-            placeholder={t('patientInfo.phonePlaceholder')}
-            testID="input-phone"
-            keyboardType="phone-pad"
-            autoComplete="tel"
-          />
-          {errors.phone && (
-            <Text style={styles.errorText}>{errors.phone}</Text>
-          )}
-        </View>
+        <AppInput
+          label={t('patientInfo.phone')}
+          value={phone}
+          onChangeText={setPhone}
+          placeholder={t('patientInfo.phonePlaceholder')}
+          testID="input-phone"
+          keyboardType="phone-pad"
+          autoComplete="tel"
+          error={errors.phone}
+        />
       </View>
 
       {/* Next Button */}
-      <TouchableOpacity
-        style={styles.nextButton}
+      <AppButton
+        label={t('patientInfo.toConsents')}
         onPress={handleNext}
         testID="patient-info-next-btn"
-      >
-        <Text style={styles.nextButtonText}>{t('common.next')}</Text>
-      </TouchableOpacity>
+        style={styles.nextButton}
+      />
 
       <Text style={styles.requiredNote}>
         <Text style={styles.required}>*</Text> {t('common.requiredField')}
@@ -311,121 +444,167 @@ export const PatientInfoScreen: React.FC<Props> = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F7FA',
+    backgroundColor: colors.background,
   },
   header: {
-    padding: 20,
-    backgroundColor: '#FFFFFF',
+    padding: spacing.xl,
+    backgroundColor: colors.surface,
     borderBottomWidth: 1,
-    borderBottomColor: '#E5E7EB',
+    borderBottomColor: colors.divider,
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#1F2937',
-    marginBottom: 8,
+    color: colors.textPrimary,
+    marginBottom: spacing.sm,
   },
   subtitle: {
     fontSize: 14,
-    color: '#6B7280',
+    color: colors.textSecondary,
   },
   form: {
-    padding: 20,
+    padding: spacing.xl,
   },
   inputGroup: {
-    marginBottom: 20,
+    marginBottom: spacing.xl,
   },
   label: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#374151',
-    marginBottom: 8,
+    color: colors.textPrimary,
+    marginBottom: spacing.sm,
   },
   required: {
-    color: '#EF4444',
+    color: colors.dangerText,
   },
   input: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.surface,
     borderWidth: 1,
-    borderColor: '#D1D5DB',
-    borderRadius: 8,
-    padding: 12,
+    borderColor: colors.border,
+    borderRadius: radius.md,
+    padding: spacing.md,
     fontSize: 16,
-    color: '#1F2937',
+    color: colors.textPrimary,
   },
   inputError: {
-    borderColor: '#EF4444',
+    borderColor: colors.dangerBorder,
   },
   errorText: {
-    color: '#EF4444',
+    color: colors.dangerText,
     fontSize: 12,
-    marginTop: 4,
+    marginTop: spacing.xs,
+  },
+  hintText: {
+    color: colors.textSecondary,
+    fontSize: 12,
+    marginBottom: spacing.xs,
+    fontStyle: 'italic',
   },
   dateButton: {
     justifyContent: 'center',
   },
   dateText: {
-    color: '#1F2937',
+    color: colors.textPrimary,
   },
   datePlaceholder: {
-    color: '#9CA3AF',
+    color: colors.textSecondary,
+  },
+  datePickerRow: {
+    flexDirection: 'row',
+    gap: spacing.sm,
+    paddingHorizontal: spacing.xl,
+    marginTop: -spacing.md,
+    marginBottom: spacing.xl,
+  },
+  dateDropdownCell: {
+    flex: 1,
+    position: 'relative',
+  },
+  dateDropdownCellActive: {
+    zIndex: 50,
+  },
+  dateDropdownButton: {
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: radius.md,
+    paddingVertical: spacing.md,
+    paddingHorizontal: spacing.md,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  dateDropdownText: {
+    color: colors.textPrimary,
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  dateDropdownMenu: {
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: radius.md,
+    marginTop: spacing.sm,
+    maxHeight: 220,
+    overflow: 'hidden',
+  },
+  dateDropdownScroll: {
+    maxHeight: 220,
+  },
+  dateDropdownOption: {
+    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.md,
+  },
+  dateDropdownOptionText: {
+    color: colors.textPrimary,
+    fontSize: 14,
   },
   radioGroup: {
     flexDirection: 'row',
-    gap: 12,
+    gap: spacing.md,
   },
   radioButton: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.surface,
     borderWidth: 1,
-    borderColor: '#D1D5DB',
-    borderRadius: 8,
-    padding: 12,
+    borderColor: colors.border,
+    borderRadius: radius.md,
+    padding: spacing.md,
   },
   radioButtonSelected: {
-    borderColor: '#3B82F6',
-    backgroundColor: '#EFF6FF',
+    borderColor: colors.primary,
+    backgroundColor: colors.infoSurface,
   },
   radio: {
     width: 20,
     height: 20,
     borderRadius: 10,
     borderWidth: 2,
-    borderColor: '#D1D5DB',
+    borderColor: colors.border,
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: 8,
+    marginRight: spacing.sm,
   },
   radioSelected: {
     width: 10,
     height: 10,
     borderRadius: 5,
-    backgroundColor: '#3B82F6',
+    backgroundColor: colors.primary,
   },
   radioLabel: {
     fontSize: 14,
-    color: '#374151',
+    color: colors.textPrimary,
   },
   nextButton: {
-    backgroundColor: '#3B82F6',
-    borderRadius: 8,
-    padding: 16,
-    marginHorizontal: 20,
-    marginTop: 20,
-    alignItems: 'center',
-  },
-  nextButtonText: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: '600',
+    marginHorizontal: spacing.xl,
+    marginTop: spacing.xl,
   },
   requiredNote: {
     fontSize: 12,
-    color: '#6B7280',
+    color: colors.textSecondary,
     textAlign: 'center',
-    marginTop: 12,
-    marginBottom: 40,
+    marginTop: spacing.md,
+    marginBottom: spacing.xxxl,
   },
 });

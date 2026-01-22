@@ -1,0 +1,45 @@
+
+> anamnese-mobile@1.0.0 start
+> react-native start --reset-cache
+
+warn Package react-native-sqlite-storage contains invalid configuration: "dependency.platforms.ios.project" is not allowed. Please verify it's properly linked using "npx react-native config" command and contact the package maintainers about this.
+info Welcome to React Native v0.73
+info Starting dev server on port 8081...
+
+                        ▒▒▓▓▓▓▒▒
+                     ▒▓▓▓▒▒░░▒▒▓▓▓▒
+                  ▒▓▓▓▓░░░▒▒▒▒░░░▓▓▓▓▒
+                 ▓▓▒▒▒▓▓▓▓▓▓▓▓▓▓▓▓▒▒▒▓▓
+                 ▓▓░░░░░▒▓▓▓▓▓▓▒░░░░░▓▓
+                 ▓▓░░▓▓▒░░░▒▒░░░▒▓▒░░▓▓
+                 ▓▓░░▓▓▓▓▓▒▒▒▒▓▓▓▓▒░░▓▓
+                 ▓▓░░▓▓▓▓▓▓▓▓▓▓▓▓▓▒░░▓▓
+                 ▓▓▒░░▒▒▓▓▓▓▓▓▓▓▒░░░▒▓▓
+                  ▒▓▓▓▒░░░▒▓▓▒░░░▒▓▓▓▒
+                     ▒▓▓▓▒░░░░▒▓▓▓▒
+                        ▒▒▓▓▓▓▒▒
+
+
+warning: the transform cache was reset.
+                Welcome to Metro v0.80.12
+              Fast - Scalable - Integrated
+
+
+info Dev server ready
+
+i - run on iOS
+a - run on Android
+d - open Dev Menu
+r - reload app
+
+ BUNDLE  ./index.js 
+
+info Launching Dev Tools...
+ BUNDLE  ./index.js 
+
+ BUNDLE  ./index.js 
+
+ LOG  JavaScript logs will appear in your browser console
+warn No apps connected. Sending "reload" to all React Native apps failed. Make sure your app is running in the simulator or on a phone connected via USB.
+warn No apps connected. Sending "reload" to all React Native apps failed. Make sure your app is running in the simulator or on a phone connected via USB.
+warn No apps connected. Sending "reload" to all React Native apps failed. Make sure your app is running in the simulator or on a phone connected via USB.

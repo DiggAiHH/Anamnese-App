@@ -13,6 +13,7 @@ import { Question } from '@domain/entities/Questionnaire';
 import { IAnswerRepository } from '@domain/repositories/IAnswerRepository';
 import { IEncryptionService } from '@domain/repositories/IEncryptionService';
 import { AnswerValidator, ValidationResult } from '@domain/entities/Answer';
+import { encodeMultiChoiceBitset } from '@domain/value-objects/CompartmentAnswerEncoding';
 
 /**
  * Use Case Input (von Presentation Layer)
@@ -63,10 +64,13 @@ export class SaveAnswerUseCase {
         };
       }
 
-      // Step 2: Encrypt Answer
-      const encryptedValue = await this.encryptAnswer(input.value, input.encryptionKey);
+      // Step 2: Normalize for storage (keep DB consistent)
+      const normalizedValue = this.normalizeValueForStorage(input.question, input.value);
 
-      // Step 3: Check if answer exists (update vs create)
+      // Step 3: Encrypt Answer
+      const encryptedValue = await this.encryptAnswer(normalizedValue, input.encryptionKey);
+
+      // Step 4: Check if answer exists (update vs create)
       const existingAnswer = await this.answerRepository.findByQuestionId(
         input.questionnaireId,
         input.question.id,
@@ -89,7 +93,7 @@ export class SaveAnswerUseCase {
         });
       }
 
-      // Step 4: Save to DB
+      // Step 5: Save to DB
       await this.answerRepository.save(answer);
 
       return {
@@ -109,6 +113,26 @@ export class SaveAnswerUseCase {
    */
   private validate(question: Question, value: AnswerValue): ValidationResult {
     return AnswerValidator.validate(value, question);
+  }
+
+  private normalizeValueForStorage(question: Question, value: AnswerValue): AnswerValue {
+    if (value === null || value === undefined) return value;
+
+    if (question.type === 'checkbox' || question.type === 'multiselect') {
+      // New model: store as integer bitset. Keep legacy arrays accepted at input.
+      if (Array.isArray(value)) {
+        const bitPositions = value
+          .map((v) => (typeof v === 'number' ? v : Number.parseInt(String(v), 10)))
+          .filter((v) => Number.isInteger(v));
+
+        // If nothing parsed, keep legacy value (avoids throwing on weird legacy arrays)
+        if (bitPositions.length === 0) return value;
+
+        return encodeMultiChoiceBitset(bitPositions);
+      }
+    }
+
+    return value;
   }
 
   /**

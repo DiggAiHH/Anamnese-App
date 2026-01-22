@@ -1,0 +1,8 @@
+triage.name=build
+triage.cwd=C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App
+triage.command=cmd.exe /d /c npm.cmd run type-check
+triage.exitCode=0
+triage.log=C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\buildLogs\triage_build_20260120_193321.log
+
+--- summary (filtered) ---
+(no error patterns matched; check full log if needed)

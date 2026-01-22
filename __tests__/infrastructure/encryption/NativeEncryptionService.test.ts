@@ -53,9 +53,9 @@ describeIfNative('NativeEncryptionService', () => {
   describe('encrypt and decrypt', () => {
     it('should encrypt and decrypt data successfully', async () => {
       const { key } = await encryptionService.deriveKey(masterPassword);
-      
+
       const encryptedData = await encryptionService.encrypt(testData, key);
-      
+
       expect(encryptedData.ciphertext).toBeDefined();
       expect(encryptedData.iv).toBeDefined();
       expect(encryptedData.authTag).toBeDefined();
@@ -63,47 +63,45 @@ describeIfNative('NativeEncryptionService', () => {
       expect(encryptedData.ciphertext).not.toBe(testData);
 
       const decryptedData = await encryptionService.decrypt(encryptedData, key);
-      
+
       expect(decryptedData).toBe(testData);
     });
 
     it('should fail decryption with wrong key', async () => {
       const { key: correctKey } = await encryptionService.deriveKey(masterPassword);
       const { key: wrongKey } = await encryptionService.deriveKey('WrongPassword123!Secure');
-      
+
       const encryptedData = await encryptionService.encrypt(testData, correctKey);
-      
-      await expect(
-        encryptionService.decrypt(encryptedData, wrongKey)
-      ).rejects.toThrow();
+
+      await expect(encryptionService.decrypt(encryptedData, wrongKey)).rejects.toThrow();
     });
 
     it('should handle empty data', async () => {
       const { key } = await encryptionService.deriveKey(masterPassword);
-      
+
       const encryptedData = await encryptionService.encrypt('', key);
       const decryptedData = await encryptionService.decrypt(encryptedData, key);
-      
+
       expect(decryptedData).toBe('');
     });
 
     it('should handle unicode characters', async () => {
       const unicodeData = 'Test with unicode: äöü ñ 中文 🎉';
       const { key } = await encryptionService.deriveKey(masterPassword);
-      
+
       const encryptedData = await encryptionService.encrypt(unicodeData, key);
       const decryptedData = await encryptionService.decrypt(encryptedData, key);
-      
+
       expect(decryptedData).toBe(unicodeData);
     });
 
     it('should handle long data', async () => {
       const longData = 'A'.repeat(10000);
       const { key } = await encryptionService.deriveKey(masterPassword);
-      
+
       const encryptedData = await encryptionService.encrypt(longData, key);
       const decryptedData = await encryptionService.decrypt(encryptedData, key);
-      
+
       expect(decryptedData).toBe(longData);
     });
   });
@@ -120,7 +118,7 @@ describeIfNative('NativeEncryptionService', () => {
 
     it('should generate requested byte length', async () => {
       const random = await encryptionService.generateRandomString(32);
-      
+
       // Base64 encoded length should be roughly 4/3 of byte length
       const expectedLength = Math.ceil((32 * 4) / 3);
       expect(random.length).toBeGreaterThanOrEqual(expectedLength - 2);

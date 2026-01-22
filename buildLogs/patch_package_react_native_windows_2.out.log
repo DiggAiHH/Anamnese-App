@@ -1,0 +1,42 @@
+patch-package 8.0.1
+• Creating temporary folder
+• Installing react-native-windows@0.73.22 with npm
+• Diffing your files with clean files
+
+{
+  error: Error: spawnSync git ENOBUFS
+      at Object.spawnSync (node:internal/child_process:1120:20)
+      at Object.spawnSync (node:child_process:911:24)
+      at spawn.spawnSync [as sync] (C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\cross-spawn\index.js:26:23)
+      at Object.spawnSafeSync (C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\patch-package\dist\spawnSafe.js:11:34)
+      at git (C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\patch-package\dist\makePatch.js:155:46)
+      at Object.makePatch (C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\patch-package\dist\makePatch.js:205:28)
+      at C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\patch-package\dist\index.js:72:25
+      at Array.forEach (<anonymous>)
+      at Object.<anonymous> (C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\patch-package\dist\index.js:71:22)
+      at Module._compile (node:internal/modules/cjs/loader:1761:14) {
+    errno: -4060,
+    code: 'ENOBUFS',
+    syscall: 'spawnSync git',
+    path: 'git',
+    spawnargs: [
+      'diff',
+      '--cached',
+      '--no-color',
+      '--ignore-space-at-eol',
+      '--no-ext-diff',
+      '--src-prefix=a/',
+      '--dst-prefix=b/'
+    ]
+  },
+  status: null,
+  signal: 'SIGTERM',
+  output: [
+    null,
+    <Buffer 64 69 66 66 20 2d 2d 67 69 74 20 61 2f 6e 6f 64 65 5f 6d 6f 64 75 6c 65 73 2f 72 65 61 63 74 2d 6e 61 74 69 76 65 2d 77 69 6e 64 6f 77 73 2f 43 6f 6d ... 104865742 more bytes>,
+    <Buffer >
+  ],
+  pid: 16092,
+  stdout: <Buffer 64 69 66 66 20 2d 2d 67 69 74 20 61 2f 6e 6f 64 65 5f 6d 6f 64 75 6c 65 73 2f 72 65 61 63 74 2d 6e 61 74 69 76 65 2d 77 69 6e 64 6f 77 73 2f 43 6f 6d ... 104865742 more bytes>,
+  stderr: <Buffer >
+}

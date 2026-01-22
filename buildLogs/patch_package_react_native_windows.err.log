@@ -1,0 +1,22 @@
+node:fs:1236
+  return binding.rmSync(getValidatedPath(path), opts.maxRetries, opts.recursive, opts.retryDelay);
+                 ^
+
+Error: EPERM, Permission denied: \\?\C:\Users\tubbeTEC\AppData\Local\Temp\tmp-1100-4xPGxZ1NQFn1 '\\?\C:\Users\tubbeTEC\AppData\Local\Temp\tmp-1100-4xPGxZ1NQFn1'
+    at Object.rmSync (node:fs:1236:18)
+    at FN_RIMRAF_SYNC (C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\tmp\lib\tmp.js:58:13)
+    at Object._cleanupCallback [as removeCallback] (C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\tmp\lib\tmp.js:355:16)
+    at Object.makePatch (C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\patch-package\dist\makePatch.js:398:17)
+    at C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\patch-package\dist\index.js:72:25
+    at Array.forEach (<anonymous>)
+    at Object.<anonymous> (C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\node_modules\patch-package\dist\index.js:71:22)
+    at Module._compile (node:internal/modules/cjs/loader:1761:14)
+    at Object..js (node:internal/modules/cjs/loader:1893:10)
+    at Module.load (node:internal/modules/cjs/loader:1481:32) {
+  errno: 1,
+  code: 'EPERM',
+  path: '\\\\?\\C:\\Users\\tubbeTEC\\AppData\\Local\\Temp\\tmp-1100-4xPGxZ1NQFn1',
+  syscall: 'rm'
+}
+
+Node.js v24.12.0

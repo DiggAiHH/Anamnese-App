@@ -4,6 +4,10 @@
 **Datum:** 2025-12-28  
 **Architekturstil:** Clean Architecture + Domain-Driven Design (DDD)
 
+> Hinweis (Ist-Stand im aktuellen Workspace): Die folgende Projektstruktur beschreibt die Ziel-/Soll-Struktur.
+> In diesem Workspace-Snapshot sind die nativen Projektordner wie `android/` und `ios/` aktuell nicht enthalten.
+> Für Builds (z.B. Android Emulator) müssen diese Ordner im Projekt vorhanden sein.
+
 ---
 
 ## 📐 **ARCHITEKTUR-ÜBERSICHT**
