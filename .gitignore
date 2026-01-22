@@ -70,3 +70,7 @@ coverage/
 # Temporary
 tmp/
 temp/
+
+# Build artifacts and logs
+buildLogs/
+web/dist/
