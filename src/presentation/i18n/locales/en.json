@@ -34,7 +34,9 @@
     "success": "Success",
     "clear": "Clear",
     "continue": "Continue",
-    "close": "Close"
+    "close": "Close",
+    "featureUnavailableTitle": "Feature not available",
+    "featureUnavailableMessage": "{{feature}} is not available on this platform."
   },
   "settings": {
     "deleteTitle": "Delete All Data?",
@@ -66,7 +68,8 @@
       "doctorDescription": "Hand tablet to patient",
       "patient": "Patient",
       "patientDescription": "Fill out independently"
-    },    "privacyTitle": "Privacy",
+    },
+    "privacyTitle": "Privacy",
     "privacyBullet1": "All data stays local on your device",
     "privacyBullet2": "AES-256 encryption",
     "privacyBullet3": "No external servers",

@@ -40,11 +40,13 @@ import { useTranslation } from 'react-i18next';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/RootNavigator';
 import { QuestionCard } from '../components/QuestionCard';
+import { AppButton } from '../components/AppButton';
 import { useQuestionnaireStore, selectCurrentSection, selectVisibleQuestions, selectProgress } from '../state/useQuestionnaireStore';
 import { AnswerValue } from '@domain/entities/Answer';
 import type { Question } from '@domain/entities/Questionnaire';
 import { colors, spacing, radius } from '../theme/tokens';
 import { logWarn } from '../../shared/logger';
+import { isMissingRequiredAnswer } from '../../shared/questionnaireValidation';
 
 // Use Cases
 import { LoadQuestionnaireUseCase } from '@application/use-cases/LoadQuestionnaireUseCase';
@@ -92,6 +94,9 @@ export const QuestionnaireScreen = ({ route, navigation }: Props): React.JSX.Ele
   // Local State
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
   const [showSectionNav, setShowSectionNav] = useState(false);
+  const [pendingSaves, setPendingSaves] = useState(0);
+  const [lastSavedAt, setLastSavedAt] = useState<Date | null>(null);
+  const [saveStatusError, setSaveStatusError] = useState<string | null>(null);
 
   // Use Cases (Dependency Injection)
   const loadQuestionnaireUseCase = new LoadQuestionnaireUseCase(
@@ -339,6 +344,8 @@ export const QuestionnaireScreen = ({ route, navigation }: Props): React.JSX.Ele
     if (!question) return;
 
     // Save to DB (async)
+    setPendingSaves((prev) => prev + 1);
+    setSaveStatusError(null);
     const result = await saveAnswerUseCase.execute({
       questionnaireId: questionnaire.id,
       question,
@@ -346,6 +353,7 @@ export const QuestionnaireScreen = ({ route, navigation }: Props): React.JSX.Ele
       encryptionKey,
       sourceType: 'manual',
     });
+    setPendingSaves((prev) => Math.max(0, prev - 1));
 
     if (!result.success) {
       if (result.validationErrors) {
@@ -354,9 +362,13 @@ export const QuestionnaireScreen = ({ route, navigation }: Props): React.JSX.Ele
           ...prev,
           [questionId]: result.validationErrors![0],
         }));
+        setSaveStatusError(t('questionnaire.failedToSave', { defaultValue: 'Failed to save answer' }));
       } else {
+        setSaveStatusError(result.error ?? t('questionnaire.failedToSave', { defaultValue: 'Failed to save answer' }));
         Alert.alert(t('common.error'), result.error ?? t('questionnaire.failedToSave'));
       }
+    } else {
+      setLastSavedAt(new Date());
     }
   };
 
@@ -368,20 +380,9 @@ export const QuestionnaireScreen = ({ route, navigation }: Props): React.JSX.Ele
     if (!currentSection || !questionnaire) return;
 
     const requiredQuestions = visibleQuestions.filter((q) => q.required);
-    const isMissing = (q: Question): boolean => {
-      const v = answers.get(q.id);
-      if (v === null || v === undefined) return true;
-      if (typeof v === 'string') return v.trim().length === 0;
-      if (typeof v === 'number') {
-        if (q.type === 'select' || q.type === 'radio') return v === 0;
-        if (q.type === 'checkbox' || q.type === 'multiselect') return v === 0;
-        return false;
-      }
-      if (Array.isArray(v)) return v.length === 0;
-      return false;
-    };
-
-    const missingAnswers = requiredQuestions.filter(isMissing);
+    const missingAnswers = requiredQuestions.filter((q) =>
+      isMissingRequiredAnswer(q, answers.get(q.id)),
+    );
 
     if (missingAnswers.length > 0) {
       // Show validation errors
@@ -537,9 +538,11 @@ export const QuestionnaireScreen = ({ route, navigation }: Props): React.JSX.Ele
     return (
       <View style={styles.centerContainer}>
         <Text style={styles.errorText}>{error}</Text>
-        <TouchableOpacity style={styles.retryButton} onPress={loadQuestionnaire}>
-          <Text style={styles.retryButtonText}>{t('common.retry')}</Text>
-        </TouchableOpacity>
+        <AppButton
+          title={t('common.retry')}
+          onPress={loadQuestionnaire}
+          style={styles.retryButton}
+        />
       </View>
     );
   }
@@ -608,6 +611,30 @@ export const QuestionnaireScreen = ({ route, navigation }: Props): React.JSX.Ele
         <Text style={styles.progressText}>
           {t('questionnaire.progress', { percent: Math.round(progress) })}
         </Text>
+        <View style={styles.saveStatusBox}>
+          <Text
+            style={[
+              styles.saveStatusText,
+              saveStatusError ? styles.saveStatusError : undefined,
+            ]}
+          >
+            {pendingSaves > 0
+              ? t('common.loading', { defaultValue: 'Saving...' })
+              : saveStatusError
+                ? saveStatusError
+                : lastSavedAt
+                  ? `${t('common.success', { defaultValue: 'Saved' })} ${lastSavedAt.toLocaleTimeString()}`
+                  : t('common.save', { defaultValue: 'Save' })}
+          </Text>
+        </View>
+        <View style={styles.progressActions}>
+          <AppButton
+            title={t('questionnaire.sections')}
+            variant="tertiary"
+            onPress={() => setShowSectionNav(true)}
+            style={styles.sectionsButton}
+          />
+        </View>
       </View>
 
       {/* Section Title with Menu Button */}
@@ -649,21 +676,22 @@ export const QuestionnaireScreen = ({ route, navigation }: Props): React.JSX.Ele
 
       {/* Navigation Buttons */}
       <View style={styles.navigationContainer}>
-        <TouchableOpacity
-          style={[styles.navButton, styles.prevButton]}
-          onPress={handlePrevious}>
-          <Text style={styles.navButtonText}>← {t('questionnaire.previous')}</Text>
-        </TouchableOpacity>
+        <AppButton
+          title={`← ${t('questionnaire.previous')}`}
+          variant="secondary"
+          onPress={handlePrevious}
+          style={styles.navButton}
+        />
 
-        <TouchableOpacity
-          style={[styles.navButton, styles.nextButton]}
-          onPress={handleNext}>
-          <Text style={styles.navButtonText}>
-            {currentSectionIndex === questionnaire.sections.length - 1
+        <AppButton
+          title={
+            currentSectionIndex === questionnaire.sections.length - 1
               ? `${t('questionnaire.complete')} →`
-              : `${t('questionnaire.next')} →`}
-          </Text>
-        </TouchableOpacity>
+              : `${t('questionnaire.next')} →`
+          }
+          onPress={handleNext}
+          style={styles.navButton}
+        />
       </View>
     </View>
   );
@@ -692,15 +720,7 @@ const styles = StyleSheet.create({
     marginBottom: spacing.md,
   },
   retryButton: {
-    backgroundColor: colors.primary,
-    paddingHorizontal: spacing.xl,
-    paddingVertical: spacing.sm,
-    borderRadius: radius.md,
-  },
-  retryButtonText: {
-    color: colors.textInverse,
-    fontSize: 16,
-    fontWeight: '600',
+    marginTop: spacing.sm,
   },
   // Modal styles for Section Navigation
   modalOverlay: {
@@ -815,6 +835,25 @@ const styles = StyleSheet.create({
     color: colors.textMuted,
     textAlign: 'center',
   },
+  saveStatusBox: {
+    marginTop: spacing.sm,
+    alignItems: 'center',
+  },
+  saveStatusText: {
+    fontSize: 12,
+    color: colors.textMuted,
+  },
+  saveStatusError: {
+    color: colors.danger,
+  },
+  progressActions: {
+    marginTop: spacing.md,
+    alignItems: 'center',
+  },
+  sectionsButton: {
+    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.lg,
+  },
   sectionHeader: {
     padding: spacing.md,
     backgroundColor: colors.surface,
@@ -867,19 +906,5 @@ const styles = StyleSheet.create({
   },
   navButton: {
     flex: 1,
-    paddingVertical: 14,
-    borderRadius: radius.md,
-    alignItems: 'center',
-  },
-  prevButton: {
-    backgroundColor: colors.surfaceAlt,
-  },
-  nextButton: {
-    backgroundColor: colors.primary,
-  },
-  navButtonText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: colors.text,
   },
 });

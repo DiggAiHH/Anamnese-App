@@ -17,6 +17,7 @@ import type { RootStackParamList } from '../navigation/RootNavigator';
 import { DeleteAllDataUseCase } from '../../domain/usecases/DeleteAllDataUseCase';
 import { useQuestionnaireStore } from '../state/useQuestionnaireStore';
 import { colors, spacing, radius } from '../theme/tokens';
+import { AppButton } from '../components/AppButton';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
 
@@ -117,37 +118,33 @@ export const HomeScreen = ({ navigation }: Props): React.JSX.Element => {
         </View>
 
         <View style={styles.buttonContainer}>
-          <TouchableOpacity
-            style={[
-              styles.primaryButton,
-              !selectedMode && styles.primaryButtonDisabled,
-            ]}
+          <AppButton
+            title={t('home.startNew')}
             disabled={!selectedMode}
             onPress={() => {
-              // Store the mode for use in later screens
               useQuestionnaireStore.getState().setUserMode(selectedMode);
               navigation.navigate('MasterPassword', { mode: 'setup' });
-            }}>
-            <Text style={styles.primaryButtonText}>{t('home.startNew')}</Text>
-          </TouchableOpacity>
+            }}
+            style={styles.primaryButton}
+          />
 
-          <TouchableOpacity
-            style={styles.secondaryButton}
+          <AppButton
+            title={t('home.saved')}
+            variant="secondary"
             onPress={() => {
               navigation.navigate('SavedAnamneses');
-            }}>
-            <Text style={styles.secondaryButtonText}>
-              {t('home.saved')}
-            </Text>
-          </TouchableOpacity>
+            }}
+            style={styles.secondaryButton}
+          />
 
-          <TouchableOpacity
-            style={styles.tertiaryButton}
+          <AppButton
+            title={t('home.selectLanguage')}
+            variant="tertiary"
             onPress={() => {
               navigation.navigate('SelectLanguage');
-            }}>
-            <Text style={styles.tertiaryButtonText}>{t('home.selectLanguage')}</Text>
-          </TouchableOpacity>
+            }}
+            style={styles.tertiaryButton}
+          />
         </View>
 
         <View style={styles.infoCard}>
@@ -173,70 +170,56 @@ export const HomeScreen = ({ navigation }: Props): React.JSX.Element => {
           <Text style={styles.dangerTitle}>
             {t('settings.dangerZone', { defaultValue: 'Data Management' })}
           </Text>
-          <TouchableOpacity
-            style={styles.dangerButton}
+          <AppButton
+            title={t('settings.deleteAllData', { defaultValue: 'Delete All Data (GDPR)' })}
+            variant="danger"
             onPress={handleDeleteAllData}
-            testID="btn-delete-all-data">
-            <Text style={styles.dangerButtonText}>
-              {t('settings.deleteAllData', { defaultValue: 'Delete All Data (GDPR)' })}
-            </Text>
-          </TouchableOpacity>
+            testID="btn-delete-all-data"
+          />
         </View>
 
         {/* Feedback Section */}
         <View style={styles.feedbackSection}>
-          <TouchableOpacity
-            style={styles.feedbackButton}
+          <AppButton
+            title={t('feedback.homeButton', { defaultValue: 'Send Feedback' })}
+            variant="success"
             onPress={() => navigation.navigate('Feedback')}
             testID="btn-send-feedback"
-            accessibilityRole="button"
-            accessibilityLabel={t('feedback.title', { defaultValue: 'Send Feedback' })}>
-            <Text style={styles.feedbackButtonText}>
-              {t('feedback.homeButton', { defaultValue: '💬 Send Feedback' })}
-            </Text>
-          </TouchableOpacity>
+            accessibilityLabel={t('feedback.title', { defaultValue: 'Send Feedback' })}
+          />
         </View>
 
         {/* Voice Section */}
         <View style={styles.voiceSection}>
-          <TouchableOpacity
-            style={styles.voiceButton}
+          <AppButton
+            title={t('voice.homeButton', { defaultValue: 'Voice Assistant (FREE)' })}
+            variant="info"
             onPress={() => navigation.navigate('Voice')}
             testID="btn-voice-assistant"
-            accessibilityRole="button"
-            accessibilityLabel={t('voice.title', { defaultValue: 'Voice Assistant' })}>
-            <Text style={styles.voiceButtonText}>
-              {t('voice.homeButton', { defaultValue: '🎤 Voice Assistant (FREE)' })}
-            </Text>
-          </TouchableOpacity>
+            accessibilityLabel={t('voice.title', { defaultValue: 'Voice Assistant' })}
+          />
         </View>
 
         {/* Calculator Section */}
         <View style={styles.calculatorSection}>
-          <TouchableOpacity
-            style={styles.calculatorButton}
+          <AppButton
+            title={t('calculator.homeButton', { defaultValue: 'Clinical Calculators' })}
+            variant="warning"
             onPress={() => navigation.navigate('Calculator')}
             testID="btn-clinical-calculator"
-            accessibilityRole="button"
-            accessibilityLabel={t('calculator.title', { defaultValue: 'Clinical Calculators' })}>
-            <Text style={styles.calculatorButtonText}>
-              {t('calculator.homeButton', { defaultValue: '🧮 Clinical Calculators' })}
-            </Text>
-          </TouchableOpacity>
+            accessibilityLabel={t('calculator.title', { defaultValue: 'Clinical Calculators' })}
+          />
         </View>
 
         {/* Data Management Section */}
         <View style={styles.dataManagementSection}>
-          <TouchableOpacity
-            style={styles.dataManagementButton}
+          <AppButton
+            title={t('dataManagement.homeButton', { defaultValue: 'Backup & Restore' })}
+            variant="accent"
             onPress={() => navigation.navigate('DataManagement')}
             testID="btn-data-management"
-            accessibilityRole="button"
-            accessibilityLabel={t('dataManagement.title', { defaultValue: 'Data Management' })}>
-            <Text style={styles.dataManagementButtonText}>
-              {t('dataManagement.homeButton', { defaultValue: '💾 Backup & Restore' })}
-            </Text>
-          </TouchableOpacity>
+            accessibilityLabel={t('dataManagement.title', { defaultValue: 'Data Management' })}
+          />
         </View>
       </View>
     </ScrollView>
@@ -321,46 +304,13 @@ const styles = StyleSheet.create({
     marginBottom: spacing.xxl,
   },
   primaryButton: {
-    backgroundColor: colors.primary,
-    padding: spacing.lg,
-    borderRadius: radius.md,
-    alignItems: 'center',
     marginBottom: spacing.md,
   },
-  primaryButtonDisabled: {
-    backgroundColor: colors.borderLight,
-  },
-  primaryButtonText: {
-    color: colors.onPrimary,
-    fontSize: 18,
-    fontWeight: '600',
-  },
   secondaryButton: {
-    backgroundColor: colors.surface,
-    padding: spacing.lg,
-    borderRadius: radius.md,
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: colors.border,
-  },
-  secondaryButtonText: {
-    color: colors.primary,
-    fontSize: 18,
-    fontWeight: '600',
+    marginBottom: spacing.md,
   },
   tertiaryButton: {
-    backgroundColor: colors.surface,
-    padding: spacing.md,
-    borderRadius: radius.md,
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: colors.border,
     marginTop: spacing.md,
-  },
-  tertiaryButtonText: {
-    color: colors.textPrimary,
-    fontSize: 16,
-    fontWeight: '600',
   },
   infoCard: {
     backgroundColor: colors.infoSurface,
@@ -410,84 +360,19 @@ const styles = StyleSheet.create({
     marginBottom: spacing.md,
     textTransform: 'uppercase',
   },
-  dangerButton: {
-    backgroundColor: colors.dangerSurface,
-    padding: spacing.lg,
-    borderRadius: radius.md,
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: colors.dangerBorder,
-  },
-  dangerButtonText: {
-    color: colors.dangerText,
-    fontSize: 16,
-    fontWeight: '600',
-  },
   feedbackSection: {
     marginTop: spacing.xxl,
     borderTopWidth: 1,
     borderTopColor: colors.divider,
     paddingTop: spacing.lg,
   },
-  feedbackButton: {
-    backgroundColor: colors.successSurface,
-    padding: spacing.lg,
-    borderRadius: radius.md,
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: colors.successBorder,
-  },
-  feedbackButtonText: {
-    color: colors.successText,
-    fontSize: 16,
-    fontWeight: '600',
-  },
   voiceSection: {
     marginTop: spacing.lg,
-  },
-  voiceButton: {
-    backgroundColor: colors.infoSurface,
-    padding: spacing.lg,
-    borderRadius: radius.md,
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: colors.infoBorder,
-  },
-  voiceButtonText: {
-    color: colors.infoText,
-    fontSize: 16,
-    fontWeight: '600',
   },
   calculatorSection: {
     marginTop: spacing.lg,
   },
-  calculatorButton: {
-    backgroundColor: colors.warningSurface,
-    padding: spacing.lg,
-    borderRadius: radius.md,
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: colors.warningBorder,
-  },
-  calculatorButtonText: {
-    color: colors.warningText,
-    fontSize: 16,
-    fontWeight: '600',
-  },
   dataManagementSection: {
     marginTop: spacing.lg,
-  },
-  dataManagementButton: {
-    backgroundColor: colors.accentSurface,
-    padding: spacing.lg,
-    borderRadius: radius.md,
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: colors.accentBorder,
-  },
-  dataManagementButtonText: {
-    color: colors.accentText,
-    fontSize: 16,
-    fontWeight: '600',
   },
 });

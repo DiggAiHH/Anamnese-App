@@ -17,6 +17,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import { ClinicalCalculators } from '../../domain/services/ClinicalCalculators';
 import { colors, spacing, radius } from '../theme/tokens';
+import { AppButton } from '../components/AppButton';
 
 // Navigation Props type (kept for future use)
 // type Props = NativeStackScreenProps<RootStackParamList, 'Calculator'>;
@@ -278,9 +279,11 @@ export const CalculatorScreen = (): React.JSX.Element => {
         accessibilityLabel={t('calculator.bmi.height')}
         accessibilityLabelledBy="bmi-height-label"
       />
-      <TouchableOpacity style={styles.calculateButton} onPress={calculateBMI} accessibilityRole="button">
-        <Text style={styles.calculateButtonText}>{t('calculator.calculate')}</Text>
-      </TouchableOpacity>
+      <AppButton
+        title={t('calculator.calculate')}
+        onPress={calculateBMI}
+        style={styles.calculateButton}
+      />
       {bmiResult && <Text style={styles.result} accessibilityLiveRegion="polite">{bmiResult}</Text>}
     </View>
   );
@@ -352,9 +355,11 @@ export const CalculatorScreen = (): React.JSX.Element => {
         <View style={[styles.checkbox, cardioSmoker && styles.checkboxChecked]} />
         <Text style={styles.checkboxLabel}>{t('calculator.cardio.smoker')}</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.calculateButton} onPress={calculateCardio} accessibilityRole="button">
-        <Text style={styles.calculateButtonText}>{t('calculator.calculate')}</Text>
-      </TouchableOpacity>
+      <AppButton
+        title={t('calculator.calculate')}
+        onPress={calculateCardio}
+        style={styles.calculateButton}
+      />
       {cardioResult && <Text style={styles.result} accessibilityLiveRegion="polite">{cardioResult}</Text>}
     </View>
   );
@@ -398,9 +403,11 @@ export const CalculatorScreen = (): React.JSX.Element => {
           <Text style={styles.genderButtonText}>{t('patientInfo.female')}</Text>
         </TouchableOpacity>
       </View>
-      <TouchableOpacity style={styles.calculateButton} onPress={calculateEGFR} accessibilityRole="button">
-        <Text style={styles.calculateButtonText}>{t('calculator.calculate')}</Text>
-      </TouchableOpacity>
+      <AppButton
+        title={t('calculator.calculate')}
+        onPress={calculateEGFR}
+        style={styles.calculateButton}
+      />
       {egfrResult && <Text style={styles.result} accessibilityLiveRegion="polite">{egfrResult}</Text>}
     </View>
   );
@@ -434,9 +441,11 @@ export const CalculatorScreen = (): React.JSX.Element => {
           <Text style={styles.genderButtonText}>{t('patientInfo.female')}</Text>
         </TouchableOpacity>
       </View>
-      <TouchableOpacity style={styles.calculateButton} onPress={calculateIBW} accessibilityRole="button">
-        <Text style={styles.calculateButtonText}>{t('calculator.calculate')}</Text>
-      </TouchableOpacity>
+      <AppButton
+        title={t('calculator.calculate')}
+        onPress={calculateIBW}
+        style={styles.calculateButton}
+      />
       {ibwResult && <Text style={styles.result} accessibilityLiveRegion="polite">{ibwResult}</Text>}
     </View>
   );
@@ -490,9 +499,11 @@ export const CalculatorScreen = (): React.JSX.Element => {
           <Text style={styles.genderButtonText}>{t('patientInfo.female')}</Text>
         </TouchableOpacity>
       </View>
-      <TouchableOpacity style={styles.calculateButton} onPress={calculateBMR} accessibilityRole="button">
-        <Text style={styles.calculateButtonText}>{t('calculator.calculate')}</Text>
-      </TouchableOpacity>
+      <AppButton
+        title={t('calculator.calculate')}
+        onPress={calculateBMR}
+        style={styles.calculateButton}
+      />
       {bmrResult && <Text style={styles.result} accessibilityLiveRegion="polite">{bmrResult}</Text>}
     </View>
   );
@@ -601,16 +612,7 @@ const styles = StyleSheet.create({
     color: colors.text,
   },
   calculateButton: {
-    backgroundColor: colors.primary,
-    padding: spacing.md,
-    borderRadius: radius.md,
-    alignItems: 'center',
     marginTop: spacing.xl,
-  },
-  calculateButtonText: {
-    color: colors.textInverse,
-    fontSize: 16,
-    fontWeight: 'bold',
   },
   result: {
     marginTop: spacing.lg,

@@ -4,7 +4,7 @@
  */
 
 import React, { useMemo } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Platform } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/RootNavigator';
@@ -12,7 +12,6 @@ import { useQuestionnaireStore, selectProgress } from '../state/useQuestionnaire
 import { colors, spacing, radius } from '../theme/tokens';
 import { Card } from '../components/Card';
 import { AppButton } from '../components/AppButton';
-import Clipboard from '@react-native-clipboard/clipboard';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Summary'>;
 
@@ -21,6 +20,7 @@ export const SummaryScreen = ({ navigation, route }: Props): React.JSX.Element =
   const { questionnaireId } = route.params;
   const { reset, questionnaire, answers, patient } = useQuestionnaireStore();
   const progress = selectProgress(useQuestionnaireStore.getState());
+  const safeProgress = Number.isFinite(progress) ? progress : 0;
   
   // Build structured summary of all answers
   const answerSummary = useMemo(() => {
@@ -91,7 +91,8 @@ export const SummaryScreen = ({ navigation, route }: Props): React.JSX.Element =
     
     // Answers by section
     answerSummary.forEach((section) => {
-      text += `${section.sectionTitle}\n${'='.repeat(section.sectionTitle.length)}\n\n`;
+      const titleLength = Math.max(0, section.sectionTitle?.length ?? 0);
+      text += `${section.sectionTitle}\n${'='.repeat(titleLength)}\n\n`;
       section.questions.forEach((q) => {
         text += `${q.questionText}\n→ ${q.answer}\n\n`;
       });
@@ -100,14 +101,56 @@ export const SummaryScreen = ({ navigation, route }: Props): React.JSX.Element =
     return text;
   }, [answerSummary, patient, t]);
   
-  const handleCopyToClipboard = () => {
-    Clipboard.setString(plainTextSummary);
+  const handleCopyToClipboard = async (): Promise<void> => {
+    try {
+      const runtimeNavigator = (globalThis as { navigator?: { clipboard?: { writeText?: (text: string) => Promise<void> } } })
+        .navigator;
+      if (Platform.OS === 'web' && runtimeNavigator?.clipboard?.writeText) {
+        await runtimeNavigator.clipboard.writeText(plainTextSummary);
+        return;
+      }
+
+      type ClipboardModule = { setString?: (text: string) => void };
+      // Lazy require to avoid web/runtime module issues.
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      const mod = require('@react-native-clipboard/clipboard') as ClipboardModule & {
+        default?: ClipboardModule;
+      };
+      const clipboard = (mod?.default ?? mod) as ClipboardModule;
+      clipboard?.setString?.(plainTextSummary);
+    } catch {
+      // Ignore clipboard failures; summary is still visible.
+    }
   };
 
   const answeredCount = answerSummary.reduce(
     (acc, section) => acc + section.questions.length,
     0
   );
+  const safeAnsweredCount = Number.isFinite(answeredCount) ? answeredCount : 0;
+
+  if (!questionnaire) {
+    return (
+      <ScrollView
+        style={styles.container}
+        contentContainerStyle={styles.content}
+        testID="summary-screen"
+        accessibilityRole="scrollbar"
+        accessibilityLabel={t('summary.title')}>
+        <Text style={styles.title} accessibilityRole="header">
+          {t('summary.title')}
+        </Text>
+        <Text style={styles.noAnswersText}>
+          {t('summary.noAnswers', { defaultValue: 'Keine Antworten vorhanden' })}
+        </Text>
+        <AppButton
+          variant="secondary"
+          title={t('common.continue', { defaultValue: 'Continue' })}
+          onPress={() => navigation.goBack()}
+        />
+      </ScrollView>
+    );
+  }
 
   return (
     <ScrollView
@@ -129,10 +172,10 @@ export const SummaryScreen = ({ navigation, route }: Props): React.JSX.Element =
           {t('summary.statusTitle')}
         </Text>
         <Text style={styles.cardText}>
-          {t('summary.progress', { percent: Math.round(progress) })}
+          {t('summary.progress', { percent: Math.round(safeProgress) })}
         </Text>
         <Text style={styles.answeredText}>
-          {t('summary.answeredQuestions', { count: answeredCount, defaultValue: '{{count}} Fragen beantwortet' })}
+          {t('summary.answeredQuestions', { count: safeAnsweredCount, defaultValue: '{{count}} Fragen beantwortet' })}
         </Text>
       </Card>
 

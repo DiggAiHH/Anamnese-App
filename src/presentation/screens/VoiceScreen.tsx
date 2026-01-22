@@ -29,6 +29,7 @@ import type { RootStackParamList } from '../navigation/RootNavigator';
 import { SystemSpeechService, SpeechError } from '../../infrastructure/speech/SystemSpeechService';
 import { TTSService, getTTSService } from '../../infrastructure/speech/TTSService';
 import { colors, spacing, radius } from '../theme/tokens';
+import { FeatureBanner } from '../components/FeatureBanner';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Voice'>;
 
@@ -182,9 +183,11 @@ export const VoiceScreen = ({ navigation: _navigation }: Props): React.JSX.Eleme
         <Text style={styles.sectionDesc}>{t('voice.sttDesc')}</Text>
 
         {!sttAvailable && (
-          <View style={styles.warningBox} accessibilityRole="alert">
-            <Text style={styles.warningText}>⚠️ {t('voice.sttNotAvailable')}</Text>
-          </View>
+          <FeatureBanner
+            title={t('common.featureUnavailableTitle')}
+            message={t('voice.sttNotAvailable')}
+            variant="warning"
+          />
         )}
 
         <TouchableOpacity
@@ -360,16 +363,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: colors.textMuted,
     marginBottom: spacing.md,
-  },
-  warningBox: {
-    backgroundColor: colors.warningSurface,
-    padding: spacing.sm,
-    borderRadius: radius.md,
-    marginBottom: spacing.md,
-  },
-  warningText: {
-    color: colors.warningText,
-    fontSize: 14,
   },
   micButton: {
     width: 100,

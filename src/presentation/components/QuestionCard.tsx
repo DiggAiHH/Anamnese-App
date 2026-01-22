@@ -113,6 +113,8 @@ export const QuestionCard: React.FC<QuestionCardProps> = memo(({
         return renderRadioInput();
       
       case 'checkbox':
+        return question.options ? renderCheckboxInput() : renderSingleCheckbox();
+      
       case 'multiselect':
         return renderCheckboxInput();
       
@@ -385,6 +387,30 @@ export const QuestionCard: React.FC<QuestionCardProps> = memo(({
   };
 
   /**
+   * Checkbox Input (single)
+   */
+  const renderSingleCheckbox = (): React.ReactNode => {
+    const checked = value === true;
+
+    return (
+      <TouchableOpacity
+        style={styles.checkboxOption}
+        onPress={() => onValueChange(!checked)}
+        accessibilityRole="checkbox"
+        accessibilityState={{ checked }}
+      >
+        <View style={[styles.checkbox, checked && styles.checkboxSelected]}>
+          {checked && <Text style={styles.checkmark}>✓</Text>}
+        </View>
+        <Text style={styles.optionLabel}>
+          {trKey(question.labelKey)}
+          {question.required && <Text style={styles.required}> *</Text>}
+        </Text>
+      </TouchableOpacity>
+    );
+  };
+
+  /**
    * Checkbox Input (multiple choice)
    */
   const renderCheckboxInput = (): React.ReactNode => {
@@ -478,10 +504,12 @@ export const QuestionCard: React.FC<QuestionCardProps> = memo(({
   return (
     <View style={styles.container}>
       {/* Question Label */}
-      <Text style={styles.label}>
-        {trKey(question.labelKey)}
-        {question.required && <Text style={styles.required}> *</Text>}
-      </Text>
+      {!(question.type === 'checkbox' && !question.options) && (
+        <Text style={styles.label}>
+          {trKey(question.labelKey)}
+          {question.required && <Text style={styles.required}> *</Text>}
+        </Text>
+      )}
 
       {/* Input */}
       {renderInput()}

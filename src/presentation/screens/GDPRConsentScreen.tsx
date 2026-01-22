@@ -10,7 +10,6 @@ import {
   TouchableOpacity,
   Alert,
   ScrollView,
-  ActivityIndicator,
   Modal,
   Platform,
 } from 'react-native';
@@ -291,23 +290,16 @@ export const GDPRConsentScreen = ({ navigation }: Props): React.JSX.Element => {
           required={false}
         />
 
-        <TouchableOpacity
-          style={[
-            styles.primaryButton,
-            (!canContinue || isWorking) && styles.primaryButtonDisabled,
-          ]}
+        <AppButton
+          title={t('gdpr.continue')}
           onPress={() => {
             handleContinue();
           }}
           disabled={!canContinue || isWorking}
+          loading={isWorking}
           testID="btn-consent-continue"
-          accessibilityRole="button">
-          {isWorking ? (
-            <ActivityIndicator color="#fff" />
-          ) : (
-            <Text style={styles.primaryButtonText}>{t('gdpr.continue')}</Text>
-          )}
-        </TouchableOpacity>
+          style={styles.primaryButton}
+        />
       </Card>
 
       {/* Privacy Policy Overlay - avoid Modal on Windows */}
@@ -535,19 +527,7 @@ const styles = StyleSheet.create({
     lineHeight: 18,
   },
   primaryButton: {
-    backgroundColor: colors.primary,
-    padding: spacing.md,
-    borderRadius: radius.md,
-    alignItems: 'center',
     marginTop: spacing.md,
-  },
-  primaryButtonDisabled: {
-    opacity: 0.6,
-  },
-  primaryButtonText: {
-    color: colors.onPrimary,
-    fontSize: 16,
-    fontWeight: '600',
   },
   privacyLinkContainer: {
     marginBottom: spacing.lg,

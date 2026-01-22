@@ -8,17 +8,18 @@ import {
   View,
   Text,
   StyleSheet,
-  TouchableOpacity,
   ScrollView,
   Alert,
-  ActivityIndicator,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { BackupUseCase } from '../../application/use-cases/BackupUseCase';
 import { RestoreUseCase, RestoreStrategy } from '../../application/use-cases/RestoreUseCase';
 import { requireRNFS } from '../../shared/rnfsSafe';
 import { colors, spacing, radius } from '../theme/tokens';
-import { logError } from '../../shared/logger';
+import { FeatureBanner } from '../components/FeatureBanner';
+import { reportUserError } from '../../shared/userFacingError';
+import { AppButton } from '../components/AppButton';
+import { useQuestionnaireStore } from '../state/useQuestionnaireStore';
 import {
   supportsDocumentPicker,
   supportsRNFS,
@@ -57,21 +58,32 @@ const getShareModule = (): ShareModule | null => {
 export const DataManagementScreen = (): React.JSX.Element => {
   const { t } = useTranslation();
   const [isProcessing, setIsProcessing] = useState(false);
+  const { encryptionKey } = useQuestionnaireStore();
+
+  const canBackup = supportsShare;
+  const canRestore = supportsDocumentPicker && supportsRNFS;
+  const showError = (message: string, error?: unknown) => {
+    reportUserError({ title: t('common.error'), message, error });
+  };
 
   const handleBackup = async () => {
     setIsProcessing(true);
     try {
       const shareModule = getShareModule();
       if (!shareModule) {
-        Alert.alert(t('common.error'), t('dataManagement.backup.error'));
+        showError(t('dataManagement.backup.error'));
         return;
       }
 
       const backupUseCase = new BackupUseCase();
-      const result = await backupUseCase.execute({ encryptionKey: 'default-key' });
+      if (!encryptionKey) {
+        showError(t('masterPassword.errorEmpty'));
+        return;
+      }
+      const result = await backupUseCase.execute({ encryptionKey });
 
       if (!result.success) {
-        Alert.alert(t('common.error'), result.error || t('dataManagement.backup.error'));
+        showError(result.error || t('dataManagement.backup.error'));
         return;
       }
 
@@ -87,9 +99,7 @@ export const DataManagementScreen = (): React.JSX.Element => {
         t('dataManagement.backup.success')
       );
     } catch (error) {
-      // GDPR-safe: error logged through sanitizing logger
-      logError('[DataManagement] Backup error', error);
-      Alert.alert(t('common.error'), t('dataManagement.backup.error'));
+      showError(t('dataManagement.backup.error'), error);
     } finally {
       setIsProcessing(false);
     }
@@ -99,12 +109,12 @@ export const DataManagementScreen = (): React.JSX.Element => {
     try {
       const documentPicker = getDocumentPicker();
       if (!documentPicker) {
-        Alert.alert(t('common.error'), t('dataManagement.restore.error'));
+        showError(t('dataManagement.restore.error'));
         return;
       }
 
       if (!supportsRNFS) {
-        Alert.alert(t('common.error'), t('dataManagement.restore.error'));
+        showError(t('dataManagement.restore.error'));
         return;
       }
 
@@ -125,14 +135,18 @@ export const DataManagementScreen = (): React.JSX.Element => {
       const backupData = await RNFS.readFile(filePath, 'utf8');
 
       const restoreUseCase = new RestoreUseCase();
+      if (!encryptionKey) {
+        showError(t('masterPassword.errorEmpty'));
+        return;
+      }
       const result = await restoreUseCase.execute({
         backupData,
-        encryptionKey: 'default-key',
+        encryptionKey,
         strategy,
       });
 
       if (!result.success) {
-        Alert.alert(t('common.error'), result.error || t('dataManagement.restore.error'));
+        showError(result.error || t('dataManagement.restore.error'));
         return;
       }
 
@@ -148,18 +162,11 @@ export const DataManagementScreen = (): React.JSX.Element => {
       }
 
       if (error instanceof Error && error.message.includes('RNFS is not available')) {
-        Alert.alert(t('common.error'), t('dataManagement.restore.error'));
+        showError(t('dataManagement.restore.error'));
         return;
       }
 
-      // GDPR-safe: error sanitized before logging
-      if (typeof __DEV__ !== 'undefined' && __DEV__) {
-        // eslint-disable-next-line no-console, @typescript-eslint/no-var-requires
-        const { sanitizeErrorToString } = require('../../shared/sanitizeError');
-        // eslint-disable-next-line no-console
-        console.error('[DataManagement] Restore error:', sanitizeErrorToString(error));
-      }
-      Alert.alert(t('common.error'), t('dataManagement.restore.error'));
+      showError(t('dataManagement.restore.error'), error);
     } finally {
       setIsProcessing(false);
     }
@@ -189,6 +196,12 @@ export const DataManagementScreen = (): React.JSX.Element => {
   return (
     <ScrollView style={styles.container}>
       <View style={styles.content}>
+        {(!canBackup || !canRestore) && (
+          <FeatureBanner
+            title={t('common.featureUnavailableTitle')}
+            message={t('common.featureUnavailableMessage', { feature: t('dataManagement.title') })}
+          />
+        )}
         <Text style={styles.title} accessibilityRole="header">{t('dataManagement.title')}</Text>
         <Text style={styles.subtitle}>{t('dataManagement.subtitle')}</Text>
 
@@ -198,21 +211,12 @@ export const DataManagementScreen = (): React.JSX.Element => {
           <Text style={styles.sectionDescription}>
             {t('dataManagement.backup.description')}
           </Text>
-          <TouchableOpacity
-            style={[styles.primaryButton, isProcessing && styles.buttonDisabled]}
+          <AppButton
+            title={t('dataManagement.backup.createBackup')}
             onPress={handleBackup}
             disabled={isProcessing}
-            accessibilityRole="button"
-            accessibilityState={{ disabled: isProcessing }}
-            accessibilityLabel={t('dataManagement.backup.createBackup')}>
-            {isProcessing ? (
-              <ActivityIndicator color="#fff" />
-            ) : (
-              <Text style={styles.primaryButtonText}>
-                {t('dataManagement.backup.createBackup')}
-              </Text>
-            )}
-          </TouchableOpacity>
+            loading={isProcessing}
+          />
         </View>
 
         {/* Restore Section */}
@@ -222,30 +226,21 @@ export const DataManagementScreen = (): React.JSX.Element => {
             {t('dataManagement.restore.description')}
           </Text>
 
-          <TouchableOpacity
-            style={[styles.secondaryButton, isProcessing && styles.buttonDisabled]}
+          <AppButton
+            title={t('dataManagement.restore.mergeButton')}
+            variant="secondary"
             onPress={() => confirmRestore('merge')}
             disabled={isProcessing}
-            accessibilityRole="button"
-            accessibilityState={{ disabled: isProcessing }}
-            accessibilityLabel={t('dataManagement.restore.mergeButton')}>
-            <Text style={styles.secondaryButtonText}>
-              {t('dataManagement.restore.mergeButton')}
-            </Text>
-          </TouchableOpacity>
+            style={styles.actionButton}
+          />
 
-          <TouchableOpacity
-            style={[styles.dangerButton, isProcessing && styles.buttonDisabled]}
+          <AppButton
+            title={t('dataManagement.restore.replaceButton')}
+            variant="danger"
             onPress={() => confirmRestore('replace')}
             disabled={isProcessing}
-            accessibilityRole="button"
-            accessibilityState={{ disabled: isProcessing }}
-            accessibilityLabel={t('dataManagement.restore.replaceButton')}
-            accessibilityHint={t('dataManagement.restore.replaceWarning')}>
-            <Text style={styles.dangerButtonText}>
-              {t('dataManagement.restore.replaceButton')}
-            </Text>
-          </TouchableOpacity>
+            accessibilityHint={t('dataManagement.restore.replaceWarning')}
+          />
         </View>
 
         {/* Info Section */}
@@ -304,42 +299,8 @@ const styles = StyleSheet.create({
     marginBottom: spacing.md,
     lineHeight: 20,
   },
-  primaryButton: {
-    backgroundColor: colors.primary,
-    padding: spacing.md,
-    borderRadius: radius.md,
-    alignItems: 'center',
-  },
-  primaryButtonText: {
-    color: colors.textInverse,
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  secondaryButton: {
-    backgroundColor: colors.success,
-    padding: spacing.md,
-    borderRadius: radius.md,
-    alignItems: 'center',
+  actionButton: {
     marginBottom: spacing.sm,
-  },
-  secondaryButtonText: {
-    color: colors.textInverse,
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  dangerButton: {
-    backgroundColor: colors.danger,
-    padding: spacing.md,
-    borderRadius: radius.md,
-    alignItems: 'center',
-  },
-  dangerButtonText: {
-    color: colors.textInverse,
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  buttonDisabled: {
-    opacity: 0.5,
   },
   infoCard: {
     backgroundColor: colors.surface,

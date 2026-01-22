@@ -15,7 +15,6 @@ import {
   TouchableOpacity,
   StyleSheet,
   Alert,
-  ActivityIndicator,
   Switch,
 } from 'react-native';
 import Clipboard from '@react-native-clipboard/clipboard';
@@ -31,6 +30,7 @@ import {
   isSecureKeyStorageAvailable,
   setActiveEncryptionKey,
 } from '@shared/keyManager';
+import { AppButton } from '../components/AppButton';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'MasterPassword'>;
 
@@ -145,32 +145,29 @@ export const MasterPasswordScreen = ({ navigation, route }: Props): React.JSX.El
           </TouchableOpacity>
         </View>
 
-        <TouchableOpacity
-          style={[styles.primaryButton, isWorking && styles.primaryButtonDisabled]}
-          disabled={isWorking}
+        <AppButton
+          title={t('masterPassword.unlock')}
           onPress={() => {
             handleContinue();
           }}
-          testID="btn-continue">
-          {isWorking ? (
-            <ActivityIndicator color="#fff" />
-          ) : (
-            <Text style={styles.primaryButtonText}>{t('masterPassword.unlock')}</Text>
-          )}
-        </TouchableOpacity>
+          disabled={isWorking}
+          loading={isWorking}
+          testID="btn-continue"
+          style={styles.primaryButton}
+        />
 
         {!!encryptionKey && (
-          <TouchableOpacity
-            style={styles.secondaryButton}
+          <AppButton
+            title={t('masterPassword.resetSession')}
+            variant="secondary"
             onPress={() => {
               reset();
               setPassword('');
               void clearActiveEncryptionKey({ removePersisted: true });
               Alert.alert(t('masterPassword.resetTitle'), t('masterPassword.resetMessage'));
             }}
-            testID="btn-reset-session">
-            <Text style={styles.secondaryButtonText}>{t('masterPassword.resetSession')}</Text>
-          </TouchableOpacity>
+            testID="btn-reset-session"
+          />
         )}
       </View>
 
@@ -268,32 +265,7 @@ const styles = StyleSheet.create({
     color: '#2563eb',
   },
   primaryButton: {
-    backgroundColor: '#2563eb',
-    padding: 14,
-    borderRadius: 8,
-    alignItems: 'center',
     marginBottom: 10,
-  },
-  primaryButtonDisabled: {
-    opacity: 0.7,
-  },
-  primaryButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  secondaryButton: {
-    backgroundColor: '#fff',
-    padding: 14,
-    borderRadius: 8,
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#d1d5db',
-  },
-  secondaryButtonText: {
-    color: '#2563eb',
-    fontSize: 16,
-    fontWeight: '600',
   },
   rememberRow: {
     marginTop: 16,

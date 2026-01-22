@@ -2,6 +2,52 @@
 
 This file is the authoritative execution plan to make the app **more user-friendly** and aligned with **modern standards** (ISO 9241-210 + WCAG 2.2 AA + CRA + GDPR).
 
+## Active Run Tasks (2026-01-23)
+- [x] UI polish: unify AppText variants (line-height/weights) and standardize EmptyState typography.
+- [x] UI polish: add consistent pressed/disabled/accessible state for AppButton.
+- [x] Hardening: add shared user-facing error helper (log + safe Alert) and adopt in key screens.
+- [x] Hardening: add safe-mode banners for unavailable native features (voice/storage).
+- [x] Tests: update unit tests for AppText/AppButton/EmptyState and new helpers.
+- [x] Verification: `npm run type-check` + targeted Jest tests with logs in `buildLogs/`.
+
+## Active Run Tasks (2026-01-23, UI Buttons + i18n + Spot-Checks)
+- [x] Replace remaining primary screen buttons with AppButton (skip chips/options).
+- [x] Translate `common.featureUnavailable*` across all locales (start ar/fa).
+- [x] Windows spot-check with logs in `buildLogs/`.
+- [x] Web spot-check with logs in `buildLogs/`.
+- [x] Targeted Jest + type-check if required by changes.
+
+## Active Run Tasks (2026-01-23, Remaining Button Unification)
+- [x] Inventory remaining TouchableOpacity-based primary actions across screens/components.
+- [x] Replace primary actions with AppButton (skip chips/options/toggles/icon buttons).
+- [x] Update styles and tests as needed.
+- [x] Run targeted Jest + type-check with logs in `buildLogs/`.
+
+## Active Run Tasks (2026-01-23, Web Spot-Check)
+- [x] Start web dev server and capture logs in `buildLogs/`.
+- [ ] Manually spot-check core flows on web (Home -> Consent -> Questionnaire -> Calculator -> Summary/Export).
+- [ ] Document results in Laufbahn files.
+
+## Active Run Tasks (2026-01-23, Required Confirmation Checkbox)
+- [x] Identify required confirmation question type and missing UI.
+- [x] Implement single-checkbox rendering for required confirmation.
+- [x] Update required-answer validation to handle boolean checkbox.
+- [x] Add unit test for required checkbox validation.
+- [x] Run targeted Jest + type-check with logs in `buildLogs/`.
+
+## Active Run Tasks (2026-01-22, Remaining Questionnaire Issues)
+- [x] Fix encryption/decryption failures on web/windows by validating quick-crypto availability and falling back to WebCrypto.
+- [x] Add autosave status box (saving/last saved/error) and keep section jump access visible.
+- [x] Harden Summary screen for layout errors (guard computed values) and add a safe fallback view on error.
+- [ ] Investigate websocket executor error path and add runtime guard or documented limitation if external.
+- [x] Add/adjust tests and run targeted Jest + type-check with logs in `buildLogs/`.
+
+## Active Run Tasks (2026-01-22, Manual Verification)
+- [ ] Run questionnaire flow to Summary (web or Windows).
+- [ ] Confirm autosave status box shows saving/last saved/error.
+- [ ] Confirm Summary fallback renders when questionnaire is missing.
+- [ ] Capture any websocket executor error details.
+
 ## Active Run Tasks (2026-01-21)
 - [x] Update Copilot instructions with cross-platform and workflow enforcement.
 - [x] Create detailed agent plan file with 5-point schema + self-prompt.

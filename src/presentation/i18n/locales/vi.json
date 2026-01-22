@@ -34,7 +34,9 @@
     "success": "Success",
     "clear": "Clear",
     "continue": "Continue",
-    "close": "Close"
+    "close": "Close",
+    "featureUnavailableTitle": "T?nh n?ng kh?ng kh? d?ng",
+    "featureUnavailableMessage": "{{feature}} kh?ng kh? d?ng tr?n n?n t?ng n?y."
   },
   "settings": {
     "deleteTitle": "Delete All Data?",

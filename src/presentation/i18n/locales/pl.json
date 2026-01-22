@@ -34,7 +34,9 @@
     "success": "Success",
     "clear": "Clear",
     "continue": "Continue",
-    "close": "Close"
+    "close": "Close",
+    "featureUnavailableTitle": "Funkcja niedost?pna",
+    "featureUnavailableMessage": "{{feature}} nie jest dost?pna na tej platformie."
   },
   "settings": {
     "deleteTitle": "Delete All Data?",

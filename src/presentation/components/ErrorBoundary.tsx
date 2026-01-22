@@ -8,10 +8,11 @@
  */
 
 import React, { Component, ErrorInfo, ReactNode } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import { withTranslation, WithTranslation } from 'react-i18next';
 import { sanitizeError, SanitizedError } from '../../shared/sanitizeError';
 import { logError, logDebug } from '../../shared/logger';
+import { AppButton } from './AppButton';
 
 interface Props extends WithTranslation {
   children: ReactNode;
@@ -89,9 +90,11 @@ class ErrorBoundaryClass extends Component<Props, State> {
           <Text style={styles.subtitle}>
             {t('error.dataSafe')}
           </Text>
-          <TouchableOpacity style={styles.button} onPress={this.handleRetry}>
-            <Text style={styles.buttonText}>{t('error.tryAgain')}</Text>
-          </TouchableOpacity>
+          <AppButton
+            title={t('error.tryAgain')}
+            onPress={this.handleRetry}
+            style={styles.button}
+          />
         </View>
       );
     }
@@ -127,15 +130,6 @@ const styles = StyleSheet.create({
   },
   button: {
     marginTop: 24,
-    backgroundColor: '#007AFF',
-    paddingHorizontal: 24,
-    paddingVertical: 12,
-    borderRadius: 8,
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '600',
   },
 });
 

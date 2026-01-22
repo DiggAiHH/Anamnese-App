@@ -27,6 +27,7 @@ import { SQLiteAnswerRepository } from '@infrastructure/persistence/SQLiteAnswer
 import { SQLiteGDPRConsentRepository } from '@infrastructure/persistence/SQLiteGDPRConsentRepository';
 import { database } from '@infrastructure/persistence/DatabaseConnection';
 import { useQuestionnaireStore } from '../state/useQuestionnaireStore';
+import { reportUserError } from '../../shared/userFacingError';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Export'>;
 
@@ -39,6 +40,9 @@ export const ExportScreen = ({ route, navigation }: Props): React.JSX.Element =>
   const [receiverId, setReceiverId] = useState('');
   const [gdtVersion, setGdtVersion] = useState<'2.1' | '3.0'>('3.0');
   const [isWorking, setIsWorking] = useState(false);
+  const showError = (title: string, message: string, error?: unknown) => {
+    reportUserError({ title, message, error });
+  };
 
   const canExport = useMemo(() => {
     return !!patient && !!encryptionKey && !!senderId.trim();
@@ -75,7 +79,7 @@ export const ExportScreen = ({ route, navigation }: Props): React.JSX.Element =>
       });
 
       if (!result.success) {
-        Alert.alert(t('export.failedTitle'), result.error ?? t('common.unknownError'));
+        showError(t('export.failedTitle'), result.error ?? t('common.unknownError'));
         return;
       }
 
@@ -85,7 +89,7 @@ export const ExportScreen = ({ route, navigation }: Props): React.JSX.Element =>
       );
       navigation.popToTop();
     } catch (error) {
-      Alert.alert(t('common.error'), error instanceof Error ? error.message : t('common.unknownError'));
+      showError(t('common.error'), error instanceof Error ? error.message : t('common.unknownError'), error);
     } finally {
       setIsWorking(false);
     }

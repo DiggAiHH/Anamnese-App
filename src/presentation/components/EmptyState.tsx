@@ -1,6 +1,7 @@
 import React from 'react';
-import { StyleSheet, Text, View, ViewProps } from 'react-native';
+import { StyleSheet, View, ViewProps } from 'react-native';
 import { colors, spacing } from '../theme/tokens';
+import { AppText } from './AppText';
 
 export const getEmptyStatePadding = () => ({
   padding: spacing.xxl,
@@ -14,8 +15,14 @@ type Props = ViewProps & {
 export const EmptyState: React.FC<Props> = ({ title, description, style, ...props }) => {
   return (
     <View style={[styles.container, style]} {...props}>
-      <Text style={styles.title}>{title}</Text>
-      {description ? <Text style={styles.description}>{description}</Text> : null}
+      <AppText variant="label" style={styles.title}>
+        {title}
+      </AppText>
+      {description ? (
+        <AppText variant="caption" style={styles.description}>
+          {description}
+        </AppText>
+      ) : null}
     </View>
   );
 };
@@ -26,13 +33,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   title: {
-    fontSize: 16,
-    fontWeight: '600',
     color: colors.textPrimary,
     marginBottom: spacing.sm,
   },
   description: {
-    fontSize: 14,
     color: colors.textSecondary,
     textAlign: 'center',
   },

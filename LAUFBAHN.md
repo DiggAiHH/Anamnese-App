@@ -57,6 +57,131 @@ It defines the always-on checklist and records what was done, when, and where.
 
 ## Execution Log (chronologisch)
 
+### 2026-01-22
+- Goal: Resolve remaining questionnaire issues (encrypt/decrypt, autosave status, summary crash, websocket error) with evidence.
+- Plan:
+  - Validate quick-crypto availability and fall back to WebCrypto on web/windows.
+  - Add autosave status box + section jump access.
+  - Harden Summary screen for layout failures and provide safe fallback.
+  - Investigate websocket executor error path and add guard/doc.
+- Changes:
+  - `src/shared/platformCapabilities.ts`: require full quick-crypto API and disable on web/windows.
+  - `__tests__/shared/platformCapabilities.test.ts`: updated quick-crypto availability mocks + web/windows checks.
+  - `src/presentation/screens/QuestionnaireScreen.tsx`: autosave status box with saving/last saved/error.
+  - `src/presentation/screens/SummaryScreen.tsx`: safe progress/answer counts + fallback when questionnaire missing.
+- Verification:
+  - `npm.cmd test -- --runTestsByPath __tests__/shared/platformCapabilities.test.ts`: PASS (PowerShell NativeCommandError but suite passes).
+  - `npm.cmd run type-check`: PASS.
+  - Logs: `buildLogs/tests_questionnaire_remaining.out.log`, `buildLogs/typecheck_questionnaire_remaining.out.log`
+- Status: PARTIAL (websocket executor error still needs repro).
+
+### 2026-01-22
+- Goal: Manual verification of questionnaire flow to Summary and autosave/summary fallback behavior.
+- Plan:
+  - Run web or Windows app and complete questionnaire flow to Summary.
+  - Confirm autosave status box updates and Summary fallback renders when questionnaire is missing.
+  - Capture websocket executor error text if it appears.
+- Status: PENDING (requires manual UI verification).
+
+### 2026-01-22
+- Goal: Fix questionnaire runtime errors (validation, save box nav, summary crash, websocket, encrypt/decrypt) with tests + evidence.
+- Plan:
+  - Inspect validation + encryption call paths; remove hardcoded keys.
+  - Add visible section/save navigation access; confirm autosave path.
+  - Harden Summary screen and clipboard access for platform safety.
+  - Add/adjust tests + run targeted Jest + type-check with logs.
+- Changes:
+  - `src/domain/entities/Answer.ts`: allow boolean values for single checkbox questions without options.
+  - `src/domain/entities/__tests__/AnswerCheckboxValidation.test.ts`: added checkbox validation coverage.
+  - `src/presentation/screens/QuestionnaireScreen.tsx`: added explicit section navigation button.
+  - `src/presentation/screens/SummaryScreen.tsx`: platform-safe clipboard access via lazy require.
+  - `src/presentation/screens/DataManagementScreen.tsx`: use active session key instead of hardcoded key.
+- Verification:
+  - `npm.cmd test -- --runTestsByPath src/domain/entities/__tests__/AnswerCheckboxValidation.test.ts`: PASS (PowerShell NativeCommandError but suite passes).
+  - `npm.cmd run type-check`: PASS.
+  - Logs: `buildLogs/tests_questionnaire_errors.out.log`, `buildLogs/typecheck_questionnaire_errors.out.log`
+
+### 2026-01-23
+- Goal: UI polish (text hierarchy, button states, empty states) + hardening (shared error helper, safe-mode banners).
+- Changes:
+  - `src/presentation/components/AppText.tsx`: added line-height hierarchy for variants.
+  - `src/presentation/components/AppButton.tsx`: Pressable with pressed/disabled state + accessibility busy state.
+  - `src/presentation/components/EmptyState.tsx`: standardized typography via AppText.
+  - `src/presentation/components/FeatureBanner.tsx`: new warning/info/error banner for safe-mode messaging.
+  - `src/shared/userFacingError.ts`: shared user-facing error helper (log + Alert).
+  - `src/presentation/screens/DataManagementScreen.tsx`: safe-mode banner + shared error helper.
+  - `src/presentation/screens/VoiceScreen.tsx`: safe-mode banner for STT unavailable.
+  - `src/presentation/screens/ExportScreen.tsx`: shared error helper for export failures.
+  - `src/presentation/i18n/locales/*.json`: added `common.featureUnavailable*` keys.
+  - `__tests__/presentation/components/FeatureBanner.test.ts`: banner colors coverage.
+  - `__tests__/shared/userFacingError.test.ts`: error helper coverage.
+- Verification:
+  - `npm.cmd test -- --runTestsByPath __tests__/presentation/components/AppText.test.ts __tests__/presentation/components/AppButton.test.ts __tests__/presentation/components/EmptyState.test.ts __tests__/presentation/components/FeatureBanner.test.ts __tests__/shared/userFacingError.test.ts`: PASS (PowerShell NativeCommandError but suites pass).
+  - `npm.cmd run type-check`: PASS.
+  - Logs: `buildLogs/ui_hardening_tests.out.log`, `buildLogs/typecheck_ui_hardening.out.log`
+
+### 2026-01-23
+- Goal: Unify remaining screen buttons with AppButton, translate feature-unavailable strings, run Windows/Web spot-checks.
+- Changes:
+  - `src/presentation/components/AppButton.tsx`: added success/info/warning/accent variants.
+  - `src/presentation/screens/HomeScreen.tsx`: replaced primary actions with AppButton.
+  - `src/presentation/screens/DataManagementScreen.tsx`: replaced backup/restore actions with AppButton.
+  - `src/presentation/screens/FeedbackScreen.tsx`: replaced submit/copy actions with AppButton.
+  - `src/presentation/screens/MasterPasswordScreen.tsx`: replaced unlock/reset actions with AppButton.
+  - `src/presentation/components/ErrorBoundary.tsx`: retry action uses AppButton.
+  - `src/presentation/i18n/locales/*.json`: localized `common.featureUnavailable*` strings (start ar/fa, then all).
+  - `__tests__/presentation/components/AppButton.test.ts`: added success variant coverage.
+- Verification:
+  - `npm.cmd test -- --runTestsByPath __tests__/presentation/components/AppButton.test.ts __tests__/presentation/components/FeatureBanner.test.ts __tests__/shared/userFacingError.test.ts`: PASS (PowerShell NativeCommandError but suites pass).
+  - `npm.cmd run type-check`: PASS.
+  - `npm run windows:run:log`: TIMED OUT (expected long-running), logs captured.
+  - `npm run web`: TIMED OUT (expected dev server), logs captured.
+  - Logs: `buildLogs/ui_buttons_tests.out.log`, `buildLogs/typecheck_ui_buttons.out.log`, `buildLogs/windows_run_ui_buttons.out.log`, `buildLogs/web_ui_buttons.out.log`
+
+### 2026-01-23
+- Goal: Replace remaining primary actions with AppButton across screens/components.
+- Plan:
+  - Inventory remaining TouchableOpacity buttons and classify (primary vs chips/options).
+  - Replace primary actions with AppButton and remove redundant styles.
+  - Run targeted tests + type-check with evidence logs.
+- Changes:
+  - `src/presentation/screens/CalculatorScreen.tsx`: calculate actions use AppButton; removed redundant button styles.
+  - `src/presentation/screens/GDPRConsentScreen.tsx`: consent continue action uses AppButton; removed old button styles.
+  - `src/presentation/screens/QuestionnaireScreen.tsx`: retry + navigation actions use AppButton; removed old button styles.
+  - `src/presentation/screens/HomeScreen.tsx`: removed unused button style overrides after AppButton conversion.
+  - `src/presentation/screens/FeedbackScreen.tsx`: removed unused button style overrides after AppButton conversion.
+  - `src/presentation/screens/MasterPasswordScreen.tsx`: removed unused button style overrides after AppButton conversion.
+- Verification:
+  - `npm.cmd test -- --runTestsByPath __tests__/presentation/components/AppButton.test.ts __tests__/presentation/components/FeatureBanner.test.ts __tests__/shared/userFacingError.test.ts`: PASS (PowerShell NativeCommandError but suites pass).
+  - `npm.cmd run type-check`: PASS.
+  - Logs: `buildLogs/ui_buttons_remaining_tests.out.log`, `buildLogs/typecheck_ui_buttons_remaining.out.log`
+
+### 2026-01-23
+- Goal: Web dev server spot-check for core flows (Home -> Consent -> Questionnaire -> Calculator -> Summary/Export).
+- Plan:
+  - Start web dev server with log capture.
+  - Manual spot-check of core flows.
+  - Update documentation with observations and evidence path.
+- Verification:
+  - `npm run web`: TIMED OUT (expected dev server), log captured.
+  - Logs: `buildLogs/web_spotcheck.out.log`
+
+### 2026-01-23
+- Goal: Fix required confirmation checkbox so questionnaire can proceed.
+- Plan:
+  - Add single-checkbox UI for checkbox questions without options.
+  - Update required-answer validation to handle boolean checkbox.
+  - Add unit test + run targeted tests/type-check with evidence logs.
+- Changes:
+  - `src/presentation/components/QuestionCard.tsx`: render single checkbox for checkbox questions without options and show inline label.
+  - `src/presentation/screens/QuestionnaireScreen.tsx`: use shared required-answer validation helper.
+  - `src/shared/questionnaireValidation.ts`: new helper for required-answer checks.
+  - `__tests__/shared/questionnaireValidation.test.ts`: unit tests for required-answer helper.
+- Verification:
+  - `npm.cmd test -- --runTestsByPath __tests__/shared/questionnaireValidation.test.ts`: PASS (PowerShell NativeCommandError but suite passes).
+  - `npm.cmd run type-check`: PASS.
+  - Logs: `buildLogs/confirmation_checkbox_tests.out.log`, `buildLogs/typecheck_confirmation_checkbox.out.log`
+
 ### 2026-01-09
 - Goal: UX-Blocker für Windows Testing entfernen (Icons sichtbar, Dropdown überlappt nicht, Fragebogen lädt nach GDPR).
 - Changes:

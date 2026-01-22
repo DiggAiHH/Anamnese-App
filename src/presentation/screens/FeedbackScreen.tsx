@@ -23,6 +23,7 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/RootNavigator';
 import { FeedbackTextBuilder, FeedbackCategory } from '../../domain/services/FeedbackTextBuilder';
 import { colors, spacing, radius } from '../theme/tokens';
+import { AppButton } from '../components/AppButton';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Feedback'>;
 
@@ -190,28 +191,22 @@ export const FeedbackScreen = (_props: Props): React.JSX.Element => {
 
         {/* Submit Buttons */}
         <View style={styles.buttonContainer}>
-          <TouchableOpacity
-            style={[styles.primaryButton, isSubmitting && styles.buttonDisabled]}
+          <AppButton
+            title={t('feedback.submitButton', { defaultValue: 'Send Feedback' })}
             onPress={handleSubmit}
             disabled={isSubmitting}
+            loading={isSubmitting}
             testID="feedback-submit-button"
-            accessibilityRole="button"
-            accessibilityLabel={t('feedback.submitButton', { defaultValue: 'Send Feedback' })}>
-            <Text style={styles.primaryButtonText}>
-              {t('feedback.submitButton', { defaultValue: 'Send Feedback' })}
-            </Text>
-          </TouchableOpacity>
+            accessibilityLabel={t('feedback.submitButton', { defaultValue: 'Send Feedback' })}
+          />
 
-          <TouchableOpacity
-            style={styles.secondaryButton}
+          <AppButton
+            title={t('feedback.copyButton', { defaultValue: 'Copy to Clipboard' })}
+            variant="secondary"
             onPress={handleCopyOnly}
             testID="feedback-copy-button"
-            accessibilityRole="button"
-            accessibilityLabel={t('feedback.copyButton', { defaultValue: 'Copy to Clipboard' })}>
-            <Text style={styles.secondaryButtonText}>
-              {t('feedback.copyButton', { defaultValue: 'Copy to Clipboard' })}
-            </Text>
-          </TouchableOpacity>
+            accessibilityLabel={t('feedback.copyButton', { defaultValue: 'Copy to Clipboard' })}
+          />
         </View>
 
         {/* Privacy Note */}
@@ -299,33 +294,6 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     gap: spacing.sm,
-  },
-  primaryButton: {
-    backgroundColor: colors.primary,
-    paddingVertical: 14,
-    borderRadius: radius.md,
-    alignItems: 'center',
-  },
-  buttonDisabled: {
-    backgroundColor: colors.infoBorder,
-  },
-  primaryButtonText: {
-    color: colors.textInverse,
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  secondaryButton: {
-    backgroundColor: colors.surface,
-    paddingVertical: 14,
-    borderRadius: radius.md,
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: colors.borderLight,
-  },
-  secondaryButtonText: {
-    color: colors.textSecondary,
-    fontSize: 16,
-    fontWeight: '600',
   },
   privacyNote: {
     marginTop: spacing.xl,

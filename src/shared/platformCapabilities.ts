@@ -24,10 +24,21 @@ export const supportsWebCrypto = (): boolean => {
 };
 
 export const canUseQuickCrypto = (): boolean => {
+  if (isWeb || isWindows) return false;
   try {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
-    require('react-native-quick-crypto');
-    return true;
+    const qc = require('react-native-quick-crypto') as {
+      randomBytes?: unknown;
+      pbkdf2?: unknown;
+      createCipheriv?: unknown;
+      createDecipheriv?: unknown;
+    };
+    return (
+      typeof qc?.randomBytes === 'function' &&
+      typeof qc?.pbkdf2 === 'function' &&
+      typeof qc?.createCipheriv === 'function' &&
+      typeof qc?.createDecipheriv === 'function'
+    );
   } catch {
     return false;
   }

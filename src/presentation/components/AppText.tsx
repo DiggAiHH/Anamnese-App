@@ -4,18 +4,20 @@ import { colors } from '../theme/tokens';
 
 export type AppTextVariant = 'title' | 'subtitle' | 'body' | 'caption' | 'label';
 
-export const getTextVariantStyle = (variant: AppTextVariant): { fontSize: number; fontWeight?: '600' | '700' } => {
+export const getTextVariantStyle = (
+  variant: AppTextVariant,
+): { fontSize: number; lineHeight?: number; fontWeight?: '600' | '700' } => {
   switch (variant) {
     case 'title':
-      return { fontSize: 24, fontWeight: '700' };
+      return { fontSize: 24, lineHeight: 30, fontWeight: '700' };
     case 'subtitle':
-      return { fontSize: 14, fontWeight: '600' };
+      return { fontSize: 18, lineHeight: 24, fontWeight: '600' };
     case 'label':
-      return { fontSize: 16, fontWeight: '600' };
+      return { fontSize: 16, lineHeight: 22, fontWeight: '600' };
     case 'caption':
-      return { fontSize: 12 };
+      return { fontSize: 12, lineHeight: 16 };
     default:
-      return { fontSize: 16 };
+      return { fontSize: 16, lineHeight: 22 };
   }
 };
 

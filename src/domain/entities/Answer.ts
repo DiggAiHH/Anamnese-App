@@ -335,6 +335,13 @@ export class AnswerValidator {
 
       case 'checkbox':
       case 'multiselect':
+        if (question.type === 'checkbox' && (!question.options || question.options.length === 0)) {
+          if (typeof value !== 'boolean') {
+            errors.push('Value must be a boolean');
+          }
+          break;
+        }
+
         // New: bitset integer
         if (typeof value === 'number') {
           if (!Number.isInteger(value) || value < 0) {

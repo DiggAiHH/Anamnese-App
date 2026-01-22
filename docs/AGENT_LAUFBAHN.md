@@ -7,11 +7,11 @@
 
 ## AKTUELLER STATUS (LIVE)
 
-- **Letzter Stand (Fakten, ohne PII):** 2026-01-22 15:40 - Secure storage availability fix applied; tests + type-check PASS.
-- **Aktiver Run-ID:** RUN-20260122-1520-secure-storage
-- **Aktive Tasks:** (none) Secure storage fix complete; macOS verification pending host.
-- **Blocker:** macOS host required for runtime verification.
-- **Naechster verifizierter Schritt:** Optional macOS smoke run per platform guide.
+- **Letzter Stand (Fakten, ohne PII):** 2026-01-22 19:20 - Manual verification pending for autosave status + Summary fallback.
+- **Aktiver Run-ID:** RUN-20260122-1920-questionnaire-manual-verify
+- **Aktive Tasks:** Manual flow check to Summary; capture websocket error details.
+- **Blocker:** Manual UI verification required.
+- **Naechster verifizierter Schritt:** Run questionnaire flow and report observations.
 
 - **Update 2026-01-22 11:18:** Added TODO system to fix "count of null" error and ordered element-by-element tests.
 
@@ -19,24 +19,24 @@
 
 ## AKTUELLER LAUF: 5 Pflichtpunkte (LIVE)
 
-> Run-ID: RUN-20260122-1520-secure-storage | Status: **IN_PROGRESS**
+> Run-ID: RUN-20260122-1920-questionnaire-manual-verify | Status: **IN PROGRESS**
 
 1) **Ziel**
 
-- Outcome: Secure key storage available on macOS (where supported) and tests updated.
+- Outcome: Manual verification confirms autosave status + Summary fallback; websocket error reproduced if present.
 - DoD:
-  1. `supportsSecureKeychain` includes macOS.
-  2. Unit tests updated for macOS capability + keyManager behavior.
-  3. Targeted Jest tests PASS with evidence logs.
-  4. `npm run type-check` PASS with evidence logs.
-- Nicht-Ziele: No Windows keychain support (not provided by library), no new dependencies.
+  1. Questionnaire flow reaches Summary without crash.
+  2. Autosave status box shows saving/last saved/error.
+  3. Summary fallback renders when questionnaire is missing (navigate back/reopen).
+  4. Websocket executor error captured with exact text if it appears.
+- Nicht-Ziele: No additional code changes.
 
 2) **Methodik**
 
-- Repro: Check platformCapabilities + keyManager gating.
-- Root Cause Hypothesen: macOS excluded from supportsSecureKeychain.
-- Fix-Strategie: Enable macOS flag; keep runtime keychain checks; update tests.
-- Verifikation: Jest + type-check with `buildLogs/` evidence.
+- Repro: Run questionnaire flow to Summary on web or Windows.
+- Root Cause Hypothesen: N/A (verification only).
+- Fix-Strategie: N/A (verification only).
+- Verifikation: Manual observation + any logs captured by user.
 
 3) **Sprachen/Stack**
 
@@ -47,17 +47,16 @@
 4) **Struktur**
 
 - Dateien/Module (geplant):
-  - `src/shared/platformCapabilities.ts`
-  - `__tests__/shared/platformCapabilities.test.ts`
-  - `__tests__/shared/keyManager.test.ts`
+  - `TODO.md`
+  - `LAUFBAHN.md`
+  - `docs/AGENT_LAUFBAHN.md`
 - Logs/Artefakte:
-  - `buildLogs/tests_secure_storage.*`
-  - `buildLogs/typecheck_secure_storage.*`
+  - (manual verification notes)
 
 5) **Qualitaet/Muster**
 
 - Tests: Jest unit tests + type-check.
-- Security/Compliance: DSGVO Logging Policy.
+- Security/Compliance: DSGVO Logging Policy, no hardcoded keys.
 - Maintainability: minimal change-set.
 
 ---
@@ -406,6 +405,9 @@ Diese 5 Punkte m√ºssen in JEDEM neuen Vorhaben in dieser Datei stehen (Section ‚
 
 | Run-ID | Timestamp (UTC+1) | Agent | Intent | Tool/Command | Files touched | Result | Evidence (Pfad) | Next |
 |---|---|---|---|---|---|---|---|---|
+| RUN-20260122-1920-questionnaire-manual-verify | 2026-01-22 19:20 | Copilot (GPT-5.2) | Plan manual verification run | edit files | `TODO.md`, `LAUFBAHN.md`, `docs/AGENT_LAUFBAHN.md` | PENDING (manual UI) | (n/a) | User runs flow, report observations |
+| RUN-20260122-1913-questionnaire-remaining | 2026-01-22 19:13 | Copilot (GPT-5.2) | Fix remaining questionnaire issues | `apply_patch`, `npm.cmd test`, `npm.cmd run type-check` | `src/shared/platformCapabilities.ts`, `__tests__/shared/platformCapabilities.test.ts`, `src/presentation/screens/QuestionnaireScreen.tsx`, `src/presentation/screens/SummaryScreen.tsx`, `TODO.md`, `LAUFBAHN.md`, `docs/AGENT_LAUFBAHN.md` | PARTIAL (websocket issue pending) | `buildLogs/tests_questionnaire_remaining.out.log`, `buildLogs/typecheck_questionnaire_remaining.out.log` | Capture websocket error repro/logs |
+| RUN-20260122-1748-questionnaire-errors | 2026-01-22 17:58 | Copilot (GPT-5.2) | Fix questionnaire runtime errors | `apply_patch`, `npm.cmd test`, `npm.cmd run type-check` | `src/domain/entities/Answer.ts`, `src/domain/entities/__tests__/AnswerCheckboxValidation.test.ts`, `src/presentation/screens/QuestionnaireScreen.tsx`, `src/presentation/screens/SummaryScreen.tsx`, `src/presentation/screens/DataManagementScreen.tsx`, `TODO.md`, `LAUFBAHN.md`, `docs/AGENT_LAUFBAHN.md` | PASS (tests PASS; NativeCommandError on PowerShell) | `buildLogs/tests_questionnaire_errors.out.log`, `buildLogs/typecheck_questionnaire_errors.out.log` | Manual flow check + websocket repro |
 | RUN-20260122-1054-multi-platform-ready | 2026-01-22 10:54 | Copilot (GPT-5.2) | Multi-platform readiness runs | `npm run web`, `npm run windows:run:log`, `npm run windows:launch:log`, `npm run android` | none | PARTIAL (web/Windows ok; Android blocked) | `buildLogs/web_latest.out.log`, `buildLogs/web_latest.err.log`, `buildLogs/windows-dev-run_latest.out.log`, `buildLogs/windows-dev-run_latest.err.log`, `buildLogs/windows-launch_latest.out.log`, `buildLogs/windows-launch_latest.err.log`, `buildLogs/android_run_latest.out.log`, `buildLogs/android_run_latest.err.log` | Install Android SDK/emulator; run iOS/macOS on macOS host |
 | RUN-20260122-1114-platform-guide | 2026-01-22 11:14 | Copilot (GPT-5.2) | Add platform testing guide | edit files | `docs/PLATFORM_TESTING_GUIDE.md`, `TODO.md`, `LAUFBAHN.md`, `docs/AGENT_LAUFBAHN.md` | PASS (docs only) | (n/a) | Use guide to run platform tests |
 | RUN-20260122-1118-count-null-plan | 2026-01-22 11:18 | Copilot (GPT-5.2) | Add fix plan + test order for null count error | edit files | `TODO.md`, `LAUFBAHN.md`, `docs/AGENT_LAUFBAHN.md` | PASS (docs only) | (n/a) | Locate error in logs, then implement fix |
