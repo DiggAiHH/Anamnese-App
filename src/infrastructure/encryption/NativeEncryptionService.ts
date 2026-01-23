@@ -22,8 +22,24 @@ type QuickCryptoModule = {
     digest: string,
     cb: (err: unknown, derivedKey: Buffer) => void,
   ) => void;
-  createCipheriv: (algorithm: string, key: Buffer, iv: Buffer) => any;
-  createDecipheriv: (algorithm: string, key: Buffer, iv: Buffer) => any;
+  createCipheriv: (
+    algorithm: string,
+    key: Buffer,
+    iv: Buffer,
+  ) => {
+    update: (data: string, inputEncoding: BufferEncoding) => Buffer;
+    final: () => Buffer;
+    getAuthTag: () => Buffer;
+  };
+  createDecipheriv: (
+    algorithm: string,
+    key: Buffer,
+    iv: Buffer,
+  ) => {
+    setAuthTag: (tag: Buffer) => void;
+    update: (data: Buffer) => Buffer;
+    final: () => Buffer;
+  };
   createHash: (algorithm: string) => { update: (s: string) => void; digest: (enc: string) => string };
 };
 

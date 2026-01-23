@@ -17,7 +17,7 @@ beforeAll(() => {
       },
     });
   } else if (!global.crypto.getRandomValues) {
-    // @ts-ignore
+    // @ts-expect-error - In some TS lib versions, getRandomValues can be readonly on Crypto.
     global.crypto.getRandomValues = (arr: Uint32Array) => {
       for (let i = 0; i < arr.length; i++) {
         arr[i] = Math.floor(Math.random() * 4294967296);
@@ -44,6 +44,6 @@ describe('PasswordGenerator', () => {
     expect(pwd).toMatch(/[a-z]/);
     expect(pwd).toMatch(/[A-Z]/);
     expect(pwd).toMatch(/[0-9]/);
-    expect(pwd).toMatch(/[!@#$%^&*()-_=+\[\]{};:,.?]/);
+    expect(pwd).toMatch(/[!@#$%^&*()-_=+[\]{};:,.?]/);
   });
 });

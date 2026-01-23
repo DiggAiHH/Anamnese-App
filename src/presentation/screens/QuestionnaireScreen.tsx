@@ -90,6 +90,7 @@ export const QuestionnaireScreen = ({ route, navigation }: Props): React.JSX.Ele
   const currentSection = useQuestionnaireStore(selectCurrentSection);
   const visibleQuestions = useQuestionnaireStore(selectVisibleQuestions);
   const progress = useQuestionnaireStore(selectProgress);
+  const safeProgress = Number.isFinite(progress) ? progress : 0;
 
   // Local State
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
@@ -606,10 +607,10 @@ export const QuestionnaireScreen = ({ route, navigation }: Props): React.JSX.Ele
       {/* Progress Bar */}
       <View style={styles.progressContainer}>
         <View style={styles.progressBar}>
-          <View style={[styles.progressFill, { width: `${progress}%` }]} />
+          <View style={[styles.progressFill, { width: `${safeProgress}%` }]} />
         </View>
         <Text style={styles.progressText}>
-          {t('questionnaire.progress', { percent: Math.round(progress) })}
+          {t('questionnaire.progress', { percent: Math.round(safeProgress) })}
         </Text>
         <View style={styles.saveStatusBox}>
           <Text

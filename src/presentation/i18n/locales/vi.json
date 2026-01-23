@@ -128,6 +128,7 @@
     "placeholder": "ví dụ: DemoPassword!2026",
     "errorEmpty": "Vui lòng nhập mật khẩu chính.",
     "errorDerive": "Không thể tạo khóa từ mật khẩu.",
+    "errorWrongPassword": "Mật khẩu chính không đúng. Vui lòng thử lại.",
     "resetSession": "Đặt lại phiên",
     "resetTitle": "Đặt lại",
     "resetMessage": "Dữ liệu phiên đã được đặt lại.",
@@ -203,6 +204,7 @@
     "progress": "Tiến độ: {{percent}}%",
     "exportHint": "Bạn có thể bắt đầu xuất GDT (tùy chọn) ngay bây giờ.",
     "exportButton": "Xuất GDT",
+    "calculatorsButton": "Mở máy tính",
     "newButton": "Bệnh sử mới"
   },
   "export": {
@@ -217,6 +219,9 @@
     "missingPatientOrKey": "Thiếu bệnh nhân hoặc khóa mã hóa.",
     "missingSenderId": "Vui lòng nhập ID người gửi.",
     "failedTitle": "Xuất thất bại",
+    "consentMissing": "Vui lòng bật đồng ý xuất GDT trong cài đặt quyền riêng tư.",
+    "openConsents": "Mở các đồng ý",
+    "shareMessage": "Chia sẻ tệp GDT",
     "successTitle": "Xuất thành công",
     "successMessage": "Đã lưu tệp tại:\n{{path}}"
   },

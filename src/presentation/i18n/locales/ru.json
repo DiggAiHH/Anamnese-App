@@ -128,6 +128,7 @@
     "placeholder": "например DemoПароль!2026",
     "errorEmpty": "Введите мастер‑пароль.",
     "errorDerive": "Не удалось вывести ключ из пароля.",
+    "errorWrongPassword": "Неверный мастер‑пароль. Попробуйте снова.",
     "resetSession": "Сбросить сессию",
     "resetTitle": "Сброшено",
     "resetMessage": "Данные сессии сброшены.",
@@ -203,6 +204,7 @@
     "progress": "Прогресс: {{percent}}%",
     "exportHint": "Сейчас вы можете (необязательно) запустить экспорт GDT.",
     "exportButton": "Экспорт GDT",
+    "calculatorsButton": "Открыть калькуляторы",
     "newButton": "Новый анамнез"
   },
   "export": {
@@ -215,6 +217,9 @@
     "missingPatientOrKey": "Пациент или ключ шифрования отсутствует.",
     "missingSenderId": "Укажите ID отправителя.",
     "failedTitle": "Экспорт не удался",
+    "consentMissing": "Пожалуйста, включите согласие на экспорт GDT в настройках конфиденциальности.",
+    "openConsents": "Открыть согласия",
+    "shareMessage": "Поделиться файлом GDT",
     "successTitle": "Экспорт выполнен",
     "successMessage": "Файл сохранён по пути:\n{{path}}",
     "gdtVersion21": "GDT 2.1",

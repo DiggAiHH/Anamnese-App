@@ -128,6 +128,7 @@
     "placeholder": "z.B. DemoPasswort!2026",
     "errorEmpty": "Bitte ein Master-Passwort eingeben.",
     "errorDerive": "Konnte keinen Schlüssel aus dem Passwort ableiten.",
+    "errorWrongPassword": "Falsches Master-Passwort. Bitte erneut versuchen.",
     "resetSession": "Session zurücksetzen",
     "resetTitle": "Zurückgesetzt",
     "resetMessage": "Session-Daten wurden zurückgesetzt.",
@@ -203,6 +204,7 @@
     "progress": "Fortschritt: {{percent}}%",
     "exportHint": "Sie können jetzt optional einen GDT Export starten.",
     "exportButton": "GDT Export",
+    "calculatorsButton": "Rechner öffnen",
     "newButton": "Neue Anamnese"
   },
   "export": {
@@ -215,8 +217,11 @@
     "missingPatientOrKey": "Patient oder Encryption-Key fehlt.",
     "missingSenderId": "Bitte Sender-ID angeben.",
     "failedTitle": "Export fehlgeschlagen",
+    "consentMissing": "Bitte aktivieren Sie die Einwilligung für den GDT-Export in den Datenschutz-Einstellungen.",
+    "openConsents": "Einwilligungen öffnen",
     "successTitle": "Export erfolgreich",
     "successMessage": "Datei gespeichert unter:\n{{path}}",
+    "shareMessage": "GDT-Datei teilen",
     "gdtVersion21": "GDT 2.1",
     "gdtVersion30": "GDT 3.0"
   },

@@ -14,6 +14,8 @@ module.exports = {
         'jest.setup.js',
         'metro.config.js',
         'babel.config.js',
+        'webpack.config.js',
+        'scripts/**/*.{js,jsx,ts,tsx}',
         '**/__mocks__/**/*.{js,jsx,ts,tsx}',
         '**/__tests__/**/*.{js,jsx,ts,tsx}',
         'e2e/**/*.{js,jsx,ts,tsx}',
@@ -21,9 +23,22 @@ module.exports = {
       env: {
         node: true,
         jest: true,
+        es2021: true,
       },
       rules: {
         '@typescript-eslint/no-var-requires': 'off',
+      },
+    },
+    {
+      files: ['shared/encryption.js'],
+      env: {
+        node: true,
+        browser: true,
+        es2021: true,
+      },
+      rules: {
+        '@typescript-eslint/no-var-requires': 'off',
+        'no-undef': 'off',
       },
     },
   ],

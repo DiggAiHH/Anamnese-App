@@ -128,6 +128,7 @@
     "placeholder": "예: DemoPassword!2026",
     "errorEmpty": "마스터 비밀번호를 입력해 주세요.",
     "errorDerive": "비밀번호로부터 키를 파생할 수 없습니다.",
+    "errorWrongPassword": "마스터 비밀번호가 올바르지 않습니다. 다시 시도해 주세요.",
     "resetSession": "세션 초기화",
     "resetTitle": "초기화",
     "resetMessage": "세션 데이터가 초기화되었습니다.",
@@ -203,6 +204,7 @@
     "progress": "진행률: {{percent}}%",
     "exportHint": "원하면 지금 GDT 내보내기를 시작할 수 있습니다.",
     "exportButton": "GDT 내보내기",
+    "calculatorsButton": "계산기 열기",
     "newButton": "새 문진"
   },
   "export": {
@@ -217,6 +219,9 @@
     "missingPatientOrKey": "환자 또는 암호화 키가 없습니다.",
     "missingSenderId": "발신자 ID를 입력해 주세요.",
     "failedTitle": "내보내기 실패",
+    "consentMissing": "개인정보 설정에서 GDT 내보내기 동의를 활성화해 주세요.",
+    "openConsents": "동의 열기",
+    "shareMessage": "GDT 파일 공유",
     "successTitle": "내보내기 성공",
     "successMessage": "파일 저장 위치:\n{{path}}"
   },

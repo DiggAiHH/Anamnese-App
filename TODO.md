@@ -39,7 +39,8 @@ This file is the authoritative execution plan to make the app **more user-friend
 - [x] Fix encryption/decryption failures on web/windows by validating quick-crypto availability and falling back to WebCrypto.
 - [x] Add autosave status box (saving/last saved/error) and keep section jump access visible.
 - [x] Harden Summary screen for layout errors (guard computed values) and add a safe fallback view on error.
-- [ ] Investigate websocket executor error path and add runtime guard or documented limitation if external.
+- [x] Add runtime guard to capture/report websocket executor errors (global error handlers + safe alert); repro/capture still pending.
+- [x] Fix TTS module export shape to prevent "uncaught runtime error" (CJS/ESM default mismatch hardening).
 - [x] Add/adjust tests and run targeted Jest + type-check with logs in `buildLogs/`.
 
 ## Active Run Tasks (2026-01-22, Manual Verification)

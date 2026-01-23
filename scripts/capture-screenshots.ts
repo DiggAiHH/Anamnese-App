@@ -13,7 +13,6 @@
  *   docs/screenshots/<locale>/<screen-name>.png
  */
 
-import { execSync } from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -104,8 +103,6 @@ const LOCALES = ['de', 'en', 'fr', 'es', 'ar'];
  * Generate Detox test file for screenshot capture
  */
 function generateDetoxTest(locale: string): string {
-  const outputDir = path.join('docs', 'screenshots', locale);
-
   const screenTests = SCREENS_TO_CAPTURE.map(
     (screen) => `
     it('captures ${screen.name}', async () => {

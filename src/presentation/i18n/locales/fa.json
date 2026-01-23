@@ -128,6 +128,7 @@
     "placeholder": "مثلاً DemoPassword!2026",
     "errorEmpty": "لطفاً رمز اصلی را وارد کنید.",
     "errorDerive": "امکان مشتق‌سازی کلید از رمز وجود ندارد.",
+    "errorWrongPassword": "رمز عبور اصلی نادرست است. دوباره تلاش کنید.",
     "resetSession": "بازنشانی جلسه",
     "resetTitle": "بازنشانی شد",
     "resetMessage": "داده‌های جلسه بازنشانی شدند.",
@@ -203,6 +204,7 @@
     "progress": "پیشرفت: {{percent}}%",
     "exportHint": "اکنون می‌توانید به‌صورت اختیاری خروجی GDT را شروع کنید.",
     "exportButton": "خروجی GDT",
+    "calculatorsButton": "باز کردن ماشین‌حساب‌ها",
     "newButton": "شرح حال جدید"
   },
   "export": {
@@ -217,6 +219,9 @@
     "missingPatientOrKey": "بیمار یا کلید رمزنگاری موجود نیست.",
     "missingSenderId": "لطفاً شناسه فرستنده را وارد کنید.",
     "failedTitle": "خروجی ناموفق",
+    "consentMissing": "لطفاً رضایت برای خروجی GDT را در تنظیمات حریم خصوصی فعال کنید.",
+    "openConsents": "باز کردن رضایت‌ها",
+    "shareMessage": "اشتراک‌گذاری فایل GDT",
     "successTitle": "خروجی موفق",
     "successMessage": "فایل در مسیر زیر ذخیره شد:\n{{path}}"
   },

@@ -58,7 +58,9 @@ export const RootNavigator = (): React.JSX.Element => {
 
     const getCurrentRouteName = (): string | undefined => {
       try {
-        const state = (navigation as any)?.getState();
+        const state = (navigation as unknown as {
+          getState?: () => { routes?: Array<{ name?: string }>; index?: number };
+        })?.getState?.();
         if (!state || !Array.isArray(state.routes) || state.routes.length === 0) {
           return undefined;
         }

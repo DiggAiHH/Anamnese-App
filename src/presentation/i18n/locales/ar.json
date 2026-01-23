@@ -128,6 +128,7 @@
     "placeholder": "مثال DemoPassword!2026",
     "errorEmpty": "يرجى إدخال كلمة مرور رئيسية.",
     "errorDerive": "تعذر اشتقاق مفتاح من كلمة المرور.",
+    "errorWrongPassword": "كلمة المرور الرئيسية غير صحيحة. حاول مرة أخرى.",
     "resetSession": "إعادة ضبط الجلسة",
     "resetTitle": "تمت إعادة الضبط",
     "resetMessage": "تمت إعادة ضبط بيانات الجلسة.",
@@ -203,6 +204,7 @@
     "progress": "التقدم: {{percent}}%",
     "exportHint": "يمكنك الآن بدء تصدير GDT بشكل اختياري.",
     "exportButton": "تصدير GDT",
+    "calculatorsButton": "فتح الحاسبات",
     "newButton": "أخذ تاريخ مرضي جديد"
   },
   "export": {
@@ -215,6 +217,9 @@
     "missingPatientOrKey": "المريض أو مفتاح التشفير مفقود.",
     "missingSenderId": "يرجى إدخال معرّف المرسل.",
     "failedTitle": "فشل التصدير",
+    "consentMissing": "يرجى تفعيل الموافقة على تصدير GDT في إعدادات الخصوصية.",
+    "openConsents": "فتح الموافقات",
+    "shareMessage": "مشاركة ملف GDT",
     "successTitle": "تم التصدير بنجاح",
     "successMessage": "تم حفظ الملف في:\n{{path}}",
     "gdtVersion21": "GDT 2.1",

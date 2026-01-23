@@ -128,6 +128,7 @@
     "placeholder": "ör. DemoParola!2026",
     "errorEmpty": "Lütfen bir ana parola girin.",
     "errorDerive": "Paroladan anahtar türetilemedi.",
+    "errorWrongPassword": "Ana parola yanlış. Lütfen tekrar deneyin.",
     "resetSession": "Oturumu sıfırla",
     "resetTitle": "Sıfırlandı",
     "resetMessage": "Oturum verileri sıfırlandı.",
@@ -203,6 +204,7 @@
     "progress": "İlerleme: %{{percent}}",
     "exportHint": "Şimdi isteğe bağlı olarak bir GDT dışa aktarımı başlatabilirsiniz.",
     "exportButton": "GDT dışa aktarım",
+    "calculatorsButton": "Hesaplayıcıları aç",
     "newButton": "Yeni anamnez"
   },
   "export": {
@@ -215,6 +217,9 @@
     "missingPatientOrKey": "Hasta veya şifreleme anahtarı eksik.",
     "missingSenderId": "Lütfen bir gönderici kimliği girin.",
     "failedTitle": "Dışa aktarım başarısız",
+    "consentMissing": "Lütfen gizlilik ayarlarında GDT dışa aktarımı için onayı etkinleştirin.",
+    "openConsents": "Onayları aç",
+    "shareMessage": "GDT dosyasını paylaş",
     "successTitle": "Dışa aktarım başarılı",
     "successMessage": "Dosya şuraya kaydedildi:\n{{path}}",
     "gdtVersion21": "GDT 2.1",

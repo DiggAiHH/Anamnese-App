@@ -128,6 +128,7 @@
     "placeholder": "ex. DemoPass!2026",
     "errorEmpty": "Por favor, insira uma senha mestre.",
     "errorDerive": "Não foi possível derivar uma chave a partir da senha.",
+    "errorWrongPassword": "Senha mestra incorreta. Tente novamente.",
     "resetSession": "Redefinir sessão",
     "resetTitle": "Redefinido",
     "resetMessage": "Os dados da sessão foram redefinidos.",
@@ -203,6 +204,7 @@
     "progress": "Progresso: {{percent}}%",
     "exportHint": "Pode iniciar agora uma exportação GDT (opcional).",
     "exportButton": "Exportação GDT",
+    "calculatorsButton": "Abrir calculadoras",
     "newButton": "Nova anamnese"
   },
   "export": {
@@ -215,6 +217,9 @@
     "missingPatientOrKey": "Falta o paciente ou a chave de encriptação.",
     "missingSenderId": "Indique o ID do remetente.",
     "failedTitle": "Falha na exportação",
+    "consentMissing": "Ative o consentimento para exportação GDT nas configurações de privacidade.",
+    "openConsents": "Abrir consentimentos",
+    "shareMessage": "Compartilhar arquivo GDT",
     "successTitle": "Exportação bem-sucedida",
     "successMessage": "Ficheiro guardado em:\n{{path}}",
     "gdtVersion21": "GDT 2.1",

@@ -128,6 +128,7 @@
     "placeholder": "p. ex. DemoPass!2026",
     "errorEmpty": "Veuillez saisir un mot de passe maître.",
     "errorDerive": "Impossible de dériver une clé à partir du mot de passe.",
+    "errorWrongPassword": "Mot de passe maître incorrect. Veuillez réessayer.",
     "resetSession": "Réinitialiser la session",
     "resetTitle": "Réinitialisé",
     "resetMessage": "Les données de session ont été réinitialisées.",
@@ -203,6 +204,7 @@
     "progress": "Progression : {{percent}}%",
     "exportHint": "Vous pouvez lancer un export GDT maintenant (optionnel).",
     "exportButton": "Export GDT",
+    "calculatorsButton": "Ouvrir les calculateurs",
     "newButton": "Nouvelle anamnèse"
   },
   "export": {
@@ -215,8 +217,11 @@
     "missingPatientOrKey": "Le patient ou la clé de chiffrement est manquant.",
     "missingSenderId": "Veuillez fournir un ID expéditeur.",
     "failedTitle": "Échec de l’export",
+    "consentMissing": "Veuillez activer le consentement pour l’export GDT dans les paramètres de confidentialité.",
+    "openConsents": "Ouvrir les consentements",
     "successTitle": "Export réussi",
     "successMessage": "Fichier enregistré sous :\n{{path}}",
+    "shareMessage": "Partager le fichier GDT",
     "gdtVersion21": "GDT 2.1",
     "gdtVersion30": "GDT 3.0"
   },

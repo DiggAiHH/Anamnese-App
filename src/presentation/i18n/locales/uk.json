@@ -128,6 +128,7 @@
     "placeholder": "наприклад DemoПароль!2026",
     "errorEmpty": "Введіть майстер‑пароль.",
     "errorDerive": "Не вдалося вивести ключ із пароля.",
+    "errorWrongPassword": "Неправильний майстер‑пароль. Спробуйте ще раз.",
     "resetSession": "Скинути сесію",
     "resetTitle": "Скинуто",
     "resetMessage": "Дані сесії скинуто.",
@@ -203,6 +204,7 @@
     "progress": "Прогрес: {{percent}}%",
     "exportHint": "Зараз ви можете (необовʼязково) запустити експорт GDT.",
     "exportButton": "Експорт GDT",
+    "calculatorsButton": "Відкрити калькулятори",
     "newButton": "Новий анамнез"
   },
   "export": {
@@ -217,6 +219,9 @@
     "missingPatientOrKey": "Відсутній пацієнт або ключ шифрування.",
     "missingSenderId": "Вкажіть ID відправника.",
     "failedTitle": "Експорт не вдався",
+    "consentMissing": "Будь ласка, увімкніть згоду на експорт GDT у налаштуваннях конфіденційності.",
+    "openConsents": "Відкрити згоди",
+    "shareMessage": "Поділитися файлом GDT",
     "successTitle": "Експорт виконано",
     "successMessage": "Файл збережено за шляхом:\n{{path}}"
   },

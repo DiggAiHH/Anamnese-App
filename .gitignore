@@ -74,3 +74,10 @@ temp/
 # Build artifacts and logs
 buildLogs/
 web/dist/
+react-native-share-*.tgz
+*.tgz
+patches/*.broken
+windows/**/obj.__old_*/
+
+# Local run notes
+CURRENT_TASKS.md

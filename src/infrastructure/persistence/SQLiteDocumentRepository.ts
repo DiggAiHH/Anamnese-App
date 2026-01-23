@@ -51,7 +51,7 @@ export class SQLiteDocumentRepository implements IDocumentRepository {
       return null;
     }
 
-    return this.mapRowToEntity(results.rows.item(0));
+    return this.mapRowToEntity(results.rows.item(0) as Record<string, unknown>);
   }
 
   /**
@@ -63,7 +63,7 @@ export class SQLiteDocumentRepository implements IDocumentRepository {
 
     const documents: DocumentEntity[] = [];
     for (let i = 0; i < results.rows.length; i++) {
-      documents.push(this.mapRowToEntity(results.rows.item(i)));
+      documents.push(this.mapRowToEntity(results.rows.item(i) as Record<string, unknown>));
     }
 
     return documents;
@@ -78,7 +78,7 @@ export class SQLiteDocumentRepository implements IDocumentRepository {
 
     const documents: DocumentEntity[] = [];
     for (let i = 0; i < results.rows.length; i++) {
-      documents.push(this.mapRowToEntity(results.rows.item(i)));
+      documents.push(this.mapRowToEntity(results.rows.item(i) as Record<string, unknown>));
     }
 
     return documents;
@@ -93,7 +93,7 @@ export class SQLiteDocumentRepository implements IDocumentRepository {
 
     const documents: DocumentEntity[] = [];
     for (let i = 0; i < results.rows.length; i++) {
-      documents.push(this.mapRowToEntity(results.rows.item(i)));
+      documents.push(this.mapRowToEntity(results.rows.item(i) as Record<string, unknown>));
     }
 
     return documents;
@@ -215,7 +215,7 @@ export class SQLiteDocumentRepository implements IDocumentRepository {
     const fileTypes: Record<string, number> = {};
 
     for (let i = 0; i < results.rows.length; i++) {
-      const row = results.rows.item(i);
+      const row = results.rows.item(i) as Record<string, unknown>;
       const mimeType = row.mime_type as string;
       const count = (row.count as number | undefined) ?? 0;
       const totalForType = (row.totalSize as number | undefined) ?? 0;

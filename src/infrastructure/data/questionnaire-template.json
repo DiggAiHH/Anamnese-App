@@ -71,7 +71,7 @@
       "id": "q1000",
       "titleKey": "sections.beschwerden",
       "descriptionKey": "sections.beschwerden_description",
-      "order": 2,
+      "order": 3,
       "questions": [
         {
           "id": "1000",
@@ -171,7 +171,7 @@
       "id": "q2000",
       "titleKey": "sections.terminvereinbarung",
       "descriptionKey": "sections.terminvereinbarung_description",
-      "order": 3,
+      "order": 2,
       "questions": [
         {
           "id": "2000",

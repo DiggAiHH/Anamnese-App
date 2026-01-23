@@ -128,6 +128,7 @@
     "placeholder": "de ex. DemoParola!2026",
     "errorEmpty": "Introduceți o parolă principală.",
     "errorDerive": "Nu s-a putut deriva o cheie din parolă.",
+    "errorWrongPassword": "Parola principală este greșită. Încercați din nou.",
     "resetSession": "Resetează sesiunea",
     "resetTitle": "Resetat",
     "resetMessage": "Datele sesiunii au fost resetate.",
@@ -203,6 +204,7 @@
     "progress": "Progres: {{percent}}%",
     "exportHint": "Acum puteți porni opțional un export GDT.",
     "exportButton": "Export GDT",
+    "calculatorsButton": "Deschide calculatoarele",
     "newButton": "Anamneză nouă"
   },
   "export": {
@@ -217,6 +219,9 @@
     "missingPatientOrKey": "Lipsește pacientul sau cheia de criptare.",
     "missingSenderId": "Vă rugăm să furnizați un ID expeditor.",
     "failedTitle": "Export eșuat",
+    "consentMissing": "Vă rugăm să activați consimțământul pentru exportul GDT în setările de confidențialitate.",
+    "openConsents": "Deschide consimțămintele",
+    "shareMessage": "Partajează fișierul GDT",
     "successTitle": "Export reușit",
     "successMessage": "Fișier salvat la:\n{{path}}"
   },

@@ -14,7 +14,8 @@ import { NativeModules } from 'react-native';
 export type RNFSModule = typeof import('react-native-fs');
 
 export const isRNFSAvailable = (): boolean => {
-  const manager = (NativeModules as unknown as { RNFSManager?: Record<string, unknown> }).RNFSManager;
+  const modules = NativeModules as unknown as { RNFSManager?: Record<string, unknown> } | undefined;
+  const manager = modules?.RNFSManager;
   if (!manager) return false;
 
   // `react-native-fs` module initialization reads these constants immediately.

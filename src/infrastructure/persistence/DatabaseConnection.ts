@@ -19,8 +19,8 @@ export type { SQLiteDatabase, SQLiteTransaction };
 export interface SQLiteExecuteResult {
   rows: {
     length: number;
-    item: (index: number) => any;
-    raw?: () => any[];
+    item: (index: number) => unknown;
+    raw?: () => unknown[];
   };
   rowsAffected: number;
   insertId?: number;
@@ -76,13 +76,13 @@ export class DatabaseConnection {
         transaction: (_scope: (tx: SQLiteTransaction) => void) => {
           logWarn('[Database] transaction called on Mock DB');
           return Promise.resolve({
-             executeSql: (_sql: string, _params?: any[]) => {},
+             executeSql: (_sql: string, _params?: unknown[]) => {},
           } as unknown as SQLiteTransaction); 
         },
         readTransaction: (_scope: (tx: SQLiteTransaction) => void) => Promise.resolve({
-             executeSql: (_sql: string, _params?: any[]) => {},
+             executeSql: (_sql: string, _params?: unknown[]) => {},
         } as unknown as SQLiteTransaction),
-        executeSql: (_stat: string, _params?: any[]) => {
+        executeSql: (_stat: string, _params?: unknown[]) => {
            logWarn('[Database] executeSql called on Mock DB');
            return Promise.resolve([{
              rows: { length: 0, item: (_i: number) => null, raw: () => [] },

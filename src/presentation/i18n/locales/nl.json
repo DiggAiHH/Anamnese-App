@@ -128,6 +128,7 @@
     "placeholder": "bijv. DemoPass!2026",
     "errorEmpty": "Voer een masterwachtwoord in.",
     "errorDerive": "Kon geen sleutel uit het wachtwoord afleiden.",
+    "errorWrongPassword": "Onjuist masterwachtwoord. Probeer het opnieuw.",
     "resetSession": "Sessie resetten",
     "resetTitle": "Gerest",
     "resetMessage": "Sessiedata zijn gereset.",
@@ -203,6 +204,7 @@
     "progress": "Voortgang: {{percent}}%",
     "exportHint": "Je kunt nu optioneel een GDT-export starten.",
     "exportButton": "GDT-export",
+    "calculatorsButton": "Rekenhulpen openen",
     "newButton": "Nieuwe anamnese"
   },
   "export": {
@@ -215,6 +217,9 @@
     "missingPatientOrKey": "Patiënt of encryptiesleutel ontbreekt.",
     "missingSenderId": "Geef een afzender-ID op.",
     "failedTitle": "Export mislukt",
+    "consentMissing": "Schakel toestemming voor GDT-export in bij de privacy-instellingen.",
+    "openConsents": "Toestemmingen openen",
+    "shareMessage": "GDT-bestand delen",
     "successTitle": "Export geslaagd",
     "successMessage": "Bestand opgeslagen op:\n{{path}}",
     "gdtVersion21": "GDT 2.1",

@@ -5,6 +5,7 @@ import { supportsSpeechToText } from '@shared/platformCapabilities';
 let Voice: typeof import('@react-native-voice/voice').default | null = null;
 if (supportsSpeechToText) {
   try {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     Voice = require('@react-native-voice/voice').default;
   } catch {
     // Module not available, Voice remains null

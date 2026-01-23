@@ -7,11 +7,17 @@
 
 ## AKTUELLER STATUS (LIVE)
 
-- **Letzter Stand (Fakten, ohne PII):** 2026-01-22 19:20 - Manual verification pending for autosave status + Summary fallback.
-- **Aktiver Run-ID:** RUN-20260122-1920-questionnaire-manual-verify
-- **Aktive Tasks:** Manual flow check to Summary; capture websocket error details.
-- **Blocker:** Manual UI verification required.
-- **Naechster verifizierter Schritt:** Run questionnaire flow and report observations.
+- **Letzter Stand (Fakten, ohne PII):** 2026-01-23 12:37 - Question order audit completed; source map documented.
+- **Aktiver Run-ID:** RUN-20260123-1237-question-order-audit
+- **Aktive Tasks:** None (documentation-only run completed).
+- **Blocker:** None.
+- **Naechster verifizierter Schritt:** Share CSV/XLSX location if needed for linking.
+
+- **Update 2026-01-22 23:50:** Web dev-server smoke run executed; port 3000 in use, server started on 3100 (Evidence: `buildLogs/web_dev_smoke_port3100_20260122_234952.err.log`).
+
+- **Update 2026-01-23 00:13:** Implemented TTS module-shape hardening to avoid "uncaught runtime error" (Evidence: `buildLogs/tests_tts_module_shape_20260123_001252.err.log`).
+
+- **Update 2026-01-23 01:11:** Fixed web white screen by adding root height CSS to `web/index.html` (Evidence: `buildLogs/web_dev_smoke_white_screen_fix_3107_20260123_010833.out.log`).
 
 - **Update 2026-01-22 11:18:** Added TODO system to fix "count of null" error and ordered element-by-element tests.
 
@@ -19,45 +25,49 @@
 
 ## AKTUELLER LAUF: 5 Pflichtpunkte (LIVE)
 
-> Run-ID: RUN-20260122-1920-questionnaire-manual-verify | Status: **IN PROGRESS**
+> Run-ID: RUN-20260123-1237-question-order-audit | Status: **COMPLETED**
 
 1) **Ziel**
 
-- Outcome: Manual verification confirms autosave status + Summary fallback; websocket error reproduced if present.
+- Outcome: Identify the authoritative question order/dependency sources and document them.
 - DoD:
-  1. Questionnaire flow reaches Summary without crash.
-  2. Autosave status box shows saving/last saved/error.
-  3. Summary fallback renders when questionnaire is missing (navigate back/reopen).
-  4. Websocket executor error captured with exact text if it appears.
-- Nicht-Ziele: No additional code changes.
+  1. Source files for order and conditions located.
+  2. Question/compartment definitions located.
+  3. Consolidated reference doc added.
+  4. Missing CSV/XLSX noted.
+- Nicht-Ziele: No runtime behavior changes.
 
 2) **Methodik**
 
-- Repro: Run questionnaire flow to Summary on web or Windows.
-- Root Cause Hypothesen: N/A (verification only).
-- Fix-Strategie: N/A (verification only).
-- Verifikation: Manual observation + any logs captured by user.
+- Repro: Read template + docs + domain entities.
+- Root Cause Hypothesen: N/A (documentation task).
+- Fix-Strategie: N/A.
+- Verifikation: File reads + new doc in repo.
 
 3) **Sprachen/Stack**
 
-- Sprachen: TypeScript/TSX, PowerShell.
-- Tools: npm, Jest.
+- Sprachen: TypeScript, Markdown.
+- Tools: PowerShell (read-only).
 - Constraints: Keine PII in Logs; keine Secrets.
 
 4) **Struktur**
 
 - Dateien/Module (geplant):
-  - `TODO.md`
+  - `src/infrastructure/data/questionnaire-template.json`
+  - `src/domain/entities/Questionnaire.ts`
+  - `src/domain/entities/CompartmentQuestion.ts`
+  - `docs/QUESTION_ORDER_SOURCES.md`
+  - `CURRENT_TASKS.md`
   - `LAUFBAHN.md`
   - `docs/AGENT_LAUFBAHN.md`
 - Logs/Artefakte:
-  - (manual verification notes)
+  - Documentation only (no build logs).
 
 5) **Qualitaet/Muster**
 
-- Tests: Jest unit tests + type-check.
-- Security/Compliance: DSGVO Logging Policy, no hardcoded keys.
-- Maintainability: minimal change-set.
+- Tests: Not required for doc-only updates.
+- Security/Compliance: DSGVO Logging Policy, no PII.
+- Maintainability: Minimal change-set, path references only.
 
 ---
 
@@ -140,6 +150,7 @@
 
 | Run-ID | Timestamp (UTC+1) | Agent | Intent | Tool/Command | Files touched | Result | Evidence (Pfad) | Next |
 |---|---|---|---|---|---|---|---|---|
+| RUN-20260123-1237-question-order-audit | 2026-01-23 12:37 | Codex (GPT-5) | Locate question order sources and document them | read + edit | `docs/QUESTION_ORDER_SOURCES.md`, `CURRENT_TASKS.md`, `LAUFBAHN.md`, `docs/AGENT_LAUFBAHN.md` | PASS | `docs/QUESTION_ORDER_SOURCES.md` | Link CSV/XLSX source if provided |
 | RUN-20260121-2038-cross-platform-plan | 2026-01-21 20:38 | Copilot (GPT-5.2) | Cross-platform workflow enforcement + plan doc | edit files | `.github/copilot-instructions.md`, `docs/AGENT_OPTIMAL_PLAN.md`, `LAUFBAHN.md`, `docs/AGENT_LAUFBAHN.md`, `TODO.md` | PARTIAL (tests PASS, android FAIL) | `buildLogs/npm_test_latest.out.log`, `buildLogs/npm_test_latest.err.log`, `buildLogs/android_run_latest.out.log`, `buildLogs/android_run_latest.err.log` | Scaffold android/ios/macos/web, rerun android |
 | RUN-20260108-1500-eliminate-all-errors | 2026-01-08 15:00-16:00 | Copilot (Claude Opus 4.5) | Eliminate ALL TypeScript errors: Add findAll/update to repos, fix backup/restore types, add VoskSpeechService static methods | `npm test`, `replace_string_in_file`, `get_errors` | SQLiteQuestionnaireRepository.ts, SQLitePatientRepository.ts, BackupUseCase.ts, RestoreUseCase.ts, VoskSpeechService.ts, CalculatorScreen.tsx, DataManagementScreen.tsx, .markdownlint.json (renamed) | ✅ PASS (23 suites, 150 tests) | Terminal: 150 tests, 0 src/ errors | Await user input |
 | RUN-20260108-1400-compliance-fixes | 2026-01-08 14:00-15:30 | Copilot (Claude Opus 4.5) | GDPR Compliance: PII sanitization, dev-only logging, ErrorBoundary, markdownlint | `npm test`, `create_file`, `replace_string_in_file`, `get_errors` | sanitizeError.ts, logger.ts, ErrorBoundary.tsx, DataManagementScreen.tsx, TTSService.ts, VoskSpeechService.ts, .markdownlintrc.json, sanitizeError.test.ts | ✅ PASS (23 suites, 150 tests) | Terminal output: 150 tests passed | Await user input |

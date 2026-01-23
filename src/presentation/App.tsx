@@ -19,7 +19,7 @@ import { RootNavigator } from './navigation/RootNavigator';
 import { ToastProvider } from './components/ToastProvider';
 
 // i18n
-import './i18n/config';
+import i18n from './i18n/config';
 
 // Database initialization
 import { database } from '@infrastructure/persistence/DatabaseConnection';
@@ -27,9 +27,19 @@ import { logDebug, logError } from '@shared/logger';
 import { useQuestionnaireStore } from './state/useQuestionnaireStore';
 import { loadActiveSession } from '@shared/sessionPersistence';
 import { loadPersistedEncryptionKeyIfOptedIn } from '@shared/keyManager';
+import { installGlobalErrorHandlers } from '@shared/globalErrorHandlers';
+import { showUserErrorAlert } from '@shared/userFacingError';
 
 const App = (): React.JSX.Element => {
   useEffect(() => {
+    installGlobalErrorHandlers({
+      onUserError: () =>
+        showUserErrorAlert({
+          title: i18n.t('error.boundaryTitle'),
+          message: i18n.t('error.boundaryMessage'),
+        }),
+    });
+
     // Initialize database on app start
     const initializeApp = async (): Promise<void> => {
       try {

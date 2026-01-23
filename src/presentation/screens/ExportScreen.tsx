@@ -28,6 +28,7 @@ import { SQLiteGDPRConsentRepository } from '@infrastructure/persistence/SQLiteG
 import { database } from '@infrastructure/persistence/DatabaseConnection';
 import { useQuestionnaireStore } from '../state/useQuestionnaireStore';
 import { reportUserError } from '../../shared/userFacingError';
+import { supportsShare } from '@shared/platformCapabilities';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Export'>;
 
@@ -79,14 +80,43 @@ export const ExportScreen = ({ route, navigation }: Props): React.JSX.Element =>
       });
 
       if (!result.success) {
+        if (result.error === 'GDT export consent not granted') {
+          Alert.alert(t('export.failedTitle'), t('export.consentMissing', { defaultValue: 'Bitte aktivieren Sie die Einwilligung für den GDT-Export in den Datenschutz-Einstellungen.' }), [
+            { text: t('common.cancel', { defaultValue: 'Abbrechen' }), style: 'cancel' },
+            {
+              text: t('export.openConsents', { defaultValue: 'Einwilligungen öffnen' }),
+              onPress: () => navigation.navigate('GDPRConsent'),
+            },
+          ]);
+          return;
+        }
         showError(t('export.failedTitle'), result.error ?? t('common.unknownError'));
         return;
       }
 
-      Alert.alert(
-        t('export.successTitle'),
-        t('export.successMessage', { path: result.filePath }),
-      );
+      const filePath = result.filePath;
+
+      Alert.alert(t('export.successTitle'), t('export.successMessage', { path: filePath }));
+
+      if (supportsShare && filePath) {
+        try {
+          // eslint-disable-next-line @typescript-eslint/no-var-requires
+          const Share = require('react-native-share') as {
+            open?: (options: { url: string; type?: string; filename?: string; message?: string }) => Promise<unknown>;
+          };
+
+          const url = filePath.startsWith('file://') ? filePath : `file://${filePath}`;
+          await Share?.open?.({
+            url,
+            type: 'text/plain',
+            filename: 'anamnese.gdt',
+            message: t('export.shareMessage', { defaultValue: 'GDT-Datei teilen' }),
+          });
+        } catch {
+          // Ignore share failures; file was still created.
+        }
+      }
+
       navigation.popToTop();
     } catch (error) {
       showError(t('common.error'), error instanceof Error ? error.message : t('common.unknownError'), error);

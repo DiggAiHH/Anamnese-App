@@ -24,6 +24,8 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/RootNavigator';
 import { useQuestionnaireStore } from '../state/useQuestionnaireStore';
 import { encryptionService } from '@infrastructure/encryption/encryptionService';
+import { database } from '@infrastructure/persistence/DatabaseConnection';
+import { EncryptedDataVO } from '@domain/value-objects/EncryptedData';
 import {
   clearActiveEncryptionKey,
   getKeyOptIn,
@@ -62,6 +64,69 @@ export const MasterPasswordScreen = ({ navigation, route }: Props): React.JSX.El
     return mode === 'unlock' ? t('masterPassword.titleUnlock') : t('masterPassword.titleSetup');
   }, [mode, t]);
 
+  const verifyKeyAgainstExistingData = async (derivedKey: string): Promise<boolean> => {
+    try {
+      const db = await database.connect();
+      const [patientResult] = await db.executeSql('SELECT encrypted_data FROM patients LIMIT 10;');
+
+      const encryptedCandidates: string[] = [];
+      const plaintextCandidates: string[] = [];
+
+      if (patientResult?.rows && patientResult.rows.length > 0) {
+        for (let i = 0; i < patientResult.rows.length; i++) {
+          const row = patientResult.rows.item(i) as { encrypted_data?: unknown } | null;
+          const raw = String(row?.encrypted_data ?? '').trim();
+          if (!raw) continue;
+          if (raw.startsWith('{')) {
+            plaintextCandidates.push(raw);
+          } else {
+            encryptedCandidates.push(raw);
+          }
+        }
+      }
+
+      // If we have any encrypted patient data, the key must be able to decrypt at least one record.
+      if (encryptedCandidates.length > 0) {
+        for (const raw of encryptedCandidates) {
+          try {
+            const encrypted = EncryptedDataVO.fromString(raw);
+            const decryptedJson = await encryptionService.decrypt(encrypted, derivedKey);
+            JSON.parse(decryptedJson);
+            return true;
+          } catch {
+            // try next
+          }
+        }
+        return false;
+      }
+
+      // If only legacy plaintext patients exist, verify the key against at least one encrypted answer (if any).
+      const [answerResult] = await db.executeSql(
+        'SELECT encrypted_value FROM answers WHERE encrypted_value IS NOT NULL LIMIT 1;',
+      );
+
+      if (answerResult?.rows && answerResult.rows.length > 0) {
+        const row = answerResult.rows.item(0) as { encrypted_value?: unknown } | null;
+        const raw = String(row?.encrypted_value ?? '').trim();
+        if (!raw) return true;
+
+        const encrypted = EncryptedDataVO.fromString(raw);
+        const decryptedJson = await encryptionService.decrypt(encrypted, derivedKey);
+        JSON.parse(decryptedJson);
+        return true;
+      }
+
+      // No encrypted data exists yet (fresh install / no answers) => any key is acceptable.
+      // Still validate plaintext payload shape to guard against corrupted DB rows.
+      for (const raw of plaintextCandidates) {
+        JSON.parse(raw);
+      }
+      return true;
+    } catch {
+      return false;
+    }
+  };
+
   React.useEffect(() => {
     let mounted = true;
     const init = async () => {
@@ -87,6 +152,20 @@ export const MasterPasswordScreen = ({ navigation, route }: Props): React.JSX.El
 
     try {
       const derived = await encryptionService.deriveKey(password);
+
+      if (mode === 'unlock') {
+        const valid = await verifyKeyAgainstExistingData(derived.key);
+        if (!valid) {
+          Alert.alert(
+            t('common.error'),
+            t('masterPassword.errorWrongPassword', {
+              defaultValue: 'Wrong password. Please try again.',
+            }),
+          );
+          return;
+        }
+      }
+
       setEncryptionKey(derived.key);
       await setActiveEncryptionKey(derived.key, { persist: rememberKey });
       if (mode === 'unlock') {

@@ -128,6 +128,7 @@
     "placeholder": "例: DemoPassword!2026",
     "errorEmpty": "マスターパスワードを入力してください。",
     "errorDerive": "パスワードから鍵を導出できませんでした。",
+    "errorWrongPassword": "マスターパスワードが間違っています。もう一度お試しください。",
     "resetSession": "セッションをリセット",
     "resetTitle": "リセット",
     "resetMessage": "セッションデータをリセットしました。",
@@ -203,6 +204,7 @@
     "progress": "進捗: {{percent}}%",
     "exportHint": "必要に応じてGDTエクスポートを開始できます。",
     "exportButton": "GDTエクスポート",
+    "calculatorsButton": "計算機を開く",
     "newButton": "新しいアナムネーゼ"
   },
   "export": {
@@ -217,6 +219,9 @@
     "missingPatientOrKey": "患者または暗号鍵がありません。",
     "missingSenderId": "送信者IDを入力してください。",
     "failedTitle": "エクスポート失敗",
+    "consentMissing": "プライバシー設定でGDTエクスポートの同意を有効にしてください。",
+    "openConsents": "同意を開く",
+    "shareMessage": "GDTファイルを共有",
     "successTitle": "エクスポート成功",
     "successMessage": "ファイルを保存しました:\n{{path}}"
   },

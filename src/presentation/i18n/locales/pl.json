@@ -128,6 +128,7 @@
     "placeholder": "np. DemoHaslo!2026",
     "errorEmpty": "Wprowadź hasło główne.",
     "errorDerive": "Nie udało się wyprowadzić klucza z hasła.",
+    "errorWrongPassword": "Nieprawidłowe hasło główne. Spróbuj ponownie.",
     "resetSession": "Zresetuj sesję",
     "resetTitle": "Zresetowano",
     "resetMessage": "Dane sesji zostały zresetowane.",
@@ -203,6 +204,7 @@
     "progress": "Postęp: {{percent}}%",
     "exportHint": "Możesz teraz opcjonalnie rozpocząć eksport GDT.",
     "exportButton": "Eksport GDT",
+    "calculatorsButton": "Otwórz kalkulatory",
     "newButton": "Nowa anamneza"
   },
   "export": {
@@ -215,6 +217,9 @@
     "missingPatientOrKey": "Brak pacjenta lub klucza szyfrowania.",
     "missingSenderId": "Podaj ID nadawcy.",
     "failedTitle": "Eksport nieudany",
+    "consentMissing": "Włącz zgodę na eksport GDT w ustawieniach prywatności.",
+    "openConsents": "Otwórz zgody",
+    "shareMessage": "Udostępnij plik GDT",
     "successTitle": "Eksport udany",
     "successMessage": "Plik zapisano w:\n{{path}}",
     "gdtVersion21": "GDT 2.1",

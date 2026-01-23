@@ -1,4 +1,5 @@
 import { Platform } from 'react-native';
+import { isRNFSAvailable } from './rnfsSafe';
 
 export const platformOS = Platform.OS;
 export const isWindows = platformOS === 'windows';
@@ -12,7 +13,7 @@ export const supportsSpeechToText = isIOS || isAndroid;
 export const supportsOCR = isIOS || isAndroid;
 export const supportsDocumentPicker = isIOS || isAndroid;
 export const supportsShare = isIOS || isAndroid;
-export const supportsRNFS = isIOS || isAndroid;
+export const supportsRNFS = (isIOS || isAndroid || isWindows) && isRNFSAvailable();
 export const supportsSQLite = isIOS || isAndroid || isWindows;
 export const supportsSecureKeychain = isIOS || isAndroid || isMacOS;
 

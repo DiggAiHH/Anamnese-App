@@ -8,7 +8,7 @@ import { IAnswerRepository } from '@domain/repositories/IAnswerRepository';
 import { database } from './DatabaseConnection';
 import { encryptionService } from '../encryption/encryptionService';
 import { EncryptedDataVO } from '@domain/value-objects/EncryptedData';
-import { logError, logWarn } from '@shared/logger';
+import { logWarn } from '@shared/logger';
 import { Buffer } from 'buffer';
 
 export class SQLiteAnswerRepository implements IAnswerRepository {
@@ -174,7 +174,9 @@ export class SQLiteAnswerRepository implements IAnswerRepository {
 
         answersMap.set(answer.questionId, value);
       } catch (error) {
-        logError('Failed to decrypt answer.', error);
+        // Common user-facing scenario: wrong master password / wrong session key.
+        // Avoid console.error in dev (can trigger disruptive redbox overlays).
+        logWarn('Failed to decrypt answer (wrong key or corrupted data).');
       }
     }
 

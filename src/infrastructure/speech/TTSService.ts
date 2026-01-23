@@ -8,17 +8,43 @@
  * @privacy GDPR Art. 25 compliant - no PII transmitted.
  */
 
-import { supportsTTS } from '@shared/platformCapabilities';
+import * as platformCapabilities from '@shared/platformCapabilities';
 
-// Conditional import: Only load react-native-tts on non-Windows platforms
-// This prevents "cannot read undefined" crash at module load time on Windows
-let Tts: typeof import('react-native-tts').default | null = null;
-if (supportsTTS) {
+type TtsApi = {
+  addEventListener?: unknown;
+  speak?: unknown;
+  stop?: unknown;
+  voices?: unknown;
+  setDefaultRate?: unknown;
+  setDefaultPitch?: unknown;
+  setDefaultLanguage?: unknown;
+};
+
+const loadTtsModule = (): TtsApi | null => {
+  if (!platformCapabilities.supportsTTS) return null;
   try {
-    Tts = require('react-native-tts').default;
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const mod = require('react-native-tts');
+    return (mod?.default ?? mod) as TtsApi;
   } catch {
-    // Module not available, Tts remains null
+    return null;
   }
+};
+
+const hasRequiredTtsApi = (tts: TtsApi | null): tts is Required<Pick<TtsApi, 'addEventListener' | 'speak' | 'stop'>> &
+  TtsApi => {
+  return (
+    !!tts &&
+    typeof tts.addEventListener === 'function' &&
+    typeof tts.speak === 'function' &&
+    typeof tts.stop === 'function'
+  );
+};
+
+// Conditional import: Only load react-native-tts on iOS/Android and tolerate CJS/ESM export shapes
+let Tts: TtsApi | null = loadTtsModule();
+if (!hasRequiredTtsApi(Tts)) {
+  Tts = null;
 }
 
 export interface TTSVoice {
@@ -121,8 +147,8 @@ export class TTSService implements ITTSService {
   private async initialize(): Promise<void> {
     if (this.initialized) return;
     
-    // Check if Tts module is available (null on Windows)
-    if (!Tts || !supportsTTS) {
+    // Check if Tts module is available (null on unsupported platforms / missing module / incompatible export)
+    if (!Tts || !platformCapabilities.supportsTTS) {
       this.initialized = true;
       this.logDebug('TTS Service mocked (module not available or unsupported platform)');
       return;
@@ -130,27 +156,33 @@ export class TTSService implements ITTSService {
 
     try {
       // Set up event listeners
-      Tts.addEventListener('tts-start', () => {
+      (Tts.addEventListener as (event: string, callback: () => void) => void)('tts-start', () => {
         this.speaking = true;
         this.logDebug('Speech started');
       });
 
-      Tts.addEventListener('tts-finish', () => {
+      (Tts.addEventListener as (event: string, callback: () => void) => void)('tts-finish', () => {
         this.speaking = false;
         this.logDebug('Speech finished');
       });
 
-      Tts.addEventListener('tts-cancel', () => {
+      (Tts.addEventListener as (event: string, callback: () => void) => void)('tts-cancel', () => {
         this.speaking = false;
         this.logDebug('Speech cancelled');
       });
 
       // Set default rate and pitch
-      await Tts.setDefaultRate(this.currentRate);
-      await Tts.setDefaultPitch(this.currentPitch);
+      if (typeof Tts.setDefaultRate === 'function') {
+        await (Tts.setDefaultRate as (rate: number) => Promise<void>)(this.currentRate);
+      }
+      if (typeof Tts.setDefaultPitch === 'function') {
+        await (Tts.setDefaultPitch as (pitch: number) => Promise<void>)(this.currentPitch);
+      }
 
       // Set default language to German (app default)
-      await Tts.setDefaultLanguage('de-DE');
+      if (typeof Tts.setDefaultLanguage === 'function') {
+        await (Tts.setDefaultLanguage as (language: string) => Promise<void>)('de-DE');
+      }
 
       this.initialized = true;
       this.logDebug('TTS Service initialized');
@@ -165,7 +197,7 @@ export class TTSService implements ITTSService {
    * @param language App locale (e.g., 'de', 'en')
    */
   async speak(text: string, language: string = 'de'): Promise<void> {
-    if (!Tts || !supportsTTS) {
+    if (!Tts || !platformCapabilities.supportsTTS) {
       this.logDebug('TTS speak ignored (module not available or unsupported platform)');
       return;
     }
@@ -187,12 +219,14 @@ export class TTSService implements ITTSService {
 
       // Map language
       const ttsLanguage = LANGUAGE_MAP[language] || 'de-DE';
-      await Tts.setDefaultLanguage(ttsLanguage);
+      if (typeof Tts.setDefaultLanguage === 'function') {
+        await (Tts.setDefaultLanguage as (language: string) => Promise<void>)(ttsLanguage);
+      }
 
       // Don't log the text content (GDPR)
       this.logDebug(`Speaking in ${ttsLanguage} (${truncatedText.length} chars)`);
 
-      await Tts.speak(truncatedText);
+      await (Tts.speak as (textToSpeak: string) => Promise<void>)(truncatedText);
     } catch (error) {
       this.logError('Failed to speak', error);
       throw new Error('Text-to-speech failed');
@@ -205,7 +239,7 @@ export class TTSService implements ITTSService {
   async stop(): Promise<void> {
     if (!Tts) return;
     try {
-      await Tts.stop();
+      await (Tts.stop as () => Promise<void>)();
       this.speaking = false;
       this.logDebug('Speech stopped');
     } catch (error) {
@@ -247,7 +281,8 @@ export class TTSService implements ITTSService {
   async getAvailableVoices(): Promise<TTSVoice[]> {
     if (!Tts) return [];
     try {
-      const voices = await Tts.voices();
+      if (typeof Tts.voices !== 'function') return [];
+      const voices = await (Tts.voices as () => Promise<Array<{ id: string; name: string; language: string; quality?: number; networkConnectionRequired?: boolean }>>)();
       this.logDebug(`Found ${voices?.length || 0} voices`);
 
       return (voices || []).map(v => ({
@@ -277,7 +312,8 @@ export class TTSService implements ITTSService {
     if (!Tts) return;
     try {
       const clampedRate = Math.max(0.1, Math.min(1.0, rate));
-      await Tts.setDefaultRate(clampedRate);
+      if (typeof Tts.setDefaultRate !== 'function') return;
+      await (Tts.setDefaultRate as (rate: number) => Promise<void>)(clampedRate);
       this.currentRate = clampedRate;
       this.logDebug(`Rate set to ${clampedRate}`);
     } catch (error) {
@@ -292,7 +328,8 @@ export class TTSService implements ITTSService {
     if (!Tts) return;
     try {
       const clampedPitch = Math.max(0.5, Math.min(2.0, pitch));
-      await Tts.setDefaultPitch(clampedPitch);
+      if (typeof Tts.setDefaultPitch !== 'function') return;
+      await (Tts.setDefaultPitch as (pitch: number) => Promise<void>)(clampedPitch);
       this.currentPitch = clampedPitch;
       this.logDebug(`Pitch set to ${clampedPitch}`);
     } catch (error) {
@@ -308,7 +345,8 @@ export class TTSService implements ITTSService {
     if (!Tts) return;
     try {
       const ttsLanguage = LANGUAGE_MAP[language] || 'de-DE';
-      await Tts.setDefaultLanguage(ttsLanguage);
+      if (typeof Tts.setDefaultLanguage !== 'function') return;
+      await (Tts.setDefaultLanguage as (language: string) => Promise<void>)(ttsLanguage);
       this.logDebug(`Default language set to ${ttsLanguage}`);
     } catch (error) {
       this.logError('Failed to set default language', error);
@@ -321,7 +359,9 @@ export class TTSService implements ITTSService {
   destroy(): void {
     try {
       if (this.speaking && Tts) {
-        Tts.stop();
+        if (typeof Tts.stop === 'function') {
+          (Tts.stop as () => Promise<void>)();
+        }
       }
       // Note: react-native-tts doesn't have removeAllListeners
       this.speaking = false;

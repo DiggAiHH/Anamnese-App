@@ -8,7 +8,8 @@ param(
 
   [switch]$SkipUninstall,
   [switch]$SkipNpmCi,
-  [switch]$SkipMetroRestart
+  [switch]$SkipMetroRestart,
+  [switch]$IsDetached
 )
 
 Set-StrictMode -Version Latest
@@ -160,16 +161,17 @@ $windowsDir = Join-Path $repoRoot 'windows'
 # If invoked via `npm run windows:cleanrun`, detach into a standalone process.
 # This avoids killing the parent npm/node process and allows us to stop node.exe
 # to unlock node_modules for a real clean reinstall.
-if ($env:CLEANRUN_DETACHED -ne '1' -and -not [string]::IsNullOrWhiteSpace($env:npm_lifecycle_event)) {
+if (-not $IsDetached -and -not [string]::IsNullOrWhiteSpace($env:npm_lifecycle_event)) {
   $scriptPath = Join-Path $PSScriptRoot 'windows-cleanrun.ps1'
-  $arg = "powershell.exe -NoProfile -ExecutionPolicy Bypass -File ""$scriptPath"" -Configuration $Configuration -Platform $Platform"
+  $arg = "powershell.exe -NoProfile -ExecutionPolicy Bypass -File ""$scriptPath"" -Configuration $Configuration -Platform $Platform -IsDetached"
   if ($SkipUninstall) { $arg += ' -SkipUninstall' }
   if ($SkipNpmCi) { $arg += ' -SkipNpmCi' }
   if ($SkipMetroRestart) { $arg += ' -SkipMetroRestart' }
 
   Write-Step 'Detaching cleanrun into a standalone window'
-  Start-Process -FilePath 'cmd.exe' -WorkingDirectory $repoRoot -ArgumentList @('/d','/c',"set CLEANRUN_DETACHED=1 && $arg") | Out-Null
-  Write-Host 'Detached cleanrun started (CLEANRUN_DETACHED=1). Closing npm-hosted run.' -ForegroundColor Yellow
+  # Use /k to keep window open on error/finish so user can see output
+  Start-Process -FilePath 'cmd.exe' -WorkingDirectory $repoRoot -ArgumentList @('/d','/k',$arg) | Out-Null
+  Write-Host 'Detached cleanrun started. Closing npm-hosted run.' -ForegroundColor Yellow
   exit 0
 }
 
@@ -202,7 +204,7 @@ Get-Process -Name 'msbuild','midl','cl','link','rc','mspdbsrv','vctip','vcpkgsrv
   Stop-Process -Force -ErrorAction SilentlyContinue
 
 # In detached mode, it's safe to stop all node.exe processes to release locks in node_modules.
-if ($env:CLEANRUN_DETACHED -eq '1') {
+if ($IsDetached) {
   Get-Process -Name 'node' -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue
 }
 

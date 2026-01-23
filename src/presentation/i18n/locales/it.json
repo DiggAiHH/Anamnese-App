@@ -128,6 +128,7 @@
     "placeholder": "es. DemoPass!2026",
     "errorEmpty": "Inserisci una password principale.",
     "errorDerive": "Impossibile derivare una chiave dalla password.",
+    "errorWrongPassword": "Password principale errata. Riprova.",
     "resetSession": "Reimposta sessione",
     "resetTitle": "Reimpostato",
     "resetMessage": "I dati della sessione sono stati reimpostati.",
@@ -203,6 +204,7 @@
     "progress": "Progresso: {{percent}}%",
     "exportHint": "Ora puoi avviare opzionalmente un’esportazione GDT.",
     "exportButton": "Esportazione GDT",
+    "calculatorsButton": "Apri calcolatori",
     "newButton": "Nuova anamnesi"
   },
   "export": {
@@ -215,6 +217,9 @@
     "missingPatientOrKey": "Mancano paziente o chiave di cifratura.",
     "missingSenderId": "Inserisci un ID mittente.",
     "failedTitle": "Esportazione non riuscita",
+    "consentMissing": "Abilita il consenso per l'esportazione GDT nelle impostazioni sulla privacy.",
+    "openConsents": "Apri consensi",
+    "shareMessage": "Condividi file GDT",
     "successTitle": "Esportazione riuscita",
     "successMessage": "File salvato in:\n{{path}}",
     "gdtVersion21": "GDT 2.1",

@@ -55,7 +55,96 @@ It defines the always-on checklist and records what was done, when, and where.
 - Testing:
   - Neue Helper/Behavior sollen (wo sinnvoll) einen Unit-Test bekommen.
 
+## AKTUELLER LAUF: 5 Pflichtpunkte (LIVE)
+
+1) **Ziel**
+- Outcome: Clean rebuild (Windows) + sichtbarer App-Launch fuer manuelle Tests.
+- DoD:
+  1. Cleanrun-Log zeigt Build Success (buildLogs/windows-cleanrun*.log).
+  2. Launch-Log zeigt laufenden Prozess (buildLogs/windows-launch*.log).
+  3. User bestaetigt sichtbares App-Fenster.
+- Nicht-Ziele: Keine Feature-Aenderungen; keine Dependency-Upgrades ohne konkreten Build-Blocker.
+
+2) **Methodik**
+- Repro: Cleanrun mit Log-Capture, danach Launch mit Log-Capture.
+- Root Cause Hypothesen: Haengende Prozesse, PDB-Lock, oder fehlgeschlagene App-Registrierung.
+- Fix-Strategie: Prozesse bereinigen, Cleanrun erneut; bei spezifischem Fehler minimalen Fix anwenden.
+- Verifikation: Build-/Launch-Logs in buildLogs/.
+
+3) **Sprachen/Stack**
+- Sprachen: PowerShell, MSBuild, RNW.
+- Tools: npm scripts, scripts/windows-cleanrun.ps1.
+- Constraints: Keine PII in Logs; keine Secrets.
+
+4) **Struktur**
+- Dateien/Module: scripts/windows-cleanrun.ps1, windows/*, buildLogs/*.
+- Logs/Artefakte: buildLogs/windows-cleanrun*.log, buildLogs/windows-dev-run*.log, buildLogs/windows-launch*.log.
+
+5) **Qualitaet/Muster**
+- Tests: Nur falls Code geaendert wird (type-check + Jest).
+- Security/Compliance: DSGVO Logging Policy, keine PII.
+- Maintainability: Minimaler Change-Set, keine Re-Themes.
+
 ## Execution Log (chronologisch)
+
+### 2026-01-23 12:37 UTC - Question order audit + source map
+- Goal: Locate the authoritative question order, dependencies, and question/compartment definitions; document sources.
+- Changes:
+  - `docs/QUESTION_ORDER_SOURCES.md`: Added a consolidated source map for question order/definitions.
+  - `CURRENT_TASKS.md`: Updated task list for the question order audit run.
+- Verification:
+  - Documentation-only change (no tests).
+
+### 2026-01-22 23:02 - Hardening: Global error handlers (websocket executor guard)
+- Goal: Prevent uncaught JS errors (incl. potential websocket executor errors) from failing silently by adding a global guard with GDPR-safe logging + user-friendly alert.
+- Changes:
+  - `src/shared/globalErrorHandlers.ts`: Install ErrorUtils + window error/unhandledrejection handlers with dedupe.
+  - `src/shared/userFacingError.ts`: Expose `showUserErrorAlert` for alert-only usage.
+  - `src/presentation/App.tsx`: Install global error handlers using i18n error texts.
+  - `__tests__/shared/globalErrorHandlers.test.ts`: Add unit coverage for ErrorUtils and window hooks.
+- Verification:
+  - `npm run type-check`: PASS (Evidence: `buildLogs/typecheck_global_error_handlers_20260122_230104.out.log`, `buildLogs/typecheck_global_error_handlers_20260122_230104.err.log`)
+  - `npm test -- --runTestsByPath __tests__/shared/globalErrorHandlers.test.ts`: PASS (Evidence: `buildLogs/tests_global_error_handlers_20260122_230151.out.log`, `buildLogs/tests_global_error_handlers_20260122_230151.err.log`)
+
+### 2026-01-22 23:50 UTC - Web simulation: dev server smoke start
+- Goal: Run a quick web simulation by starting the web dev server and capturing startup logs.
+- Notes:
+  - First attempt failed because port 3000 was already in use.
+  - Second attempt started successfully on port 3100.
+- Verification:
+  - `npm run web` (port 3000): FAIL `EADDRINUSE` (Evidence: `buildLogs/web_dev_smoke_20260122_234734.err.log`)
+  - `npm run web -- --port 3100`: STARTED (Evidence: `buildLogs/web_dev_smoke_port3100_20260122_234952.err.log`)
+
+### 2026-01-23 00:13 UTC - Fix: "uncaught runtime error" (TTS module shape hardening)
+- Goal: Prevent runtime crashes/errors caused by `react-native-tts` export/API shape mismatches (default vs CJS export; missing methods).
+- Changes:
+  - `src/infrastructure/speech/TTSService.ts`: Load `react-native-tts` via `mod.default ?? mod` and validate required API before using it.
+  - `src/infrastructure/speech/__tests__/TTSService.moduleShape.test.ts`: Add regression tests for CJS export + missing-methods behavior.
+- Verification:
+  - `npm run type-check`: PASS (Evidence: `buildLogs/typecheck_tts_module_shape_20260123_000945.out.log`, `buildLogs/typecheck_tts_module_shape_20260123_000945.err.log`)
+  - `npm test -- --runTestsByPath src/infrastructure/speech/__tests__/TTSService.moduleShape.test.ts src/infrastructure/speech/__tests__/TTSService.test.ts`: PASS (Evidence: `buildLogs/tests_tts_module_shape_20260123_001252.out.log`, `buildLogs/tests_tts_module_shape_20260123_001252.err.log`)
+
+### 2026-01-23 01:11 UTC - Fix: Web white screen (root height CSS)
+- Goal: Fix a blank/white web screen caused by `flex: 1` roots rendering into a zero-height `#root`.
+- Changes:
+  - `web/index.html`: Add `html, body, #root { height: 100%; width: 100%; margin: 0; padding: 0; }`.
+- Verification:
+  - `npm run web -- --port 3107`: webpack compiled successfully (Evidence: `buildLogs/web_dev_smoke_white_screen_fix_3107_20260123_010833.out.log`, `buildLogs/web_dev_smoke_white_screen_fix_3107_20260123_010833.err.log`)
+  - `web/dist/index.html` contains the injected root-height CSS (generated artifact).
+
+### 2026-01-23 09:15 UTC - Clean Build & Run Request
+- Goal: Perform a clean build and run of the application (Windows) for manual user verification.
+- Run-ID: RUN-20260123-0915-clean-build-verify
+- Plan:
+  1.  Create `CURRENT_TASKS.md` (Done).
+  2.  Execute `scripts/windows-cleanrun.ps1`.
+  3.  Document results.
+- Changes:
+  - `scripts/windows-cleanrun.ps1`: Added `-IsDetached` flag and used `cmd /k` to keep detached window open for visibility.
+- Verification:
+  - Script Fix: Verified detached window stays open.
+  - Clean Run: Manually cleared locked `node_modules` and re-triggered clean run (Process Running).
+  - App Launch: User to confirm.
 
 ### 2026-01-22 20:07 UTC - Security Fixes + Deployment Preparation
 - **Goal:** Fix security vulnerabilities and prepare for Netlify deployment per user request.
@@ -126,7 +215,7 @@ It defines the always-on checklist and records what was done, when, and where.
   - `npm.cmd test -- --runTestsByPath __tests__/shared/platformCapabilities.test.ts`: PASS (PowerShell NativeCommandError but suite passes).
   - `npm.cmd run type-check`: PASS.
   - Logs: `buildLogs/tests_questionnaire_remaining.out.log`, `buildLogs/typecheck_questionnaire_remaining.out.log`
-- Status: PARTIAL (websocket executor error still needs repro).
+- Status: PARTIAL (global guard added; websocket executor error still needs repro/capture).
 
 ### 2026-01-22
 - Goal: Manual verification of questionnaire flow to Summary and autosave/summary fallback behavior.

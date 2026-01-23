@@ -248,6 +248,14 @@ export const SummaryScreen = ({ navigation, route }: Props): React.JSX.Element =
       <Text style={styles.exportHint}>{t('summary.exportHint')}</Text>
 
       <AppButton
+        variant="secondary"
+        title={t('summary.calculatorsButton', { defaultValue: 'Rechner öffnen' })}
+        onPress={() => navigation.navigate('Calculator')}
+        testID="btn-calculator"
+        style={styles.primaryButtonSpacing}
+      />
+
+      <AppButton
         variant="primary"
         title={t('summary.exportButton')}
         onPress={() => navigation.navigate('Export', { questionnaireId })}
