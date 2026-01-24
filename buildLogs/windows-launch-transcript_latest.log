@@ -1,12 +1,12 @@
 ﻿**********************
 nStart der Windows PowerShell-Aufzeichnung
-Startzeit: 20260122144920
+Startzeit: 20260123211226
 Benutzername: DESKTOP-U1FPK9S\tubbeTEC
 RunAs-Benutzer: DESKTOP-U1FPK9S\tubbeTEC
 Konfigurationsname: 
 Computer: DESKTOP-U1FPK9S (Microsoft Windows NT 10.0.19045.0)
 Hostanwendung: powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts\windows-launch.ps1
-Prozess-ID: 6836
+Prozess-ID: 13804
 PSVersion: 5.1.19041.6456
 PSEdition: Desktop
 PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.19041.6456
@@ -28,8 +28,8 @@ AUMID: cc3a5ac8-ac09-4f03-b6c9-0cfd812841a0_4dnmwfyw5v01r!App
 ==> Launching
 
 ==> Process check
-App process is running (PID(s): 11256)
+App process is running (PID(s): 5684)
 **********************
 Ende der Windows PowerShell-Aufzeichnung
-Endzeit: 20260122144925
+Endzeit: 20260123211229
 **********************

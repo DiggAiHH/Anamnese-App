@@ -7,65 +7,101 @@
 
 ## AKTUELLER STATUS (LIVE)
 
-- **Letzter Stand (Fakten, ohne PII):** 2026-01-23 12:37 - Question order audit completed; source map documented.
-- **Aktiver Run-ID:** RUN-20260123-1237-question-order-audit
-- **Aktive Tasks:** None (documentation-only run completed).
-- **Blocker:** None.
-- **Naechster verifizierter Schritt:** Share CSV/XLSX location if needed for linking.
+- **Letzter Stand (Fakten, ohne PII):** 2026-01-24 22:03 UTC - Full verification run COMPLETED (28/30 tasks done, 2 deferred).
+- **Aktiver Run-ID:** RUN-20260124-full-verification
+- **Status:** ✅ COMPLETED
+- **Results:**
+  - Type-check: PASS
+  - Tests: PASS (46 suites, 263 tests)
+  - Stop-and-Fix: TTSService.test.ts rewritten
+  - Windows: Build + Install SUCCESS
+  - Web: Webpack compiles SUCCESS
+- **Blocker (DEFERRED):** Android (adb/emulator missing), macOS/iOS (no host).
+- **Evidence:** `buildLogs/windows_cleanrun_20260124_*.log`
 
-- **Update 2026-01-22 23:50:** Web dev-server smoke run executed; port 3000 in use, server started on 3100 (Evidence: `buildLogs/web_dev_smoke_port3100_20260122_234952.err.log`).
-
-- **Update 2026-01-23 00:13:** Implemented TTS module-shape hardening to avoid "uncaught runtime error" (Evidence: `buildLogs/tests_tts_module_shape_20260123_001252.err.log`).
-
-- **Update 2026-01-23 01:11:** Fixed web white screen by adding root height CSS to `web/index.html` (Evidence: `buildLogs/web_dev_smoke_white_screen_fix_3107_20260123_010833.out.log`).
-
-- **Update 2026-01-22 11:18:** Added TODO system to fix "count of null" error and ordered element-by-element tests.
+- **Platform Blockers (DEFERRED):**
+  - **Android:** adb/emulator missing on this host; Gradle TLS/PSK to Maven error.
+  - **macOS/iOS:** No macOS host available for builds.
 
 ---
 
 ## AKTUELLER LAUF: 5 Pflichtpunkte (LIVE)
 
-> Run-ID: RUN-20260123-1237-question-order-audit | Status: **COMPLETED**
+> Run-ID: RUN-20260124-full-verification | Status: **✅ COMPLETED**
 
 1) **Ziel**
 
-- Outcome: Identify the authoritative question order/dependency sources and document them.
+- Outcome: Full verification run (type-check, tests, Windows build/launch, web smoke, manual flow verification) with evidence.
 - DoD:
-  1. Source files for order and conditions located.
-  2. Question/compartment definitions located.
-  3. Consolidated reference doc added.
-  4. Missing CSV/XLSX noted.
-- Nicht-Ziele: No runtime behavior changes.
+  1. `npm run type-check` success with logs in `buildLogs/typecheck_20260124_*`.
+  2. `npm test` success with logs in `buildLogs/tests_20260124_*`.
+  3. Windows cleanrun/launch success with logs in `buildLogs/windows-cleanrun_20260124_*`, `buildLogs/windows-launch_20260124_*`.
+  4. Web smoke check success with logs in `buildLogs/web_smoke_20260124_*`.
+  5. Manual flow verification (Questionnaire autosave, Summary fallback) documented.
+  6. Platform blockers (Android/iOS/macOS) documented.
+- Nicht-Ziele: No feature changes; no dependency upgrades; no Android/iOS/macOS builds (deferred).
 
 2) **Methodik**
 
-- Repro: Read template + docs + domain entities.
-- Root Cause Hypothesen: N/A (documentation task).
-- Fix-Strategie: N/A.
-- Verifikation: File reads + new doc in repo.
+- Repro: Type-check -> Tests -> Windows cleanrun -> Windows launch -> Web smoke -> Manual flow verification.
+- Root Cause Hypothesen: Any remaining runtime errors, websocket executor issues, autosave timing.
+- Fix-Strategie: Stop-and-Fix bei Fehlern; minimaler Fix; dann weiter.
+- Verifikation: buildLogs for each command.
 
 3) **Sprachen/Stack**
 
-- Sprachen: TypeScript, Markdown.
-- Tools: PowerShell (read-only).
+- Sprachen: PowerShell, MSBuild, RNW, Node.js.
+- Tools: npm scripts, `scripts/windows-cleanrun.ps1`, `scripts/windows-launch.ps1`.
 - Constraints: Keine PII in Logs; keine Secrets.
 
 4) **Struktur**
 
 - Dateien/Module (geplant):
-  - `src/infrastructure/data/questionnaire-template.json`
-  - `src/domain/entities/Questionnaire.ts`
-  - `src/domain/entities/CompartmentQuestion.ts`
-  - `docs/QUESTION_ORDER_SOURCES.md`
   - `CURRENT_TASKS.md`
   - `LAUFBAHN.md`
   - `docs/AGENT_LAUFBAHN.md`
+  - `buildLogs/*`
 - Logs/Artefakte:
-  - Documentation only (no build logs).
+  - `buildLogs/typecheck_20260124_*`
+  - `buildLogs/tests_20260124_*`
+  - `buildLogs/windows-cleanrun_20260124_*`
+  - `buildLogs/windows-launch_20260124_*`
+  - `buildLogs/web_smoke_20260124_*`
 
 5) **Qualitaet/Muster**
 
-- Tests: Not required for doc-only updates.
+- Tests: Type-check + Jest for baseline evidence.
+- Security/Compliance: DSGVO Logging Policy, no PII.
+- Maintainability: Evidence-based, all logs captured.
+
+---
+
+## PREVIOUS RUN: Rebuild after reboot (COMPLETED)
+
+3) **Sprachen/Stack**
+
+- Sprachen: PowerShell, MSBuild, RNW.
+- Tools: npm scripts, `scripts/windows-cleanrun.ps1`.
+- Constraints: Keine PII in Logs; keine Secrets.
+
+4) **Struktur**
+
+- Dateien/Module (geplant):
+  - `scripts/windows-cleanrun.ps1`
+  - `windows/*`
+  - `buildLogs/*`
+  - `LAUFBAHN.md`
+  - `docs/AGENT_LAUFBAHN.md`
+- Logs/Artefakte:
+  - `buildLogs/npm_install_rebuild_*`
+  - `buildLogs/typecheck_rebuild_*`
+  - `buildLogs/tests_rebuild_*`
+  - `buildLogs/windows-cleanrun_*`
+  - `buildLogs/windows-launch_*`
+
+5) **Qualitaet/Muster**
+
+- Tests: Type-check + Jest for rebuild evidence.
 - Security/Compliance: DSGVO Logging Policy, no PII.
 - Maintainability: Minimal change-set, path references only.
 
@@ -416,6 +452,7 @@ Diese 5 Punkte müssen in JEDEM neuen Vorhaben in dieser Datei stehen (Section �
 
 | Run-ID | Timestamp (UTC+1) | Agent | Intent | Tool/Command | Files touched | Result | Evidence (Pfad) | Next |
 |---|---|---|---|---|---|---|---|---|
+| RUN-20260123-1916-rebuild-after-reboot | 2026-01-23 19:16 | Codex (GPT-5) | Full rebuild after reboot with logs | `npm install`, `npm run type-check`, `npm test`, `windows-cleanrun.ps1 -SkipNpmCi`, `windows-launch.ps1` | `buildLogs/*`, `LAUFBAHN.md`, `docs/AGENT_LAUFBAHN.md` | PARTIAL (deploy error 100; manual install + launch OK) | `buildLogs/npm_install_rebuild_20260123_1916.*`, `buildLogs/typecheck_rebuild_20260123_1916.*`, `buildLogs/tests_rebuild_20260123_1916.*`, `buildLogs/windows-cleanrun_20260123_2015.*`, `buildLogs/windows-launch_20260123_2112.*`, `buildLogs/windows-dev-run_20260123_1916.*` | User confirms app window |
 | RUN-20260122-1920-questionnaire-manual-verify | 2026-01-22 19:20 | Copilot (GPT-5.2) | Plan manual verification run | edit files | `TODO.md`, `LAUFBAHN.md`, `docs/AGENT_LAUFBAHN.md` | PENDING (manual UI) | (n/a) | User runs flow, report observations |
 | RUN-20260122-1913-questionnaire-remaining | 2026-01-22 19:13 | Copilot (GPT-5.2) | Fix remaining questionnaire issues | `apply_patch`, `npm.cmd test`, `npm.cmd run type-check` | `src/shared/platformCapabilities.ts`, `__tests__/shared/platformCapabilities.test.ts`, `src/presentation/screens/QuestionnaireScreen.tsx`, `src/presentation/screens/SummaryScreen.tsx`, `TODO.md`, `LAUFBAHN.md`, `docs/AGENT_LAUFBAHN.md` | PARTIAL (websocket issue pending) | `buildLogs/tests_questionnaire_remaining.out.log`, `buildLogs/typecheck_questionnaire_remaining.out.log` | Capture websocket error repro/logs |
 | RUN-20260122-1748-questionnaire-errors | 2026-01-22 17:58 | Copilot (GPT-5.2) | Fix questionnaire runtime errors | `apply_patch`, `npm.cmd test`, `npm.cmd run type-check` | `src/domain/entities/Answer.ts`, `src/domain/entities/__tests__/AnswerCheckboxValidation.test.ts`, `src/presentation/screens/QuestionnaireScreen.tsx`, `src/presentation/screens/SummaryScreen.tsx`, `src/presentation/screens/DataManagementScreen.tsx`, `TODO.md`, `LAUFBAHN.md`, `docs/AGENT_LAUFBAHN.md` | PASS (tests PASS; NativeCommandError on PowerShell) | `buildLogs/tests_questionnaire_errors.out.log`, `buildLogs/typecheck_questionnaire_errors.out.log` | Manual flow check + websocket repro |

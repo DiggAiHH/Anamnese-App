@@ -3,6 +3,20 @@
 This guide lists prerequisites and exact commands to run the app on each platform.
 Use it to make each target "ready to test" with evidence logs.
 
+---
+
+## Verification Status (Last Run: RUN-20260124-full-verification)
+
+| Platform | Status | Notes |
+|----------|--------|-------|
+| Web | ✅ VERIFIED | Webpack 5.104.1 compiles, localhost:3000 serves |
+| Windows | ✅ VERIFIED | MSBuild 17.14, .msix signed & installed |
+| Android | ⏸️ DEFERRED | adb/emulator not installed on host |
+| iOS | ⏸️ DEFERRED | Requires macOS host |
+| macOS | ⏸️ DEFERRED | Requires macOS host |
+
+---
+
 ## Web
 
 Prereqs:
@@ -29,11 +43,21 @@ npm run windows:run:log
 npm run windows:launch:log
 ```
 
+Alternative (clean build with auto-install):
+```powershell
+.\scripts\windows-cleanrun.ps1
+```
+
 Evidence:
 - `buildLogs/windows-dev-run_latest.out.log`
 - `buildLogs/windows-dev-run_latest.err.log`
 - `buildLogs/windows-launch_latest.out.log`
 - `buildLogs/windows-launch_latest.err.log`
+- `buildLogs/windows_cleanrun_*.log`
+
+Known Issues:
+- VS Deployer may fail with `NuGet.VisualStudio.Contracts` mismatch
+- Workaround: windows-cleanrun.ps1 falls back to manual Add-AppxPackage
 
 ## Android
 

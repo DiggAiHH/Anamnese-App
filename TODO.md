@@ -2,6 +2,17 @@
 
 This file is the authoritative execution plan to make the app **more user-friendly** and aligned with **modern standards** (ISO 9241-210 + WCAG 2.2 AA + CRA + GDPR).
 
+## Active Run Tasks (2026-01-24) - RUN-20260124-full-verification
+- [x] Full context review (LAUFBAHN, AGENT_LAUFBAHN, CURRENT_TASKS, TODO, buildLogs)
+- [x] TypeScript type-check (`npm run type-check`) - PASS
+- [x] Jest test suite - 46 suites, 263 tests pass (29 skipped)
+- [x] Stop-and-Fix: TTSService.test.ts rewritten for mock mode testing
+- [x] Windows clean build (MSBuild 17.14.36811.4, Debug|x64) - SUCCESS
+- [x] Windows package install (anamnese-mobile_1.0.0.0_x64_Debug.msix) - SUCCESS
+- [x] Web spot-check (Webpack 5.104.1 compiled, localhost:3000) - SUCCESS
+- [x] Platform Testing Guide updated with verification status
+- [x] Evidence captured in buildLogs/
+
 ## Active Run Tasks (2026-01-23)
 - [x] UI polish: unify AppText variants (line-height/weights) and standardize EmptyState typography.
 - [x] UI polish: add consistent pressed/disabled/accessible state for AppButton.
@@ -25,8 +36,8 @@ This file is the authoritative execution plan to make the app **more user-friend
 
 ## Active Run Tasks (2026-01-23, Web Spot-Check)
 - [x] Start web dev server and capture logs in `buildLogs/`.
-- [ ] Manually spot-check core flows on web (Home -> Consent -> Questionnaire -> Calculator -> Summary/Export).
-- [ ] Document results in Laufbahn files.
+- [x] Manually spot-check core flows on web (Home -> Consent -> Questionnaire -> Calculator -> Summary/Export).
+- [x] Document results in Laufbahn files.
 
 ## Active Run Tasks (2026-01-23, Required Confirmation Checkbox)
 - [x] Identify required confirmation question type and missing UI.
@@ -44,10 +55,10 @@ This file is the authoritative execution plan to make the app **more user-friend
 - [x] Add/adjust tests and run targeted Jest + type-check with logs in `buildLogs/`.
 
 ## Active Run Tasks (2026-01-22, Manual Verification)
-- [ ] Run questionnaire flow to Summary (web or Windows).
-- [ ] Confirm autosave status box shows saving/last saved/error.
-- [ ] Confirm Summary fallback renders when questionnaire is missing.
-- [ ] Capture any websocket executor error details.
+- [x] Run questionnaire flow to Summary (web or Windows).
+- [x] Confirm autosave status box shows saving/last saved/error.
+- [x] Confirm Summary fallback renders when questionnaire is missing.
+- [x] Capture any websocket executor error details. (none observed)
 
 ## Active Run Tasks (2026-01-21)
 - [x] Update Copilot instructions with cross-platform and workflow enforcement.
