@@ -15,7 +15,16 @@
  */
 
 import React, { useState, memo } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Platform, ActivityIndicator } from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  ScrollView,
+  Platform,
+  ActivityIndicator,
+} from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { Question } from '@domain/entities/Questionnaire';
 import { AnswerValue } from '@domain/entities/Answer';
@@ -36,489 +45,499 @@ interface QuestionCardProps {
  * QuestionCard - rendert verschiedene Fragetypen
  * Wrapped with React.memo for FlatList performance optimization
  */
-export const QuestionCard: React.FC<QuestionCardProps> = memo(({
-  question,
-  value,
-  onValueChange,
-  error,
-}) => {
-  const { t } = useTranslation();
+export const QuestionCard: React.FC<QuestionCardProps> = memo(
+  ({ question, value, onValueChange, error }) => {
+    const { t } = useTranslation();
 
-  // Voice input state
-  const [isListening, setIsListening] = useState(false);
-  const [voiceError, setVoiceError] = useState<string | null>(null);
+    // Voice input state
+    const [isListening, setIsListening] = useState(false);
+    const [voiceError, setVoiceError] = useState<string | null>(null);
 
-  const tDefault = t as unknown as (key: string, defaultValue: string) => string;
+    const tDefault = t as unknown as (key: string, defaultValue: string) => string;
 
-  const trKey = (key: string | undefined, fallback: string = ''): string => {
-    if (!key) return fallback;
-    return tDefault(key, key);
-  };
+    const trKey = (key: string | undefined, fallback: string = ''): string => {
+      if (!key) return fallback;
+      return tDefault(key, key);
+    };
 
-  const trOptionalKey = (key: string | undefined, fallback: string = ''): string => {
-    if (!key) return fallback;
-    return tDefault(key, fallback);
-  };
+    const trOptionalKey = (key: string | undefined, fallback: string = ''): string => {
+      if (!key) return fallback;
+      return tDefault(key, fallback);
+    };
 
-  const isWindows = Platform.OS === 'windows';
-  const [showDatePicker, setShowDatePicker] = React.useState(false);
-  const [openDateDropdown, setOpenDateDropdown] = React.useState<'day' | 'month' | 'year' | null>(null);
-  const [draftDay, setDraftDay] = React.useState<number | null>(null);
-  const [draftMonth, setDraftMonth] = React.useState<number | null>(null);
-  const [draftYear, setDraftYear] = React.useState<number | null>(null);
+    const isWindows = Platform.OS === 'windows';
+    const [showDatePicker, setShowDatePicker] = React.useState(false);
+    const [openDateDropdown, setOpenDateDropdown] = React.useState<'day' | 'month' | 'year' | null>(
+      null,
+    );
+    const [draftDay, setDraftDay] = React.useState<number | null>(null);
+    const [draftMonth, setDraftMonth] = React.useState<number | null>(null);
+    const [draftYear, setDraftYear] = React.useState<number | null>(null);
 
-  const closeDateDropdowns = (): void => setOpenDateDropdown(null);
+    const closeDateDropdowns = (): void => setOpenDateDropdown(null);
 
-  const daysInMonth = (year: number, month: number): number => {
-    return new Date(year, month, 0).getDate();
-  };
+    const daysInMonth = (year: number, month: number): number => {
+      return new Date(year, month, 0).getDate();
+    };
 
-  const parseIsoDateParts = (iso: string): { year: number; month: number; day: number } | null => {
-    const m = /^\s*(\d{4})-(\d{2})-(\d{2})/.exec(iso);
-    if (!m) return null;
-    const year = Number(m[1]);
-    const month = Number(m[2]);
-    const day = Number(m[3]);
-    if (!Number.isInteger(year) || !Number.isInteger(month) || !Number.isInteger(day)) return null;
-    if (month < 1 || month > 12) return null;
-    if (day < 1 || day > 31) return null;
-    return { year, month, day };
-  };
+    const parseIsoDateParts = (
+      iso: string,
+    ): { year: number; month: number; day: number } | null => {
+      const m = /^\s*(\d{4})-(\d{2})-(\d{2})/.exec(iso);
+      if (!m) return null;
+      const year = Number(m[1]);
+      const month = Number(m[2]);
+      const day = Number(m[3]);
+      if (!Number.isInteger(year) || !Number.isInteger(month) || !Number.isInteger(day))
+        return null;
+      if (month < 1 || month > 12) return null;
+      if (day < 1 || day > 31) return null;
+      return { year, month, day };
+    };
 
-  const toIsoDate = (year: number, month: number, day: number): string => {
-    const y = String(year).padStart(4, '0');
-    const m = String(month).padStart(2, '0');
-    const d = String(day).padStart(2, '0');
-    return `${y}-${m}-${d}`;
-  };
+    const toIsoDate = (year: number, month: number, day: number): string => {
+      const y = String(year).padStart(4, '0');
+      const m = String(month).padStart(2, '0');
+      const d = String(day).padStart(2, '0');
+      return `${y}-${m}-${d}`;
+    };
 
-  const isSelected = (current: AnswerValue | undefined, optionValue: string | number): boolean => {
-    if (current === null || current === undefined) return false;
-    return String(current) === String(optionValue);
-  };
+    const isSelected = (
+      current: AnswerValue | undefined,
+      optionValue: string | number,
+    ): boolean => {
+      if (current === null || current === undefined) return false;
+      return String(current) === String(optionValue);
+    };
 
-  const renderInput = (): React.ReactNode => {
-    switch (question.type) {
-      case 'text':
-      case 'textarea':
-        return renderTextInput();
-      
-      case 'number':
-        return renderNumberInput();
-      
-      case 'date':
-        return renderDateInput();
-      
-      case 'radio':
-        return renderRadioInput();
-      
-      case 'checkbox':
-        return question.options ? renderCheckboxInput() : renderSingleCheckbox();
-      
-      case 'multiselect':
-        return renderCheckboxInput();
-      
-      case 'select':
-        return renderSelectInput();
-      
-      default:
-        return (
-          <Text>
-            {tDefault(
-              'questionnaire.unsupportedQuestionType',
-              `Unsupported question type: ${question.type}`,
-            )}
-          </Text>
-        );
-    }
-  };
+    const renderInput = (): React.ReactNode => {
+      switch (question.type) {
+        case 'text':
+        case 'textarea':
+          return renderTextInput();
 
-  /**
-   * Text Input (text, textarea)
-   */
-  const renderTextInput = (): React.ReactNode => {
-    const supportsVoice = question.type === 'text' || question.type === 'textarea';
+        case 'number':
+          return renderNumberInput();
+
+        case 'date':
+          return renderDateInput();
+
+        case 'radio':
+          return renderRadioInput();
+
+        case 'checkbox':
+          return question.options ? renderCheckboxInput() : renderSingleCheckbox();
+
+        case 'multiselect':
+          return renderCheckboxInput();
+
+        case 'select':
+          return renderSelectInput();
+
+        default:
+          return (
+            <Text>
+              {tDefault(
+                'questionnaire.unsupportedQuestionType',
+                `Unsupported question type: ${question.type}`,
+              )}
+            </Text>
+          );
+      }
+    };
 
     /**
-     * Start voice recognition for text input
+     * Text Input (text, textarea)
      */
-    const handleVoiceInput = async (): Promise<void> => {
-      if (isListening) {
-        // Stop listening
-        await SystemSpeechService.stopListening();
-        setIsListening(false);
-        return;
-      }
+    const renderTextInput = (): React.ReactNode => {
+      const supportsVoice = question.type === 'text' || question.type === 'textarea';
 
-      setVoiceError(null);
-      setIsListening(true);
-
-      try {
-        // Start listening
-        const available = await SystemSpeechService.isAvailable();
-        if (!available) {
-          setVoiceError(t('voice.notAvailable'));
+      /**
+       * Start voice recognition for text input
+       */
+      const handleVoiceInput = async (): Promise<void> => {
+        if (isListening) {
+          // Stop listening
+          await SystemSpeechService.stopListening();
           setIsListening(false);
           return;
         }
 
-        await SystemSpeechService.startListening({
-          onResult: (text: string) => {
-            // Append transcribed text to existing value
-            const currentValue = (value as string) ?? '';
-            const newValue = currentValue 
-              ? `${currentValue} ${text}` 
-              : text;
-            onValueChange(newValue);
-          },
-          onError: (err: string) => {
-            setVoiceError(err);
+        setVoiceError(null);
+        setIsListening(true);
+
+        try {
+          // Start listening
+          const available = await SystemSpeechService.isAvailable();
+          if (!available) {
+            setVoiceError(t('voice.notAvailable'));
             setIsListening(false);
-          },
-          onEnd: () => {
-            setIsListening(false);
-          },
-        });
-      } catch (err) {
-        setVoiceError(err instanceof Error ? err.message : t('voice.error'));
-        setIsListening(false);
-      }
+            return;
+          }
+
+          await SystemSpeechService.startListening({
+            onResult: (text: string) => {
+              // Append transcribed text to existing value
+              const currentValue = (value as string) ?? '';
+              const newValue = currentValue ? `${currentValue} ${text}` : text;
+              onValueChange(newValue);
+            },
+            onError: (err: string) => {
+              setVoiceError(err);
+              setIsListening(false);
+            },
+            onEnd: () => {
+              setIsListening(false);
+            },
+          });
+        } catch (err) {
+          setVoiceError(err instanceof Error ? err.message : t('voice.error'));
+          setIsListening(false);
+        }
+      };
+
+      return (
+        <View style={styles.textInputContainer}>
+          <TextInput
+            style={[
+              styles.textInput,
+              question.type === 'textarea' && styles.textareaInput,
+              supportsVoice && styles.textInputWithMic,
+              error ? styles.inputError : undefined,
+            ]}
+            value={(value as string) ?? ''}
+            onChangeText={onValueChange}
+            placeholder={trOptionalKey(question.placeholderKey, '')}
+            multiline={question.type === 'textarea'}
+            numberOfLines={question.type === 'textarea' ? 4 : 1}
+          />
+          {supportsVoice && (
+            <TouchableOpacity
+              style={[styles.micButton, isListening && styles.micButtonActive]}
+              onPress={handleVoiceInput}
+              testID={`mic-button-${question.id}`}>
+              {isListening ? (
+                <ActivityIndicator size="small" color="#fff" />
+              ) : (
+                <Text style={styles.micIcon}>🎤</Text>
+              )}
+            </TouchableOpacity>
+          )}
+          {voiceError && <Text style={styles.voiceErrorText}>{voiceError}</Text>}
+        </View>
+      );
     };
 
-    return (
-      <View style={styles.textInputContainer}>
+    /**
+     * Number Input
+     */
+    const renderNumberInput = (): React.ReactNode => {
+      return (
         <TextInput
-          style={[
-            styles.textInput,
-            question.type === 'textarea' && styles.textareaInput,
-            supportsVoice && styles.textInputWithMic,
-            error ? styles.inputError : undefined,
-          ]}
+          style={[styles.textInput, error ? styles.inputError : undefined]}
+          value={value?.toString() ?? ''}
+          onChangeText={text => {
+            const num = parseFloat(text);
+            onValueChange(isNaN(num) ? null : num);
+          }}
+          keyboardType="numeric"
+          placeholder={trOptionalKey(question.placeholderKey, '')}
+        />
+      );
+    };
+
+    /**
+     * Date Input (simplified - use react-native-date-picker in production)
+     */
+    const renderDateInput = (): React.ReactNode => {
+      if (isWindows) {
+        const currentIso = typeof value === 'string' ? value : '';
+        const parsed = currentIso ? parseIsoDateParts(currentIso) : null;
+        const displayDate = parsed
+          ? new Date(parsed.year, parsed.month - 1, parsed.day).toLocaleDateString()
+          : '';
+
+        const today = new Date();
+        const yearMin = 1900;
+        const yearMax = today.getFullYear();
+        const years = Array.from({ length: yearMax - yearMin + 1 }, (_, i) => yearMax - i);
+
+        const openPicker = (): void => {
+          if (showDatePicker) {
+            setShowDatePicker(false);
+            closeDateDropdowns();
+            return;
+          }
+
+          const base = parsed ?? {
+            year: today.getFullYear(),
+            month: today.getMonth() + 1,
+            day: today.getDate(),
+          };
+          setDraftYear(base.year);
+          setDraftMonth(base.month);
+          setDraftDay(base.day);
+          setShowDatePicker(true);
+        };
+
+        const selectedYear = draftYear ?? parsed?.year ?? today.getFullYear();
+        const selectedMonth = draftMonth ?? parsed?.month ?? today.getMonth() + 1;
+        const maxDay = daysInMonth(selectedYear, selectedMonth);
+        const selectedDay = Math.min(draftDay ?? parsed?.day ?? today.getDate(), maxDay);
+
+        const setPart = (part: { year?: number; month?: number; day?: number }): void => {
+          const nextYear = part.year ?? selectedYear;
+          const nextMonth = part.month ?? selectedMonth;
+          const nextMaxDay = daysInMonth(nextYear, nextMonth);
+          const nextDayRaw = part.day ?? selectedDay;
+          const nextDay = Math.min(nextDayRaw, nextMaxDay);
+
+          setDraftYear(nextYear);
+          setDraftMonth(nextMonth);
+          setDraftDay(nextDay);
+
+          onValueChange(toIsoDate(nextYear, nextMonth, nextDay));
+        };
+
+        const renderDropdown = (
+          kind: 'day' | 'month' | 'year',
+          selected: number,
+          options: number[],
+          onSelect: (v: number) => void,
+        ) => (
+          <View style={styles.dateDropdownCell}>
+            <TouchableOpacity
+              style={[styles.dateDropdownButton, error ? styles.inputError : undefined]}
+              onPress={() => setOpenDateDropdown(cur => (cur === kind ? null : kind))}>
+              <Text style={styles.dateDropdownText}>{String(selected)}</Text>
+            </TouchableOpacity>
+
+            {openDateDropdown === kind && (
+              <View style={styles.dateDropdownMenu}>
+                <ScrollView style={styles.dateDropdownScroll} keyboardShouldPersistTaps="handled">
+                  {options.map(opt => (
+                    <TouchableOpacity
+                      key={opt}
+                      style={styles.dateDropdownOption}
+                      onPress={() => {
+                        onSelect(opt);
+                        closeDateDropdowns();
+                      }}>
+                      <Text style={styles.dateDropdownOptionText}>{String(opt)}</Text>
+                    </TouchableOpacity>
+                  ))}
+                </ScrollView>
+              </View>
+            )}
+          </View>
+        );
+
+        const dayOptions = Array.from({ length: maxDay }, (_, i) => i + 1);
+
+        return (
+          <View>
+            <TouchableOpacity
+              style={[
+                styles.textInput,
+                styles.dateDisplayInput,
+                error ? styles.inputError : undefined,
+              ]}
+              onPress={openPicker}>
+              <Text style={displayDate ? styles.dateText : styles.datePlaceholder}>
+                {displayDate ||
+                  trOptionalKey(question.placeholderKey, t('patientInfo.birthDatePlaceholder'))}
+              </Text>
+            </TouchableOpacity>
+
+            {showDatePicker && (
+              <View style={styles.datePickerRow}>
+                {renderDropdown('day', selectedDay, dayOptions, v => setPart({ day: v }))}
+                {renderDropdown(
+                  'month',
+                  selectedMonth,
+                  Array.from({ length: 12 }, (_, i) => i + 1),
+                  v => setPart({ month: v }),
+                )}
+                {renderDropdown('year', selectedYear, years, v => setPart({ year: v }))}
+              </View>
+            )}
+          </View>
+        );
+      }
+
+      return (
+        <TextInput
+          style={[styles.textInput, error ? styles.inputError : undefined]}
           value={(value as string) ?? ''}
           onChangeText={onValueChange}
-          placeholder={trOptionalKey(question.placeholderKey, '')}
-          multiline={question.type === 'textarea'}
-          numberOfLines={question.type === 'textarea' ? 4 : 1}
+          placeholder={trOptionalKey(
+            question.placeholderKey,
+            t('patientInfo.birthDatePlaceholder'),
+          )}
         />
-        {supportsVoice && (
-          <TouchableOpacity
-            style={[
-              styles.micButton,
-              isListening && styles.micButtonActive,
-            ]}
-            onPress={handleVoiceInput}
-            testID={`mic-button-${question.id}`}
-          >
-            {isListening ? (
-              <ActivityIndicator size="small" color="#fff" />
-            ) : (
-              <Text style={styles.micIcon}>🎤</Text>
-            )}
-          </TouchableOpacity>
-        )}
-        {voiceError && (
-          <Text style={styles.voiceErrorText}>{voiceError}</Text>
-        )}
-      </View>
-    );
-  };
+      );
+    };
 
-  /**
-   * Number Input
-   */
-  const renderNumberInput = (): React.ReactNode => {
-    return (
-      <TextInput
-        style={[styles.textInput, error ? styles.inputError : undefined]}
-        value={value?.toString() ?? ''}
-        onChangeText={text => {
-          const num = parseFloat(text);
-          onValueChange(isNaN(num) ? null : num);
-        }}
-        keyboardType="numeric"
-        placeholder={trOptionalKey(question.placeholderKey, '')}
-      />
-    );
-  };
+    /**
+     * Radio Input (single choice)
+     */
+    const renderRadioInput = (): React.ReactNode => {
+      if (!question.options) return null;
 
-  /**
-   * Date Input (simplified - use react-native-date-picker in production)
-   */
-  const renderDateInput = (): React.ReactNode => {
-    if (isWindows) {
-      const currentIso = typeof value === 'string' ? value : '';
-      const parsed = currentIso ? parseIsoDateParts(currentIso) : null;
-      const displayDate = parsed
-        ? new Date(parsed.year, parsed.month - 1, parsed.day).toLocaleDateString()
-        : '';
+      return (
+        <View style={styles.optionsContainer}>
+          {question.options.map(option => (
+            <TouchableOpacity
+              key={option.value}
+              style={styles.radioOption}
+              onPress={() => onValueChange(option.value)}>
+              <View
+                style={[
+                  styles.radioCircle,
+                  isSelected(value, option.value) && styles.radioCircleSelected,
+                ]}>
+                {isSelected(value, option.value) && <View style={styles.radioCircleInner} />}
+              </View>
+              <Text style={styles.optionLabel}>{trKey(option.labelKey)}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      );
+    };
 
-      const today = new Date();
-      const yearMin = 1900;
-      const yearMax = today.getFullYear();
-      const years = Array.from({ length: yearMax - yearMin + 1 }, (_, i) => yearMax - i);
+    /**
+     * Checkbox Input (single)
+     */
+    const renderSingleCheckbox = (): React.ReactNode => {
+      const checked = value === true;
 
-      const openPicker = (): void => {
-        if (showDatePicker) {
-          setShowDatePicker(false);
-          closeDateDropdowns();
+      return (
+        <TouchableOpacity
+          style={styles.checkboxOption}
+          onPress={() => onValueChange(!checked)}
+          accessibilityRole="checkbox"
+          accessibilityState={{ checked }}>
+          <View style={[styles.checkbox, checked && styles.checkboxSelected]}>
+            {checked && <Text style={styles.checkmark}>✓</Text>}
+          </View>
+          <Text style={styles.optionLabel}>
+            {trKey(question.labelKey)}
+            {question.required && <Text style={styles.required}> *</Text>}
+          </Text>
+        </TouchableOpacity>
+      );
+    };
+
+    /**
+     * Checkbox Input (multiple choice)
+     */
+    const renderCheckboxInput = (): React.ReactNode => {
+      if (!question.options) return null;
+
+      // New model: integer bitset; legacy: string[]
+      const currentBitset = typeof value === 'number' && Number.isInteger(value) ? value : 0;
+      const legacySelectedValues = Array.isArray(value) ? (value as string[]) : [];
+
+      const getBitPos = (v: string | number): number | null => {
+        if (typeof v === 'number' && Number.isInteger(v)) return v;
+        const parsed = Number.parseInt(String(v), 10);
+        return Number.isFinite(parsed) ? parsed : null;
+      };
+
+      const isOptionChecked = (optionValue: string | number): boolean => {
+        const bitPos = getBitPos(optionValue);
+        if (bitPos !== null) {
+          const selected = decodeMultiChoiceBitset(currentBitset);
+          return selected.includes(bitPos);
+        }
+        return legacySelectedValues.includes(String(optionValue));
+      };
+
+      const toggleOption = (optionValue: string | number): void => {
+        const bitPos = getBitPos(optionValue);
+        if (bitPos !== null) {
+          const selected = decodeMultiChoiceBitset(currentBitset);
+          const nextSelected = selected.includes(bitPos)
+            ? selected.filter(p => p !== bitPos)
+            : [...selected, bitPos].sort((a, b) => a - b);
+
+          onValueChange(encodeMultiChoiceBitset(nextSelected));
           return;
         }
 
-        const base = parsed ?? { year: today.getFullYear(), month: today.getMonth() + 1, day: today.getDate() };
-        setDraftYear(base.year);
-        setDraftMonth(base.month);
-        setDraftDay(base.day);
-        setShowDatePicker(true);
+        const key = String(optionValue);
+        const newValues = legacySelectedValues.includes(key)
+          ? legacySelectedValues.filter(v => v !== key)
+          : [...legacySelectedValues, key];
+        onValueChange(newValues);
       };
-
-      const selectedYear = draftYear ?? (parsed?.year ?? today.getFullYear());
-      const selectedMonth = draftMonth ?? (parsed?.month ?? today.getMonth() + 1);
-      const maxDay = daysInMonth(selectedYear, selectedMonth);
-      const selectedDay = Math.min(draftDay ?? (parsed?.day ?? today.getDate()), maxDay);
-
-      const setPart = (part: { year?: number; month?: number; day?: number }): void => {
-        const nextYear = part.year ?? selectedYear;
-        const nextMonth = part.month ?? selectedMonth;
-        const nextMaxDay = daysInMonth(nextYear, nextMonth);
-        const nextDayRaw = part.day ?? selectedDay;
-        const nextDay = Math.min(nextDayRaw, nextMaxDay);
-
-        setDraftYear(nextYear);
-        setDraftMonth(nextMonth);
-        setDraftDay(nextDay);
-
-        onValueChange(toIsoDate(nextYear, nextMonth, nextDay));
-      };
-
-      const renderDropdown = (
-        kind: 'day' | 'month' | 'year',
-        selected: number,
-        options: number[],
-        onSelect: (v: number) => void,
-      ) => (
-        <View style={styles.dateDropdownCell}>
-          <TouchableOpacity
-            style={[styles.dateDropdownButton, error ? styles.inputError : undefined]}
-            onPress={() => setOpenDateDropdown((cur) => (cur === kind ? null : kind))}
-          >
-            <Text style={styles.dateDropdownText}>{String(selected)}</Text>
-          </TouchableOpacity>
-
-          {openDateDropdown === kind && (
-            <View style={styles.dateDropdownMenu}>
-              <ScrollView style={styles.dateDropdownScroll} keyboardShouldPersistTaps="handled">
-                {options.map((opt) => (
-                  <TouchableOpacity
-                    key={opt}
-                    style={styles.dateDropdownOption}
-                    onPress={() => {
-                      onSelect(opt);
-                      closeDateDropdowns();
-                    }}
-                  >
-                    <Text style={styles.dateDropdownOptionText}>{String(opt)}</Text>
-                  </TouchableOpacity>
-                ))}
-              </ScrollView>
-            </View>
-          )}
-        </View>
-      );
-
-      const dayOptions = Array.from({ length: maxDay }, (_, i) => i + 1);
 
       return (
-        <View>
-          <TouchableOpacity
-            style={[styles.textInput, styles.dateDisplayInput, error ? styles.inputError : undefined]}
-            onPress={openPicker}
-          >
-            <Text style={displayDate ? styles.dateText : styles.datePlaceholder}>
-              {displayDate || trOptionalKey(question.placeholderKey, t('patientInfo.birthDatePlaceholder'))}
-            </Text>
-          </TouchableOpacity>
-
-          {showDatePicker && (
-            <View style={styles.datePickerRow}>
-              {renderDropdown('day', selectedDay, dayOptions, (v) => setPart({ day: v }))}
-              {renderDropdown('month', selectedMonth, Array.from({ length: 12 }, (_, i) => i + 1), (v) => setPart({ month: v }))}
-              {renderDropdown('year', selectedYear, years, (v) => setPart({ year: v }))}
-            </View>
-          )}
+        <View style={styles.optionsContainer}>
+          {question.options.map(option => (
+            <TouchableOpacity
+              key={option.value}
+              style={styles.checkboxOption}
+              onPress={() => toggleOption(option.value)}>
+              <View
+                style={[styles.checkbox, isOptionChecked(option.value) && styles.checkboxSelected]}>
+                {isOptionChecked(option.value) && <Text style={styles.checkmark}>✓</Text>}
+              </View>
+              <Text style={styles.optionLabel}>{trKey(option.labelKey)}</Text>
+            </TouchableOpacity>
+          ))}
         </View>
       );
-    }
+    };
 
-    return (
-      <TextInput
-        style={[styles.textInput, error ? styles.inputError : undefined]}
-        value={(value as string) ?? ''}
-        onChangeText={onValueChange}
-        placeholder={trOptionalKey(question.placeholderKey, t('patientInfo.birthDatePlaceholder'))}
-      />
-    );
-  };
+    /**
+     * Select Input (dropdown)
+     */
+    const renderSelectInput = (): React.ReactNode => {
+      if (!question.options) return null;
 
-  /**
-   * Radio Input (single choice)
-   */
-  const renderRadioInput = (): React.ReactNode => {
-    if (!question.options) return null;
-
-    return (
-      <View style={styles.optionsContainer}>
-        {question.options.map(option => (
-          <TouchableOpacity
-            key={option.value}
-            style={styles.radioOption}
-            onPress={() => onValueChange(option.value)}>
-            <View
+      return (
+        <ScrollView style={styles.selectContainer}>
+          {question.options.map(option => (
+            <TouchableOpacity
+              key={option.value}
               style={[
-                styles.radioCircle,
-                isSelected(value, option.value) && styles.radioCircleSelected,
-              ]}>
-              {isSelected(value, option.value) && <View style={styles.radioCircleInner} />}
-            </View>
-            <Text style={styles.optionLabel}>{trKey(option.labelKey)}</Text>
-          </TouchableOpacity>
-        ))}
+                styles.selectOption,
+                isSelected(value, option.value) && styles.selectOptionSelected,
+              ]}
+              onPress={() => onValueChange(option.value)}>
+              <Text
+                style={[
+                  styles.selectOptionText,
+                  isSelected(value, option.value) && styles.selectOptionTextSelected,
+                ]}>
+                {trKey(option.labelKey)}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      );
+    };
+
+    return (
+      <View style={styles.container}>
+        {/* Question Label */}
+        {!(question.type === 'checkbox' && !question.options) && (
+          <Text style={styles.label}>
+            {trKey(question.labelKey)}
+            {question.required && <Text style={styles.required}> *</Text>}
+          </Text>
+        )}
+
+        {/* Input */}
+        {renderInput()}
+
+        {/* Error Message */}
+        {error && <Text style={styles.errorText}>{error}</Text>}
       </View>
     );
-  };
-
-  /**
-   * Checkbox Input (single)
-   */
-  const renderSingleCheckbox = (): React.ReactNode => {
-    const checked = value === true;
-
-    return (
-      <TouchableOpacity
-        style={styles.checkboxOption}
-        onPress={() => onValueChange(!checked)}
-        accessibilityRole="checkbox"
-        accessibilityState={{ checked }}
-      >
-        <View style={[styles.checkbox, checked && styles.checkboxSelected]}>
-          {checked && <Text style={styles.checkmark}>✓</Text>}
-        </View>
-        <Text style={styles.optionLabel}>
-          {trKey(question.labelKey)}
-          {question.required && <Text style={styles.required}> *</Text>}
-        </Text>
-      </TouchableOpacity>
-    );
-  };
-
-  /**
-   * Checkbox Input (multiple choice)
-   */
-  const renderCheckboxInput = (): React.ReactNode => {
-    if (!question.options) return null;
-
-    // New model: integer bitset; legacy: string[]
-    const currentBitset = typeof value === 'number' && Number.isInteger(value) ? value : 0;
-    const legacySelectedValues = Array.isArray(value) ? (value as string[]) : [];
-
-    const getBitPos = (v: string | number): number | null => {
-      if (typeof v === 'number' && Number.isInteger(v)) return v;
-      const parsed = Number.parseInt(String(v), 10);
-      return Number.isFinite(parsed) ? parsed : null;
-    };
-
-    const isOptionChecked = (optionValue: string | number): boolean => {
-      const bitPos = getBitPos(optionValue);
-      if (bitPos !== null) {
-        const selected = decodeMultiChoiceBitset(currentBitset);
-        return selected.includes(bitPos);
-      }
-      return legacySelectedValues.includes(String(optionValue));
-    };
-
-    const toggleOption = (optionValue: string | number): void => {
-      const bitPos = getBitPos(optionValue);
-      if (bitPos !== null) {
-        const selected = decodeMultiChoiceBitset(currentBitset);
-        const nextSelected = selected.includes(bitPos)
-          ? selected.filter(p => p !== bitPos)
-          : [...selected, bitPos].sort((a, b) => a - b);
-
-        onValueChange(encodeMultiChoiceBitset(nextSelected));
-        return;
-      }
-
-      const key = String(optionValue);
-      const newValues = legacySelectedValues.includes(key)
-        ? legacySelectedValues.filter(v => v !== key)
-        : [...legacySelectedValues, key];
-      onValueChange(newValues);
-    };
-
-    return (
-      <View style={styles.optionsContainer}>
-        {question.options.map(option => (
-          <TouchableOpacity
-            key={option.value}
-            style={styles.checkboxOption}
-            onPress={() => toggleOption(option.value)}>
-            <View
-              style={[styles.checkbox, isOptionChecked(option.value) && styles.checkboxSelected]}>
-              {isOptionChecked(option.value) && <Text style={styles.checkmark}>✓</Text>}
-            </View>
-            <Text style={styles.optionLabel}>{trKey(option.labelKey)}</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
-    );
-  };
-
-  /**
-   * Select Input (dropdown)
-   */
-  const renderSelectInput = (): React.ReactNode => {
-    if (!question.options) return null;
-
-    return (
-      <ScrollView style={styles.selectContainer}>
-        {question.options.map(option => (
-          <TouchableOpacity
-            key={option.value}
-            style={[
-              styles.selectOption,
-              isSelected(value, option.value) && styles.selectOptionSelected,
-            ]}
-            onPress={() => onValueChange(option.value)}>
-            <Text
-              style={[
-                styles.selectOptionText,
-                isSelected(value, option.value) && styles.selectOptionTextSelected,
-              ]}>
-              {trKey(option.labelKey)}
-            </Text>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
-    );
-  };
-
-  return (
-    <View style={styles.container}>
-      {/* Question Label */}
-      {!(question.type === 'checkbox' && !question.options) && (
-        <Text style={styles.label}>
-          {trKey(question.labelKey)}
-          {question.required && <Text style={styles.required}> *</Text>}
-        </Text>
-      )}
-
-      {/* Input */}
-      {renderInput()}
-
-      {/* Error Message */}
-      {error && <Text style={styles.errorText}>{error}</Text>}
-    </View>
-  );
-});
+  },
+);
 
 const styles = StyleSheet.create({
   container: {

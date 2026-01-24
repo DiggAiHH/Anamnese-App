@@ -67,3 +67,31 @@ export const radius = {
   lg: 12,
   xl: 20,
 };
+
+// Typography scale for consistent text hierarchy
+export const typography = {
+  h1: { fontSize: 32, lineHeight: 40, fontWeight: '700' as const },
+  h2: { fontSize: 28, lineHeight: 36, fontWeight: '700' as const },
+  h3: { fontSize: 24, lineHeight: 30, fontWeight: '700' as const },
+  title: { fontSize: 24, lineHeight: 30, fontWeight: '700' as const },
+  subtitle: { fontSize: 18, lineHeight: 24, fontWeight: '600' as const },
+  body: { fontSize: 16, lineHeight: 22 },
+  label: { fontSize: 16, lineHeight: 22, fontWeight: '600' as const },
+  caption: { fontSize: 12, lineHeight: 16 },
+  small: { fontSize: 14, lineHeight: 18 },
+};
+
+// Layout constants for consistent spacing
+export const layout = {
+  screenPadding: 16,
+  cardGap: 12,
+  sectionGap: 24,
+  inputGap: 16,
+};
+
+// Focus ring for accessibility
+export const focus = {
+  color: '#2563eb',
+  width: 2,
+  offset: 2,
+};

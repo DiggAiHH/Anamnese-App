@@ -34,7 +34,13 @@ type Props = ViewProps & {
   variant?: BannerVariant;
 };
 
-export const FeatureBanner: React.FC<Props> = ({ title, message, variant = 'warning', style, ...props }) => {
+export const FeatureBanner: React.FC<Props> = ({
+  title,
+  message,
+  variant = 'warning',
+  style,
+  ...props
+}) => {
   const bannerColors = getBannerColors(variant);
 
   return (
@@ -45,8 +51,7 @@ export const FeatureBanner: React.FC<Props> = ({ title, message, variant = 'warn
         styles.container,
         { backgroundColor: bannerColors.backgroundColor, borderColor: bannerColors.borderColor },
         style,
-      ]}
-    >
+      ]}>
       <AppText variant="label" style={[styles.title, { color: bannerColors.textColor }]}>
         {title}
       </AppText>

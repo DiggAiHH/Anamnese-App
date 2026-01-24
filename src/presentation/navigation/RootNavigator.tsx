@@ -3,8 +3,12 @@
  */
 
 import React, { useRef } from 'react';
-import { StyleSheet, Text, TouchableOpacity, Alert, Platform, InteractionManager } from 'react-native';
-import { createStackNavigator, StackScreenProps } from '@react-navigation/stack';
+import { StyleSheet, Text, TouchableOpacity, Alert, Platform, InteractionManager, Easing } from 'react-native';
+import {
+  createStackNavigator,
+  StackScreenProps,
+  TransitionPresets,
+} from '@react-navigation/stack';
 import { useTranslation } from 'react-i18next';
 import { logError, logDebug } from '../../shared/logger';
 
@@ -44,6 +48,24 @@ const Stack = createStackNavigator<RootStackParamList>();
 export const RootNavigator = (): React.JSX.Element => {
   const { t } = useTranslation();
   const isNavigatingRef = useRef(false);
+  const isWindows = Platform.OS === 'windows';
+
+  const fastTransitionSpec = {
+    open: {
+      animation: 'timing' as const,
+      config: {
+        duration: isWindows ? 140 : 180,
+        easing: Easing.out(Easing.quad),
+      },
+    },
+    close: {
+      animation: 'timing' as const,
+      config: {
+        duration: isWindows ? 120 : 160,
+        easing: Easing.in(Easing.quad),
+      },
+    },
+  };
 
   type RootNavigationProp = StackScreenProps<RootStackParamList>['navigation'];
 
@@ -144,6 +166,13 @@ export const RootNavigator = (): React.JSX.Element => {
     <Stack.Navigator
       initialRouteName="Home"
       screenOptions={{
+        animationEnabled: true,
+        animationTypeForReplace: 'push',
+        gestureEnabled: true,
+        transitionSpec: fastTransitionSpec,
+        ...(isWindows
+          ? TransitionPresets.FadeFromBottomAndroid
+          : TransitionPresets.SlideFromRightIOS),
         headerStyle: {
           backgroundColor: '#2563eb',
         },

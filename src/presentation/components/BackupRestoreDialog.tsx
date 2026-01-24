@@ -28,15 +28,9 @@ import { RestoreStrategy, RestoreConflict } from '@application/use-cases/Restore
 export interface BackupRestoreDialogProps {
   visible: boolean;
   onClose: () => void;
-  onRestore: (
-    backupContent: string,
-    password: string,
-    strategy: RestoreStrategy,
-  ) => Promise<void>;
+  onRestore: (backupContent: string, password: string, strategy: RestoreStrategy) => Promise<void>;
   conflicts?: RestoreConflict[];
-  onResolveConflicts?: (
-    resolved: Map<string, 'local' | 'backup'>,
-  ) => void;
+  onResolveConflicts?: (resolved: Map<string, 'local' | 'backup'>) => void;
   isFirstLaunch?: boolean;
 }
 
@@ -64,20 +58,20 @@ export const BackupRestoreDialog = ({
   } | null>(null);
 
   // Conflict resolution state
-  const [conflictResolutions, setConflictResolutions] = useState<
-    Map<string, 'local' | 'backup'>
-  >(new Map());
+  const [conflictResolutions, setConflictResolutions] = useState<Map<string, 'local' | 'backup'>>(
+    new Map(),
+  );
 
   const handleSelectFile = useCallback(async () => {
     // In a real implementation, this would use DocumentPicker
     // For now, we simulate with placeholder
     setError(null);
-    
+
     // Placeholder: In production, use react-native-document-picker
     // const result = await DocumentPicker.pick({ type: ['application/json'] });
     // const content = await RNFS.readFile(result.uri);
     // setBackupContent(content);
-    
+
     // For demo, advance to password step
     setStep('password');
   }, []);
@@ -115,16 +109,13 @@ export const BackupRestoreDialog = ({
     }
   }, [backupContent, password, strategy, onRestore, t]);
 
-  const handleConflictResolution = useCallback(
-    (id: string, choice: 'local' | 'backup') => {
-      setConflictResolutions(prev => {
-        const next = new Map(prev);
-        next.set(id, choice);
-        return next;
-      });
-    },
-    [],
-  );
+  const handleConflictResolution = useCallback((id: string, choice: 'local' | 'backup') => {
+    setConflictResolutions(prev => {
+      const next = new Map(prev);
+      next.set(id, choice);
+      return next;
+    });
+  }, []);
 
   const handleApplyConflictResolutions = useCallback(() => {
     if (onResolveConflicts) {
@@ -149,9 +140,7 @@ export const BackupRestoreDialog = ({
     <View style={styles.stepContainer}>
       <Text style={styles.stepTitle}>{t('backup.selectFile')}</Text>
       <Text style={styles.stepDescription}>
-        {isFirstLaunch
-          ? t('backup.firstLaunchMessage')
-          : t('backup.selectFileDescription')}
+        {isFirstLaunch ? t('backup.firstLaunchMessage') : t('backup.selectFileDescription')}
       </Text>
 
       <AppButton
@@ -187,11 +176,7 @@ export const BackupRestoreDialog = ({
       {error && <Text style={styles.errorText}>{error}</Text>}
 
       <View style={styles.buttonRow}>
-        <AppButton
-          title={t('common.back')}
-          onPress={() => setStep('file')}
-          variant="secondary"
-        />
+        <AppButton title={t('common.back')} onPress={() => setStep('file')} variant="secondary" />
         <AppButton
           title={t('common.continue')}
           onPress={handlePasswordSubmit}
@@ -208,10 +193,7 @@ export const BackupRestoreDialog = ({
 
       <View style={styles.strategyOptions}>
         <TouchableOpacity
-          style={[
-            styles.strategyOption,
-            strategy === 'merge' && styles.strategyOptionSelected,
-          ]}
+          style={[styles.strategyOption, strategy === 'merge' && styles.strategyOptionSelected]}
           onPress={() => handleStrategySelect('merge')}
           accessibilityRole="radio"
           accessibilityState={{ selected: strategy === 'merge' }}>
@@ -220,10 +202,7 @@ export const BackupRestoreDialog = ({
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={[
-            styles.strategyOption,
-            strategy === 'replace' && styles.strategyOptionSelected,
-          ]}
+          style={[styles.strategyOption, strategy === 'replace' && styles.strategyOptionSelected]}
           onPress={() => handleStrategySelect('replace')}
           accessibilityRole="radio"
           accessibilityState={{ selected: strategy === 'replace' }}>
@@ -252,10 +231,7 @@ export const BackupRestoreDialog = ({
           onPress={() => setStep('password')}
           variant="secondary"
         />
-        <AppButton
-          title={t('backup.startRestore')}
-          onPress={handleStartRestore}
-        />
+        <AppButton title={t('backup.startRestore')} onPress={handleStartRestore} />
       </View>
     </View>
   );
@@ -280,8 +256,7 @@ export const BackupRestoreDialog = ({
               <TouchableOpacity
                 style={[
                   styles.conflictButton,
-                  conflictResolutions.get(conflict.id) === 'local' &&
-                    styles.conflictButtonSelected,
+                  conflictResolutions.get(conflict.id) === 'local' && styles.conflictButtonSelected,
                 ]}
                 onPress={() => handleConflictResolution(conflict.id, 'local')}>
                 <Text style={styles.conflictButtonText}>{t('backup.keepLocal')}</Text>
@@ -378,8 +353,8 @@ export const BackupRestoreDialog = ({
               key={s}
               style={[
                 styles.progressDot,
-                ['file', 'password', 'strategy', 'conflicts', 'progress', 'result'].indexOf(step) >= i &&
-                  styles.progressDotActive,
+                ['file', 'password', 'strategy', 'conflicts', 'progress', 'result'].indexOf(step) >=
+                  i && styles.progressDotActive,
               ]}
             />
           ))}

@@ -7,17 +7,12 @@
 
 ## AKTUELLER STATUS (LIVE)
 
-- **Letzter Stand (Fakten, ohne PII):** 2026-01-24 22:03 UTC - Full verification run COMPLETED (28/30 tasks done, 2 deferred).
-- **Aktiver Run-ID:** RUN-20260124-full-verification
-- **Status:** ✅ COMPLETED
-- **Results:**
-  - Type-check: PASS
-  - Tests: PASS (46 suites, 263 tests)
-  - Stop-and-Fix: TTSService.test.ts rewritten
-  - Windows: Build + Install SUCCESS
-  - Web: Webpack compiles SUCCESS
-- **Blocker (DEFERRED):** Android (adb/emulator missing), macOS/iOS (no host).
-- **Evidence:** `buildLogs/windows_cleanrun_20260124_220250.log`
+- **Letzter Stand (Fakten, ohne PII):** 2026-01-24 23:21 UTC - Navigation transition speed tuning started.
+- **Aktiver Run-ID:** RUN-20260124-2321-nav-transition-speed
+- **Status:** IN PROGRESS
+- **Aktive Tasks:** Faster + smoother page transitions; manual verification pending.
+- **Blocker:** None.
+- **Evidence:** Pending (manual verification).
 
 - **Platform Blockers (DEFERRED):**
   - **Android:** adb/emulator missing on this host; Gradle TLS/PSK to Maven error.
@@ -29,51 +24,45 @@
 
 ## AKTUELLER LAUF: 5 Pflichtpunkte (LIVE)
 
-> Run-ID: RUN-20260124-full-verification | Status: **✅ COMPLETED**
+> Run-ID: RUN-20260124-2321-nav-transition-speed | Status: **IN PROGRESS**
 
 1) **Ziel**
 
-- Outcome: Full verification run (type-check, tests, Windows cleanrun + install + launch attempt, web spot-check, manual flow verification) with evidence.
+- Outcome: Smoother, faster page transitions with consistent navigation flow.
 - DoD:
-  1. `npm run type-check` success with log `buildLogs/typecheck_20260124_203057.log`.
-  2. `npm test` success with log `buildLogs/tests_20260124_203123.log`.
-  3. Windows cleanrun + install with log `buildLogs/windows_cleanrun_20260124_220250.log`.
-  4. Web spot-check success with log `buildLogs/web_spotcheck.out.log`.
-  5. Manual flow verification (Questionnaire autosave, Summary fallback) documented.
-  6. Platform blockers (Android/iOS/macOS) documented.
-- Nicht-Ziele: No feature changes; no dependency upgrades; no Android/iOS/macOS builds (deferred).
+  1. Transition config centralized in `src/presentation/navigation/RootNavigator.tsx`.
+  2. Faster transitions (shorter duration) on Windows and mobile.
+  3. No header or stack regressions.
+  4. Manual flow verification recorded.
+- Nicht-Ziele: No new screens, no redesign, no dependency upgrades.
 
 2) **Methodik**
 
-- Repro: Type-check -> Tests -> Windows cleanrun -> Web spot-check -> Manual flow verification.
-- Root Cause Hypothesen: Any remaining runtime errors, websocket executor issues, autosave timing.
-- Fix-Strategie: Stop-and-Fix bei Fehlern; minimaler Fix; dann weiter.
-- Verifikation: buildLogs for each command.
+- Repro: Inspect stack navigator config, adjust transition spec/interpolator, verify navigation flow.
+- Root Cause Hypothesen: Default transition durations feel slow/inconsistent.
+- Fix-Strategie: Explicit transitionSpec + cardStyleInterpolator per platform.
+- Verifikation: Manual flow check.
 
 3) **Sprachen/Stack**
 
-- Sprachen: PowerShell, MSBuild, RNW, Node.js.
-- Tools: npm scripts, `scripts/windows-cleanrun.ps1`, `scripts/windows-launch.ps1`.
+- Sprachen: TypeScript/TSX, React Navigation.
+- Tools: Manual UI verification.
 - Constraints: Keine PII in Logs; keine Secrets.
 
 4) **Struktur**
 
 - Dateien/Module (geplant):
-  - `CURRENT_TASKS.md`
+  - `src/presentation/navigation/RootNavigator.tsx`
   - `LAUFBAHN.md`
   - `docs/AGENT_LAUFBAHN.md`
-  - `buildLogs/*`
 - Logs/Artefakte:
-  - `buildLogs/typecheck_20260124_203057.log`
-  - `buildLogs/tests_20260124_203123.log`
-  - `buildLogs/windows_cleanrun_20260124_220250.log`
-  - `buildLogs/web_spotcheck.out.log`
+  - Manual verification noted in Laufbahn.
 
 5) **Qualitaet/Muster**
 
-- Tests: Type-check + Jest for baseline evidence.
+- Tests: Only if behavior change requires it.
 - Security/Compliance: DSGVO Logging Policy, no PII.
-- Maintainability: Evidence-based, all logs captured.
+- Maintainability: Minimal change-set, centralized config.
 
 ---
 
@@ -453,6 +442,7 @@ Diese 5 Punkte müssen in JEDEM neuen Vorhaben in dieser Datei stehen (Section �
 
 | Run-ID | Timestamp (UTC+1) | Agent | Intent | Tool/Command | Files touched | Result | Evidence (Pfad) | Next |
 |---|---|---|---|---|---|---|---|---|
+| RUN-20260124-2321-nav-transition-speed | 2026-01-24 23:21 | Codex (GPT-5) | Speed up and smooth stack transitions | `apply_patch` | `src/presentation/navigation/RootNavigator.tsx`, `LAUFBAHN.md`, `docs/AGENT_LAUFBAHN.md` | IN PROGRESS | (pending manual verification) | User verifies page transition flow |
 | RUN-20260123-1916-rebuild-after-reboot | 2026-01-23 19:16 | Codex (GPT-5) | Full rebuild after reboot with logs | `npm install`, `npm run type-check`, `npm test`, `windows-cleanrun.ps1 -SkipNpmCi`, `windows-launch.ps1` | `buildLogs/*`, `LAUFBAHN.md`, `docs/AGENT_LAUFBAHN.md` | PARTIAL (deploy error 100; manual install + launch OK) | `buildLogs/npm_install_rebuild_20260123_1916.*`, `buildLogs/typecheck_rebuild_20260123_1916.*`, `buildLogs/tests_rebuild_20260123_1916.*`, `buildLogs/windows-cleanrun_20260123_2015.*`, `buildLogs/windows-launch_20260123_2112.*`, `buildLogs/windows-dev-run_20260123_1916.*` | User confirms app window |
 | RUN-20260122-1920-questionnaire-manual-verify | 2026-01-22 19:20 | Copilot (GPT-5.2) | Plan manual verification run | edit files | `TODO.md`, `LAUFBAHN.md`, `docs/AGENT_LAUFBAHN.md` | PENDING (manual UI) | (n/a) | User runs flow, report observations |
 | RUN-20260122-1913-questionnaire-remaining | 2026-01-22 19:13 | Copilot (GPT-5.2) | Fix remaining questionnaire issues | `apply_patch`, `npm.cmd test`, `npm.cmd run type-check` | `src/shared/platformCapabilities.ts`, `__tests__/shared/platformCapabilities.test.ts`, `src/presentation/screens/QuestionnaireScreen.tsx`, `src/presentation/screens/SummaryScreen.tsx`, `TODO.md`, `LAUFBAHN.md`, `docs/AGENT_LAUFBAHN.md` | PARTIAL (websocket issue pending) | `buildLogs/tests_questionnaire_remaining.out.log`, `buildLogs/typecheck_questionnaire_remaining.out.log` | Capture websocket error repro/logs |

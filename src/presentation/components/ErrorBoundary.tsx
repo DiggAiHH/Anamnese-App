@@ -84,17 +84,9 @@ class ErrorBoundaryClass extends Component<Props, State> {
         <View style={styles.container}>
           <Text style={styles.emoji}>⚠️</Text>
           <Text style={styles.title}>{t('error.boundaryTitle')}</Text>
-          <Text style={styles.subtitle}>
-            {t('error.boundaryMessage')}
-          </Text>
-          <Text style={styles.subtitle}>
-            {t('error.dataSafe')}
-          </Text>
-          <AppButton
-            title={t('error.tryAgain')}
-            onPress={this.handleRetry}
-            style={styles.button}
-          />
+          <Text style={styles.subtitle}>{t('error.boundaryMessage')}</Text>
+          <Text style={styles.subtitle}>{t('error.dataSafe')}</Text>
+          <AppButton title={t('error.tryAgain')} onPress={this.handleRetry} style={styles.button} />
         </View>
       );
     }

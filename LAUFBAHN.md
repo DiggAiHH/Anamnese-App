@@ -57,40 +57,45 @@ It defines the always-on checklist and records what was done, when, and where.
 
 ## AKTUELLER LAUF: 5 Pflichtpunkte (LIVE)
 
-> **Run-ID:** RUN-20260124-full-verification | **Status:** ✅ COMPLETED
+> **Run-ID:** RUN-20260124-2321-nav-transition-speed | **Status:** IN PROGRESS
 
 1) **Ziel**
-- Outcome: Full verification run (type-check, tests, Windows cleanrun + install + launch attempt, web spot-check, manual flow verification) with evidence.
+- Outcome: Smoother, faster page transitions with consistent navigation flow across screens.
 - DoD:
-  1. `npm run type-check` gruen, Log: `buildLogs/typecheck_20260124_203057.log`.
-  2. `npm test` gruen, Log: `buildLogs/tests_20260124_203123.log`.
-  3. Windows cleanrun + install, Log: `buildLogs/windows_cleanrun_20260124_220250.log`.
-  4. Web spot-check erfolgreich, Log: `buildLogs/web_spotcheck.out.log`.
-  5. Manual flow verification (Questionnaire autosave, Summary fallback) documented.
-  6. Platform blockers (Android/iOS/macOS) documented in docs/AGENT_LAUFBAHN.md.
-- Nicht-Ziele: No feature changes; no dependency upgrades; no Android/iOS/macOS builds (deferred).
+  1. Transition config centralized in `src/presentation/navigation/RootNavigator.tsx`.
+  2. Navigation animations feel faster (shorter duration) on Windows and mobile.
+  3. No visual regressions in header or screen stack behavior.
+  4. Evidence log updated in `LAUFBAHN.md` + `docs/AGENT_LAUFBAHN.md`.
+- Nicht-Ziele: No new screens, no redesign, no dependency upgrades.
 
 2) **Methodik**
-- Repro: Type-check -> Tests -> Windows cleanrun -> Web spot-check -> Manual flow verification.
-- Root Cause Hypothesen: Any remaining runtime errors, websocket executor issues, autosave timing.
-- Fix-Strategie: Stop-and-Fix bei Fehlern; minimaler Fix; dann weiter.
-- Verifikation: buildLogs fuer jeden Schritt (stdout/err).
+- Repro: Inspect stack navigator config, adjust transition spec/interpolator, verify on-device flow.
+- Root Cause Hypothesen: Default transition durations feel slow and inconsistent across platforms.
+- Fix-Strategie: Set explicit transition specs and interpolators; keep platform-safe defaults.
+- Verifikation: Manual navigation flow check; if tests change, run targeted Jest.
 
 3) **Sprachen/Stack**
-- Sprachen: PowerShell, MSBuild, RNW, Node.js.
-- Tools: npm scripts, `scripts/windows-cleanrun.ps1`, `scripts/windows-launch.ps1`.
+- Sprachen: TypeScript/TSX, React Navigation (stack).
+- Tools: npm scripts (if needed), manual UI verification.
 - Constraints: Keine PII in Logs; keine Secrets.
 
 4) **Struktur**
-- Dateien/Module: `CURRENT_TASKS.md`, `LAUFBAHN.md`, `docs/AGENT_LAUFBAHN.md`, `buildLogs/*`.
-- Logs/Artefakte: `buildLogs/typecheck_20260124_203057.log`, `buildLogs/tests_20260124_203123.log`, `buildLogs/windows_cleanrun_20260124_220250.log`, `buildLogs/web_spotcheck.out.log`.
+- Dateien/Module: `src/presentation/navigation/RootNavigator.tsx`, `LAUFBAHN.md`, `docs/AGENT_LAUFBAHN.md`.
+- Logs/Artefakte: (manual verification noted in Laufbahn).
 
 5) **Qualitaet/Muster**
-- Tests: Type-check + Jest as baseline.
+- Tests: Only if behavior changes require it.
 - Security/Compliance: DSGVO Logging Policy, keine PII.
-- Maintainability: Evidence-based, all logs captured.
+- Maintainability: Centralized nav config, minimal changes.
 
 ## Execution Log (chronologisch)
+
+### 2026-01-24 23:21 UTC - Navigation transition speed tuning (in progress)
+- Goal: Speed up and smooth page transitions across the stack navigator.
+- Changes:
+  - `src/presentation/navigation/RootNavigator.tsx`: Added fast transition specs + interpolators.
+- Verification:
+  - Pending manual flow check (screen-to-screen navigation).
 
 ### 2026-01-24 22:52 UTC - PII log purge + TTS test coverage
 - Goal: Remove transcript logs containing PII, harden ignore rules, and restore supported-platform TTS coverage.
