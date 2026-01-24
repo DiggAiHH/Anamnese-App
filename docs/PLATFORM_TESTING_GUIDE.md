@@ -9,8 +9,8 @@ Use it to make each target "ready to test" with evidence logs.
 
 | Platform | Status | Notes |
 |----------|--------|-------|
-| Web | ✅ VERIFIED | Webpack 5.104.1 compiles, localhost:3000 serves |
-| Windows | ✅ VERIFIED | MSBuild 17.14, .msix signed & installed |
+| Web | ✅ VERIFIED | Webpack compiled (see `buildLogs/web_spotcheck.out.log`) |
+| Windows | ✅ VERIFIED | MSBuild 17.14, .msix signed & installed (see `buildLogs/windows_cleanrun_20260124_220250.log`) |
 | Android | ⏸️ DEFERRED | adb/emulator not installed on host |
 | iOS | ⏸️ DEFERRED | Requires macOS host |
 | macOS | ⏸️ DEFERRED | Requires macOS host |
@@ -49,11 +49,7 @@ Alternative (clean build with auto-install):
 ```
 
 Evidence:
-- `buildLogs/windows-dev-run_latest.out.log`
-- `buildLogs/windows-dev-run_latest.err.log`
-- `buildLogs/windows-launch_latest.out.log`
-- `buildLogs/windows-launch_latest.err.log`
-- `buildLogs/windows_cleanrun_*.log`
+- `buildLogs/windows_cleanrun_20260124_220250.log`
 
 Known Issues:
 - VS Deployer may fail with `NuGet.VisualStudio.Contracts` mismatch

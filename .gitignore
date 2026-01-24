@@ -73,6 +73,7 @@ temp/
 
 # Build artifacts and logs
 buildLogs/
+buildLogs/*transcript*
 web/dist/
 react-native-share-*.tgz
 *.tgz

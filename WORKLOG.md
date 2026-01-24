@@ -25,6 +25,16 @@ Produce a **Release** MSIX that is **self-contained** (ships JS bundle) and **la
 
 ## Log Entries
 
+### 2026-01-24 (PII log scrub + TTS coverage)
+- **Goal:** Remove transcript logs with PII and restore supported-platform TTS tests.
+- **Changes:**
+  - Removed `buildLogs/*transcript*` from version control and added ignore rule.
+  - Restored supported-platform TTS coverage in `src/infrastructure/speech/__tests__/TTSService.test.ts`.
+  - Updated evidence references to existing logs.
+- **Evidence:**
+  - `buildLogs/tests_tts_service_update_20260124.out.log`
+  - `buildLogs/tests_tts_service_update_20260124.err.log`
+
 ### 2026-01-24 (RUN-20260124-full-verification)
 - **Goal:** 30-point full verification run with evidence capture.
 - **Results:**
@@ -39,7 +49,10 @@ Produce a **Release** MSIX that is **self-contained** (ships JS bundle) and **la
   - `TODO.md`: 2026-01-24 run section added
   - `src/infrastructure/speech/__tests__/TTSService.test.ts`: Rewritten for mock mode
 - **Evidence:**
-  - `buildLogs/windows_cleanrun_20260124_*.log`
+  - `buildLogs/typecheck_20260124_203057.log`
+  - `buildLogs/tests_20260124_203123.log`
+  - `buildLogs/windows_cleanrun_20260124_220250.log`
+  - `buildLogs/web_spotcheck.out.log`
   - Package: cc3a5ac8-ac09-4f03-b6c9-0cfd812841a0, Version 1.0.0.0, Status Ok
 - **Known Issues:**
   - VS Deployer fails with NuGet.VisualStudio.Contracts mismatch (workaround: manual Add-AppxPackage)

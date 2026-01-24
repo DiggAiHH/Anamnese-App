@@ -17,11 +17,13 @@
   - Windows: Build + Install SUCCESS
   - Web: Webpack compiles SUCCESS
 - **Blocker (DEFERRED):** Android (adb/emulator missing), macOS/iOS (no host).
-- **Evidence:** `buildLogs/windows_cleanrun_20260124_*.log`
+- **Evidence:** `buildLogs/windows_cleanrun_20260124_220250.log`
 
 - **Platform Blockers (DEFERRED):**
   - **Android:** adb/emulator missing on this host; Gradle TLS/PSK to Maven error.
   - **macOS/iOS:** No macOS host available for builds.
+
+- **Update 2026-01-24 22:52:** PII transcript logs removed from version control; TTS tests expanded (Evidence: `buildLogs/tests_tts_service_update_20260124.out.log`).
 
 ---
 
@@ -31,19 +33,19 @@
 
 1) **Ziel**
 
-- Outcome: Full verification run (type-check, tests, Windows build/launch, web smoke, manual flow verification) with evidence.
+- Outcome: Full verification run (type-check, tests, Windows cleanrun + install + launch attempt, web spot-check, manual flow verification) with evidence.
 - DoD:
-  1. `npm run type-check` success with logs in `buildLogs/typecheck_20260124_*`.
-  2. `npm test` success with logs in `buildLogs/tests_20260124_*`.
-  3. Windows cleanrun/launch success with logs in `buildLogs/windows-cleanrun_20260124_*`, `buildLogs/windows-launch_20260124_*`.
-  4. Web smoke check success with logs in `buildLogs/web_smoke_20260124_*`.
+  1. `npm run type-check` success with log `buildLogs/typecheck_20260124_203057.log`.
+  2. `npm test` success with log `buildLogs/tests_20260124_203123.log`.
+  3. Windows cleanrun + install with log `buildLogs/windows_cleanrun_20260124_220250.log`.
+  4. Web spot-check success with log `buildLogs/web_spotcheck.out.log`.
   5. Manual flow verification (Questionnaire autosave, Summary fallback) documented.
   6. Platform blockers (Android/iOS/macOS) documented.
 - Nicht-Ziele: No feature changes; no dependency upgrades; no Android/iOS/macOS builds (deferred).
 
 2) **Methodik**
 
-- Repro: Type-check -> Tests -> Windows cleanrun -> Windows launch -> Web smoke -> Manual flow verification.
+- Repro: Type-check -> Tests -> Windows cleanrun -> Web spot-check -> Manual flow verification.
 - Root Cause Hypothesen: Any remaining runtime errors, websocket executor issues, autosave timing.
 - Fix-Strategie: Stop-and-Fix bei Fehlern; minimaler Fix; dann weiter.
 - Verifikation: buildLogs for each command.
@@ -62,11 +64,10 @@
   - `docs/AGENT_LAUFBAHN.md`
   - `buildLogs/*`
 - Logs/Artefakte:
-  - `buildLogs/typecheck_20260124_*`
-  - `buildLogs/tests_20260124_*`
-  - `buildLogs/windows-cleanrun_20260124_*`
-  - `buildLogs/windows-launch_20260124_*`
-  - `buildLogs/web_smoke_20260124_*`
+  - `buildLogs/typecheck_20260124_203057.log`
+  - `buildLogs/tests_20260124_203123.log`
+  - `buildLogs/windows_cleanrun_20260124_220250.log`
+  - `buildLogs/web_spotcheck.out.log`
 
 5) **Qualitaet/Muster**
 

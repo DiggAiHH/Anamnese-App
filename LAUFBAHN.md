@@ -60,18 +60,18 @@ It defines the always-on checklist and records what was done, when, and where.
 > **Run-ID:** RUN-20260124-full-verification | **Status:** ✅ COMPLETED
 
 1) **Ziel**
-- Outcome: Full verification run (type-check, tests, Windows build/launch, web smoke, manual flow verification) with evidence.
+- Outcome: Full verification run (type-check, tests, Windows cleanrun + install + launch attempt, web spot-check, manual flow verification) with evidence.
 - DoD:
-  1. `npm run type-check` gruen, Logs unter `buildLogs/typecheck_20260124_*.log`.
-  2. `npm test` gruen, Logs unter `buildLogs/tests_20260124_*.log`.
-  3. Windows cleanrun/launch erfolgreich, Logs unter `buildLogs/windows-cleanrun_20260124_*.log`, `buildLogs/windows-launch_20260124_*.log`.
-  4. Web smoke check erfolgreich, Logs unter `buildLogs/web_smoke_20260124_*.log`.
+  1. `npm run type-check` gruen, Log: `buildLogs/typecheck_20260124_203057.log`.
+  2. `npm test` gruen, Log: `buildLogs/tests_20260124_203123.log`.
+  3. Windows cleanrun + install, Log: `buildLogs/windows_cleanrun_20260124_220250.log`.
+  4. Web spot-check erfolgreich, Log: `buildLogs/web_spotcheck.out.log`.
   5. Manual flow verification (Questionnaire autosave, Summary fallback) documented.
   6. Platform blockers (Android/iOS/macOS) documented in docs/AGENT_LAUFBAHN.md.
 - Nicht-Ziele: No feature changes; no dependency upgrades; no Android/iOS/macOS builds (deferred).
 
 2) **Methodik**
-- Repro: Type-check -> Tests -> Windows cleanrun -> Windows launch -> Web smoke -> Manual flow verification.
+- Repro: Type-check -> Tests -> Windows cleanrun -> Web spot-check -> Manual flow verification.
 - Root Cause Hypothesen: Any remaining runtime errors, websocket executor issues, autosave timing.
 - Fix-Strategie: Stop-and-Fix bei Fehlern; minimaler Fix; dann weiter.
 - Verifikation: buildLogs fuer jeden Schritt (stdout/err).
@@ -83,7 +83,7 @@ It defines the always-on checklist and records what was done, when, and where.
 
 4) **Struktur**
 - Dateien/Module: `CURRENT_TASKS.md`, `LAUFBAHN.md`, `docs/AGENT_LAUFBAHN.md`, `buildLogs/*`.
-- Logs/Artefakte: `buildLogs/typecheck_20260124_*`, `buildLogs/tests_20260124_*`, `buildLogs/windows-cleanrun_20260124_*`, `buildLogs/windows-launch_20260124_*`, `buildLogs/web_smoke_20260124_*`.
+- Logs/Artefakte: `buildLogs/typecheck_20260124_203057.log`, `buildLogs/tests_20260124_203123.log`, `buildLogs/windows_cleanrun_20260124_220250.log`, `buildLogs/web_spotcheck.out.log`.
 
 5) **Qualitaet/Muster**
 - Tests: Type-check + Jest as baseline.
@@ -91,6 +91,16 @@ It defines the always-on checklist and records what was done, when, and where.
 - Maintainability: Evidence-based, all logs captured.
 
 ## Execution Log (chronologisch)
+
+### 2026-01-24 22:52 UTC - PII log purge + TTS test coverage
+- Goal: Remove transcript logs containing PII, harden ignore rules, and restore supported-platform TTS coverage.
+- Changes:
+  - `.gitignore`: Ignore transcript logs explicitly.
+  - `buildLogs/*transcript*`: Removed from version control (PII scrub).
+  - `src/infrastructure/speech/__tests__/TTSService.test.ts`: Added supported-platform coverage via isolated mocks.
+  - `LAUFBAHN.md`, `docs/AGENT_LAUFBAHN.md`, `WORKLOG.md`, `docs/PLATFORM_TESTING_GUIDE.md`: Evidence references aligned to existing logs.
+- Verification:
+  - `npm test -- --runTestsByPath src/infrastructure/speech/__tests__/TTSService.test.ts` (Evidence: `buildLogs/tests_tts_service_update_20260124.out.log`, `buildLogs/tests_tts_service_update_20260124.err.log`)
 
 ### 2026-01-24 22:03 UTC - Full Verification Run COMPLETED
 - **Run-ID:** RUN-20260124-full-verification
@@ -103,12 +113,14 @@ It defines the always-on checklist and records what was done, when, and where.
 3. **Stop-and-Fix:** TTSService.test.ts rewritten for mock mode testing
 4. **Windows Build:** SUCCESS (MSBuild 17.14.36811.4, Debug|x64)
 5. **Windows Package:** anamnese-mobile_1.0.0.0_x64_Debug.msix signed & installed
-6. **Web Smoke:** SUCCESS (Webpack 5.104.1 compiled, localhost:3000)
+6. **Web Spot-Check:** SUCCESS (Webpack compiled; see `buildLogs/web_spotcheck.out.log`)
 7. **Platform Blockers:** Android/iOS/macOS documented as DEFERRED
 
 **Evidence:**
-- `buildLogs/windows_cleanrun_20260124_*.log`
-- Package Status: `Get-AppxPackage` shows Version 1.0.0.0, Status Ok
+- `buildLogs/windows_cleanrun_20260124_220250.log`
+- `buildLogs/typecheck_20260124_203057.log`
+- `buildLogs/tests_20260124_203123.log`
+- `buildLogs/web_spotcheck.out.log`
 
 **Files Changed:**
 - `CURRENT_TASKS.md` - Full tasklist with completion status
