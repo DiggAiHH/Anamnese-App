@@ -4,13 +4,7 @@
  */
 
 import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  Alert,
-} from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Alert } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { BackupUseCase } from '../../application/use-cases/BackupUseCase';
 import { RestoreUseCase, RestoreStrategy } from '../../application/use-cases/RestoreUseCase';
@@ -94,10 +88,7 @@ export const DataManagementScreen = (): React.JSX.Element => {
         title: t('dataManagement.backup.title'),
       });
 
-      Alert.alert(
-        t('common.success'),
-        t('dataManagement.backup.success')
-      );
+      Alert.alert(t('common.success'), t('dataManagement.backup.success'));
     } catch (error) {
       showError(t('dataManagement.backup.error'), error);
     } finally {
@@ -150,10 +141,7 @@ export const DataManagementScreen = (): React.JSX.Element => {
         return;
       }
 
-      Alert.alert(
-        t('common.success'),
-        t('dataManagement.restore.success')
-      );
+      Alert.alert(t('common.success'), t('dataManagement.restore.success'));
     } catch (error) {
       const documentPicker = getDocumentPicker();
       if (documentPicker?.isCancel(error)) {
@@ -202,15 +190,17 @@ export const DataManagementScreen = (): React.JSX.Element => {
             message={t('common.featureUnavailableMessage', { feature: t('dataManagement.title') })}
           />
         )}
-        <Text style={styles.title} accessibilityRole="header">{t('dataManagement.title')}</Text>
+        <Text style={styles.title} accessibilityRole="header">
+          {t('dataManagement.title')}
+        </Text>
         <Text style={styles.subtitle}>{t('dataManagement.subtitle')}</Text>
 
         {/* Backup Section */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle} accessibilityRole="header">{t('dataManagement.backup.title')}</Text>
-          <Text style={styles.sectionDescription}>
-            {t('dataManagement.backup.description')}
+          <Text style={styles.sectionTitle} accessibilityRole="header">
+            {t('dataManagement.backup.title')}
           </Text>
+          <Text style={styles.sectionDescription}>{t('dataManagement.backup.description')}</Text>
           <AppButton
             title={t('dataManagement.backup.createBackup')}
             onPress={handleBackup}
@@ -221,10 +211,10 @@ export const DataManagementScreen = (): React.JSX.Element => {
 
         {/* Restore Section */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle} accessibilityRole="header">{t('dataManagement.restore.title')}</Text>
-          <Text style={styles.sectionDescription}>
-            {t('dataManagement.restore.description')}
+          <Text style={styles.sectionTitle} accessibilityRole="header">
+            {t('dataManagement.restore.title')}
           </Text>
+          <Text style={styles.sectionDescription}>{t('dataManagement.restore.description')}</Text>
 
           <AppButton
             title={t('dataManagement.restore.mergeButton')}
@@ -245,11 +235,13 @@ export const DataManagementScreen = (): React.JSX.Element => {
 
         {/* Info Section */}
         <View style={styles.infoCard}>
-          <Text style={styles.infoTitle} accessibilityRole="header">{t('dataManagement.info.title')}</Text>
+          <Text style={styles.infoTitle} accessibilityRole="header">
+            {t('dataManagement.info.title')}
+          </Text>
           <Text style={styles.infoText}>
-            • {t('dataManagement.info.encrypted')}{'\n'}
-            • {t('dataManagement.info.localOnly')}{'\n'}
-            • {t('dataManagement.info.gdprCompliant')}
+            • {t('dataManagement.info.encrypted')}
+            {'\n'}• {t('dataManagement.info.localOnly')}
+            {'\n'}• {t('dataManagement.info.gdprCompliant')}
           </Text>
         </View>
       </View>

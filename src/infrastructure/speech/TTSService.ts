@@ -31,8 +31,9 @@ const loadTtsModule = (): TtsApi | null => {
   }
 };
 
-const hasRequiredTtsApi = (tts: TtsApi | null): tts is Required<Pick<TtsApi, 'addEventListener' | 'speak' | 'stop'>> &
-  TtsApi => {
+const hasRequiredTtsApi = (
+  tts: TtsApi | null,
+): tts is Required<Pick<TtsApi, 'addEventListener' | 'speak' | 'stop'>> & TtsApi => {
   return (
     !!tts &&
     typeof tts.addEventListener === 'function' &&
@@ -138,7 +139,6 @@ export class TTSService implements ITTSService {
   private logError(message: string, error?: unknown): void {
     // Never log spoken text (GDPR compliance)
     if (typeof __DEV__ !== 'undefined' && __DEV__) {
-      // eslint-disable-next-line no-console
       console.error(`[TTS] ${message}`, error);
     }
     // Production: no logging to avoid any PII leak
@@ -146,7 +146,7 @@ export class TTSService implements ITTSService {
 
   private async initialize(): Promise<void> {
     if (this.initialized) return;
-    
+
     // Check if Tts module is available (null on unsupported platforms / missing module / incompatible export)
     if (!Tts || !platformCapabilities.supportsTTS) {
       this.initialized = true;
@@ -282,7 +282,17 @@ export class TTSService implements ITTSService {
     if (!Tts) return [];
     try {
       if (typeof Tts.voices !== 'function') return [];
-      const voices = await (Tts.voices as () => Promise<Array<{ id: string; name: string; language: string; quality?: number; networkConnectionRequired?: boolean }>>)();
+      const voices = await (
+        Tts.voices as () => Promise<
+          Array<{
+            id: string;
+            name: string;
+            language: string;
+            quality?: number;
+            networkConnectionRequired?: boolean;
+          }>
+        >
+      )();
       this.logDebug(`Found ${voices?.length || 0} voices`);
 
       return (voices || []).map(v => ({

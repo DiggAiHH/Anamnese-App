@@ -39,9 +39,7 @@ export const PatientInfoScreen: React.FC<Props> = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [showDatePicker, setShowDatePicker] = useState(false);
-  const [openDateDropdown, setOpenDateDropdown] = useState<'day' | 'month' | 'year' | null>(
-    null,
-  );
+  const [openDateDropdown, setOpenDateDropdown] = useState<'day' | 'month' | 'year' | null>(null);
 
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -87,11 +85,7 @@ export const PatientInfoScreen: React.FC<Props> = ({ navigation }) => {
 
   const handleNext = () => {
     if (!validate()) {
-      Alert.alert(
-        t('common.error'),
-        t('patientInfo.validationError'),
-        [{ text: t('common.ok') }]
-      );
+      Alert.alert(t('common.error'), t('patientInfo.validationError'), [{ text: t('common.ok') }]);
       return;
     }
 
@@ -118,11 +112,11 @@ export const PatientInfoScreen: React.FC<Props> = ({ navigation }) => {
     const today = new Date();
     let age = today.getFullYear() - date.getFullYear();
     const monthDiff = today.getMonth() - date.getMonth();
-    
+
     if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < date.getDate())) {
       age--;
     }
-    
+
     return age;
   };
 
@@ -215,7 +209,11 @@ export const PatientInfoScreen: React.FC<Props> = ({ navigation }) => {
             <Text style={styles.hintText}>{t('patientInfo.birthDateHint')}</Text>
           )}
           <TouchableOpacity
-              style={[styles.input, styles.dateButton, errors.birthDate ? styles.inputError : undefined]}
+            style={[
+              styles.input,
+              styles.dateButton,
+              errors.birthDate ? styles.inputError : undefined,
+            ]}
             onPress={() => {
               if (isWindows) {
                 if (!showDatePicker && !birthDate) {
@@ -230,17 +228,12 @@ export const PatientInfoScreen: React.FC<Props> = ({ navigation }) => {
 
               setShowDatePicker(true);
             }}
-            testID="input-birth_date"
-          >
+            testID="input-birth_date">
             <Text style={birthDate ? styles.dateText : styles.datePlaceholder}>
-              {birthDate
-                ? birthDate.toLocaleDateString()
-                : t('patientInfo.birthDatePlaceholder')}
+              {birthDate ? birthDate.toLocaleDateString() : t('patientInfo.birthDatePlaceholder')}
             </Text>
           </TouchableOpacity>
-          {errors.birthDate && (
-            <Text style={styles.errorText}>{errors.birthDate}</Text>
-          )}
+          {errors.birthDate && <Text style={styles.errorText}>{errors.birthDate}</Text>}
         </View>
 
         {/* Date Input */}
@@ -271,18 +264,15 @@ export const PatientInfoScreen: React.FC<Props> = ({ navigation }) => {
                     ]}>
                     <TouchableOpacity
                       style={styles.dateDropdownButton}
-                      onPress={() =>
-                        setOpenDateDropdown((cur) => (cur === kind ? null : kind))
-                      }
-                      testID={testID}
-                    >
+                      onPress={() => setOpenDateDropdown(cur => (cur === kind ? null : kind))}
+                      testID={testID}>
                       <Text style={styles.dateDropdownText}>{String(selected)}</Text>
                     </TouchableOpacity>
 
                     {openDateDropdown === kind && (
                       <View style={styles.dateDropdownMenu}>
                         <ScrollView style={styles.dateDropdownScroll}>
-                          {options.map((opt) => (
+                          {options.map(opt => (
                             <TouchableOpacity
                               key={opt}
                               style={styles.dateDropdownOption}
@@ -290,8 +280,7 @@ export const PatientInfoScreen: React.FC<Props> = ({ navigation }) => {
                                 onSelect(opt);
                                 closeDateDropdowns();
                               }}
-                              testID={`${testID}-opt-${opt}`}
-                            >
+                              testID={`${testID}-opt-${opt}`}>
                               <Text style={styles.dateDropdownOptionText}>{String(opt)}</Text>
                             </TouchableOpacity>
                           ))}
@@ -308,21 +297,21 @@ export const PatientInfoScreen: React.FC<Props> = ({ navigation }) => {
                       'year',
                       selectedYear,
                       years,
-                      (v) => setBirthDatePart({ year: v }),
+                      v => setBirthDatePart({ year: v }),
                       'dropdown-birth_year',
                     )}
                     {renderDropdown(
                       'month',
                       selectedMonth,
                       Array.from({ length: 12 }, (_, i) => i + 1),
-                      (v) => setBirthDatePart({ month: v }),
+                      v => setBirthDatePart({ month: v }),
                       'dropdown-birth_month',
                     )}
                     {renderDropdown(
                       'day',
                       selectedDay,
                       dayOptions,
-                      (v) => setBirthDatePart({ day: v }),
+                      v => setBirthDatePart({ day: v }),
                       'dropdown-birth_day',
                     )}
                   </>
@@ -354,13 +343,9 @@ export const PatientInfoScreen: React.FC<Props> = ({ navigation }) => {
           </Text>
           <View style={styles.radioGroup}>
             <TouchableOpacity
-              style={[
-                styles.radioButton,
-                gender === 'male' && styles.radioButtonSelected,
-              ]}
+              style={[styles.radioButton, gender === 'male' && styles.radioButtonSelected]}
               onPress={() => setGender('male')}
-              testID="input-gender-male"
-            >
+              testID="input-gender-male">
               <View style={styles.radio}>
                 {gender === 'male' && <View style={styles.radioSelected} />}
               </View>
@@ -368,13 +353,9 @@ export const PatientInfoScreen: React.FC<Props> = ({ navigation }) => {
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={[
-                styles.radioButton,
-                gender === 'female' && styles.radioButtonSelected,
-              ]}
+              style={[styles.radioButton, gender === 'female' && styles.radioButtonSelected]}
               onPress={() => setGender('female')}
-              testID="input-gender-female"
-            >
+              testID="input-gender-female">
               <View style={styles.radio}>
                 {gender === 'female' && <View style={styles.radioSelected} />}
               </View>
@@ -382,22 +363,16 @@ export const PatientInfoScreen: React.FC<Props> = ({ navigation }) => {
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={[
-                styles.radioButton,
-                gender === 'other' && styles.radioButtonSelected,
-              ]}
+              style={[styles.radioButton, gender === 'other' && styles.radioButtonSelected]}
               onPress={() => setGender('other')}
-              testID="input-gender-other"
-            >
+              testID="input-gender-other">
               <View style={styles.radio}>
                 {gender === 'other' && <View style={styles.radioSelected} />}
               </View>
               <Text style={styles.radioLabel}>{t('patientInfo.other')}</Text>
             </TouchableOpacity>
           </View>
-          {errors.gender && (
-            <Text style={styles.errorText}>{errors.gender}</Text>
-          )}
+          {errors.gender && <Text style={styles.errorText}>{errors.gender}</Text>}
         </View>
 
         {/* Email (Optional) */}

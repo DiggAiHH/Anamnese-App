@@ -1,9 +1,9 @@
 /**
  * QuestionnaireScreen - Hauptbildschirm für Fragebogen
  * ISO/WCAG: Token-based design system
- * 
+ *
  * VOLLSTÄNDIGER DATENFLUSS:
- * 
+ *
  * 1. User öffnet Screen
  *    ↓
  * 2. LoadQuestionnaireUseCase lädt Questionnaire + Answers
@@ -41,7 +41,12 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/RootNavigator';
 import { QuestionCard } from '../components/QuestionCard';
 import { AppButton } from '../components/AppButton';
-import { useQuestionnaireStore, selectCurrentSection, selectVisibleQuestions, selectProgress } from '../state/useQuestionnaireStore';
+import {
+  useQuestionnaireStore,
+  selectCurrentSection,
+  selectVisibleQuestions,
+  selectProgress,
+} from '../state/useQuestionnaireStore';
 import { AnswerValue } from '@domain/entities/Answer';
 import type { Question } from '@domain/entities/Questionnaire';
 import { colors, spacing, radius } from '../theme/tokens';
@@ -63,7 +68,7 @@ type Props = NativeStackScreenProps<RootStackParamList, 'Questionnaire'>;
 export const QuestionnaireScreen = ({ route, navigation }: Props): React.JSX.Element => {
   const { t } = useTranslation();
   const questionnaireId = route.params?.questionnaireId;
-  
+
   // Zustand Store
   const {
     patient,
@@ -106,10 +111,7 @@ export const QuestionnaireScreen = ({ route, navigation }: Props): React.JSX.Ele
     new SQLitePatientRepository(),
   );
 
-  const saveAnswerUseCase = new SaveAnswerUseCase(
-    new SQLiteAnswerRepository(),
-    encryptionService,
-  );
+  const saveAnswerUseCase = new SaveAnswerUseCase(new SQLiteAnswerRepository(), encryptionService);
 
   /**
    * Load Questionnaire on Mount
@@ -179,13 +181,16 @@ export const QuestionnaireScreen = ({ route, navigation }: Props): React.JSX.Ele
       if (result.success && result.questionnaire && result.answers) {
         const questionnaireEntity = result.questionnaire;
 
-        const parseIsoDateParts = (iso: string): { year: number; month: number; day: number } | null => {
+        const parseIsoDateParts = (
+          iso: string,
+        ): { year: number; month: number; day: number } | null => {
           const m = /^\s*(\d{4})-(\d{2})-(\d{2})/.exec(iso);
           if (!m) return null;
           const year = Number(m[1]);
           const month = Number(m[2]);
           const day = Number(m[3]);
-          if (!Number.isInteger(year) || !Number.isInteger(month) || !Number.isInteger(day)) return null;
+          if (!Number.isInteger(year) || !Number.isInteger(month) || !Number.isInteger(day))
+            return null;
           if (month < 1 || month > 12) return null;
           if (day < 1 || day > 31) return null;
           return { year, month, day };
@@ -212,14 +217,15 @@ export const QuestionnaireScreen = ({ route, navigation }: Props): React.JSX.Ele
         ): Promise<Map<string, AnswerValue>> => {
           if (!patient || !encryptionKey) return answersIn;
 
-          const basisSection = questionnaireEntity.sections.find((s) => s.id === 'q0000');
+          const basisSection = questionnaireEntity.sections.find(s => s.id === 'q0000');
           if (!basisSection) return answersIn;
 
           const byFieldName = new Map<string, string>();
           for (const q of basisSection.questions) {
             const md = (q.metadata ?? {}) as Record<string, unknown>;
             const fieldName = typeof md.fieldName === 'string' ? md.fieldName : undefined;
-            const compartmentCode = typeof md.compartmentCode === 'string' ? md.compartmentCode : undefined;
+            const compartmentCode =
+              typeof md.compartmentCode === 'string' ? md.compartmentCode : undefined;
             const key = (fieldName ?? compartmentCode)?.trim();
             if (key) byFieldName.set(key, q.id);
           }
@@ -267,7 +273,7 @@ export const QuestionnaireScreen = ({ route, navigation }: Props): React.JSX.Ele
             const failedSaves: string[] = [];
             // Fire-and-forget background save (do not block UI)
             Promise.all(
-              changedQuestionIds.map(async (qid) => {
+              changedQuestionIds.map(async qid => {
                 const question = questionnaireEntity.findQuestion(qid);
                 if (!question) return;
 
@@ -287,20 +293,25 @@ export const QuestionnaireScreen = ({ route, navigation }: Props): React.JSX.Ele
                   failedSaves.push(qid);
                 }
               }),
-            ).then(() => {
-              // Notify user if any saves failed (non-blocking)
-              if (failedSaves.length > 0) {
-                logWarn(`[QuestionnaireScreen] ${failedSaves.length} prefill saves failed`);
-                // Non-blocking toast/alert - user can continue, data will re-save on interaction
-                Alert.alert(
-                  t('common.warning', 'Warning'),
-                  t('questionnaire.prefillSaveWarning', 'Some auto-filled data may not have been saved. Your answers will be saved when you continue.'),
-                  [{ text: t('common.ok', 'OK') }],
-                );
-              }
-            }).catch(() => {
-              // Catch to prevent unhandled rejection warnings
-            });
+            )
+              .then(() => {
+                // Notify user if any saves failed (non-blocking)
+                if (failedSaves.length > 0) {
+                  logWarn(`[QuestionnaireScreen] ${failedSaves.length} prefill saves failed`);
+                  // Non-blocking toast/alert - user can continue, data will re-save on interaction
+                  Alert.alert(
+                    t('common.warning', 'Warning'),
+                    t(
+                      'questionnaire.prefillSaveWarning',
+                      'Some auto-filled data may not have been saved. Your answers will be saved when you continue.',
+                    ),
+                    [{ text: t('common.ok', 'OK') }],
+                  );
+                }
+              })
+              .catch(() => {
+                // Catch to prevent unhandled rejection warnings
+              });
           }
 
           return nextAnswers;
@@ -334,7 +345,7 @@ export const QuestionnaireScreen = ({ route, navigation }: Props): React.JSX.Ele
     setAnswer(questionId, value);
 
     // Clear validation error
-    setValidationErrors((prev) => {
+    setValidationErrors(prev => {
       const newErrors = { ...prev };
       delete newErrors[questionId];
       return newErrors;
@@ -345,7 +356,7 @@ export const QuestionnaireScreen = ({ route, navigation }: Props): React.JSX.Ele
     if (!question) return;
 
     // Save to DB (async)
-    setPendingSaves((prev) => prev + 1);
+    setPendingSaves(prev => prev + 1);
     setSaveStatusError(null);
     const result = await saveAnswerUseCase.execute({
       questionnaireId: questionnaire.id,
@@ -354,18 +365,23 @@ export const QuestionnaireScreen = ({ route, navigation }: Props): React.JSX.Ele
       encryptionKey,
       sourceType: 'manual',
     });
-    setPendingSaves((prev) => Math.max(0, prev - 1));
+    setPendingSaves(prev => Math.max(0, prev - 1));
 
     if (!result.success) {
       if (result.validationErrors) {
         // Show validation errors
-        setValidationErrors((prev) => ({
+        setValidationErrors(prev => ({
           ...prev,
           [questionId]: result.validationErrors![0],
         }));
-        setSaveStatusError(t('questionnaire.failedToSave', { defaultValue: 'Failed to save answer' }));
+        setSaveStatusError(
+          t('questionnaire.failedToSave', { defaultValue: 'Failed to save answer' }),
+        );
       } else {
-        setSaveStatusError(result.error ?? t('questionnaire.failedToSave', { defaultValue: 'Failed to save answer' }));
+        setSaveStatusError(
+          result.error ??
+            t('questionnaire.failedToSave', { defaultValue: 'Failed to save answer' }),
+        );
         Alert.alert(t('common.error'), result.error ?? t('questionnaire.failedToSave'));
       }
     } else {
@@ -380,19 +396,19 @@ export const QuestionnaireScreen = ({ route, navigation }: Props): React.JSX.Ele
     // Validate required questions
     if (!currentSection || !questionnaire) return;
 
-    const requiredQuestions = visibleQuestions.filter((q) => q.required);
-    const missingAnswers = requiredQuestions.filter((q) =>
+    const requiredQuestions = visibleQuestions.filter(q => q.required);
+    const missingAnswers = requiredQuestions.filter(q =>
       isMissingRequiredAnswer(q, answers.get(q.id)),
     );
 
     if (missingAnswers.length > 0) {
       // Show validation errors
       const errors: Record<string, string> = {};
-      missingAnswers.forEach((q) => {
+      missingAnswers.forEach(q => {
         errors[q.id] = t('questionnaire.requiredField');
       });
       setValidationErrors(errors);
-      
+
       Alert.alert(
         t('questionnaire.missingRequiredTitle'),
         t('questionnaire.missingRequiredMessage', { count: missingAnswers.length }),
@@ -435,15 +451,17 @@ export const QuestionnaireScreen = ({ route, navigation }: Props): React.JSX.Ele
   /**
    * Calculate section completion status
    */
-  const getSectionCompletion = (sectionIndex: number): { answered: number; total: number; percent: number } => {
+  const getSectionCompletion = (
+    sectionIndex: number,
+  ): { answered: number; total: number; percent: number } => {
     if (!questionnaire) return { answered: 0, total: 0, percent: 0 };
-    
+
     const section = questionnaire.sections[sectionIndex];
     if (!section) return { answered: 0, total: 0, percent: 0 };
 
     const questions = section.questions;
     const total = questions.length;
-    
+
     let answered = 0;
     for (const q of questions) {
       const value = answers.get(q.id);
@@ -464,58 +482,45 @@ export const QuestionnaireScreen = ({ route, navigation }: Props): React.JSX.Ele
     <View style={styles.modalContent}>
       <View style={styles.modalHeader}>
         <Text style={styles.modalTitle}>{t('questionnaire.sections')}</Text>
-        <TouchableOpacity 
-          onPress={() => setShowSectionNav(false)}
-          style={styles.modalCloseButton}
-        >
+        <TouchableOpacity onPress={() => setShowSectionNav(false)} style={styles.modalCloseButton}>
           <Text style={styles.modalCloseText}>✕</Text>
         </TouchableOpacity>
       </View>
       <ScrollView style={styles.sectionList}>
-        {questionnaire && questionnaire.sections.map((section, index) => {
-          const completion = getSectionCompletion(index);
-          const isActive = index === currentSectionIndex;
-          
-          return (
-            <TouchableOpacity
-              key={section.id}
-              style={[
-                styles.sectionItem,
-                isActive && styles.sectionItemActive,
-              ]}
-              onPress={() => handleGoToSection(index)}
-            >
-              <View style={styles.sectionItemContent}>
-                <Text style={styles.sectionItemNumber}>{index + 1}</Text>
-                <View style={styles.sectionItemText}>
-                  <Text 
-                    style={[
-                      styles.sectionItemTitle,
-                      isActive && styles.sectionItemTitleActive,
-                    ]}
-                    numberOfLines={2}
-                  >
-                    {t(section.titleKey, { defaultValue: section.titleKey })}
-                  </Text>
-                  <Text style={styles.sectionItemMeta}>
-                    {t('questionnaire.questionsAnswered', { 
-                      answered: completion.answered, 
-                      total: completion.total 
-                    })}
-                  </Text>
+        {questionnaire &&
+          questionnaire.sections.map((section, index) => {
+            const completion = getSectionCompletion(index);
+            const isActive = index === currentSectionIndex;
+
+            return (
+              <TouchableOpacity
+                key={section.id}
+                style={[styles.sectionItem, isActive && styles.sectionItemActive]}
+                onPress={() => handleGoToSection(index)}>
+                <View style={styles.sectionItemContent}>
+                  <Text style={styles.sectionItemNumber}>{index + 1}</Text>
+                  <View style={styles.sectionItemText}>
+                    <Text
+                      style={[styles.sectionItemTitle, isActive && styles.sectionItemTitleActive]}
+                      numberOfLines={2}>
+                      {t(section.titleKey, { defaultValue: section.titleKey })}
+                    </Text>
+                    <Text style={styles.sectionItemMeta}>
+                      {t('questionnaire.questionsAnswered', {
+                        answered: completion.answered,
+                        total: completion.total,
+                      })}
+                    </Text>
+                  </View>
                 </View>
-              </View>
-              <View style={styles.sectionItemProgress}>
-                <View 
-                  style={[
-                    styles.sectionItemProgressFill, 
-                    { width: `${completion.percent}%` }
-                  ]} 
-                />
-              </View>
-            </TouchableOpacity>
-          );
-        })}
+                <View style={styles.sectionItemProgress}>
+                  <View
+                    style={[styles.sectionItemProgressFill, { width: `${completion.percent}%` }]}
+                  />
+                </View>
+              </TouchableOpacity>
+            );
+          })}
       </ScrollView>
     </View>
   );
@@ -525,7 +530,10 @@ export const QuestionnaireScreen = ({ route, navigation }: Props): React.JSX.Ele
    */
   if (isLoading) {
     return (
-      <View style={styles.centerContainer} accessibilityRole="progressbar" accessibilityLabel={t('questionnaire.loading')}>
+      <View
+        style={styles.centerContainer}
+        accessibilityRole="progressbar"
+        accessibilityLabel={t('questionnaire.loading')}>
         <ActivityIndicator size="large" color={colors.primary} />
         <Text style={styles.loadingText}>{t('questionnaire.loading')}</Text>
       </View>
@@ -569,14 +577,8 @@ export const QuestionnaireScreen = ({ route, navigation }: Props): React.JSX.Ele
         // Windows specific: Absolute overlay instead of Native Modal to avoid crashes
         showSectionNav && (
           <View style={[StyleSheet.absoluteFill, { zIndex: 1000 }]}>
-            <Pressable 
-              style={styles.modalOverlay} 
-              onPress={() => setShowSectionNav(false)}
-            >
-              <View 
-                onStartShouldSetResponder={() => true} 
-                onTouchEnd={(e) => e.stopPropagation()}
-              >
+            <Pressable style={styles.modalOverlay} onPress={() => setShowSectionNav(false)}>
+              <View onStartShouldSetResponder={() => true} onTouchEnd={e => e.stopPropagation()}>
                 {renderSectionNavContent()}
               </View>
             </Pressable>
@@ -588,16 +590,9 @@ export const QuestionnaireScreen = ({ route, navigation }: Props): React.JSX.Ele
           visible={showSectionNav}
           animationType="slide"
           transparent={true}
-          onRequestClose={() => setShowSectionNav(false)}
-        >
-          <Pressable 
-            style={styles.modalOverlay} 
-            onPress={() => setShowSectionNav(false)}
-          >
-            <View 
-              onStartShouldSetResponder={() => true} 
-              onTouchEnd={(e) => e.stopPropagation()}
-            >
+          onRequestClose={() => setShowSectionNav(false)}>
+          <Pressable style={styles.modalOverlay} onPress={() => setShowSectionNav(false)}>
+            <View onStartShouldSetResponder={() => true} onTouchEnd={e => e.stopPropagation()}>
               {renderSectionNavContent()}
             </View>
           </Pressable>
@@ -614,11 +609,7 @@ export const QuestionnaireScreen = ({ route, navigation }: Props): React.JSX.Ele
         </Text>
         <View style={styles.saveStatusBox}>
           <Text
-            style={[
-              styles.saveStatusText,
-              saveStatusError ? styles.saveStatusError : undefined,
-            ]}
-          >
+            style={[styles.saveStatusText, saveStatusError ? styles.saveStatusError : undefined]}>
             {pendingSaves > 0
               ? t('common.loading', { defaultValue: 'Saving...' })
               : saveStatusError
@@ -639,11 +630,10 @@ export const QuestionnaireScreen = ({ route, navigation }: Props): React.JSX.Ele
       </View>
 
       {/* Section Title with Menu Button */}
-      <TouchableOpacity 
+      <TouchableOpacity
         style={styles.sectionHeader}
         onPress={() => setShowSectionNav(true)}
-        activeOpacity={0.7}
-      >
+        activeOpacity={0.7}>
         <View style={styles.sectionHeaderRow}>
           <View style={styles.sectionHeaderText}>
             <Text style={styles.sectionTitle}>
@@ -664,12 +654,12 @@ export const QuestionnaireScreen = ({ route, navigation }: Props): React.JSX.Ele
 
       {/* Questions */}
       <ScrollView style={styles.scrollContainer} contentContainerStyle={styles.scrollContent}>
-        {visibleQuestions.map((question) => (
+        {visibleQuestions.map(question => (
           <QuestionCard
             key={question.id}
             question={question}
             value={answers.get(question.id)}
-            onValueChange={(value) => handleAnswerChange(question.id, value)}
+            onValueChange={value => handleAnswerChange(question.id, value)}
             error={validationErrors[question.id]}
           />
         ))}

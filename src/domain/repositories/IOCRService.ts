@@ -12,7 +12,7 @@ export interface IOCRService {
    */
   performOCR(
     imagePath: string,
-    language?: string
+    language?: string,
   ): Promise<{
     text: string;
     confidence: number;
@@ -45,7 +45,7 @@ export interface IOCRService {
    */
   extractFields(
     imagePath: string,
-    fieldPatterns: Record<string, RegExp>
+    fieldPatterns: Record<string, RegExp>,
   ): Promise<Record<string, string>>;
 
   /**

@@ -22,9 +22,15 @@ describe('globalErrorHandlers', () => {
     const previousHandler = jest.fn();
     const setGlobalHandler = jest.fn();
     const getGlobalHandler = jest.fn(() => previousHandler);
-    (globalThis as unknown as { ErrorUtils?: unknown }).ErrorUtils = { setGlobalHandler, getGlobalHandler };
+    (globalThis as unknown as { ErrorUtils?: unknown }).ErrorUtils = {
+      setGlobalHandler,
+      getGlobalHandler,
+    };
 
-    const { installGlobalErrorHandlers, resetGlobalErrorHandlersForTests } = require('../../src/shared/globalErrorHandlers');
+    const {
+      installGlobalErrorHandlers,
+      resetGlobalErrorHandlersForTests,
+    } = require('../../src/shared/globalErrorHandlers');
     const onUserError = jest.fn();
 
     const nowSpy = jest.spyOn(Date, 'now');
@@ -67,7 +73,10 @@ describe('globalErrorHandlers', () => {
       },
     };
 
-    const { installGlobalErrorHandlers, resetGlobalErrorHandlersForTests } = require('../../src/shared/globalErrorHandlers');
+    const {
+      installGlobalErrorHandlers,
+      resetGlobalErrorHandlersForTests,
+    } = require('../../src/shared/globalErrorHandlers');
     const onUserError = jest.fn();
 
     const nowSpy = jest.spyOn(Date, 'now');
@@ -84,4 +93,3 @@ describe('globalErrorHandlers', () => {
     resetGlobalErrorHandlersForTests();
   });
 });
-

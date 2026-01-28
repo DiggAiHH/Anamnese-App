@@ -21,11 +21,11 @@ export const SummaryScreen = ({ navigation, route }: Props): React.JSX.Element =
   const { reset, questionnaire, answers, patient } = useQuestionnaireStore();
   const progress = selectProgress(useQuestionnaireStore.getState());
   const safeProgress = Number.isFinite(progress) ? progress : 0;
-  
+
   // Build structured summary of all answers
   const answerSummary = useMemo(() => {
     if (!questionnaire) return [];
-    
+
     const summary: Array<{
       sectionTitle: string;
       questions: Array<{
@@ -34,23 +34,25 @@ export const SummaryScreen = ({ navigation, route }: Props): React.JSX.Element =
         questionId: string;
       }>;
     }> = [];
-    
-    questionnaire.sections.forEach((section) => {
-      const sectionQuestions: typeof summary[0]['questions'] = [];
-      
-      section.questions.forEach((question) => {
+
+    questionnaire.sections.forEach(section => {
+      const sectionQuestions: (typeof summary)[0]['questions'] = [];
+
+      section.questions.forEach(question => {
         const answerValue = answers.get(question.id);
         if (answerValue !== undefined && answerValue !== null && answerValue !== '') {
           let displayAnswer = '';
-          
+
           if (typeof answerValue === 'boolean') {
-            displayAnswer = answerValue ? t('common.yes', { defaultValue: 'Ja' }) : t('common.no', { defaultValue: 'Nein' });
+            displayAnswer = answerValue
+              ? t('common.yes', { defaultValue: 'Ja' })
+              : t('common.no', { defaultValue: 'Nein' });
           } else if (Array.isArray(answerValue)) {
             displayAnswer = answerValue.join(', ');
           } else {
             displayAnswer = String(answerValue);
           }
-          
+
           sectionQuestions.push({
             questionText: t(question.labelKey, { defaultValue: question.labelKey }),
             answer: displayAnswer,
@@ -58,7 +60,7 @@ export const SummaryScreen = ({ navigation, route }: Props): React.JSX.Element =
           });
         }
       });
-      
+
       if (sectionQuestions.length > 0) {
         summary.push({
           sectionTitle: t(section.titleKey, { defaultValue: section.titleKey }),
@@ -66,14 +68,14 @@ export const SummaryScreen = ({ navigation, route }: Props): React.JSX.Element =
         });
       }
     });
-    
+
     return summary;
   }, [questionnaire, answers, t]);
-  
+
   // Build plain text for clipboard
   const plainTextSummary = useMemo(() => {
     let text = '';
-    
+
     // Patient info
     if (patient) {
       const pd = patient.encryptedData;
@@ -88,23 +90,26 @@ export const SummaryScreen = ({ navigation, route }: Props): React.JSX.Element =
       }
       text += '\n---\n\n';
     }
-    
+
     // Answers by section
-    answerSummary.forEach((section) => {
+    answerSummary.forEach(section => {
       const titleLength = Math.max(0, section.sectionTitle?.length ?? 0);
       text += `${section.sectionTitle}\n${'='.repeat(titleLength)}\n\n`;
-      section.questions.forEach((q) => {
+      section.questions.forEach(q => {
         text += `${q.questionText}\n→ ${q.answer}\n\n`;
       });
     });
-    
+
     return text;
   }, [answerSummary, patient, t]);
-  
+
   const handleCopyToClipboard = async (): Promise<void> => {
     try {
-      const runtimeNavigator = (globalThis as { navigator?: { clipboard?: { writeText?: (text: string) => Promise<void> } } })
-        .navigator;
+      const runtimeNavigator = (
+        globalThis as {
+          navigator?: { clipboard?: { writeText?: (text: string) => Promise<void> } };
+        }
+      ).navigator;
       if (Platform.OS === 'web' && runtimeNavigator?.clipboard?.writeText) {
         await runtimeNavigator.clipboard.writeText(plainTextSummary);
         return;
@@ -123,10 +128,7 @@ export const SummaryScreen = ({ navigation, route }: Props): React.JSX.Element =
     }
   };
 
-  const answeredCount = answerSummary.reduce(
-    (acc, section) => acc + section.questions.length,
-    0
-  );
+  const answeredCount = answerSummary.reduce((acc, section) => acc + section.questions.length, 0);
   const safeAnsweredCount = Number.isFinite(answeredCount) ? answeredCount : 0;
 
   if (!questionnaire) {
@@ -162,9 +164,7 @@ export const SummaryScreen = ({ navigation, route }: Props): React.JSX.Element =
       <Text style={styles.title} accessibilityRole="header">
         {t('summary.title')}
       </Text>
-      <Text style={styles.subtitle}>
-        {t('summary.subtitle', { id: questionnaireId })}
-      </Text>
+      <Text style={styles.subtitle}>{t('summary.subtitle', { id: questionnaireId })}</Text>
 
       {/* Progress Card */}
       <Card style={styles.progressCard}>
@@ -175,7 +175,10 @@ export const SummaryScreen = ({ navigation, route }: Props): React.JSX.Element =
           {t('summary.progress', { percent: Math.round(safeProgress) })}
         </Text>
         <Text style={styles.answeredText}>
-          {t('summary.answeredQuestions', { count: safeAnsweredCount, defaultValue: '{{count}} Fragen beantwortet' })}
+          {t('summary.answeredQuestions', {
+            count: safeAnsweredCount,
+            defaultValue: '{{count}} Fragen beantwortet',
+          })}
         </Text>
       </Card>
 
@@ -195,7 +198,7 @@ export const SummaryScreen = ({ navigation, route }: Props): React.JSX.Element =
             </Text>
           </TouchableOpacity>
         </View>
-        
+
         {/* Patient Info Section */}
         {patient && (
           <View style={styles.patientSection}>
@@ -224,7 +227,7 @@ export const SummaryScreen = ({ navigation, route }: Props): React.JSX.Element =
             )}
           </View>
         )}
-        
+
         {/* Answers by Section */}
         {answerSummary.map((section, sectionIdx) => (
           <View key={sectionIdx} style={styles.answerSection}>
@@ -237,7 +240,7 @@ export const SummaryScreen = ({ navigation, route }: Props): React.JSX.Element =
             ))}
           </View>
         ))}
-        
+
         {answerSummary.length === 0 && (
           <Text style={styles.noAnswersText}>
             {t('summary.noAnswers', { defaultValue: 'Keine Antworten vorhanden' })}

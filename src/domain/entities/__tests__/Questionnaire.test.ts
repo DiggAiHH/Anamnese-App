@@ -41,9 +41,7 @@ describe('QuestionnaireEntity', () => {
             { value: 'yes', labelKey: 'yes' },
             { value: 'no', labelKey: 'no' },
           ],
-          conditions: [
-            { questionId: 'gender', operator: 'equals', value: 'female' },
-          ],
+          conditions: [{ questionId: 'gender', operator: 'equals', value: 'female' }],
         },
       ],
     },
@@ -62,7 +60,11 @@ describe('QuestionnaireEntity', () => {
   });
 
   it('evaluates conditional visibility', () => {
-    const questionnaire = QuestionnaireEntity.create('22222222-2222-2222-2222-222222222222', sections, '1.0.0');
+    const questionnaire = QuestionnaireEntity.create(
+      '22222222-2222-2222-2222-222222222222',
+      sections,
+      '1.0.0',
+    );
     const noAnswers = questionnaire.getVisibleQuestions(new Map());
     expect(noAnswers.map(q => q.id)).toEqual(['first_name', 'gender']);
 
@@ -71,7 +73,11 @@ describe('QuestionnaireEntity', () => {
   });
 
   it('calculates progress based on visible answered questions', () => {
-    const questionnaire = QuestionnaireEntity.create('22222222-2222-2222-2222-222222222222', sections, '1.0.0');
+    const questionnaire = QuestionnaireEntity.create(
+      '22222222-2222-2222-2222-222222222222',
+      sections,
+      '1.0.0',
+    );
     const answers = new Map<string, unknown>();
 
     expect(questionnaire.calculateProgress(answers)).toBe(0);

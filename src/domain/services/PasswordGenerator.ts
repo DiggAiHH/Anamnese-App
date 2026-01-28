@@ -19,7 +19,7 @@ export class PasswordGenerator {
       // Create a buffer for 1 32-bit integer
       const buf = new Uint32Array(1);
       // Use global crypto (available in RN via polyfill/native or web)
-      crypto.getRandomValues(buf); 
+      crypto.getRandomValues(buf);
       return chars[buf[0] % chars.length];
     };
 

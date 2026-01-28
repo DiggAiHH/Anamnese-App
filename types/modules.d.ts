@@ -32,7 +32,7 @@ declare module 'react-native-sqlite-storage' {
     params: OpenDatabaseParams | string,
     version?: string,
     displayName?: string,
-    size?: number
+    size?: number,
   ) => Promise<SQLiteDatabase>;
 
   const SQLite: {
@@ -121,7 +121,7 @@ declare module '@react-navigation/stack' {
 declare module '@react-navigation/native-stack' {
   export type NativeStackScreenProps<
     ParamList extends Record<string, object | undefined> = Record<string, object | undefined>,
-    RouteName extends keyof ParamList = keyof ParamList
+    RouteName extends keyof ParamList = keyof ParamList,
   > = {
     navigation: {
       navigate: (...args: unknown[]) => void;

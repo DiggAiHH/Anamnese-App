@@ -162,8 +162,16 @@ describeIfNative('NativeEncryptionService', () => {
 
   describe('encrypt/decrypt round-trip', () => {
     it('should preserve data integrity for diverse inputs', async () => {
-      const dataset = ['Simple text', 'Äöü Special chars ß', '中文汉字', 'العربية', '日本語', '',
-        JSON.stringify({ json: 'data', number: 123 }), 'Very long text '.repeat(20)];
+      const dataset = [
+        'Simple text',
+        'Äöü Special chars ß',
+        '中文汉字',
+        'العربية',
+        '日本語',
+        '',
+        JSON.stringify({ json: 'data', number: 123 }),
+        'Very long text '.repeat(20),
+      ];
 
       const { key } = await encryptionService.deriveKey(STRONG_PASSWORD, BASE_SALT);
 
@@ -177,8 +185,9 @@ describeIfNative('NativeEncryptionService', () => {
 
   describe('GDPR compliance', () => {
     it('should use PBKDF2 with 600,000 iterations', () => {
-      expect((encryptionService as unknown as { PBKDF2_ITERATIONS: number }).PBKDF2_ITERATIONS)
-        .toBe(600000);
+      expect(
+        (encryptionService as unknown as { PBKDF2_ITERATIONS: number }).PBKDF2_ITERATIONS,
+      ).toBe(600000);
     });
   });
 });

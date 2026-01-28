@@ -1,6 +1,6 @@
 /**
  * EncryptedData Value Object - repräsentiert verschlüsselte Daten
- * 
+ *
  * Security:
  * - AES-256-GCM Verschlüsselung
  * - Immutable Value Object (keine Setter)
@@ -36,7 +36,7 @@ export type EncryptedData = z.infer<typeof EncryptedDataSchema>;
 
 /**
  * EncryptedData Value Object
- * 
+ *
  * Immutable - einmal erstellt, nicht mehr änderbar
  */
 export class EncryptedDataVO {
@@ -146,7 +146,7 @@ export class EncryptedDataVO {
    */
   static fromString(str: string): EncryptedDataVO {
     let json: string;
-    
+
     if (typeof Buffer !== 'undefined') {
       json = Buffer.from(str, 'base64').toString('utf-8');
     } else {

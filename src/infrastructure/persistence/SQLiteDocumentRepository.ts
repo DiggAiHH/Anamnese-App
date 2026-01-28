@@ -88,7 +88,8 @@ export class SQLiteDocumentRepository implements IDocumentRepository {
    * Find documents by type (e.g., 'insurance_card', 'id_document')
    */
   async findByType(patientId: string, type: string): Promise<DocumentEntity[]> {
-    const query = 'SELECT * FROM documents WHERE patient_id = ? AND type = ? ORDER BY uploaded_at DESC';
+    const query =
+      'SELECT * FROM documents WHERE patient_id = ? AND type = ? ORDER BY uploaded_at DESC';
     const results = await this.db.executeSql(query, [patientId, type]);
 
     const documents: DocumentEntity[] = [];
@@ -127,7 +128,7 @@ export class SQLiteDocumentRepository implements IDocumentRepository {
         confidence: number;
         bbox: { x: number; y: number; width: number; height: number };
       }>;
-    }
+    },
   ): Promise<void> {
     const query = `
       UPDATE documents

@@ -156,7 +156,7 @@ describe('PDFTemplateService', () => {
 
       const result = PDFTemplateService.generate(input);
 
-      expect(result.html).toContain('Max M.');  // First name + last initial
+      expect(result.html).toContain('Max M.'); // First name + last initial
       expect(result.html).toContain('1985'); // Birth year
       expect(result.html).toContain('Männlich'); // Gender in German
     });
@@ -261,7 +261,9 @@ describe('PDFTemplateService', () => {
     });
 
     it('should handle array answers', () => {
-      const arrayAnswers = new Map<string, AnswerValue>([['q1', ['Option A', 'Option B', 'Option C']]]);
+      const arrayAnswers = new Map<string, AnswerValue>([
+        ['q1', ['Option A', 'Option B', 'Option C']],
+      ]);
       const input: PDFTemplateInput = {
         patient: mockPatient,
         questionnaire: mockQuestionnaire,

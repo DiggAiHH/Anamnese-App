@@ -2,7 +2,7 @@
  * Feedback Screen
  * Allows users to submit improvement suggestions via email or clipboard.
  * ISO/WCAG: Token-based design system
- * 
+ *
  * @security No PII collected. Only category + freeform description.
  */
 
@@ -46,7 +46,7 @@ export const FeedbackScreen = (_props: Props): React.JSX.Element => {
     if (!description.trim()) {
       Alert.alert(
         t('common.error'),
-        t('feedback.errorEmpty', { defaultValue: 'Please enter a description.' })
+        t('feedback.errorEmpty', { defaultValue: 'Please enter a description.' }),
       );
       return;
     }
@@ -67,7 +67,7 @@ export const FeedbackScreen = (_props: Props): React.JSX.Element => {
         await Linking.openURL(mailtoUri);
         Alert.alert(
           t('common.success', { defaultValue: 'Success' }),
-          t('feedback.successEmail', { defaultValue: 'Email client opened.' })
+          t('feedback.successEmail', { defaultValue: 'Email client opened.' }),
         );
       } else {
         // Fallback: Copy to clipboard
@@ -76,8 +76,9 @@ export const FeedbackScreen = (_props: Props): React.JSX.Element => {
         Alert.alert(
           t('feedback.copiedTitle', { defaultValue: 'Copied to Clipboard' }),
           t('feedback.copiedMessage', {
-            defaultValue: 'Feedback text copied. Please paste it into an email to: ' + DEVELOPER_EMAIL,
-          })
+            defaultValue:
+              'Feedback text copied. Please paste it into an email to: ' + DEVELOPER_EMAIL,
+          }),
         );
       }
 
@@ -96,15 +97,16 @@ export const FeedbackScreen = (_props: Props): React.JSX.Element => {
         Alert.alert(
           t('feedback.copiedTitle', { defaultValue: 'Copied to Clipboard' }),
           t('feedback.copiedMessage', {
-            defaultValue: 'Feedback text copied. Please paste it into an email to: ' + DEVELOPER_EMAIL,
-          })
+            defaultValue:
+              'Feedback text copied. Please paste it into an email to: ' + DEVELOPER_EMAIL,
+          }),
         );
         setDescription('');
         setSelectedCategory('feature');
       } catch {
         Alert.alert(
           t('common.error'),
-          t('feedback.errorGeneric', { defaultValue: 'Could not send feedback.' })
+          t('feedback.errorGeneric', { defaultValue: 'Could not send feedback.' }),
         );
       }
     } finally {
@@ -116,7 +118,7 @@ export const FeedbackScreen = (_props: Props): React.JSX.Element => {
     if (!description.trim()) {
       Alert.alert(
         t('common.error'),
-        t('feedback.errorEmpty', { defaultValue: 'Please enter a description.' })
+        t('feedback.errorEmpty', { defaultValue: 'Please enter a description.' }),
       );
       return;
     }
@@ -129,7 +131,7 @@ export const FeedbackScreen = (_props: Props): React.JSX.Element => {
     Clipboard.setString(fullText);
     Alert.alert(
       t('feedback.copiedTitle', { defaultValue: 'Copied to Clipboard' }),
-      t('feedback.copiedMessageShort', { defaultValue: 'Feedback copied!' })
+      t('feedback.copiedMessageShort', { defaultValue: 'Feedback copied!' }),
     );
   };
 
@@ -138,7 +140,9 @@ export const FeedbackScreen = (_props: Props): React.JSX.Element => {
       <View style={styles.content}>
         <Text style={styles.title}>{t('feedback.title', { defaultValue: 'Send Feedback' })}</Text>
         <Text style={styles.subtitle}>
-          {t('feedback.subtitle', { defaultValue: 'Help us improve the app by sharing your thoughts.' })}
+          {t('feedback.subtitle', {
+            defaultValue: 'Help us improve the app by sharing your thoughts.',
+          })}
         </Text>
 
         {/* Category Selection */}
@@ -213,7 +217,8 @@ export const FeedbackScreen = (_props: Props): React.JSX.Element => {
         <View style={styles.privacyNote}>
           <Text style={styles.privacyText}>
             {t('feedback.privacyNote', {
-              defaultValue: 'Your feedback is sent directly to the developer. No personal data is collected.',
+              defaultValue:
+                'Your feedback is sent directly to the developer. No personal data is collected.',
             })}
           </Text>
         </View>

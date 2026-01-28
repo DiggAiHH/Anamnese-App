@@ -28,4 +28,3 @@ describe('shouldSuppressUserNotification', () => {
     expect(shouldSuppressUserNotification(null)).toBe(false);
   });
 });
-

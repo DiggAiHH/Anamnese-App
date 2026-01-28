@@ -1,6 +1,6 @@
 /**
  * i18n Configuration - React Native
- * 
+ *
  * Currently supports de/en.
  */
 

@@ -24,8 +24,15 @@ class MockAnswerRepository implements IAnswerRepository {
     return this.answers.filter(a => a.questionnaireId === questionnaireId);
   }
 
-  async findByQuestionId(questionnaireId: string, questionId: string): Promise<AnswerEntity | null> {
-    return this.answers.find(a => a.questionnaireId === questionnaireId && a.questionId === questionId) ?? null;
+  async findByQuestionId(
+    questionnaireId: string,
+    questionId: string,
+  ): Promise<AnswerEntity | null> {
+    return (
+      this.answers.find(
+        a => a.questionnaireId === questionnaireId && a.questionId === questionId,
+      ) ?? null
+    );
   }
 
   async saveMany(answers: AnswerEntity[]): Promise<void> {
@@ -104,7 +111,10 @@ describe('SaveAnswerUseCase', () => {
 
     expect(result.success).toBe(true);
     expect(result.answerId).toBeDefined();
-    const stored = await repository.findByQuestionId('11111111-1111-1111-1111-111111111111', 'first_name');
+    const stored = await repository.findByQuestionId(
+      '11111111-1111-1111-1111-111111111111',
+      'first_name',
+    );
     expect(stored?.encryptedValue.length).toBeGreaterThan(0);
   });
 
@@ -170,7 +180,10 @@ describe('SaveAnswerUseCase', () => {
     const stored = await repository.findByQuestionId(questionnaireId, 'symptoms');
     expect(stored).toBeTruthy();
 
-    const decrypted = await encryption.decrypt(EncryptedDataVO.fromString(stored!.encryptedValue), 'base64key');
+    const decrypted = await encryption.decrypt(
+      EncryptedDataVO.fromString(stored!.encryptedValue),
+      'base64key',
+    );
     expect(JSON.parse(decrypted)).toBe(5);
   });
 });

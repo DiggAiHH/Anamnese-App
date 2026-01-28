@@ -8,15 +8,7 @@
  */
 
 import React, { useMemo, useState } from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  StyleSheet,
-  Alert,
-  Switch,
-} from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Switch } from 'react-native';
 import Clipboard from '@react-native-clipboard/clipboard';
 import { useTranslation } from 'react-i18next';
 import { PasswordGenerator } from '../../domain/services/PasswordGenerator';
@@ -176,9 +168,7 @@ export const MasterPasswordScreen = ({ navigation, route }: Props): React.JSX.El
     } catch (error) {
       Alert.alert(
         t('common.error'),
-        error instanceof Error
-          ? error.message
-          : t('masterPassword.errorDerive'),
+        error instanceof Error ? error.message : t('masterPassword.errorDerive'),
       );
     } finally {
       setIsWorking(false);
@@ -188,9 +178,7 @@ export const MasterPasswordScreen = ({ navigation, route }: Props): React.JSX.El
   return (
     <View style={styles.container} testID="master-password-screen">
       <Text style={styles.title}>{title}</Text>
-      <Text style={styles.subtitle}>
-        {t('masterPassword.subtitle')}
-      </Text>
+      <Text style={styles.subtitle}>{t('masterPassword.subtitle')}</Text>
 
       <View style={styles.card}>
         <Text style={styles.label}>{t('masterPassword.label')}</Text>
@@ -261,12 +249,9 @@ export const MasterPasswordScreen = ({ navigation, route }: Props): React.JSX.El
         </View>
         <Switch
           value={rememberKey}
-          onValueChange={(next) => {
+          onValueChange={next => {
             if (!secureAvailable && next) {
-              Alert.alert(
-                t('common.error'),
-                t('masterPassword.rememberKeyUnavailable'),
-              );
+              Alert.alert(t('common.error'), t('masterPassword.rememberKeyUnavailable'));
               return;
             }
             setRememberKey(next);

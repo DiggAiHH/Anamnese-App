@@ -17,15 +17,15 @@ const template = rawTemplate as unknown as {
 };
 
 const findQuestion = (sectionId: string, questionId: string) => {
-  const section = template.sections.find((s) => s.id === sectionId);
+  const section = template.sections.find(s => s.id === sectionId);
   if (!section) return undefined;
-  return section.questions.find((q) => q.id === questionId);
+  return section.questions.find(q => q.id === questionId);
 };
 
 const hasCondition = (conditions: Condition[] | undefined, expected: Condition) => {
   if (!conditions) return false;
   return conditions.some(
-    (c) =>
+    c =>
       c.questionId === expected.questionId &&
       c.operator === expected.operator &&
       c.value === expected.value,

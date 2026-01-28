@@ -50,7 +50,9 @@ export const SelectLanguageScreen = ({ navigation }: Props): React.JSX.Element =
 
   return (
     <View style={styles.container} testID="select-language-screen">
-      <Text style={styles.title} accessibilityRole="header">{t('selectLanguage.title')}</Text>
+      <Text style={styles.title} accessibilityRole="header">
+        {t('selectLanguage.title')}
+      </Text>
       <Text style={styles.subtitle}>{t('selectLanguage.subtitle')}</Text>
 
       <View style={styles.card} accessibilityRole="radiogroup">

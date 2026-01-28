@@ -10,7 +10,7 @@ jest.mock('react-native/Libraries/Animated/NativeAnimatedHelper');
 
 // Mock react-native-quick-crypto for Jest (native module not available in tests)
 jest.mock('react-native-quick-crypto', () => ({
-  randomBytes: (size) => Buffer.alloc(size).fill(1),
+  randomBytes: size => Buffer.alloc(size).fill(1),
   pbkdf2: (password, salt, iterations, keylen, digest, callback) => {
     const key = Buffer.alloc(keylen).fill(2);
     if (callback) callback(null, key);
@@ -18,13 +18,13 @@ jest.mock('react-native-quick-crypto', () => ({
   },
   pbkdf2Sync: (password, salt, iterations, keylen) => Buffer.alloc(keylen).fill(2),
   createCipheriv: () => ({
-    update: (data) => Buffer.from(data),
+    update: data => Buffer.from(data),
     final: () => Buffer.alloc(0),
     getAuthTag: () => Buffer.alloc(16).fill(3),
   }),
   createDecipheriv: () => ({
     setAuthTag: () => {},
-    update: (data) => data,
+    update: data => data,
     final: () => Buffer.alloc(0),
   }),
 }));
@@ -33,20 +33,26 @@ jest.mock('react-native-quick-crypto', () => ({
 jest.mock('react-native-sqlite-storage', () => ({
   DEBUG: jest.fn(),
   enablePromise: jest.fn(),
-  openDatabase: jest.fn(() => Promise.resolve({
-    executeSql: jest.fn(() => Promise.resolve([
-      { rows: { length: 0, item: () => null } } // Default empty result
-    ])),
-    transaction: jest.fn((cb) => cb({
-      executeSql: jest.fn()
-    })),
-    close: jest.fn(() => Promise.resolve()),
-  })),
+  openDatabase: jest.fn(() =>
+    Promise.resolve({
+      executeSql: jest.fn(() =>
+        Promise.resolve([
+          { rows: { length: 0, item: () => null } }, // Default empty result
+        ]),
+      ),
+      transaction: jest.fn(cb =>
+        cb({
+          executeSql: jest.fn(),
+        }),
+      ),
+      close: jest.fn(() => Promise.resolve()),
+    }),
+  ),
 }));
 
 // Mock @react-native-async-storage/async-storage
 jest.mock('@react-native-async-storage/async-storage', () =>
-  require('@react-native-async-storage/async-storage/jest/async-storage-mock')
+  require('@react-native-async-storage/async-storage/jest/async-storage-mock'),
 );
 
 // Mock react-native-keychain (ESM module) for Jest

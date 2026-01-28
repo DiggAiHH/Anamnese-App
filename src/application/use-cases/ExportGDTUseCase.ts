@@ -1,6 +1,6 @@
 /**
  * ExportGDT Use Case - Export zu Praxissystem (GDT Format)
- * 
+ *
  * FLOW:
  * Presentation Layer (ExportScreen)
  *   → Use Case
@@ -52,10 +52,7 @@ export class ExportGDTUseCase {
   async execute(input: ExportGDTInput): Promise<ExportGDTOutput> {
     try {
       // Step 1: Check GDPR Consent für GDT Export
-      const hasConsent = await this.gdprRepository.hasActiveConsent(
-        input.patientId,
-        'gdt_export',
-      );
+      const hasConsent = await this.gdprRepository.hasActiveConsent(input.patientId, 'gdt_export');
 
       if (!hasConsent) {
         return {
@@ -89,18 +86,16 @@ export class ExportGDTUseCase {
       );
 
       // Step 5: Build GDT Export
-      const gdtExport = await this.buildGDTExport(
-        patient,
-        questionnaire,
-        answersMap,
-        input,
-      );
+      const gdtExport = await this.buildGDTExport(patient, questionnaire, answersMap, input);
 
       // Step 6: Save to File
       const filePath = await this.saveGDTFile(gdtExport, input.patientId);
 
       // Step 7: Add Audit Log
-      const updatedPatient = patient.addAuditLog('exported', `GDT export to ${input.receiverId ?? 'PVS'}`);
+      const updatedPatient = patient.addAuditLog(
+        'exported',
+        `GDT export to ${input.receiverId ?? 'PVS'}`,
+      );
       await this.patientRepository.save(updatedPatient);
 
       return {
@@ -177,11 +172,11 @@ export class ExportGDTUseCase {
 
       for (const question of section.questions) {
         const answer = answersMap.get(question.id);
-        
+
         if (answer !== undefined && answer !== null) {
           text += `${question.labelKey}: `;
           text += this.formatAnswer(question, answer);
-          
+
           text += '\n';
         }
       }
@@ -198,7 +193,7 @@ export class ExportGDTUseCase {
   ): string {
     // Legacy array-based multiselect
     if (Array.isArray(answer)) {
-      return answer.map((v) => String(v)).join(', ');
+      return answer.map(v => String(v)).join(', ');
     }
 
     if (typeof answer === 'boolean') {
@@ -211,14 +206,14 @@ export class ExportGDTUseCase {
       if (question.type === 'multiselect' || question.type === 'checkbox') {
         const selectedBitPositions = decodeMultiChoiceBitset(answer);
         const labels = selectedBitPositions
-          .map((bitPos) => question.options?.find((o) => o.value === bitPos)?.labelKey)
+          .map(bitPos => question.options?.find(o => o.value === bitPos)?.labelKey)
           .filter((v): v is string => typeof v === 'string' && v.length > 0);
 
         return labels.length > 0 ? labels.join(', ') : answer.toString();
       }
 
       // Single-choice numeric option values
-      const match = question.options.find((o) => o.value === answer);
+      const match = question.options.find(o => o.value === answer);
       if (match) {
         return String(match.labelKey);
       }

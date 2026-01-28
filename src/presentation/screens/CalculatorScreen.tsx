@@ -64,15 +64,15 @@ export const CalculatorScreen = (): React.JSX.Element => {
     try {
       const weight = parseFloat(bmiWeight);
       const height = parseFloat(bmiHeight);
-      
+
       // Guard against NaN from empty/invalid input
       if (isNaN(weight) || isNaN(height) || weight <= 0 || height <= 0) {
         Alert.alert(t('common.error'), t('calculator.bmi.invalidInput'));
         return;
       }
-      
+
       const result = ClinicalCalculators.calculateBMI(weight, height);
-      
+
       if (!result) {
         Alert.alert(t('common.error'), t('calculator.bmi.invalidInput'));
         return;
@@ -80,7 +80,7 @@ export const CalculatorScreen = (): React.JSX.Element => {
 
       setBmiResult(
         `${t('calculator.bmi.result')}: ${result.value.toFixed(1)} kg/m²\n` +
-        `${t('calculator.bmi.category')}: ${t(`calculator.bmi.categories.${result.category}`)}`
+          `${t('calculator.bmi.category')}: ${t(`calculator.bmi.categories.${result.category}`)}`,
       );
     } catch (error) {
       Alert.alert(t('common.error'), t('calculator.bmi.invalidInput'));
@@ -91,18 +91,18 @@ export const CalculatorScreen = (): React.JSX.Element => {
     try {
       const age = parseInt(cardioAge, 10);
       const systolic = parseInt(cardioSystolic, 10);
-      
+
       // Guard against NaN from empty/invalid required input
       if (isNaN(age) || isNaN(systolic) || age <= 0 || systolic <= 0) {
         Alert.alert(t('common.error'), t('calculator.cardio.invalidInput'));
         return;
       }
-      
+
       // Optional cholesterol fields - only include if valid numbers
       const totalChol = parseFloat(cardioTotalChol);
       const hdl = parseFloat(cardioHdl);
       const hasCholesterol = !isNaN(totalChol) && !isNaN(hdl) && totalChol > 0 && hdl > 0;
-      
+
       const result = ClinicalCalculators.calculateCardiovascularRisk({
         age,
         gender: cardioGender,
@@ -120,7 +120,7 @@ export const CalculatorScreen = (): React.JSX.Element => {
 
       setCardioResult(
         `${t('calculator.cardio.risk10Year', { value: result.riskPercentage.toFixed(1) })}\n` +
-        `${t('calculator.cardio.category', { category: t(`calculator.cardio.categories.${result.category}`) })}`
+          `${t('calculator.cardio.category', { category: t(`calculator.cardio.categories.${result.category}`) })}`,
       );
     } catch (error) {
       Alert.alert(t('common.error'), t('calculator.cardio.invalidInput'));
@@ -131,13 +131,13 @@ export const CalculatorScreen = (): React.JSX.Element => {
     try {
       const creatinine = parseFloat(egfrCreatinine);
       const age = parseInt(egfrAge, 10);
-      
+
       // Guard against NaN from empty/invalid input
       if (isNaN(creatinine) || isNaN(age) || creatinine <= 0 || age <= 0) {
         Alert.alert(t('common.error'), t('calculator.egfr.invalidInput'));
         return;
       }
-      
+
       const result = ClinicalCalculators.calculateEGFR(creatinine, age, egfrGender);
 
       if (!result) {
@@ -147,7 +147,7 @@ export const CalculatorScreen = (): React.JSX.Element => {
 
       setEgfrResult(
         `${t('calculator.egfr.result')}: ${result.value.toFixed(1)} mL/min/1.73m²\n` +
-        `${t('calculator.egfr.stage')}: ${result.stage} (${t(`calculator.egfr.stages.stage${result.stage}`)})`
+          `${t('calculator.egfr.stage')}: ${result.stage} (${t(`calculator.egfr.stages.stage${result.stage}`)})`,
       );
     } catch (error) {
       Alert.alert(t('common.error'), t('calculator.egfr.invalidInput'));
@@ -157,13 +157,13 @@ export const CalculatorScreen = (): React.JSX.Element => {
   const calculateIBW = () => {
     try {
       const height = parseFloat(ibwHeight);
-      
+
       // Guard against NaN from empty/invalid input
       if (isNaN(height) || height <= 0) {
         Alert.alert(t('common.error'), t('calculator.ibw.invalidInput'));
         return;
       }
-      
+
       const result = ClinicalCalculators.calculateIdealBodyWeight(height, ibwGender);
 
       if (result === null) {
@@ -182,13 +182,13 @@ export const CalculatorScreen = (): React.JSX.Element => {
       const weight = parseFloat(bmrWeight);
       const height = parseFloat(bmrHeight);
       const age = parseInt(bmrAge, 10);
-      
+
       // Guard against NaN from empty/invalid input
       if (isNaN(weight) || isNaN(height) || isNaN(age) || weight <= 0 || height <= 0 || age <= 0) {
         Alert.alert(t('common.error'), t('calculator.bmr.invalidInput'));
         return;
       }
-      
+
       const result = ClinicalCalculators.calculateBMR(weight, height, age, bmrGender);
 
       if (result === null) {
@@ -259,7 +259,9 @@ export const CalculatorScreen = (): React.JSX.Element => {
 
   const renderBMICalculator = () => (
     <View style={styles.calculatorContent}>
-      <Text style={styles.label} nativeID="bmi-weight-label">{t('calculator.bmi.weight')} (kg)</Text>
+      <Text style={styles.label} nativeID="bmi-weight-label">
+        {t('calculator.bmi.weight')} (kg)
+      </Text>
       <TextInput
         style={styles.input}
         keyboardType="numeric"
@@ -269,7 +271,9 @@ export const CalculatorScreen = (): React.JSX.Element => {
         accessibilityLabel={t('calculator.bmi.weight')}
         accessibilityLabelledBy="bmi-weight-label"
       />
-      <Text style={styles.label} nativeID="bmi-height-label">{t('calculator.bmi.height')} (cm)</Text>
+      <Text style={styles.label} nativeID="bmi-height-label">
+        {t('calculator.bmi.height')} (cm)
+      </Text>
       <TextInput
         style={styles.input}
         keyboardType="numeric"
@@ -284,13 +288,19 @@ export const CalculatorScreen = (): React.JSX.Element => {
         onPress={calculateBMI}
         style={styles.calculateButton}
       />
-      {bmiResult && <Text style={styles.result} accessibilityLiveRegion="polite">{bmiResult}</Text>}
+      {bmiResult && (
+        <Text style={styles.result} accessibilityLiveRegion="polite">
+          {bmiResult}
+        </Text>
+      )}
     </View>
   );
 
   const renderCardioCalculator = () => (
     <View style={styles.calculatorContent}>
-      <Text style={styles.label} nativeID="cardio-age-label">{t('calculator.cardio.age')}</Text>
+      <Text style={styles.label} nativeID="cardio-age-label">
+        {t('calculator.cardio.age')}
+      </Text>
       <TextInput
         style={styles.input}
         keyboardType="numeric"
@@ -317,7 +327,9 @@ export const CalculatorScreen = (): React.JSX.Element => {
           <Text style={styles.genderButtonText}>{t('patientInfo.female')}</Text>
         </TouchableOpacity>
       </View>
-      <Text style={styles.label} nativeID="cardio-systolic-label">{t('calculator.cardio.systolicBP')} (mmHg)</Text>
+      <Text style={styles.label} nativeID="cardio-systolic-label">
+        {t('calculator.cardio.systolicBP')} (mmHg)
+      </Text>
       <TextInput
         style={styles.input}
         keyboardType="numeric"
@@ -327,7 +339,9 @@ export const CalculatorScreen = (): React.JSX.Element => {
         accessibilityLabel={t('calculator.cardio.systolicBP')}
         accessibilityLabelledBy="cardio-systolic-label"
       />
-      <Text style={styles.label} nativeID="cardio-chol-label">{t('calculator.cardio.totalCholesterol')} (mg/dL)</Text>
+      <Text style={styles.label} nativeID="cardio-chol-label">
+        {t('calculator.cardio.totalCholesterol')} (mg/dL)
+      </Text>
       <TextInput
         style={styles.input}
         keyboardType="numeric"
@@ -337,7 +351,9 @@ export const CalculatorScreen = (): React.JSX.Element => {
         accessibilityLabel={t('calculator.cardio.totalCholesterol')}
         accessibilityLabelledBy="cardio-chol-label"
       />
-      <Text style={styles.label} nativeID="cardio-hdl-label">{t('calculator.cardio.hdlCholesterol')} (mg/dL)</Text>
+      <Text style={styles.label} nativeID="cardio-hdl-label">
+        {t('calculator.cardio.hdlCholesterol')} (mg/dL)
+      </Text>
       <TextInput
         style={styles.input}
         keyboardType="numeric"
@@ -360,13 +376,19 @@ export const CalculatorScreen = (): React.JSX.Element => {
         onPress={calculateCardio}
         style={styles.calculateButton}
       />
-      {cardioResult && <Text style={styles.result} accessibilityLiveRegion="polite">{cardioResult}</Text>}
+      {cardioResult && (
+        <Text style={styles.result} accessibilityLiveRegion="polite">
+          {cardioResult}
+        </Text>
+      )}
     </View>
   );
 
   const renderEGFRCalculator = () => (
     <View style={styles.calculatorContent}>
-      <Text style={styles.label} nativeID="egfr-creatinine-label">{t('calculator.egfr.creatinine')} (mg/dL)</Text>
+      <Text style={styles.label} nativeID="egfr-creatinine-label">
+        {t('calculator.egfr.creatinine')} (mg/dL)
+      </Text>
       <TextInput
         style={styles.input}
         keyboardType="numeric"
@@ -376,7 +398,9 @@ export const CalculatorScreen = (): React.JSX.Element => {
         accessibilityLabel={t('calculator.egfr.creatinine')}
         accessibilityLabelledBy="egfr-creatinine-label"
       />
-      <Text style={styles.label} nativeID="egfr-age-label">{t('calculator.egfr.age')}</Text>
+      <Text style={styles.label} nativeID="egfr-age-label">
+        {t('calculator.egfr.age')}
+      </Text>
       <TextInput
         style={styles.input}
         keyboardType="numeric"
@@ -408,13 +432,19 @@ export const CalculatorScreen = (): React.JSX.Element => {
         onPress={calculateEGFR}
         style={styles.calculateButton}
       />
-      {egfrResult && <Text style={styles.result} accessibilityLiveRegion="polite">{egfrResult}</Text>}
+      {egfrResult && (
+        <Text style={styles.result} accessibilityLiveRegion="polite">
+          {egfrResult}
+        </Text>
+      )}
     </View>
   );
 
   const renderIBWCalculator = () => (
     <View style={styles.calculatorContent}>
-      <Text style={styles.label} nativeID="ibw-height-label">{t('calculator.ibw.height')} (cm)</Text>
+      <Text style={styles.label} nativeID="ibw-height-label">
+        {t('calculator.ibw.height')} (cm)
+      </Text>
       <TextInput
         style={styles.input}
         keyboardType="numeric"
@@ -446,13 +476,19 @@ export const CalculatorScreen = (): React.JSX.Element => {
         onPress={calculateIBW}
         style={styles.calculateButton}
       />
-      {ibwResult && <Text style={styles.result} accessibilityLiveRegion="polite">{ibwResult}</Text>}
+      {ibwResult && (
+        <Text style={styles.result} accessibilityLiveRegion="polite">
+          {ibwResult}
+        </Text>
+      )}
     </View>
   );
 
   const renderBMRCalculator = () => (
     <View style={styles.calculatorContent}>
-      <Text style={styles.label} nativeID="bmr-weight-label">{t('calculator.bmr.weight')} (kg)</Text>
+      <Text style={styles.label} nativeID="bmr-weight-label">
+        {t('calculator.bmr.weight')} (kg)
+      </Text>
       <TextInput
         style={styles.input}
         keyboardType="numeric"
@@ -462,7 +498,9 @@ export const CalculatorScreen = (): React.JSX.Element => {
         accessibilityLabel={t('calculator.bmr.weight')}
         accessibilityLabelledBy="bmr-weight-label"
       />
-      <Text style={styles.label} nativeID="bmr-height-label">{t('calculator.bmr.height')} (cm)</Text>
+      <Text style={styles.label} nativeID="bmr-height-label">
+        {t('calculator.bmr.height')} (cm)
+      </Text>
       <TextInput
         style={styles.input}
         keyboardType="numeric"
@@ -472,7 +510,9 @@ export const CalculatorScreen = (): React.JSX.Element => {
         accessibilityLabel={t('calculator.bmr.height')}
         accessibilityLabelledBy="bmr-height-label"
       />
-      <Text style={styles.label} nativeID="bmr-age-label">{t('calculator.bmr.age')}</Text>
+      <Text style={styles.label} nativeID="bmr-age-label">
+        {t('calculator.bmr.age')}
+      </Text>
       <TextInput
         style={styles.input}
         keyboardType="numeric"
@@ -504,7 +544,11 @@ export const CalculatorScreen = (): React.JSX.Element => {
         onPress={calculateBMR}
         style={styles.calculateButton}
       />
-      {bmrResult && <Text style={styles.result} accessibilityLiveRegion="polite">{bmrResult}</Text>}
+      {bmrResult && (
+        <Text style={styles.result} accessibilityLiveRegion="polite">
+          {bmrResult}
+        </Text>
+      )}
     </View>
   );
 

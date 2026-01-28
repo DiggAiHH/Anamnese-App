@@ -77,7 +77,10 @@ export const VoiceScreen = ({ navigation: _navigation }: Props): React.JSX.Eleme
         if (canOpen) {
           await Linking.openURL('app-settings:');
         } else {
-          Alert.alert(t('voice.errorTitle'), t('voice.settingsNotAvailable', { defaultValue: 'Cannot open settings.' }));
+          Alert.alert(
+            t('voice.errorTitle'),
+            t('voice.settingsNotAvailable', { defaultValue: 'Cannot open settings.' }),
+          );
         }
       } else if (Platform.OS === 'android') {
         await Linking.openSettings();
@@ -87,14 +90,19 @@ export const VoiceScreen = ({ navigation: _navigation }: Props): React.JSX.Eleme
         if (canOpen) {
           await Linking.openURL('ms-settings:privacy-microphone');
         } else {
-          Alert.alert(t('voice.errorTitle'), t('voice.settingsNotAvailable', { defaultValue: 'Cannot open settings.' }));
+          Alert.alert(
+            t('voice.errorTitle'),
+            t('voice.settingsNotAvailable', { defaultValue: 'Cannot open settings.' }),
+          );
         }
       }
     } catch (error) {
       // Android 11+: ActivityNotFoundException when no handler found
       Alert.alert(
         t('voice.errorTitle'),
-        t('voice.settingsError', { defaultValue: 'Could not open system settings. Please navigate manually.' })
+        t('voice.settingsError', {
+          defaultValue: 'Could not open system settings. Please navigate manually.',
+        }),
       );
     }
   }, [t]);
@@ -170,7 +178,9 @@ export const VoiceScreen = ({ navigation: _navigation }: Props): React.JSX.Eleme
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.title} accessibilityRole="header">{t('voice.title')}</Text>
+        <Text style={styles.title} accessibilityRole="header">
+          {t('voice.title')}
+        </Text>
         <Text style={styles.subtitle}>{t('voice.subtitle')}</Text>
         <View style={styles.badge}>
           <Text style={styles.badgeText}>🆓 {t('voice.freeLabel')}</Text>
@@ -179,7 +189,9 @@ export const VoiceScreen = ({ navigation: _navigation }: Props): React.JSX.Eleme
 
       {/* Speech-to-Text Section */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle} accessibilityRole="header">🎤 {t('voice.sttTitle')}</Text>
+        <Text style={styles.sectionTitle} accessibilityRole="header">
+          🎤 {t('voice.sttTitle')}
+        </Text>
         <Text style={styles.sectionDesc}>{t('voice.sttDesc')}</Text>
 
         {!sttAvailable && (
@@ -250,7 +262,9 @@ export const VoiceScreen = ({ navigation: _navigation }: Props): React.JSX.Eleme
 
       {/* Text-to-Speech Section */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle} accessibilityRole="header">🔊 {t('voice.ttsTitle')}</Text>
+        <Text style={styles.sectionTitle} accessibilityRole="header">
+          🔊 {t('voice.ttsTitle')}
+        </Text>
         <Text style={styles.sectionDesc}>{t('voice.ttsDesc')}</Text>
 
         <TextInput
@@ -291,7 +305,9 @@ export const VoiceScreen = ({ navigation: _navigation }: Props): React.JSX.Eleme
 
       {/* Privacy Note */}
       <View style={styles.privacySection}>
-        <Text style={styles.privacyTitle} accessibilityRole="header">🔒 {t('voice.privacyTitle')}</Text>
+        <Text style={styles.privacyTitle} accessibilityRole="header">
+          🔒 {t('voice.privacyTitle')}
+        </Text>
         <Text style={styles.privacyText}>{t('voice.privacyNote')}</Text>
       </View>
 

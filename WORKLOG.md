@@ -25,6 +25,40 @@ Produce a **Release** MSIX that is **self-contained** (ships JS bundle) and **la
 
 ## Log Entries
 
+### 2026-01-24 (Lint/format cleanup)
+- **Goal:** Run lint and auto-fix for code cleanup.
+- **Evidence:**
+  - `buildLogs/lint_cleanup_20260124.out.log`
+  - `buildLogs/lint_cleanup_20260124.err.log`
+  - `buildLogs/lint_fix_cleanup_20260124.out.log`
+  - `buildLogs/lint_fix_cleanup_20260124.err.log`
+
+### 2026-01-25 (RUN-20260125-ui-improvements)
+- **Goal:** Comprehensive UI improvements - new components, enhanced primitives, better accessibility.
+- **Results:**
+  - Type-check: PASS
+  - Tests: PASS (AppText, AppButton, AppInput - 10 tests)
+  - 21/30 tasks completed, 1 skipped, 8 deferred
+- **New Components (11):**
+  - Container, Spacer, Divider, ScreenHeader
+  - IconButton, LoadingSkeleton, StatusBadge
+  - Checkbox, RadioGroup, Select
+  - VisuallyHidden
+- **Enhanced Components:**
+  - `tokens.ts`: typography (h1/h2/h3/small), layout constants, focus constants
+  - `AppText.tsx`: h1/h2/h3/small variants + color prop (6 colors)
+  - `AppButton.tsx`: size variants (sm/md/lg) + icon support
+  - `AppInput.tsx`: helperText + focus state
+- **Screen Updates:**
+  - `HomeScreen.tsx`: Uses Container + accessibilityHint on primary actions
+  - `RootNavigator.tsx`: TransitionPresets fix (moduleResolution issue)
+- **Key Learnings:**
+  - React Native Pressable doesn't have `focused` in style callback
+  - @react-navigation/stack exports don't resolve with moduleResolution: node16
+- **Evidence:**
+  - `CURRENT_TASKS.md`: 30-point tasklist with status
+  - `src/presentation/components/index.ts`: Central export file
+
 ### 2026-01-24 (PII log scrub + TTS coverage)
 - **Goal:** Remove transcript logs with PII and restore supported-platform TTS tests.
 - **Changes:**

@@ -1,7 +1,10 @@
 import type { Question } from '@domain/entities/Questionnaire';
 import type { AnswerValue } from '@domain/entities/Answer';
 
-export const isMissingRequiredAnswer = (question: Question, value: AnswerValue | undefined): boolean => {
+export const isMissingRequiredAnswer = (
+  question: Question,
+  value: AnswerValue | undefined,
+): boolean => {
   if (value === null || value === undefined) return true;
 
   if (question.type === 'checkbox' && !question.options) {

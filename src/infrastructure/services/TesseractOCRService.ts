@@ -55,7 +55,7 @@ export class TesseractOCRService implements IOCRService {
    */
   async performOCR(
     imagePath: string,
-    language: string = 'deu'
+    language: string = 'deu',
   ): Promise<{
     text: string;
     confidence: number;
@@ -88,16 +88,12 @@ export class TesseractOCRService implements IOCRService {
       };
 
       // Perform OCR
-      const result: string = await TesseractOcr.recognize(
-        imagePath,
-        tesseractLang,
-        options
-      );
+      const result: string = await TesseractOcr.recognize(imagePath, tesseractLang, options);
 
       // Parse result and calculate confidence
       // Note: react-native-tesseract-ocr returns plain text,
       // for detailed blocks we would need to use hOCR format
-      const lines = result.split('\n').filter((line) => line.trim().length > 0);
+      const lines = result.split('\n').filter(line => line.trim().length > 0);
       const blocks = lines.map((line, index) => ({
         text: line.trim(),
         confidence: 0.85, // Tesseract typically has 85%+ confidence
@@ -129,9 +125,7 @@ export class TesseractOCRService implements IOCRService {
    * Perform OCR with automatic language detection
    * Tries multiple languages and returns best result
    */
-  async performOCRWithAutoDetect(
-    imagePath: string
-  ): Promise<{
+  async performOCRWithAutoDetect(imagePath: string): Promise<{
     text: string;
     confidence: number;
     language: string;
@@ -171,7 +165,7 @@ export class TesseractOCRService implements IOCRService {
    */
   async extractFields(
     imagePath: string,
-    fieldPatterns: Record<string, RegExp>
+    fieldPatterns: Record<string, RegExp>,
   ): Promise<Record<string, string>> {
     const ocrResult = await this.performOCR(imagePath);
     const extractedFields: Record<string, string> = {};

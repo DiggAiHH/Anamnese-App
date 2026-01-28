@@ -15,7 +15,9 @@ type GlobalHandlerState = {
 const STATE_KEY = '__ANAMNESE_GLOBAL_ERROR_HANDLER_STATE__';
 
 const getState = (): GlobalHandlerState => {
-  const existing = (globalThis as unknown as Record<string, unknown>)[STATE_KEY] as GlobalHandlerState | undefined;
+  const existing = (globalThis as unknown as Record<string, unknown>)[STATE_KEY] as
+    | GlobalHandlerState
+    | undefined;
   if (existing) {
     return existing;
   }

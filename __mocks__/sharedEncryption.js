@@ -5,11 +5,11 @@
 
 const PBKDF2_ITERATIONS = 600000;
 
-const validatePasswordStrength = (password) => {
+const validatePasswordStrength = password => {
   if (!password || typeof password !== 'string') {
     return { valid: false, errors: ['Password is required'] };
   }
-  
+
   const errors = [];
   if (password.length < 16) {
     errors.push('Password must be at least 16 characters');
@@ -26,7 +26,7 @@ const validatePasswordStrength = (password) => {
   if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
     errors.push('Password must contain special character');
   }
-  
+
   return {
     valid: errors.length === 0,
     errors,
@@ -39,7 +39,7 @@ const encrypt = async (plaintext, _key) => {
   const salt = Buffer.from('saltvalue1234567').toString('base64');
   const ciphertext = Buffer.from(plaintext).toString('base64');
   const authTag = Buffer.from('authtag123456789').toString('base64');
-  
+
   return {
     ciphertext,
     iv,
@@ -60,7 +60,7 @@ const deriveKey = async (_password, _salt) => {
   return Buffer.from('mockderivedkey01234567890123456').toString('base64');
 };
 
-const generateRandomBytes = (length) => {
+const generateRandomBytes = length => {
   const bytes = new Uint8Array(length);
   for (let i = 0; i < length; i++) {
     bytes[i] = Math.floor(Math.random() * 256);
@@ -70,7 +70,7 @@ const generateRandomBytes = (length) => {
 
 let cryptoProvider = null;
 
-const setCryptoProvider = (provider) => {
+const setCryptoProvider = provider => {
   cryptoProvider = provider;
 };
 

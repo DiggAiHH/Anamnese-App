@@ -57,7 +57,102 @@ It defines the always-on checklist and records what was done, when, and where.
 
 ## AKTUELLER LAUF: 5 Pflichtpunkte (LIVE)
 
-> **Run-ID:** RUN-20260124-2321-nav-transition-speed | **Status:** IN PROGRESS
+> **Run-ID:** RUN-20260126-backend-improvements | **Status:** ✅ COMPLETED
+
+1) **Ziel**
+- Outcome: Backend architecture improvements - typed errors, dependency injection, in-memory repositories, structured logging, domain validators.
+- DoD:
+  1. BackendErrorCode enum with 20+ error codes.
+  2. BackendResult<T> discriminated union with ok()/err() helpers.
+  3. IRepositoryFactory interface for dependency injection.
+  4. 5 InMemory*Repository implementations for deterministic testing.
+  5. LogEvents registry with 60+ event IDs.
+  6. logEvent() structured logging function.
+  7. PatientValidator and AnswerValidator with ValidationResult.
+  8. 82 unit tests passing.
+  9. Type-check PASS.
+- Nicht-Ziele: No production repository refactoring, no keyManager changes to existing functions.
+
+2) **Methodik**
+- Ground-Zero: Created 30-point tasklist in CURRENT_TASKS.md.
+- Stop-and-Fix: Fixed test assertions (encryptedData.firstName vs firstName), fixed unused imports.
+- Evidence: `buildLogs/test_backend_improvements.txt` (82 tests PASS), `buildLogs/typecheck_backend_improvements.txt` (PASS).
+
+3) **Sprachen/Stack**
+- Sprachen: TypeScript, React Native 0.73.
+- Tools: npm scripts, Jest.
+- Constraints: Keine PII in Logs; keine Secrets; DSGVO-compliant validation.
+
+4) **Struktur**
+- New Files (19 total):
+  - `src/shared/BackendError.ts` - Typed error system
+  - `src/shared/index.ts` - Shared exports
+  - `src/shared/LogEvents.ts` - Log event registry
+  - `src/domain/repositories/IRepositoryFactory.ts` - Factory interface
+  - `src/domain/validation/PatientValidator.ts` - Patient validation
+  - `src/domain/validation/AnswerValidator.ts` - Answer validation
+  - `src/domain/validation/index.ts` - Validation exports
+  - `src/infrastructure/persistence/SQLiteRepositoryFactory.ts` - SQLite factory
+  - `src/infrastructure/persistence/InMemoryPatientRepository.ts` - Test repo
+  - `src/infrastructure/persistence/InMemoryAnswerRepository.ts` - Test repo
+  - `src/infrastructure/persistence/InMemoryQuestionnaireRepository.ts` - Test repo
+  - `src/infrastructure/persistence/InMemoryGDPRConsentRepository.ts` - Test repo
+  - `src/infrastructure/persistence/InMemoryDocumentRepository.ts` - Test repo
+  - `src/infrastructure/persistence/InMemoryRepositoryFactory.ts` - Test factory
+  - `src/infrastructure/persistence/index.ts` - Persistence exports
+  - `__tests__/shared/BackendError.test.ts` - 28 tests
+  - `__tests__/infrastructure/persistence/InMemoryPatientRepository.test.ts` - 12 tests
+  - `__tests__/domain/validation/PatientValidator.test.ts` - 14 tests
+  - `__tests__/domain/validation/AnswerValidator.test.ts` - 18 tests
+- Modified Files (1):
+  - `src/shared/logger.ts` - Added logEvent(), createScopedLogger()
+
+5) **Qualitaet/Muster**
+- Tests: 82 new tests, all passing.
+- Security/Compliance: No PII logged, DSGVO-compliant validation.
+- Patterns: Discriminated unions for error handling, factory pattern for DI.
+
+---
+
+> **Run-ID:** RUN-20260125-ui-improvements | **Status:** ✅ COMPLETED
+
+1) **Ziel**
+- Outcome: Comprehensive UI improvements - new components, enhanced primitives, better accessibility.
+- DoD:
+  1. Typography scale extended with h1/h2/h3/small variants.
+  2. New form components: Checkbox, RadioGroup, Select.
+  3. New utility components: Container, Spacer, Divider, IconButton, LoadingSkeleton, StatusBadge, VisuallyHidden.
+  4. Enhanced AppButton with size variants and icon support.
+  5. Enhanced AppInput with helperText and focus states.
+  6. HomeScreen uses Container component.
+  7. Primary actions have accessibilityHint.
+  8. Type-check PASS, component tests PASS.
+- Nicht-Ziele: No new screens, no refactoring existing screen logic.
+
+2) **Methodik**
+- Ground-Zero: Created 30-point tasklist in CURRENT_TASKS.md.
+- Stop-and-Fix: Fixed React Native Pressable API issue (no `focused` in style callback).
+- Evidence: Type-check PASS, AppText/AppButton/AppInput tests PASS.
+
+3) **Sprachen/Stack**
+- Sprachen: TypeScript/TSX, React Native 0.73.
+- Tools: npm scripts, Jest.
+- Constraints: Keine PII in Logs; keine Secrets.
+
+4) **Struktur**
+- New Components: Container, Spacer, Divider, ScreenHeader, IconButton, LoadingSkeleton, StatusBadge, Checkbox, RadioGroup, Select, VisuallyHidden.
+- Modified Components: AppText (variants + colors), AppButton (sizes + icons), AppInput (helperText + focus).
+- Modified Screens: HomeScreen (Container + accessibilityHint).
+- Index: `src/presentation/components/index.ts` created.
+
+5) **Qualitaet/Muster**
+- Tests: AppText, AppButton, AppInput tests updated and passing.
+- Security/Compliance: No PII logged.
+- Accessibility: accessibilityHint on primary actions, proper accessibilityRole/State on form components.
+
+---
+
+> **Run-ID:** RUN-20260124-2321-nav-transition-speed | **Status:** COMPLETED
 
 1) **Ziel**
 - Outcome: Smoother, faster page transitions with consistent navigation flow across screens.
@@ -89,6 +184,52 @@ It defines the always-on checklist and records what was done, when, and where.
 - Maintainability: Centralized nav config, minimal changes.
 
 ## Execution Log (chronologisch)
+
+### 2026-01-24 23:39 UTC - Lint + auto-fix cleanup
+- Goal: Run lint and auto-fix to clean code formatting and style issues.
+- Verification:
+  - `npm run lint` (Evidence: `buildLogs/lint_cleanup_20260124.out.log`, `buildLogs/lint_cleanup_20260124.err.log`)
+  - `npm run lint:fix` (Evidence: `buildLogs/lint_fix_cleanup_20260124.out.log`, `buildLogs/lint_fix_cleanup_20260124.err.log`)
+
+### 2026-01-25 - UI Improvements Run COMPLETED
+- **Run-ID:** RUN-20260125-ui-improvements
+- **Goal:** Comprehensive UI improvements (30-point tasklist).
+- **Status:** ✅ COMPLETED (21/30 tasks done, 1 skipped, 8 deferred to future)
+
+**New Components Created:**
+- `src/presentation/components/Container.tsx` - Standard container with padding and scroll support
+- `src/presentation/components/Spacer.tsx` - Consistent vertical/horizontal spacing
+- `src/presentation/components/Divider.tsx` - Visual separation line
+- `src/presentation/components/ScreenHeader.tsx` - Consistent page headers
+- `src/presentation/components/IconButton.tsx` - Compact icon-only button
+- `src/presentation/components/LoadingSkeleton.tsx` - Animated loading placeholder
+- `src/presentation/components/StatusBadge.tsx` - Inline status indicators
+- `src/presentation/components/Checkbox.tsx` - Accessible checkbox with label
+- `src/presentation/components/RadioGroup.tsx` - Radio button group
+- `src/presentation/components/Select.tsx` - Dropdown/select component
+- `src/presentation/components/VisuallyHidden.tsx` - Screen-reader-only content
+- `src/presentation/components/index.ts` - Central export file
+
+**Enhanced Components:**
+- `src/presentation/theme/tokens.ts` - Added typography (h1/h2/h3/small), layout constants, focus constants
+- `src/presentation/components/AppText.tsx` - Added h1/h2/h3/small variants + color prop (muted/error/success/primary/inverse)
+- `src/presentation/components/AppButton.tsx` - Added size variants (sm/md/lg) + icon support (iconLeft/iconRight)
+- `src/presentation/components/AppInput.tsx` - Added helperText prop + focus state tracking
+
+**Screen Updates:**
+- `src/presentation/screens/HomeScreen.tsx` - Uses Container component + accessibilityHint on primary actions
+- `src/presentation/navigation/RootNavigator.tsx` - Fixed CardStyleInterpolators -> TransitionPresets (moduleResolution issue)
+
+**Test Updates:**
+- `__tests__/presentation/components/AppInput.test.ts` - Updated for new 2-arg getInputBorderColor
+
+**Discovered Issues:**
+- React Native Pressable doesn't have `focused` in style callback - focus states must use useState + onFocus/onBlur
+- @react-navigation/stack exports not resolving with moduleResolution: node16 - used @ts-expect-error
+
+**Evidence:**
+- `npm run type-check` PASS
+- `npm test -- --testPathPattern="AppText|AppButton|AppInput"` PASS (10 tests)
 
 ### 2026-01-24 23:21 UTC - Navigation transition speed tuning (in progress)
 - Goal: Speed up and smooth page transitions across the stack navigator.

@@ -104,13 +104,13 @@ const LOCALES = ['de', 'en', 'fr', 'es', 'ar'];
  */
 function generateDetoxTest(locale: string): string {
   const screenTests = SCREENS_TO_CAPTURE.map(
-    (screen) => `
+    screen => `
     it('captures ${screen.name}', async () => {
       ${screen.setup || ''}
       ${screen.navigation}
       await device.takeScreenshot('${screen.name}');
     });
-  `
+  `,
   ).join('\n');
 
   return `
@@ -145,7 +145,7 @@ describe('Screenshot Capture - ${locale.toUpperCase()}', () => {
  * Create screenshot directories
  */
 function ensureDirectories(): void {
-  LOCALES.forEach((locale) => {
+  LOCALES.forEach(locale => {
     const dir = path.join('docs', 'screenshots', locale);
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir, { recursive: true });
@@ -159,15 +159,15 @@ function ensureDirectories(): void {
  */
 function generateMarkdownIndex(): string {
   const sections = SCREENS_TO_CAPTURE.map(
-    (screen) => `
-### ${screen.name.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())}
+    screen => `
+### ${screen.name.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}
 
 ${screen.description}
 
 | Language | Screenshot |
 |----------|------------|
-${LOCALES.map((locale) => `| ${locale.toUpperCase()} | ![${screen.description}](screenshots/${locale}/${screen.name}.png) |`).join('\n')}
-`
+${LOCALES.map(locale => `| ${locale.toUpperCase()} | ![${screen.description}](screenshots/${locale}/${screen.name}.png) |`).join('\n')}
+`,
   ).join('\n');
 
   return `# App Screenshots
@@ -176,7 +176,7 @@ ${LOCALES.map((locale) => `| ${locale.toUpperCase()} | ![${screen.description}](
 
 ## Quick Navigation
 
-${SCREENS_TO_CAPTURE.map((s) => `- [${s.name.replace(/-/g, ' ')}](#${s.name})`).join('\n')}
+${SCREENS_TO_CAPTURE.map(s => `- [${s.name.replace(/-/g, ' ')}](#${s.name})`).join('\n')}
 
 ${sections}
 
@@ -195,7 +195,7 @@ async function main(): Promise<void> {
   ensureDirectories();
 
   // Generate test files for each locale
-  LOCALES.forEach((locale) => {
+  LOCALES.forEach(locale => {
     const testContent = generateDetoxTest(locale);
     const testPath = path.join('e2e', `screenshot-capture-${locale}.e2e.ts`);
     fs.writeFileSync(testPath, testContent);

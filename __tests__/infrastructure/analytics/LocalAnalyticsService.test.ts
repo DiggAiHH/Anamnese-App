@@ -36,7 +36,7 @@ describe('LocalAnalyticsService', () => {
   describe('Event Tracking', () => {
     it('should track events with correct structure', async () => {
       await service.trackEvent('action', 'test_action', { count: 5 });
-      
+
       const events = service.getEvents();
       expect(events).toHaveLength(1);
       expect(events[0]).toMatchObject({
@@ -50,7 +50,7 @@ describe('LocalAnalyticsService', () => {
 
     it('should track screen views', async () => {
       await service.trackScreenView('HomeScreen');
-      
+
       const events = service.getEvents();
       expect(events[0]).toMatchObject({
         category: 'screen_view',
@@ -60,7 +60,7 @@ describe('LocalAnalyticsService', () => {
 
     it('should track actions with metadata', async () => {
       await service.trackAction('export_pdf', { format: 'A4' });
-      
+
       const events = service.getEvents();
       expect(events[0]).toMatchObject({
         category: 'action',
@@ -71,7 +71,7 @@ describe('LocalAnalyticsService', () => {
 
     it('should track errors without stack traces', async () => {
       await service.trackError('network_error', '500');
-      
+
       const events = service.getEvents();
       expect(events[0]).toMatchObject({
         category: 'error',
@@ -82,7 +82,7 @@ describe('LocalAnalyticsService', () => {
 
     it('should track performance metrics', async () => {
       await service.trackPerformance('pdf_export', 1234);
-      
+
       const events = service.getEvents();
       expect(events[0]).toMatchObject({
         category: 'performance',
@@ -93,7 +93,7 @@ describe('LocalAnalyticsService', () => {
 
     it('should track feature usage', async () => {
       await service.trackFeatureUsage('voice_input');
-      
+
       const events = service.getEvents();
       expect(events[0]).toMatchObject({
         category: 'feature_usage',
@@ -104,7 +104,7 @@ describe('LocalAnalyticsService', () => {
     it('should not track when disabled', async () => {
       service.setEnabled(false);
       await service.trackEvent('action', 'test');
-      
+
       expect(service.getEvents()).toHaveLength(0);
     });
 
@@ -113,7 +113,7 @@ describe('LocalAnalyticsService', () => {
       await service.trackEvent('action', 'ignored');
       service.setEnabled(true);
       await service.trackEvent('action', 'tracked');
-      
+
       expect(service.getEvents()).toHaveLength(1);
       expect(service.getEvents()[0].name).toBe('tracked');
     });
@@ -125,7 +125,7 @@ describe('LocalAnalyticsService', () => {
         email: 'user@example.com',
         validKey: 'value',
       });
-      
+
       const events = service.getEvents();
       expect(events[0].metadata).toEqual({ validKey: 'value' });
     });
@@ -136,7 +136,7 @@ describe('LocalAnalyticsService', () => {
         patientName: 'Doe',
         count: 5,
       });
-      
+
       const events = service.getEvents();
       expect(events[0].metadata).toEqual({ count: 5 });
     });
@@ -146,7 +146,7 @@ describe('LocalAnalyticsService', () => {
         contact: 'test@email.com',
         count: 1,
       });
-      
+
       const events = service.getEvents();
       expect(events[0].metadata).toEqual({ count: 1 });
     });
@@ -157,7 +157,7 @@ describe('LocalAnalyticsService', () => {
         description: longString,
         shortValue: 'ok',
       });
-      
+
       const events = service.getEvents();
       expect(events[0].metadata).toEqual({ shortValue: 'ok' });
     });
@@ -168,9 +168,9 @@ describe('LocalAnalyticsService', () => {
       await service.trackEvent('action', 'test1');
       await service.trackEvent('action', 'test2');
       expect(service.getEvents()).toHaveLength(2);
-      
+
       await service.clearAllData();
-      
+
       expect(service.getEvents()).toHaveLength(0);
       expect(AsyncStorage.removeItem).toHaveBeenCalledWith('@anamnese_local_analytics');
     });
@@ -178,11 +178,11 @@ describe('LocalAnalyticsService', () => {
     it('should generate new session ID after clear', async () => {
       await service.trackEvent('action', 'before');
       const oldSessionId = service.getEvents()[0].sessionId;
-      
+
       await service.clearAllData();
       await service.trackEvent('action', 'after');
       const newSessionId = service.getEvents()[0].sessionId;
-      
+
       expect(newSessionId).not.toBe(oldSessionId);
     });
   });
@@ -190,10 +190,10 @@ describe('LocalAnalyticsService', () => {
   describe('GDPR Compliance - Data Portability (Art. 20)', () => {
     it('should export data as JSON', async () => {
       await service.trackEvent('action', 'export_test');
-      
+
       const exported = await service.exportData();
       const parsed = JSON.parse(exported);
-      
+
       expect(Array.isArray(parsed)).toBe(true);
       expect(parsed[0].name).toBe('export_test');
     });
@@ -205,9 +205,9 @@ describe('LocalAnalyticsService', () => {
       await service.trackScreenView('Screen2');
       await service.trackAction('action1');
       await service.trackError('error1');
-      
+
       const summary = await service.getEventSummary();
-      
+
       expect(summary.eventsByCategory.screen_view).toBe(2);
       expect(summary.eventsByCategory.action).toBe(1);
       expect(summary.eventsByCategory.error).toBe(1);
@@ -219,9 +219,9 @@ describe('LocalAnalyticsService', () => {
       await service.trackAction('common_action');
       await service.trackAction('common_action');
       await service.trackAction('rare_action');
-      
+
       const summary = await service.getEventSummary();
-      
+
       expect(summary.topActions[0]).toEqual({ name: 'common_action', count: 3 });
       expect(summary.topActions[1]).toEqual({ name: 'rare_action', count: 1 });
     });
@@ -229,9 +229,9 @@ describe('LocalAnalyticsService', () => {
     it('should return correct date range', async () => {
       await service.trackEvent('action', 'first');
       await service.trackEvent('action', 'last');
-      
+
       const summary = await service.getEventSummary();
-      
+
       expect(summary.firstEventDate).toBeDefined();
       expect(summary.lastEventDate).toBeDefined();
     });
@@ -243,7 +243,7 @@ describe('LocalAnalyticsService', () => {
       for (let i = 0; i < 1005; i++) {
         await service.trackEvent('action', `action_${i}`);
       }
-      
+
       const events = service.getEvents();
       expect(events.length).toBeLessThanOrEqual(1000);
       // Should keep most recent events
@@ -254,7 +254,7 @@ describe('LocalAnalyticsService', () => {
   describe('Persistence', () => {
     it('should persist events to AsyncStorage', async () => {
       await service.trackEvent('action', 'persisted');
-      
+
       expect(AsyncStorage.setItem).toHaveBeenCalledWith(
         '@anamnese_local_analytics',
         expect.any(String),
@@ -271,11 +271,11 @@ describe('LocalAnalyticsService', () => {
         },
       ];
       (AsyncStorage.getItem as jest.Mock).mockResolvedValue(JSON.stringify(storedEvents));
-      
+
       LocalAnalyticsService.resetInstance();
       const newService = LocalAnalyticsService.getInstance();
       await newService.initialize();
-      
+
       const events = newService.getEvents();
       expect(events).toHaveLength(1);
       expect(events[0].name).toBe('restored');
@@ -284,7 +284,7 @@ describe('LocalAnalyticsService', () => {
     it('should purge events older than retention period', async () => {
       const oldDate = new Date();
       oldDate.setDate(oldDate.getDate() - 35); // 35 days old
-      
+
       const storedEvents = [
         {
           sessionId: 'old-session',
@@ -300,11 +300,11 @@ describe('LocalAnalyticsService', () => {
         },
       ];
       (AsyncStorage.getItem as jest.Mock).mockResolvedValue(JSON.stringify(storedEvents));
-      
+
       LocalAnalyticsService.resetInstance();
       const newService = LocalAnalyticsService.getInstance();
       await newService.initialize();
-      
+
       const events = newService.getEvents();
       expect(events).toHaveLength(1);
       expect(events[0].name).toBe('recent_event');
@@ -314,16 +314,16 @@ describe('LocalAnalyticsService', () => {
   describe('Error Handling', () => {
     it('should not throw on storage read failure', async () => {
       (AsyncStorage.getItem as jest.Mock).mockRejectedValue(new Error('Storage error'));
-      
+
       LocalAnalyticsService.resetInstance();
       const newService = LocalAnalyticsService.getInstance();
-      
+
       await expect(newService.initialize()).resolves.not.toThrow();
     });
 
     it('should not throw on storage write failure', async () => {
       (AsyncStorage.setItem as jest.Mock).mockRejectedValue(new Error('Storage error'));
-      
+
       await expect(service.trackEvent('action', 'test')).resolves.not.toThrow();
     });
   });

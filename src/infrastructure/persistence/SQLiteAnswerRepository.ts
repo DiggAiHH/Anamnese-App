@@ -53,7 +53,7 @@ export class SQLiteAnswerRepository implements IAnswerRepository {
     await db.transaction(async tx => {
       for (const answer of answers) {
         const json = answer.toJSON();
-        
+
         await tx.executeSql(
           `INSERT OR REPLACE INTO answers (
             id, questionnaire_id, question_id, encrypted_value, question_type,
@@ -149,7 +149,7 @@ export class SQLiteAnswerRepository implements IAnswerRepository {
 
   /**
    * Antworten als Map zurückgeben (questionId -> decrypted value)
-   * 
+   *
    * Achtung: Requires decryption key!
    */
   async getAnswersMap(

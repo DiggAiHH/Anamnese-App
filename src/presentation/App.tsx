@@ -1,6 +1,6 @@
 /**
  * Main App Entry Point für React Native
- * 
+ *
  * Setup:
  * - Navigation
  * - i18n

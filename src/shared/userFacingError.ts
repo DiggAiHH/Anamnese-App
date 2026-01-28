@@ -7,7 +7,10 @@ type UserFacingErrorOptions = {
   error?: unknown;
 };
 
-export const showUserErrorAlert = ({ title, message }: Pick<UserFacingErrorOptions, 'title' | 'message'>): void => {
+export const showUserErrorAlert = ({
+  title,
+  message,
+}: Pick<UserFacingErrorOptions, 'title' | 'message'>): void => {
   Alert.alert(title, message);
 };
 

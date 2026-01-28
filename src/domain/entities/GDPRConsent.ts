@@ -1,6 +1,6 @@
 /**
  * GDPR Consent Entity - repräsentiert DSGVO-konforme Einwilligungen
- * 
+ *
  * DSGVO Requirements:
  * - Art. 6, 7 DSGVO: Rechtmäßigkeit der Verarbeitung
  * - Art. 13 DSGVO: Informationspflichten
@@ -295,7 +295,8 @@ export const GDPRConsentTemplates = {
       type: 'data_processing',
       privacyPolicyVersion: '1.0.0',
       legalBasis: 'consent',
-      purpose: 'Verarbeitung personenbezogener Gesundheitsdaten zum Zweck der medizinischen Anamnese',
+      purpose:
+        'Verarbeitung personenbezogener Gesundheitsdaten zum Zweck der medizinischen Anamnese',
       dataCategories: ['Gesundheitsdaten', 'Kontaktdaten', 'Versicherungsdaten'],
       retentionPeriod: '3 years', // § 630f BGB
     }),

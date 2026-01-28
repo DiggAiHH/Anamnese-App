@@ -48,7 +48,9 @@ describe('TTSService (module shape hardening)', () => {
       // missing addEventListener -> should be treated as unavailable
     };
 
-    jest.doMock('react-native-tts', () => ({ __esModule: true, default: brokenTts }), { virtual: true });
+    jest.doMock('react-native-tts', () => ({ __esModule: true, default: brokenTts }), {
+      virtual: true,
+    });
 
     const { TTSService } = require('../TTSService') as typeof import('../TTSService');
     expect(() => new TTSService()).not.toThrow();

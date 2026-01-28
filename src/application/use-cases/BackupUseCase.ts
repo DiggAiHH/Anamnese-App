@@ -85,7 +85,7 @@ export class BackupUseCase {
       // 2. Collect all data
       const patients = await this.patientRepository.findAll();
       const questionnaires = await this.questionnaireRepository.findAll();
-      
+
       // Collect answers for all questionnaires
       const allAnswers: Array<{ questionnaireId: string; answers: Record<string, unknown> }> = [];
       for (const q of questionnaires) {
@@ -111,25 +111,38 @@ export class BackupUseCase {
 
       // 4. Encrypt data sections
       const encryptedPatientsVO = await encryptionService.encrypt(
-        JSON.stringify(patients.map(p => ({
-          id: p.id,
-          encryptedData: p.encryptedData,
-          createdAt: p.createdAt,
-          updatedAt: p.updatedAt,
-        }))),
+        JSON.stringify(
+          patients.map(p => ({
+            id: p.id,
+            encryptedData: p.encryptedData,
+            createdAt: p.createdAt,
+            updatedAt: p.updatedAt,
+          })),
+        ),
         input.encryptionKey,
       );
       const encryptedPatients = encryptedPatientsVO.toString();
 
       const encryptedQuestionnairesVO = await encryptionService.encrypt(
-        JSON.stringify(questionnaires.map((q: { id: string; patientId: string; version?: string; status: string; createdAt: Date; updatedAt: Date }) => ({
-          id: q.id,
-          patientId: q.patientId,
-          templateId: q.version,
-          status: q.status,
-          createdAt: q.createdAt,
-          updatedAt: q.updatedAt,
-        }))),
+        JSON.stringify(
+          questionnaires.map(
+            (q: {
+              id: string;
+              patientId: string;
+              version?: string;
+              status: string;
+              createdAt: Date;
+              updatedAt: Date;
+            }) => ({
+              id: q.id,
+              patientId: q.patientId,
+              templateId: q.version,
+              status: q.status,
+              createdAt: q.createdAt,
+              updatedAt: q.updatedAt,
+            }),
+          ),
+        ),
         input.encryptionKey,
       );
       const encryptedQuestionnaires = encryptedQuestionnairesVO.toString();
@@ -184,7 +197,7 @@ export class BackupUseCase {
     // Re-create the backup data structure
     const patients = await this.patientRepository.findAll();
     const questionnaires = await this.questionnaireRepository.findAll();
-    
+
     const allAnswers: Array<{ questionnaireId: string; answers: Record<string, unknown> }> = [];
     for (const q of questionnaires) {
       const answers = await this.answerRepository.findByQuestionnaireId(q.id);
@@ -199,24 +212,37 @@ export class BackupUseCase {
     }
 
     const encryptedPatientsVO = await encryptionService.encrypt(
-      JSON.stringify(patients.map(p => ({
-        id: p.id,
-        encryptedData: p.encryptedData,
-        createdAt: p.createdAt,
-        updatedAt: p.updatedAt,
-      }))),
+      JSON.stringify(
+        patients.map(p => ({
+          id: p.id,
+          encryptedData: p.encryptedData,
+          createdAt: p.createdAt,
+          updatedAt: p.updatedAt,
+        })),
+      ),
       encryptionKey,
     );
 
     const encryptedQuestionnairesVO = await encryptionService.encrypt(
-      JSON.stringify(questionnaires.map((q: { id: string; patientId: string; version?: string; status: string; createdAt: Date; updatedAt: Date }) => ({
-        id: q.id,
-        patientId: q.patientId,
-        templateId: q.version,
-        status: q.status,
-        createdAt: q.createdAt,
-        updatedAt: q.updatedAt,
-      }))),
+      JSON.stringify(
+        questionnaires.map(
+          (q: {
+            id: string;
+            patientId: string;
+            version?: string;
+            status: string;
+            createdAt: Date;
+            updatedAt: Date;
+          }) => ({
+            id: q.id,
+            patientId: q.patientId,
+            templateId: q.version,
+            status: q.status,
+            createdAt: q.createdAt,
+            updatedAt: q.updatedAt,
+          }),
+        ),
+      ),
       encryptionKey,
     );
 

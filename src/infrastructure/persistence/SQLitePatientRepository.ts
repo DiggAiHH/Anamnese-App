@@ -1,6 +1,6 @@
 /**
  * SQLite Patient Repository Implementation
- * 
+ *
  * Implementiert IPatientRepository für lokale Datenbank
  */
 
@@ -77,17 +77,21 @@ export class SQLitePatientRepository implements IPatientRepository {
     }
   }
 
-  private async reencryptIfNeeded(patientId: string, plaintext: Patient['encryptedData']): Promise<void> {
+  private async reencryptIfNeeded(
+    patientId: string,
+    plaintext: Patient['encryptedData'],
+  ): Promise<void> {
     const key = getActiveEncryptionKey();
     if (!key) return;
 
     try {
       const encrypted = await this.encryptPatientData(plaintext, key);
       const db = await this.getDb();
-      await db.executeSql(
-        'UPDATE patients SET encrypted_data = ?, updated_at = ? WHERE id = ?;',
-        [encrypted, new Date().getTime(), patientId],
-      );
+      await db.executeSql('UPDATE patients SET encrypted_data = ?, updated_at = ? WHERE id = ?;', [
+        encrypted,
+        new Date().getTime(),
+        patientId,
+      ]);
     } catch {
       logWarn('Failed to re-encrypt legacy patient data.');
     }

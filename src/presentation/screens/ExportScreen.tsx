@@ -81,13 +81,20 @@ export const ExportScreen = ({ route, navigation }: Props): React.JSX.Element =>
 
       if (!result.success) {
         if (result.error === 'GDT export consent not granted') {
-          Alert.alert(t('export.failedTitle'), t('export.consentMissing', { defaultValue: 'Bitte aktivieren Sie die Einwilligung für den GDT-Export in den Datenschutz-Einstellungen.' }), [
-            { text: t('common.cancel', { defaultValue: 'Abbrechen' }), style: 'cancel' },
-            {
-              text: t('export.openConsents', { defaultValue: 'Einwilligungen öffnen' }),
-              onPress: () => navigation.navigate('GDPRConsent'),
-            },
-          ]);
+          Alert.alert(
+            t('export.failedTitle'),
+            t('export.consentMissing', {
+              defaultValue:
+                'Bitte aktivieren Sie die Einwilligung für den GDT-Export in den Datenschutz-Einstellungen.',
+            }),
+            [
+              { text: t('common.cancel', { defaultValue: 'Abbrechen' }), style: 'cancel' },
+              {
+                text: t('export.openConsents', { defaultValue: 'Einwilligungen öffnen' }),
+                onPress: () => navigation.navigate('GDPRConsent'),
+              },
+            ],
+          );
           return;
         }
         showError(t('export.failedTitle'), result.error ?? t('common.unknownError'));
@@ -102,7 +109,12 @@ export const ExportScreen = ({ route, navigation }: Props): React.JSX.Element =>
         try {
           // eslint-disable-next-line @typescript-eslint/no-var-requires
           const Share = require('react-native-share') as {
-            open?: (options: { url: string; type?: string; filename?: string; message?: string }) => Promise<unknown>;
+            open?: (options: {
+              url: string;
+              type?: string;
+              filename?: string;
+              message?: string;
+            }) => Promise<unknown>;
           };
 
           const url = filePath.startsWith('file://') ? filePath : `file://${filePath}`;
@@ -119,7 +131,11 @@ export const ExportScreen = ({ route, navigation }: Props): React.JSX.Element =>
 
       navigation.popToTop();
     } catch (error) {
-      showError(t('common.error'), error instanceof Error ? error.message : t('common.unknownError'), error);
+      showError(
+        t('common.error'),
+        error instanceof Error ? error.message : t('common.unknownError'),
+        error,
+      );
     } finally {
       setIsWorking(false);
     }
@@ -135,9 +151,7 @@ export const ExportScreen = ({ route, navigation }: Props): React.JSX.Element =>
       <Text style={styles.title} accessibilityRole="header">
         {t('export.title')}
       </Text>
-      <Text style={styles.subtitle}>
-        {t('export.subtitle', { id: questionnaireId })}
-      </Text>
+      <Text style={styles.subtitle}>{t('export.subtitle', { id: questionnaireId })}</Text>
 
       <Card>
         <Text style={styles.label}>{t('export.senderIdLabel')}</Text>

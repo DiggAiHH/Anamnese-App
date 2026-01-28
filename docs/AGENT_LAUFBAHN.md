@@ -19,6 +19,7 @@
   - **macOS/iOS:** No macOS host available for builds.
 
 - **Update 2026-01-24 22:52:** PII transcript logs removed from version control; TTS tests expanded (Evidence: `buildLogs/tests_tts_service_update_20260124.out.log`).
+- **Update 2026-01-24 23:39:** Lint + auto-fix cleanup completed (Evidence: `buildLogs/lint_cleanup_20260124.out.log`, `buildLogs/lint_fix_cleanup_20260124.out.log`).
 
 ---
 

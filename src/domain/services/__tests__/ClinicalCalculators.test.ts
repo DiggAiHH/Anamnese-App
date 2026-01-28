@@ -5,11 +5,7 @@
  * Validates edge cases, boundary conditions, and clinical accuracy.
  */
 
-import {
-  ClinicalCalculators,
-  BMICategory,
-  CardioRiskCategory,
-} from '../ClinicalCalculators';
+import { ClinicalCalculators, BMICategory, CardioRiskCategory } from '../ClinicalCalculators';
 
 describe('ClinicalCalculators', () => {
   describe('calculateBMI', () => {

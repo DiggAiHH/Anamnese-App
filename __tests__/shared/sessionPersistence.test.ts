@@ -26,10 +26,7 @@ describe('sessionPersistence', () => {
     expect(snapshot?.patientId).toBe('patient-1');
     expect(snapshot?.questionnaireId).toBeNull();
     expect(snapshot?.currentSectionIndex).toBe(2);
-    expect(AsyncStorage.setItem).toHaveBeenCalledWith(
-      'active_session_v1',
-      expect.any(String),
-    );
+    expect(AsyncStorage.setItem).toHaveBeenCalledWith('active_session_v1', expect.any(String));
   });
 
   it('returns null when stored snapshot is invalid', async () => {

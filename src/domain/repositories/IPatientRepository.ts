@@ -1,6 +1,6 @@
 /**
  * Repository Interface für Patient Entity
- * 
+ *
  * Hinweis: Dies ist nur das Interface (Domain Layer)
  * Die tatsächliche Implementierung erfolgt im Infrastructure Layer
  */

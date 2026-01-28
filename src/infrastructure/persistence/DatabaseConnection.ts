@@ -1,6 +1,6 @@
 /**
  * SQLite Database Setup
- * 
+ *
  * Verwendet react-native-sqlite-storage für lokale Datenbank
  * DSGVO-konform: Alle Daten lokal, verschlüsselt
  */
@@ -76,19 +76,22 @@ export class DatabaseConnection {
         transaction: (_scope: (tx: SQLiteTransaction) => void) => {
           logWarn('[Database] transaction called on Mock DB');
           return Promise.resolve({
-             executeSql: (_sql: string, _params?: unknown[]) => {},
-          } as unknown as SQLiteTransaction); 
+            executeSql: (_sql: string, _params?: unknown[]) => {},
+          } as unknown as SQLiteTransaction);
         },
-        readTransaction: (_scope: (tx: SQLiteTransaction) => void) => Promise.resolve({
-             executeSql: (_sql: string, _params?: unknown[]) => {},
-        } as unknown as SQLiteTransaction),
+        readTransaction: (_scope: (tx: SQLiteTransaction) => void) =>
+          Promise.resolve({
+            executeSql: (_sql: string, _params?: unknown[]) => {},
+          } as unknown as SQLiteTransaction),
         executeSql: (_stat: string, _params?: unknown[]) => {
-           logWarn('[Database] executeSql called on Mock DB');
-           return Promise.resolve([{
-             rows: { length: 0, item: (_i: number) => null, raw: () => [] },
-             rowsAffected: 0,
-             insertId: 0,
-           } as unknown as SQLiteExecuteResult]);
+          logWarn('[Database] executeSql called on Mock DB');
+          return Promise.resolve([
+            {
+              rows: { length: 0, item: (_i: number) => null, raw: () => [] },
+              rowsAffected: 0,
+              insertId: 0,
+            } as unknown as SQLiteExecuteResult,
+          ]);
         },
         attach: () => Promise.resolve(),
         detach: () => Promise.resolve(),
@@ -107,10 +110,12 @@ export class DatabaseConnection {
       });
 
       await this.initializeTables();
-      
+
       return this.db;
     } catch (error) {
-      throw new Error(`Failed to connect to database: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to connect to database: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      );
     }
   }
 
@@ -322,7 +327,9 @@ export class DatabaseConnection {
     if (!this.db) throw new Error('Database not connected');
 
     const [patientsResult] = await this.db.executeSql('SELECT COUNT(*) as count FROM patients;');
-    const [questionnairesResult] = await this.db.executeSql('SELECT COUNT(*) as count FROM questionnaires;');
+    const [questionnairesResult] = await this.db.executeSql(
+      'SELECT COUNT(*) as count FROM questionnaires;',
+    );
     const [answersResult] = await this.db.executeSql('SELECT COUNT(*) as count FROM answers;');
     const [documentsResult] = await this.db.executeSql('SELECT COUNT(*) as count FROM documents;');
 

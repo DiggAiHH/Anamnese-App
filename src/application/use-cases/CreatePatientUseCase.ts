@@ -1,6 +1,6 @@
 /**
  * CreatePatient Use Case - Erstellt neuen Patienten
- * 
+ *
  * FLOW:
  * Presentation Layer (PatientInfoScreen)
  *   → Use Case

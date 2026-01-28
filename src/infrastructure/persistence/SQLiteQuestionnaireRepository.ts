@@ -23,7 +23,9 @@ export class SQLiteQuestionnaireRepository implements IQuestionnaireRepository {
     const tpl = template as unknown as QuestionnaireTemplate;
 
     const sections =
-      version && tpl.versions && tpl.versions[version] ? tpl.versions[version].sections : tpl.sections;
+      version && tpl.versions && tpl.versions[version]
+        ? tpl.versions[version].sections
+        : tpl.sections;
 
     return [...sections].sort((a, b) => a.order - b.order);
   }

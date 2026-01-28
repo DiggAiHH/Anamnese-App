@@ -13,52 +13,52 @@ describe('FeedbackTextBuilder', () => {
   describe('build()', () => {
     it('should generate subject with app name and category', () => {
       const result = FeedbackTextBuilder.build(mockInput);
-      
+
       expect(result.subject).toBe('[Anamnese-App] Bug Report');
     });
 
     it('should include category label in body', () => {
       const result = FeedbackTextBuilder.build(mockInput);
-      
+
       expect(result.body).toContain('Category: Bug Report');
     });
 
     it('should include locale in body', () => {
       const result = FeedbackTextBuilder.build(mockInput);
-      
+
       expect(result.body).toContain('Locale: de');
     });
 
     it('should include app version in body', () => {
       const result = FeedbackTextBuilder.build(mockInput);
-      
+
       expect(result.body).toContain('App Version: 1.0.0');
     });
 
     it('should include timestamp in body', () => {
       const result = FeedbackTextBuilder.build(mockInput);
-      
+
       // Timestamp format: YYYY-MM-DD HH:MM:SS
       expect(result.body).toMatch(/Timestamp: \d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}/);
     });
 
     it('should include sanitized description in body', () => {
       const result = FeedbackTextBuilder.build(mockInput);
-      
+
       expect(result.body).toContain('--- Description ---');
       expect(result.body).toContain(mockInput.description);
     });
 
     it('should combine subject and body in fullText', () => {
       const result = FeedbackTextBuilder.build(mockInput);
-      
+
       expect(result.fullText).toBe(`${result.subject}\n\n${result.body}`);
     });
 
     it('should handle all category types', () => {
       const categories: FeedbackCategory[] = ['bug', 'feature', 'other'];
       const expectedLabels = ['Bug Report', 'Feature Request', 'General Feedback'];
-      
+
       categories.forEach((category, index) => {
         const result = FeedbackTextBuilder.build({ ...mockInput, category });
         expect(result.subject).toContain(expectedLabels[index]);
@@ -73,7 +73,7 @@ describe('FeedbackTextBuilder', () => {
         description: '   Some feedback with spaces   ',
       };
       const result = FeedbackTextBuilder.build(input);
-      
+
       expect(result.body).toContain('Some feedback with spaces');
       expect(result.body).not.toContain('   Some');
     });
@@ -85,7 +85,7 @@ describe('FeedbackTextBuilder', () => {
         description: longDescription,
       };
       const result = FeedbackTextBuilder.build(input);
-      
+
       // Should contain exactly 2000 A's + '...'
       expect(result.body).toContain('A'.repeat(2000) + '...');
       expect(result.body).not.toContain('A'.repeat(2001));
@@ -97,7 +97,7 @@ describe('FeedbackTextBuilder', () => {
         description: '',
       };
       const result = FeedbackTextBuilder.build(input);
-      
+
       expect(result.body).toContain('--- Description ---');
       expect(result.body).toContain('--- End of Feedback ---');
     });
@@ -108,20 +108,20 @@ describe('FeedbackTextBuilder', () => {
 
     it('should generate valid mailto: URI', () => {
       const result = FeedbackTextBuilder.buildMailtoUri(testEmail, mockInput);
-      
+
       expect(result).toStartWith('mailto:feedback@example.com?');
     });
 
     it('should include encoded subject parameter', () => {
       const result = FeedbackTextBuilder.buildMailtoUri(testEmail, mockInput);
-      
+
       expect(result).toContain('subject=');
       expect(result).toContain(encodeURIComponent('[Anamnese-App] Bug Report'));
     });
 
     it('should include encoded body parameter', () => {
       const result = FeedbackTextBuilder.buildMailtoUri(testEmail, mockInput);
-      
+
       expect(result).toContain('body=');
       expect(result).toContain(encodeURIComponent('=== Anamnese-App Feedback ==='));
     });
@@ -132,7 +132,7 @@ describe('FeedbackTextBuilder', () => {
         description: 'Test with special chars: äöü & <script>',
       };
       const result = FeedbackTextBuilder.buildMailtoUri(testEmail, input);
-      
+
       // Should not contain raw special characters in encoded sections
       expect(result).not.toContain('äöü');
       expect(result).not.toContain('<script>');
@@ -142,7 +142,7 @@ describe('FeedbackTextBuilder', () => {
   describe('GDPR compliance', () => {
     it('should not include any PII fields in output structure', () => {
       const result = FeedbackTextBuilder.build(mockInput);
-      
+
       // Verify no common PII field names appear as labels
       expect(result.body).not.toMatch(/\b(Name|Email|Phone|Address|IP):/i);
     });
@@ -152,13 +152,13 @@ describe('FeedbackTextBuilder', () => {
       // Verified by code review: FeedbackTextBuilder has no logging statements
       const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
       const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
-      
+
       FeedbackTextBuilder.build(mockInput);
       FeedbackTextBuilder.buildMailtoUri('test@test.com', mockInput);
-      
+
       expect(consoleSpy).not.toHaveBeenCalled();
       expect(consoleErrorSpy).not.toHaveBeenCalled();
-      
+
       consoleSpy.mockRestore();
       consoleErrorSpy.mockRestore();
     });

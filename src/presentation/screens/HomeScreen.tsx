@@ -3,14 +3,7 @@
  */
 
 import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
-  Alert,
-} from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/RootNavigator';
@@ -18,6 +11,7 @@ import { DeleteAllDataUseCase } from '../../domain/usecases/DeleteAllDataUseCase
 import { useQuestionnaireStore } from '../state/useQuestionnaireStore';
 import { colors, spacing, radius } from '../theme/tokens';
 import { AppButton } from '../components/AppButton';
+import { Container } from '../components/Container';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
 
@@ -55,17 +49,15 @@ export const HomeScreen = ({ navigation }: Props): React.JSX.Element => {
             }
           },
         },
-      ]
+      ],
     );
   };
 
   return (
-    <ScrollView style={styles.container}>
+    <Container scroll>
       <View style={styles.content}>
         <Text style={styles.title}>{t('home.title')}</Text>
-        <Text style={styles.subtitle}>
-          {t('home.subtitle')}
-        </Text>
+        <Text style={styles.subtitle}>{t('home.subtitle')}</Text>
 
         {/* Mode Selection Card */}
         <View style={styles.modeCard}>
@@ -75,43 +67,43 @@ export const HomeScreen = ({ navigation }: Props): React.JSX.Element => {
           <Text style={styles.modeSubtitle}>
             {t('home.modeSelection.subtitle', { defaultValue: 'Bitte wählen Sie Ihre Rolle' })}
           </Text>
-          
+
           <View style={styles.modeButtons}>
             <TouchableOpacity
-              style={[
-                styles.modeButton,
-                selectedMode === 'doctor' && styles.modeButtonSelected,
-              ]}
+              style={[styles.modeButton, selectedMode === 'doctor' && styles.modeButtonSelected]}
               onPress={() => setSelectedMode('doctor')}
               testID="btn-mode-doctor">
               <Text style={styles.modeIcon}>🩺</Text>
-              <Text style={[
-                styles.modeButtonTitle,
-                selectedMode === 'doctor' && styles.modeButtonTitleSelected,
-              ]}>
+              <Text
+                style={[
+                  styles.modeButtonTitle,
+                  selectedMode === 'doctor' && styles.modeButtonTitleSelected,
+                ]}>
                 {t('home.modeSelection.doctor', { defaultValue: 'Arzt/Praxis' })}
               </Text>
               <Text style={styles.modeButtonDescription}>
-                {t('home.modeSelection.doctorDescription', { defaultValue: 'Tablet dem Patienten übergeben' })}
+                {t('home.modeSelection.doctorDescription', {
+                  defaultValue: 'Tablet dem Patienten übergeben',
+                })}
               </Text>
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={[
-                styles.modeButton,
-                selectedMode === 'patient' && styles.modeButtonSelected,
-              ]}
+              style={[styles.modeButton, selectedMode === 'patient' && styles.modeButtonSelected]}
               onPress={() => setSelectedMode('patient')}
               testID="btn-mode-patient">
               <Text style={styles.modeIcon}>👤</Text>
-              <Text style={[
-                styles.modeButtonTitle,
-                selectedMode === 'patient' && styles.modeButtonTitleSelected,
-              ]}>
+              <Text
+                style={[
+                  styles.modeButtonTitle,
+                  selectedMode === 'patient' && styles.modeButtonTitleSelected,
+                ]}>
                 {t('home.modeSelection.patient', { defaultValue: 'Patient' })}
               </Text>
               <Text style={styles.modeButtonDescription}>
-                {t('home.modeSelection.patientDescription', { defaultValue: 'Selbstständig ausfüllen' })}
+                {t('home.modeSelection.patientDescription', {
+                  defaultValue: 'Selbstständig ausfüllen',
+                })}
               </Text>
             </TouchableOpacity>
           </View>
@@ -126,6 +118,10 @@ export const HomeScreen = ({ navigation }: Props): React.JSX.Element => {
               navigation.navigate('MasterPassword', { mode: 'setup' });
             }}
             style={styles.primaryButton}
+            accessibilityLabel={t('home.startNew')}
+            accessibilityHint={t('home.startNewHint', {
+              defaultValue: 'Starts a new anamnesis questionnaire',
+            })}
           />
 
           <AppButton
@@ -135,6 +131,10 @@ export const HomeScreen = ({ navigation }: Props): React.JSX.Element => {
               navigation.navigate('SavedAnamneses');
             }}
             style={styles.secondaryButton}
+            accessibilityLabel={t('home.saved')}
+            accessibilityHint={t('home.savedHint', {
+              defaultValue: 'View previously saved anamnesis records',
+            })}
           />
 
           <AppButton
@@ -144,16 +144,20 @@ export const HomeScreen = ({ navigation }: Props): React.JSX.Element => {
               navigation.navigate('SelectLanguage');
             }}
             style={styles.tertiaryButton}
+            accessibilityLabel={t('home.selectLanguage')}
+            accessibilityHint={t('home.selectLanguageHint', {
+              defaultValue: 'Change the app language',
+            })}
           />
         </View>
 
         <View style={styles.infoCard}>
           <Text style={styles.infoTitle}>{t('home.privacyTitle')}</Text>
           <Text style={styles.infoText}>
-            • {t('home.privacyBullet1')}{'\n'}
-            • {t('home.privacyBullet2')}{'\n'}
-            • {t('home.privacyBullet3')}{'\n'}
-            • {t('home.privacyBullet4')}
+            • {t('home.privacyBullet1')}
+            {'\n'}• {t('home.privacyBullet2')}
+            {'\n'}• {t('home.privacyBullet3')}
+            {'\n'}• {t('home.privacyBullet4')}
           </Text>
         </View>
 
@@ -222,7 +226,7 @@ export const HomeScreen = ({ navigation }: Props): React.JSX.Element => {
           />
         </View>
       </View>
-    </ScrollView>
+    </Container>
   );
 };
 

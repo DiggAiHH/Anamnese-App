@@ -65,7 +65,10 @@ export function decodeMultiChoiceBitset(bitset: number): number[] {
  *
  * Note: This is only unambiguous when `answerValue` is a single decimal digit (0-9).
  */
-export function encodeCompositeConcat(containerOrder: number, answerValue: number): EncodedAnswerInt {
+export function encodeCompositeConcat(
+  containerOrder: number,
+  answerValue: number,
+): EncodedAnswerInt {
   assertInteger(containerOrder, 'containerOrder');
   assertInteger(answerValue, 'answerValue');
 
@@ -108,7 +111,10 @@ export function encodeCompositeBase(
   return containerOrder * base + answerValue;
 }
 
-export function decodeCompositeBase(composite: number, base: number): {
+export function decodeCompositeBase(
+  composite: number,
+  base: number,
+): {
   containerOrder: number;
   answerValue: number;
 } {

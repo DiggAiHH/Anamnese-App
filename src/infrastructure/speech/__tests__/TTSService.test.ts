@@ -34,7 +34,7 @@ const setupService = async (supportsTTS: boolean) => {
     __esModule: true,
     default: tts,
   }));
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
+
   const { TTSService } = require('../TTSService');
   const service = new TTSService();
   await flushPromises();

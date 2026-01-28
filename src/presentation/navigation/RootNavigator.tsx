@@ -3,10 +3,20 @@
  */
 
 import React, { useRef } from 'react';
-import { StyleSheet, Text, TouchableOpacity, Alert, Platform, InteractionManager, Easing } from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  Alert,
+  Platform,
+  InteractionManager,
+  Easing,
+} from 'react-native';
 import {
   createStackNavigator,
   StackScreenProps,
+
+  // @ts-expect-error - TransitionPresets exists but moduleResolution: node16 can't find it
   TransitionPresets,
 } from '@react-navigation/stack';
 import { useTranslation } from 'react-i18next';
@@ -76,13 +86,17 @@ export const RootNavigator = (): React.JSX.Element => {
    */
   const renderLanguageButton = (navigation: RootNavigationProp | null | undefined) => {
     // DEV: Log navigation state for debugging (Windows-specific)
-    logDebug(`[LanguageButton] Render called, Platform.OS=${Platform.OS}, navigation exists: ${!!navigation}`);
+    logDebug(
+      `[LanguageButton] Render called, Platform.OS=${Platform.OS}, navigation exists: ${!!navigation}`,
+    );
 
     const getCurrentRouteName = (): string | undefined => {
       try {
-        const state = (navigation as unknown as {
-          getState?: () => { routes?: Array<{ name?: string }>; index?: number };
-        })?.getState?.();
+        const state = (
+          navigation as unknown as {
+            getState?: () => { routes?: Array<{ name?: string }>; index?: number };
+          }
+        )?.getState?.();
         if (!state || !Array.isArray(state.routes) || state.routes.length === 0) {
           return undefined;
         }

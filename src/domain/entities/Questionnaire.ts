@@ -1,6 +1,6 @@
 /**
  * Questionnaire Entity - repräsentiert einen Fragebogen mit Sektionen und Fragen
- * 
+ *
  * Business Rules:
  * - Conditional Logic: Fragen können basierend auf Antworten ein-/ausgeblendet werden
  * - Validation: Jede Antwort wird validiert
@@ -8,7 +8,11 @@
  */
 
 import { z } from 'zod';
-import { CompartmentInputType, CompartmentOption, CompartmentQuestion } from './CompartmentQuestion';
+import {
+  CompartmentInputType,
+  CompartmentOption,
+  CompartmentQuestion,
+} from './CompartmentQuestion';
 
 // Question Types
 export type QuestionType =
@@ -25,13 +29,7 @@ export type QuestionType =
 export const ConditionSchema = z.object({
   questionId: z.string(),
   operator: z.enum(['equals', 'not_equals', 'contains', 'not_contains', 'greater', 'less']),
-  value: z.union([
-    z.string(),
-    z.number(),
-    z.boolean(),
-    z.array(z.string()),
-    z.array(z.number()),
-  ]),
+  value: z.union([z.string(), z.number(), z.boolean(), z.array(z.string()), z.array(z.number())]),
 });
 
 export type Condition = z.infer<typeof ConditionSchema>;
@@ -117,9 +115,9 @@ export class QuestionnaireEntity {
 
     if (question.type === 'radio' || question.type === 'select') {
       const values = (question.options ?? [])
-        .map((o) => o.value)
-        .map((v) => (typeof v === 'number' ? v : Number.NaN))
-        .filter((v) => Number.isFinite(v));
+        .map(o => o.value)
+        .map(v => (typeof v === 'number' ? v : Number.NaN))
+        .filter(v => Number.isFinite(v));
 
       if (values.length === 2) {
         const unique = new Set(values);
@@ -166,7 +164,9 @@ export class QuestionnaireEntity {
 
         const codeRaw = metadata.compartmentCode ?? metadata.fieldName;
         const code = String(codeRaw ?? question.id).trim();
-        const sectionLabel = String(metadata.compartmentSection ?? section.titleKey ?? section.id).trim();
+        const sectionLabel = String(
+          metadata.compartmentSection ?? section.titleKey ?? section.id,
+        ).trim();
         const conceptLabel = String(metadata.compartmentConcept ?? section.id).trim();
         const label = String(question.labelKey).trim();
 
@@ -175,11 +175,9 @@ export class QuestionnaireEntity {
         let options: CompartmentOption[] | undefined;
         if (inputType === 'single' || inputType === 'multi') {
           const mapped = (question.options ?? [])
-            .map((o) => {
+            .map(o => {
               const value =
-                typeof o.value === 'number'
-                  ? o.value
-                  : Number.parseInt(String(o.value), 10);
+                typeof o.value === 'number' ? o.value : Number.parseInt(String(o.value), 10);
               if (!Number.isInteger(value)) return null;
               return {
                 value,
@@ -218,20 +216,27 @@ export class QuestionnaireEntity {
   }
 
   static create(patientId: string, sections: Section[], version?: string): QuestionnaireEntity;
-  static create(params: { patientId: string; sections: Section[]; version?: string }): QuestionnaireEntity;
+  static create(params: {
+    patientId: string;
+    sections: Section[];
+    version?: string;
+  }): QuestionnaireEntity;
   static create(
     patientOrParams: string | { patientId: string; sections: Section[]; version?: string },
     sections?: Section[],
     version = '1.0.0',
   ): QuestionnaireEntity {
-    const { patientId, sections: sectionList, version: providedVersion } =
-      typeof patientOrParams === 'string'
-        ? { patientId: patientOrParams, sections: sections ?? [], version }
-        : {
-            patientId: patientOrParams.patientId,
-            sections: patientOrParams.sections,
-            version: patientOrParams.version ?? version,
-          };
+    const {
+      patientId,
+      sections: sectionList,
+      version: providedVersion,
+    } = typeof patientOrParams === 'string'
+      ? { patientId: patientOrParams, sections: sections ?? [], version }
+      : {
+          patientId: patientOrParams.patientId,
+          sections: patientOrParams.sections,
+          version: patientOrParams.version ?? version,
+        };
 
     if (!sectionList || sectionList.length === 0) {
       throw new Error('Questionnaire must have at least one section');
@@ -343,10 +348,7 @@ export class QuestionnaireEntity {
   /**
    * Prüft ob Conditional Logic erfüllt ist
    */
-  static evaluateConditions(
-    question: Question,
-    answers: Map<string, unknown>,
-  ): boolean {
+  static evaluateConditions(question: Question, answers: Map<string, unknown>): boolean {
     if (!question.conditions || question.conditions.length === 0) {
       return true; // Keine Conditions = immer anzeigen
     }
@@ -354,7 +356,7 @@ export class QuestionnaireEntity {
     // Alle Conditions müssen erfüllt sein (AND Logik)
     return question.conditions.every(condition => {
       const answerValue = answers.get(condition.questionId);
-      
+
       switch (condition.operator) {
         case 'equals':
           return answerValue === condition.value;
@@ -407,20 +409,14 @@ export class QuestionnaireEntity {
     });
   }
 
-  evaluateConditions(
-    question: Question,
-    answers: Map<string, unknown>,
-  ): boolean {
+  evaluateConditions(question: Question, answers: Map<string, unknown>): boolean {
     return QuestionnaireEntity.evaluateConditions(question, answers);
   }
 
   /**
    * Gibt sichtbare Fragen einer Sektion zurück (basierend auf Conditions)
    */
-  getVisibleQuestions(
-    answers: Map<string, unknown>,
-    sectionId?: string,
-  ): Question[] {
+  getVisibleQuestions(answers: Map<string, unknown>, sectionId?: string): Question[] {
     const sectionsToCheck = sectionId
       ? this.data.sections.filter(s => s.id === sectionId)
       : this.data.sections;

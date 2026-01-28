@@ -87,7 +87,6 @@ export class SystemSpeechService implements ISpeechService {
 
   private logWarn(message: string): void {
     if (typeof __DEV__ !== 'undefined' && __DEV__) {
-      // eslint-disable-next-line no-console
       console.warn(message);
     }
   }
@@ -95,7 +94,6 @@ export class SystemSpeechService implements ISpeechService {
   private logError(message: string, error?: unknown): void {
     // Avoid leaking potential PII (transcripts) via logs.
     if (typeof __DEV__ !== 'undefined' && __DEV__) {
-      // eslint-disable-next-line no-console
       console.error(message, error);
     }
     // Production: no logging to avoid any PII leak
@@ -112,7 +110,9 @@ export class SystemSpeechService implements ISpeechService {
 
   async startRecognition(language: string = 'de'): Promise<void> {
     if (!Voice || !supportsSpeechToText) {
-      this.logWarn('[Speech] Recognition not supported (module not available or unsupported platform)');
+      this.logWarn(
+        '[Speech] Recognition not supported (module not available or unsupported platform)',
+      );
       return;
     }
 
@@ -158,7 +158,7 @@ export class SystemSpeechService implements ISpeechService {
 
     try {
       this.logDebug('[Speech] Stopping recognition');
-      
+
       await Voice.stop();
       this.isRecording = false;
 
@@ -192,7 +192,7 @@ export class SystemSpeechService implements ISpeechService {
 
     try {
       this.logDebug('[Speech] Cancelling recognition');
-      
+
       await Voice.cancel();
       this.isRecording = false;
       this.results = [];
@@ -277,7 +277,7 @@ export class SystemSpeechService implements ISpeechService {
   private onSpeechError(event: unknown): void {
     this.logError('[Speech] Speech error', event);
     this.isRecording = false;
-    
+
     // Parse error type for UX-friendly handling
     this.lastError = this.parseErrorType(event);
   }
@@ -287,10 +287,14 @@ export class SystemSpeechService implements ISpeechService {
    * @security No PII in error messages
    */
   private parseErrorType(event: unknown): SpeechError {
-    const maybeEvent = event as { error?: { code?: string; message?: string }; code?: string; message?: string };
+    const maybeEvent = event as {
+      error?: { code?: string; message?: string };
+      code?: string;
+      message?: string;
+    };
     const code = maybeEvent.error?.code || maybeEvent.code || '';
     const message = maybeEvent.error?.message || maybeEvent.message || '';
-    
+
     // Common error codes across iOS/Android/Windows
     // 1 = Network timeout
     // 2 = Network error
@@ -301,33 +305,47 @@ export class SystemSpeechService implements ISpeechService {
     // 7 = No match
     // 8 = Recognizer busy
     // 9 = Insufficient permissions
-    
+
     const lowerMessage = (code + message).toLowerCase();
-    
-    if (lowerMessage.includes('permission') || lowerMessage.includes('9') || lowerMessage.includes('denied')) {
+
+    if (
+      lowerMessage.includes('permission') ||
+      lowerMessage.includes('9') ||
+      lowerMessage.includes('denied')
+    ) {
       return {
         type: 'permission_denied',
-        message: 'Microphone permission denied. Please enable microphone access in system settings.',
+        message:
+          'Microphone permission denied. Please enable microphone access in system settings.',
         originalError: event,
       };
     }
-    
-    if (lowerMessage.includes('network') || lowerMessage.includes('1') || lowerMessage.includes('2') || lowerMessage.includes('4')) {
+
+    if (
+      lowerMessage.includes('network') ||
+      lowerMessage.includes('1') ||
+      lowerMessage.includes('2') ||
+      lowerMessage.includes('4')
+    ) {
       return {
         type: 'network_error',
         message: 'Network error. Please check your internet connection.',
         originalError: event,
       };
     }
-    
-    if (lowerMessage.includes('no match') || lowerMessage.includes('7') || lowerMessage.includes('no speech')) {
+
+    if (
+      lowerMessage.includes('no match') ||
+      lowerMessage.includes('7') ||
+      lowerMessage.includes('no speech')
+    ) {
       return {
         type: 'no_match',
         message: 'No speech detected. Please try speaking more clearly.',
         originalError: event,
       };
     }
-    
+
     if (lowerMessage.includes('busy') || lowerMessage.includes('8')) {
       return {
         type: 'busy',
@@ -335,7 +353,7 @@ export class SystemSpeechService implements ISpeechService {
         originalError: event,
       };
     }
-    
+
     if (lowerMessage.includes('not available') || lowerMessage.includes('unavailable')) {
       return {
         type: 'not_available',
@@ -343,7 +361,7 @@ export class SystemSpeechService implements ISpeechService {
         originalError: event,
       };
     }
-    
+
     return {
       type: 'unknown',
       message: 'An error occurred during speech recognition.',
@@ -426,14 +444,40 @@ export class SystemSpeechService implements ISpeechService {
   containsMedicalKeywords(transcript: string, language: string = 'de'): boolean {
     const medicalKeywords: Record<string, string[]> = {
       de: [
-        'schmerz', 'fieber', 'kopf', 'bauch', 'herz', 'lunge',
-        'allergie', 'medikament', 'operation', 'blut', 'druck',
-        'diabetes', 'krebs', 'krankheit', 'symptom', 'beschwerden',
+        'schmerz',
+        'fieber',
+        'kopf',
+        'bauch',
+        'herz',
+        'lunge',
+        'allergie',
+        'medikament',
+        'operation',
+        'blut',
+        'druck',
+        'diabetes',
+        'krebs',
+        'krankheit',
+        'symptom',
+        'beschwerden',
       ],
       en: [
-        'pain', 'fever', 'head', 'stomach', 'heart', 'lung',
-        'allergy', 'medication', 'surgery', 'blood', 'pressure',
-        'diabetes', 'cancer', 'disease', 'symptom', 'complaint',
+        'pain',
+        'fever',
+        'head',
+        'stomach',
+        'heart',
+        'lung',
+        'allergy',
+        'medication',
+        'surgery',
+        'blood',
+        'pressure',
+        'diabetes',
+        'cancer',
+        'disease',
+        'symptom',
+        'complaint',
       ],
     };
 
@@ -482,7 +526,7 @@ export class SystemSpeechService implements ISpeechService {
     }
 
     const instance = SystemSpeechService.getInstance();
-    
+
     // Store callbacks
     SystemSpeechService.listeners = {
       onResult: options.onResult,
@@ -491,16 +535,18 @@ export class SystemSpeechService implements ISpeechService {
     };
 
     // Set up result forwarding
-    Voice.onSpeechResults = (event) => {
+    Voice.onSpeechResults = event => {
       const results = event as { value?: string[] };
       if (results.value && results.value.length > 0) {
         SystemSpeechService.listeners.onResult?.(results.value[0]);
       }
     };
 
-    Voice.onSpeechError = (event) => {
+    Voice.onSpeechError = event => {
       const errorEvent = event as { error?: { message?: string } };
-      SystemSpeechService.listeners.onError?.(errorEvent.error?.message || 'Speech recognition error');
+      SystemSpeechService.listeners.onError?.(
+        errorEvent.error?.message || 'Speech recognition error',
+      );
     };
 
     Voice.onSpeechEnd = () => {
@@ -511,7 +557,7 @@ export class SystemSpeechService implements ISpeechService {
       await instance.startRecognition(options.language || 'de');
     } catch (error) {
       SystemSpeechService.listeners.onError?.(
-        error instanceof Error ? error.message : 'Failed to start speech recognition'
+        error instanceof Error ? error.message : 'Failed to start speech recognition',
       );
     }
   }

@@ -3,7 +3,7 @@
  * GDPR Article 17: Right to Erasure ("Right to be Forgotten")
  *
  * Use Case for securely removing all patient data and app state from the device.
- * 
+ *
  * Strategy:
  * 1. Wipe Local Database (SQLite) containing all clinical data.
  * 2. Wipe AsyncStorage containing preferences and cache.
@@ -17,7 +17,7 @@ import { database } from '@infrastructure/persistence/DatabaseConnection';
 export class DeleteAllDataUseCase {
   /**
    * Executes the deletion of all persistent data.
-   * 
+   *
    * @throws Error if deletion fails (caller should handle and retry/alert).
    */
   async execute(): Promise<void> {

@@ -1,6 +1,6 @@
 /**
  * Zustand Store - Global State Management
- * 
+ *
  * VERBINDUNG:
  * Components (Presentation Layer)
  *   ↔ Zustand Store (State Management)
@@ -44,29 +44,29 @@ export type UserMode = 'doctor' | 'patient' | null;
 interface QuestionnaireState {
   // User Mode (doctor/patient)
   userMode: UserMode;
-  
+
   // Current Patient
   patient: PatientEntity | null;
 
   // Active IDs (for session resume)
   activePatientId: string | null;
   activeQuestionnaireId: string | null;
-  
+
   // Current Questionnaire
   questionnaire: QuestionnaireEntity | null;
-  
+
   // Answers (questionId -> value)
   answers: Map<string, AnswerValue>;
-  
+
   // Current Section Index
   currentSectionIndex: number;
-  
+
   // Encryption Key (Session)
   encryptionKey: string | null;
-  
+
   // Loading State
   isLoading: boolean;
-  
+
   // Error State
   error: string | null;
 }
@@ -77,7 +77,7 @@ interface QuestionnaireState {
 interface QuestionnaireActions {
   // User Mode Action
   setUserMode: (mode: UserMode) => void;
-  
+
   // Patient Actions
   setPatient: (patient: PatientEntity) => void;
   clearPatient: () => void;
@@ -85,29 +85,29 @@ interface QuestionnaireActions {
   // Session IDs
   setActiveSessionIds: (patientId: string | null, questionnaireId: string | null) => void;
   clearActiveSessionIds: () => void;
-  
+
   // Questionnaire Actions
   setQuestionnaire: (questionnaire: QuestionnaireEntity) => void;
   clearQuestionnaire: () => void;
-  
+
   // Answer Actions
   setAnswer: (questionId: string, value: AnswerValue) => void;
   setAnswers: (answers: Map<string, AnswerValue>) => void;
   clearAnswers: () => void;
-  
+
   // Navigation Actions
   nextSection: () => void;
   previousSection: () => void;
   goToSection: (index: number) => void;
-  
+
   // Encryption Key
   setEncryptionKey: (key: string) => void;
   clearEncryptionKey: () => void;
-  
+
   // Loading & Error
   setLoading: (isLoading: boolean) => void;
   setError: (error: string | null) => void;
-  
+
   // Reset All
   reset: () => void;
 }
@@ -137,21 +137,21 @@ export const useQuestionnaireStore = create<QuestionnaireState & QuestionnaireAc
     ...initialState,
 
     // User Mode Action
-    setUserMode: (mode) =>
-      set((state) => {
+    setUserMode: mode =>
+      set(state => {
         state.userMode = mode;
       }),
 
     // Patient Actions
-    setPatient: (patient) =>
-      set((state) => {
+    setPatient: patient =>
+      set(state => {
         state.patient = patient;
         state.activePatientId = patient.id;
         void saveActiveSession({ patientId: patient.id });
       }),
 
     clearPatient: () =>
-      set((state) => {
+      set(state => {
         state.patient = null;
         state.activePatientId = null;
         void saveActiveSession({ patientId: null });
@@ -159,28 +159,24 @@ export const useQuestionnaireStore = create<QuestionnaireState & QuestionnaireAc
 
     // Session IDs
     setActiveSessionIds: (patientId, questionnaireId) =>
-      set((state) => {
+      set(state => {
         state.activePatientId = patientId;
         state.activeQuestionnaireId = questionnaireId;
       }),
 
     clearActiveSessionIds: () =>
-      set((state) => {
+      set(state => {
         state.activePatientId = null;
         state.activeQuestionnaireId = null;
         void clearActiveSession();
       }),
 
     // Questionnaire Actions
-    setQuestionnaire: (questionnaire) =>
-      set((state) => {
+    setQuestionnaire: questionnaire =>
+      set(state => {
         state.questionnaire = questionnaire;
         state.activeQuestionnaireId = questionnaire.id;
-        state.currentSectionIndex = findNextVisibleSectionIndex(
-          questionnaire.sections,
-          0,
-          1,
-        );
+        state.currentSectionIndex = findNextVisibleSectionIndex(questionnaire.sections, 0, 1);
         void saveActiveSession({
           patientId: state.activePatientId,
           questionnaireId: questionnaire.id,
@@ -189,7 +185,7 @@ export const useQuestionnaireStore = create<QuestionnaireState & QuestionnaireAc
       }),
 
     clearQuestionnaire: () =>
-      set((state) => {
+      set(state => {
         state.questionnaire = null;
         state.activeQuestionnaireId = null;
         state.currentSectionIndex = 0;
@@ -198,25 +194,25 @@ export const useQuestionnaireStore = create<QuestionnaireState & QuestionnaireAc
 
     // Answer Actions
     setAnswer: (questionId, value) =>
-      set((state) => {
+      set(state => {
         state.answers.set(questionId, value);
       }),
 
-    setAnswers: (answers) =>
-      set((state) => {
+    setAnswers: answers =>
+      set(state => {
         state.answers = new Map(answers);
       }),
 
     clearAnswers: () =>
-      set((state) => {
+      set(state => {
         state.answers = new Map();
       }),
 
     // Navigation Actions
     nextSection: () =>
-      set((state) => {
+      set(state => {
         const { questionnaire, currentSectionIndex } = get();
-        
+
         if (questionnaire && currentSectionIndex < questionnaire.sections.length - 1) {
           const nextIndex = findNextVisibleSectionIndex(
             questionnaire.sections,
@@ -235,9 +231,9 @@ export const useQuestionnaireStore = create<QuestionnaireState & QuestionnaireAc
       }),
 
     previousSection: () =>
-      set((state) => {
+      set(state => {
         const { currentSectionIndex } = get();
-        
+
         if (currentSectionIndex > 0) {
           const { questionnaire } = get();
           if (!questionnaire) return;
@@ -258,10 +254,10 @@ export const useQuestionnaireStore = create<QuestionnaireState & QuestionnaireAc
         }
       }),
 
-    goToSection: (index) =>
-      set((state) => {
+    goToSection: index =>
+      set(state => {
         const { questionnaire } = get();
-        
+
         if (questionnaire && index >= 0 && index < questionnaire.sections.length) {
           const targetIndex = findNextVisibleSectionIndex(questionnaire.sections, index, 1);
           if (targetIndex >= 0 && targetIndex < questionnaire.sections.length) {
@@ -276,24 +272,24 @@ export const useQuestionnaireStore = create<QuestionnaireState & QuestionnaireAc
       }),
 
     // Encryption Key
-    setEncryptionKey: (key) =>
-      set((state) => {
+    setEncryptionKey: key =>
+      set(state => {
         state.encryptionKey = key;
       }),
 
     clearEncryptionKey: () =>
-      set((state) => {
+      set(state => {
         state.encryptionKey = null;
       }),
 
     // Loading & Error
-    setLoading: (isLoading) =>
-      set((state) => {
+    setLoading: isLoading =>
+      set(state => {
         state.isLoading = isLoading;
       }),
 
-    setError: (error) =>
-      set((state) => {
+    setError: error =>
+      set(state => {
         state.error = error;
       }),
 
@@ -319,19 +315,19 @@ export const selectVisibleQuestions = (
   state: QuestionnaireState & QuestionnaireActions,
 ): Question[] => {
   const { questionnaire, currentSectionIndex, answers } = state;
-  
+
   if (!questionnaire) return [];
-  
+
   const section = questionnaire.sections[currentSectionIndex];
   if (!section) return [];
-  
+
   return questionnaire.getVisibleQuestions(answers, section.id);
 };
 
 export const selectProgress = (state: QuestionnaireState & QuestionnaireActions): number => {
   const { questionnaire, answers } = state;
-  
+
   if (!questionnaire) return 0;
-  
+
   return questionnaire.calculateProgress(answers);
 };

@@ -1,8 +1,8 @@
 /**
  * SaveAnswer Use Case - Speichert eine Antwort
- * 
+ *
  * FLOW:
- * Presentation Layer (Component) 
+ * Presentation Layer (Component)
  *   → Use Case (Business Logic)
  *   → Encryption Service (encrypt answer)
  *   → Answer Repository (persist to DB)
@@ -39,7 +39,7 @@ export interface SaveAnswerOutput {
 
 /**
  * SaveAnswer Use Case
- * 
+ *
  * Verantwortlichkeiten:
  * 1. Validiere Antwort
  * 2. Verschlüssele Antwort
@@ -56,7 +56,7 @@ export class SaveAnswerUseCase {
     try {
       // Step 1: Validate Answer
       const validationResult = this.validate(input.question, input.value);
-      
+
       if (!validationResult.valid) {
         return {
           success: false,
@@ -122,8 +122,8 @@ export class SaveAnswerUseCase {
       // New model: store as integer bitset. Keep legacy arrays accepted at input.
       if (Array.isArray(value)) {
         const bitPositions = value
-          .map((v) => (typeof v === 'number' ? v : Number.parseInt(String(v), 10)))
-          .filter((v) => Number.isInteger(v));
+          .map(v => (typeof v === 'number' ? v : Number.parseInt(String(v), 10)))
+          .filter(v => Number.isInteger(v));
 
         // If nothing parsed, keep legacy value (avoids throwing on weird legacy arrays)
         if (bitPositions.length === 0) return value;
@@ -141,10 +141,10 @@ export class SaveAnswerUseCase {
   private async encryptAnswer(value: AnswerValue, key: string): Promise<string> {
     // Convert value to JSON string
     const jsonValue = JSON.stringify(value);
-    
+
     // Encrypt using AES-256-GCM
     const encryptedData = await this.encryptionService.encrypt(jsonValue, key);
-    
+
     // Return as string (for storage)
     return encryptedData.toString();
   }

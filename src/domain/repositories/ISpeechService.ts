@@ -15,7 +15,7 @@ export interface ISpeechService {
     language?: string,
     onResult?: (text: string, isFinal: boolean) => void,
     onFinal?: (text: string, confidence: number) => void,
-    onError?: (error: string) => void
+    onError?: (error: string) => void,
   ): Promise<void>;
 
   /**

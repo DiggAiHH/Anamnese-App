@@ -196,10 +196,7 @@ export const GDPRConsentScreen = ({ navigation }: Props): React.JSX.Element => {
 
       navigation.replace('Questionnaire');
     } catch (error) {
-      Alert.alert(
-        t('common.error'),
-        error instanceof Error ? error.message : t('gdpr.saveFailed'),
-      );
+      Alert.alert(t('common.error'), error instanceof Error ? error.message : t('gdpr.saveFailed'));
     } finally {
       setIsWorking(false);
     }
@@ -237,15 +234,27 @@ export const GDPRConsentScreen = ({ navigation }: Props): React.JSX.Element => {
         <View style={styles.legend}>
           <View style={styles.legendItem}>
             <View style={[styles.badge, styles.badgeRequired]}>
-              <Text style={styles.badgeText}>{t('gdpr.requiredLabel', { defaultValue: 'Pflicht' })}</Text>
+              <Text style={styles.badgeText}>
+                {t('gdpr.requiredLabel', { defaultValue: 'Pflicht' })}
+              </Text>
             </View>
-            <Text style={styles.legendText}>{t('gdpr.requiredExplanation', { defaultValue: 'Diese Einwilligungen sind für die App-Nutzung erforderlich' })}</Text>
+            <Text style={styles.legendText}>
+              {t('gdpr.requiredExplanation', {
+                defaultValue: 'Diese Einwilligungen sind für die App-Nutzung erforderlich',
+              })}
+            </Text>
           </View>
           <View style={styles.legendItem}>
             <View style={[styles.badge, styles.badgeOptional]}>
-              <Text style={styles.badgeTextOptional}>{t('gdpr.optionalLabel', { defaultValue: 'Optional' })}</Text>
+              <Text style={styles.badgeTextOptional}>
+                {t('gdpr.optionalLabel', { defaultValue: 'Optional' })}
+              </Text>
             </View>
-            <Text style={styles.legendText}>{t('gdpr.optionalExplanation', { defaultValue: 'Diese Funktionen können bei Bedarf aktiviert werden' })}</Text>
+            <Text style={styles.legendText}>
+              {t('gdpr.optionalExplanation', {
+                defaultValue: 'Diese Funktionen können bei Bedarf aktiviert werden',
+              })}
+            </Text>
           </View>
         </View>
 
@@ -370,17 +379,11 @@ const ConsentRow = (props: {
 }): React.JSX.Element => {
   return (
     <TouchableOpacity
-      style={[
-        styles.consentRow,
-        props.required && !props.value && styles.consentRowMissing,
-      ]}
+      style={[styles.consentRow, props.required && !props.value && styles.consentRowMissing]}
       onPress={props.onToggle}
       testID={`consent-${props.title}`}
       accessibilityRole="button">
-      <View style={[
-        styles.checkbox,
-        props.required && styles.checkboxRequired,
-      ]}>
+      <View style={[styles.checkbox, props.required && styles.checkboxRequired]}>
         {props.value ? <View style={styles.checkboxSelected} /> : null}
       </View>
       <View style={styles.consentText}>

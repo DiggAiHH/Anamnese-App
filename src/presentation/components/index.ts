@@ -1,5 +1,11 @@
 // UI Primitives
-export { AppText, type AppTextVariant, type AppTextColor, getTextVariantStyle, getTextColor } from './AppText';
+export {
+  AppText,
+  type AppTextVariant,
+  type AppTextColor,
+  getTextVariantStyle,
+  getTextColor,
+} from './AppText';
 export { AppButton, type ButtonVariant, type ButtonSize, getButtonColors } from './AppButton';
 export { AppInput, getInputBorderColor } from './AppInput';
 

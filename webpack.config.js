@@ -16,7 +16,7 @@ module.exports = {
         __dirname,
         'web',
         'shims',
-        'react-native-document-picker.js'
+        'react-native-document-picker.js',
       ),
       'react-native-share': path.join(__dirname, 'web', 'shims', 'react-native-share.js'),
       'react-native-fs': path.join(__dirname, 'web', 'shims', 'react-native-fs.js'),
@@ -25,13 +25,13 @@ module.exports = {
         __dirname,
         'web',
         'shims',
-        'react-native-date-picker.js'
+        'react-native-date-picker.js',
       ),
       'react-native-quick-crypto': path.join(
         __dirname,
         'web',
         'shims',
-        'react-native-quick-crypto.js'
+        'react-native-quick-crypto.js',
       ),
       'react-native-tts': path.join(__dirname, 'web', 'shims', 'react-native-tts.js'),
       '@react-native-voice/voice': path.join(__dirname, 'web', 'shims', 'voice.js'),

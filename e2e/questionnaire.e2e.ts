@@ -65,7 +65,7 @@ describe('Questionnaire E2E Flow', () => {
     await element(by.id('start-anamnesis-btn')).tap();
     await element(by.id('language-option-en')).tap();
     await element(by.id('language-confirm-btn')).tap();
-    
+
     await element(by.id('password-input')).typeText('TestPassword123!');
     await element(by.id('password-confirm-input')).typeText('TestPassword123!');
     await element(by.id('password-confirm-btn')).tap();
@@ -85,13 +85,13 @@ describe('Questionnaire E2E Flow', () => {
 
     // Questionnaire screen
     await detoxExpect(element(by.id('questionnaire-screen'))).toBeVisible();
-    
+
     // Section 1: Personal Data (should be visible)
     await detoxExpect(element(by.id('section-title'))).toHaveText('Personal Data');
 
     // Answer first question
     await element(by.id('question-first_name')).typeText('John');
-    
+
     // Wait for auto-save
     await new Promise(resolve => setTimeout(resolve, 500));
 
@@ -108,7 +108,7 @@ describe('Questionnaire E2E Flow', () => {
 
     // Section 2: General Anamnesis
     await detoxExpect(element(by.id('section-title'))).toHaveText('General Anamnesis');
-    
+
     await element(by.id('question-chief_complaint')).typeText('Headache');
     await element(by.id('question-duration')).typeText('3 days');
     await element(by.id('question-pain_level')).tap(); // Slider
@@ -128,7 +128,7 @@ describe('Questionnaire E2E Flow', () => {
     await element(by.id('start-anamnesis-btn')).tap();
     await element(by.id('language-option-en')).tap();
     await element(by.id('language-confirm-btn')).tap();
-    
+
     await element(by.id('password-input')).typeText('TestPassword123!');
     await element(by.id('password-confirm-input')).typeText('TestPassword123!');
     await element(by.id('password-confirm-btn')).tap();
@@ -162,7 +162,7 @@ describe('Questionnaire E2E Flow', () => {
     await element(by.id('start-anamnesis-btn')).tap();
     await element(by.id('language-option-de')).tap();
     await element(by.id('language-confirm-btn')).tap();
-    
+
     await element(by.id('password-input')).typeText('TestPassword123!');
     await element(by.id('password-confirm-input')).typeText('TestPassword123!');
     await element(by.id('password-confirm-btn')).tap();
@@ -206,7 +206,7 @@ describe('Questionnaire E2E Flow', () => {
     await element(by.id('start-anamnesis-btn')).tap();
     await element(by.id('language-option-de')).tap();
     await element(by.id('language-confirm-btn')).tap();
-    
+
     await element(by.id('password-input')).typeText('TestPassword123!');
     await element(by.id('password-confirm-input')).typeText('TestPassword123!');
     await element(by.id('password-confirm-btn')).tap();
@@ -244,7 +244,7 @@ describe('Questionnaire E2E Flow', () => {
     await element(by.id('start-anamnesis-btn')).tap();
     await element(by.id('language-option-en')).tap();
     await element(by.id('language-confirm-btn')).tap();
-    
+
     await element(by.id('password-input')).typeText('TestPassword123!');
     await element(by.id('password-confirm-input')).typeText('TestPassword123!');
     await element(by.id('password-confirm-btn')).tap();
@@ -289,7 +289,7 @@ describe('Questionnaire E2E Flow', () => {
     await element(by.id('start-anamnesis-btn')).tap();
     await element(by.id('language-option-en')).tap();
     await element(by.id('language-confirm-btn')).tap();
-    
+
     await element(by.id('password-input')).typeText('TestPassword123!');
     await element(by.id('password-confirm-input')).typeText('TestPassword123!');
     await element(by.id('password-confirm-btn')).tap();
@@ -327,7 +327,7 @@ describe('Questionnaire E2E Flow', () => {
     await element(by.id('start-anamnesis-btn')).tap();
     await element(by.id('language-option-en')).tap();
     await element(by.id('language-confirm-btn')).tap();
-    
+
     await element(by.id('password-input')).typeText('TestPassword123!');
     await element(by.id('password-confirm-input')).typeText('TestPassword123!');
     await element(by.id('password-confirm-btn')).tap();
