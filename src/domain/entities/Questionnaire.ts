@@ -23,7 +23,8 @@ export type QuestionType =
   | 'checkbox'
   | 'radio'
   | 'select'
-  | 'multiselect';
+  | 'multiselect'
+  | 'hidden';
 
 // Conditional Logic
 export const ConditionSchema = z.object({
@@ -46,15 +47,19 @@ export const QuestionSchema = z.object({
     'radio',
     'select',
     'multiselect',
+    'hidden', // Added hidden type support
   ]),
-  labelKey: z.string(), // i18n key
+  text: z.string().optional(), // Direct text support
+  labelKey: z.string().optional(), // Made optional
+  placeholder: z.string().optional(), // Direct placeholder
   placeholderKey: z.string().optional(),
   required: z.boolean().default(false),
   options: z
     .array(
       z.object({
         value: z.union([z.string(), z.number()]),
-        labelKey: z.string(),
+        label: z.string().optional(), // Direct label
+        labelKey: z.string().optional(),
       }),
     )
     .optional(),
@@ -63,13 +68,14 @@ export const QuestionSchema = z.object({
       min: z.number().optional(),
       max: z.number().optional(),
       pattern: z.string().optional(),
-      minDate: z.string().optional(), // ISO 8601
+      minDate: z.string().optional(),
       maxDate: z.string().optional(),
     })
     .optional(),
-  conditions: z.array(ConditionSchema).optional(), // Zeige Frage nur wenn alle Conditions erfüllt
-  dependsOn: z.string().optional(), // Parent question ID
-  metadata: z.record(z.unknown()).optional(), // Zusätzliche Daten (z.B. für GDT Mapping)
+  conditions: z.array(ConditionSchema).optional(),
+  nextMap: z.record(z.union([z.string(), z.array(z.string())])).optional(), // Added nextMap
+  dependsOn: z.string().optional(),
+  metadata: z.record(z.unknown()).optional(),
 });
 
 export type Question = z.infer<typeof QuestionSchema>;
@@ -77,7 +83,8 @@ export type Question = z.infer<typeof QuestionSchema>;
 // Section
 export const SectionSchema = z.object({
   id: z.string(),
-  titleKey: z.string(),
+  title: z.string().optional(), // Direct title
+  titleKey: z.string().optional(), // Optional
   descriptionKey: z.string().optional(),
   questions: z.array(QuestionSchema),
   order: z.number(),
@@ -168,7 +175,7 @@ export class QuestionnaireEntity {
           metadata.compartmentSection ?? section.titleKey ?? section.id,
         ).trim();
         const conceptLabel = String(metadata.compartmentConcept ?? section.id).trim();
-        const label = String(question.labelKey).trim();
+        const label = String(question.labelKey ?? question.text ?? metadata.label ?? '').trim();
 
         const inputType = QuestionnaireEntity.inferCompartmentInputType(question);
 
@@ -181,7 +188,7 @@ export class QuestionnaireEntity {
               if (!Number.isInteger(value)) return null;
               return {
                 value,
-                label: String(o.labelKey),
+                label: String(o.labelKey ?? o.label ?? o.value),
               };
             })
             .filter((v): v is CompartmentOption => v !== null);
@@ -231,8 +238,8 @@ export class QuestionnaireEntity {
       sections: sectionList,
       version: providedVersion,
     } = typeof patientOrParams === 'string'
-      ? { patientId: patientOrParams, sections: sections ?? [], version }
-      : {
+        ? { patientId: patientOrParams, sections: sections ?? [], version }
+        : {
           patientId: patientOrParams.patientId,
           sections: patientOrParams.sections,
           version: patientOrParams.version ?? version,

@@ -13,7 +13,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import {
   View,
-  Text,
   StyleSheet,
   TouchableOpacity,
   TextInput,
@@ -29,6 +28,7 @@ import type { RootStackParamList } from '../navigation/RootNavigator';
 import { SystemSpeechService, SpeechError } from '../../infrastructure/speech/SystemSpeechService';
 import { TTSService, getTTSService } from '../../infrastructure/speech/TTSService';
 import { colors, spacing, radius } from '../theme/tokens';
+import { AppText } from '../components/AppText';
 import { FeatureBanner } from '../components/FeatureBanner';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Voice'>;
@@ -178,21 +178,21 @@ export const VoiceScreen = ({ navigation: _navigation }: Props): React.JSX.Eleme
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.title} accessibilityRole="header">
+        <AppText style={styles.title} accessibilityRole="header">
           {t('voice.title')}
-        </Text>
-        <Text style={styles.subtitle}>{t('voice.subtitle')}</Text>
+        </AppText>
+        <AppText style={styles.subtitle}>{t('voice.subtitle')}</AppText>
         <View style={styles.badge}>
-          <Text style={styles.badgeText}>🆓 {t('voice.freeLabel')}</Text>
+          <AppText style={styles.badgeText}>🆓 {t('voice.freeLabel')}</AppText>
         </View>
       </View>
 
       {/* Speech-to-Text Section */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle} accessibilityRole="header">
+        <AppText style={styles.sectionTitle} accessibilityRole="header">
           🎤 {t('voice.sttTitle')}
-        </Text>
-        <Text style={styles.sectionDesc}>{t('voice.sttDesc')}</Text>
+        </AppText>
+        <AppText style={styles.sectionDesc}>{t('voice.sttDesc')}</AppText>
 
         {!sttAvailable && (
           <FeatureBanner
@@ -215,46 +215,46 @@ export const VoiceScreen = ({ navigation: _navigation }: Props): React.JSX.Eleme
           {isListening ? (
             <ActivityIndicator color="#fff" size="large" />
           ) : (
-            <Text style={styles.micButtonText}>🎤</Text>
+            <AppText style={styles.micButtonText}>🎤</AppText>
           )}
         </TouchableOpacity>
 
-        <Text style={styles.micLabel}>
+        <AppText style={styles.micLabel}>
           {isListening ? t('voice.listening') : t('voice.tapToSpeak')}
-        </Text>
+        </AppText>
 
         {/* Error Display with contextual action */}
         {sttError && (
           <View style={styles.errorBox} accessibilityRole="alert">
-            <Text style={styles.errorText}>⚠️ {sttError.message}</Text>
+            <AppText style={styles.errorText}>⚠️ {sttError.message}</AppText>
             {sttError.type === 'permission_denied' && (
               <TouchableOpacity
                 style={styles.settingsButton}
                 onPress={handleOpenSettings}
                 accessibilityRole="button"
                 accessibilityLabel={t('voice.openSettings')}>
-                <Text style={styles.settingsButtonText}>⚙️ {t('voice.openSettings')}</Text>
+                <AppText style={styles.settingsButtonText}>⚙️ {t('voice.openSettings')}</AppText>
               </TouchableOpacity>
             )}
             {sttError.type === 'network_error' && (
-              <Text style={styles.errorHint}>{t('voice.checkConnection')}</Text>
+              <AppText style={styles.errorHint}>{t('voice.checkConnection')}</AppText>
             )}
             {sttError.type === 'no_match' && (
-              <Text style={styles.errorHint}>{t('voice.speakClearly')}</Text>
+              <AppText style={styles.errorHint}>{t('voice.speakClearly')}</AppText>
             )}
           </View>
         )}
 
         {recognizedText ? (
           <View style={styles.resultBox} accessibilityLiveRegion="polite">
-            <Text style={styles.resultLabel}>{t('voice.recognizedText')}</Text>
-            <Text style={styles.resultText}>{recognizedText}</Text>
+            <AppText style={styles.resultLabel}>{t('voice.recognizedText')}</AppText>
+            <AppText style={styles.resultText}>{recognizedText}</AppText>
             <TouchableOpacity
               style={styles.copyButton}
               onPress={handleCopyToTTS}
               accessibilityRole="button"
               accessibilityLabel={t('voice.copyToTTS')}>
-              <Text style={styles.copyButtonText}>⬇️ {t('voice.copyToTTS')}</Text>
+              <AppText style={styles.copyButtonText}>⬇️ {t('voice.copyToTTS')}</AppText>
             </TouchableOpacity>
           </View>
         ) : null}
@@ -262,10 +262,10 @@ export const VoiceScreen = ({ navigation: _navigation }: Props): React.JSX.Eleme
 
       {/* Text-to-Speech Section */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle} accessibilityRole="header">
+        <AppText style={styles.sectionTitle} accessibilityRole="header">
           🔊 {t('voice.ttsTitle')}
-        </Text>
-        <Text style={styles.sectionDesc}>{t('voice.ttsDesc')}</Text>
+        </AppText>
+        <AppText style={styles.sectionDesc}>{t('voice.ttsDesc')}</AppText>
 
         <TextInput
           style={styles.textInput}
@@ -286,9 +286,9 @@ export const VoiceScreen = ({ navigation: _navigation }: Props): React.JSX.Eleme
             disabled={isSpeaking}
             accessibilityLabel={t('voice.speakButton')}
             accessibilityRole="button">
-            <Text style={styles.ttsButtonText}>
+            <AppText style={styles.ttsButtonText}>
               {isSpeaking ? '⏳' : '▶️'} {t('voice.speakButton')}
-            </Text>
+            </AppText>
           </TouchableOpacity>
 
           {isSpeaking && (
@@ -297,7 +297,7 @@ export const VoiceScreen = ({ navigation: _navigation }: Props): React.JSX.Eleme
               onPress={handleStopSpeaking}
               accessibilityLabel={t('voice.stopButton')}
               accessibilityRole="button">
-              <Text style={styles.stopButtonText}>⏹️ {t('voice.stopButton')}</Text>
+              <AppText style={styles.stopButtonText}>⏹️ {t('voice.stopButton')}</AppText>
             </TouchableOpacity>
           )}
         </View>
@@ -305,17 +305,17 @@ export const VoiceScreen = ({ navigation: _navigation }: Props): React.JSX.Eleme
 
       {/* Privacy Note */}
       <View style={styles.privacySection}>
-        <Text style={styles.privacyTitle} accessibilityRole="header">
+        <AppText style={styles.privacyTitle} accessibilityRole="header">
           🔒 {t('voice.privacyTitle')}
-        </Text>
-        <Text style={styles.privacyText}>{t('voice.privacyNote')}</Text>
+        </AppText>
+        <AppText style={styles.privacyText}>{t('voice.privacyNote')}</AppText>
       </View>
 
       {/* Language Info */}
       <View style={styles.languageInfo}>
-        <Text style={styles.languageInfoText}>
+        <AppText style={styles.languageInfoText}>
           🌍 {t('voice.currentLanguage')}: {currentLocale.toUpperCase()}
-        </Text>
+        </AppText>
       </View>
     </ScrollView>
   );

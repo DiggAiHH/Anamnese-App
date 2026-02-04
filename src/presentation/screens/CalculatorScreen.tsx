@@ -7,7 +7,6 @@
 import React, { useState } from 'react';
 import {
   View,
-  Text,
   TextInput,
   StyleSheet,
   ScrollView,
@@ -18,6 +17,7 @@ import { useTranslation } from 'react-i18next';
 import { ClinicalCalculators } from '../../domain/services/ClinicalCalculators';
 import { colors, spacing, radius } from '../theme/tokens';
 import { AppButton } from '../components/AppButton';
+import { AppText } from '../components/AppText';
 
 // Navigation Props type (kept for future use)
 // type Props = NativeStackScreenProps<RootStackParamList, 'Calculator'>;
@@ -80,7 +80,7 @@ export const CalculatorScreen = (): React.JSX.Element => {
 
       setBmiResult(
         `${t('calculator.bmi.result')}: ${result.value.toFixed(1)} kg/m²\n` +
-          `${t('calculator.bmi.category')}: ${t(`calculator.bmi.categories.${result.category}`)}`,
+        `${t('calculator.bmi.category')}: ${t(`calculator.bmi.categories.${result.category}`)}`,
       );
     } catch (error) {
       Alert.alert(t('common.error'), t('calculator.bmi.invalidInput'));
@@ -120,7 +120,7 @@ export const CalculatorScreen = (): React.JSX.Element => {
 
       setCardioResult(
         `${t('calculator.cardio.risk10Year', { value: result.riskPercentage.toFixed(1) })}\n` +
-          `${t('calculator.cardio.category', { category: t(`calculator.cardio.categories.${result.category}`) })}`,
+        `${t('calculator.cardio.category', { category: t(`calculator.cardio.categories.${result.category}`) })}`,
       );
     } catch (error) {
       Alert.alert(t('common.error'), t('calculator.cardio.invalidInput'));
@@ -147,7 +147,7 @@ export const CalculatorScreen = (): React.JSX.Element => {
 
       setEgfrResult(
         `${t('calculator.egfr.result')}: ${result.value.toFixed(1)} mL/min/1.73m²\n` +
-          `${t('calculator.egfr.stage')}: ${result.stage} (${t(`calculator.egfr.stages.stage${result.stage}`)})`,
+        `${t('calculator.egfr.stage')}: ${result.stage} (${t(`calculator.egfr.stages.stage${result.stage}`)})`,
       );
     } catch (error) {
       Alert.alert(t('common.error'), t('calculator.egfr.invalidInput'));
@@ -210,9 +210,9 @@ export const CalculatorScreen = (): React.JSX.Element => {
         accessibilityRole="tab"
         accessibilityState={{ selected: activeTab === 'bmi' }}
         accessibilityLabel={t('calculator.bmi.title')}>
-        <Text style={[styles.tabText, activeTab === 'bmi' && styles.tabTextActive]}>
+        <AppText style={[styles.tabText, activeTab === 'bmi' && styles.tabTextActive]}>
           {t('calculator.bmi.title')}
-        </Text>
+        </AppText>
       </TouchableOpacity>
       <TouchableOpacity
         style={[styles.tabButton, activeTab === 'cardio' && styles.tabButtonActive]}
@@ -220,9 +220,9 @@ export const CalculatorScreen = (): React.JSX.Element => {
         accessibilityRole="tab"
         accessibilityState={{ selected: activeTab === 'cardio' }}
         accessibilityLabel={t('calculator.cardio.title')}>
-        <Text style={[styles.tabText, activeTab === 'cardio' && styles.tabTextActive]}>
+        <AppText style={[styles.tabText, activeTab === 'cardio' && styles.tabTextActive]}>
           {t('calculator.cardio.title')}
-        </Text>
+        </AppText>
       </TouchableOpacity>
       <TouchableOpacity
         style={[styles.tabButton, activeTab === 'egfr' && styles.tabButtonActive]}
@@ -230,9 +230,9 @@ export const CalculatorScreen = (): React.JSX.Element => {
         accessibilityRole="tab"
         accessibilityState={{ selected: activeTab === 'egfr' }}
         accessibilityLabel={t('calculator.egfr.title')}>
-        <Text style={[styles.tabText, activeTab === 'egfr' && styles.tabTextActive]}>
+        <AppText style={[styles.tabText, activeTab === 'egfr' && styles.tabTextActive]}>
           {t('calculator.egfr.title')}
-        </Text>
+        </AppText>
       </TouchableOpacity>
       <TouchableOpacity
         style={[styles.tabButton, activeTab === 'ibw' && styles.tabButtonActive]}
@@ -240,9 +240,9 @@ export const CalculatorScreen = (): React.JSX.Element => {
         accessibilityRole="tab"
         accessibilityState={{ selected: activeTab === 'ibw' }}
         accessibilityLabel={t('calculator.ibw.title')}>
-        <Text style={[styles.tabText, activeTab === 'ibw' && styles.tabTextActive]}>
+        <AppText style={[styles.tabText, activeTab === 'ibw' && styles.tabTextActive]}>
           {t('calculator.ibw.title')}
-        </Text>
+        </AppText>
       </TouchableOpacity>
       <TouchableOpacity
         style={[styles.tabButton, activeTab === 'bmr' && styles.tabButtonActive]}
@@ -250,18 +250,18 @@ export const CalculatorScreen = (): React.JSX.Element => {
         accessibilityRole="tab"
         accessibilityState={{ selected: activeTab === 'bmr' }}
         accessibilityLabel={t('calculator.bmr.title')}>
-        <Text style={[styles.tabText, activeTab === 'bmr' && styles.tabTextActive]}>
+        <AppText style={[styles.tabText, activeTab === 'bmr' && styles.tabTextActive]}>
           {t('calculator.bmr.title')}
-        </Text>
+        </AppText>
       </TouchableOpacity>
     </View>
   );
 
   const renderBMICalculator = () => (
     <View style={styles.calculatorContent}>
-      <Text style={styles.label} nativeID="bmi-weight-label">
+      <AppText style={styles.label} nativeID="bmi-weight-label">
         {t('calculator.bmi.weight')} (kg)
-      </Text>
+      </AppText>
       <TextInput
         style={styles.input}
         keyboardType="numeric"
@@ -271,9 +271,9 @@ export const CalculatorScreen = (): React.JSX.Element => {
         accessibilityLabel={t('calculator.bmi.weight')}
         accessibilityLabelledBy="bmi-weight-label"
       />
-      <Text style={styles.label} nativeID="bmi-height-label">
+      <AppText style={styles.label} nativeID="bmi-height-label">
         {t('calculator.bmi.height')} (cm)
-      </Text>
+      </AppText>
       <TextInput
         style={styles.input}
         keyboardType="numeric"
@@ -289,18 +289,18 @@ export const CalculatorScreen = (): React.JSX.Element => {
         style={styles.calculateButton}
       />
       {bmiResult && (
-        <Text style={styles.result} accessibilityLiveRegion="polite">
+        <AppText style={styles.result} accessibilityLiveRegion="polite">
           {bmiResult}
-        </Text>
+        </AppText>
       )}
     </View>
   );
 
   const renderCardioCalculator = () => (
     <View style={styles.calculatorContent}>
-      <Text style={styles.label} nativeID="cardio-age-label">
+      <AppText style={styles.label} nativeID="cardio-age-label">
         {t('calculator.cardio.age')}
-      </Text>
+      </AppText>
       <TextInput
         style={styles.input}
         keyboardType="numeric"
@@ -310,26 +310,26 @@ export const CalculatorScreen = (): React.JSX.Element => {
         accessibilityLabel={t('calculator.cardio.age')}
         accessibilityLabelledBy="cardio-age-label"
       />
-      <Text style={styles.label}>{t('calculator.cardio.gender')}</Text>
+      <AppText style={styles.label}>{t('calculator.cardio.gender')}</AppText>
       <View style={styles.genderContainer} accessibilityRole="radiogroup">
         <TouchableOpacity
           style={[styles.genderButton, cardioGender === 'male' && styles.genderButtonActive]}
           onPress={() => setCardioGender('male')}
           accessibilityRole="radio"
           accessibilityState={{ checked: cardioGender === 'male' }}>
-          <Text style={styles.genderButtonText}>{t('patientInfo.male')}</Text>
+          <AppText style={styles.genderButtonText}>{t('patientInfo.male')}</AppText>
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.genderButton, cardioGender === 'female' && styles.genderButtonActive]}
           onPress={() => setCardioGender('female')}
           accessibilityRole="radio"
           accessibilityState={{ checked: cardioGender === 'female' }}>
-          <Text style={styles.genderButtonText}>{t('patientInfo.female')}</Text>
+          <AppText style={styles.genderButtonText}>{t('patientInfo.female')}</AppText>
         </TouchableOpacity>
       </View>
-      <Text style={styles.label} nativeID="cardio-systolic-label">
+      <AppText style={styles.label} nativeID="cardio-systolic-label">
         {t('calculator.cardio.systolicBP')} (mmHg)
-      </Text>
+      </AppText>
       <TextInput
         style={styles.input}
         keyboardType="numeric"
@@ -339,9 +339,9 @@ export const CalculatorScreen = (): React.JSX.Element => {
         accessibilityLabel={t('calculator.cardio.systolicBP')}
         accessibilityLabelledBy="cardio-systolic-label"
       />
-      <Text style={styles.label} nativeID="cardio-chol-label">
+      <AppText style={styles.label} nativeID="cardio-chol-label">
         {t('calculator.cardio.totalCholesterol')} (mg/dL)
-      </Text>
+      </AppText>
       <TextInput
         style={styles.input}
         keyboardType="numeric"
@@ -351,9 +351,9 @@ export const CalculatorScreen = (): React.JSX.Element => {
         accessibilityLabel={t('calculator.cardio.totalCholesterol')}
         accessibilityLabelledBy="cardio-chol-label"
       />
-      <Text style={styles.label} nativeID="cardio-hdl-label">
+      <AppText style={styles.label} nativeID="cardio-hdl-label">
         {t('calculator.cardio.hdlCholesterol')} (mg/dL)
-      </Text>
+      </AppText>
       <TextInput
         style={styles.input}
         keyboardType="numeric"
@@ -369,7 +369,7 @@ export const CalculatorScreen = (): React.JSX.Element => {
         accessibilityRole="checkbox"
         accessibilityState={{ checked: cardioSmoker }}>
         <View style={[styles.checkbox, cardioSmoker && styles.checkboxChecked]} />
-        <Text style={styles.checkboxLabel}>{t('calculator.cardio.smoker')}</Text>
+        <AppText style={styles.checkboxLabel}>{t('calculator.cardio.smoker')}</AppText>
       </TouchableOpacity>
       <AppButton
         title={t('calculator.calculate')}
@@ -377,18 +377,18 @@ export const CalculatorScreen = (): React.JSX.Element => {
         style={styles.calculateButton}
       />
       {cardioResult && (
-        <Text style={styles.result} accessibilityLiveRegion="polite">
+        <AppText style={styles.result} accessibilityLiveRegion="polite">
           {cardioResult}
-        </Text>
+        </AppText>
       )}
     </View>
   );
 
   const renderEGFRCalculator = () => (
     <View style={styles.calculatorContent}>
-      <Text style={styles.label} nativeID="egfr-creatinine-label">
+      <AppText style={styles.label} nativeID="egfr-creatinine-label">
         {t('calculator.egfr.creatinine')} (mg/dL)
-      </Text>
+      </AppText>
       <TextInput
         style={styles.input}
         keyboardType="numeric"
@@ -398,9 +398,9 @@ export const CalculatorScreen = (): React.JSX.Element => {
         accessibilityLabel={t('calculator.egfr.creatinine')}
         accessibilityLabelledBy="egfr-creatinine-label"
       />
-      <Text style={styles.label} nativeID="egfr-age-label">
+      <AppText style={styles.label} nativeID="egfr-age-label">
         {t('calculator.egfr.age')}
-      </Text>
+      </AppText>
       <TextInput
         style={styles.input}
         keyboardType="numeric"
@@ -410,21 +410,21 @@ export const CalculatorScreen = (): React.JSX.Element => {
         accessibilityLabel={t('calculator.egfr.age')}
         accessibilityLabelledBy="egfr-age-label"
       />
-      <Text style={styles.label}>{t('calculator.egfr.gender')}</Text>
+      <AppText style={styles.label}>{t('calculator.egfr.gender')}</AppText>
       <View style={styles.genderContainer} accessibilityRole="radiogroup">
         <TouchableOpacity
           style={[styles.genderButton, egfrGender === 'male' && styles.genderButtonActive]}
           onPress={() => setEgfrGender('male')}
           accessibilityRole="radio"
           accessibilityState={{ checked: egfrGender === 'male' }}>
-          <Text style={styles.genderButtonText}>{t('patientInfo.male')}</Text>
+          <AppText style={styles.genderButtonText}>{t('patientInfo.male')}</AppText>
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.genderButton, egfrGender === 'female' && styles.genderButtonActive]}
           onPress={() => setEgfrGender('female')}
           accessibilityRole="radio"
           accessibilityState={{ checked: egfrGender === 'female' }}>
-          <Text style={styles.genderButtonText}>{t('patientInfo.female')}</Text>
+          <AppText style={styles.genderButtonText}>{t('patientInfo.female')}</AppText>
         </TouchableOpacity>
       </View>
       <AppButton
@@ -433,18 +433,18 @@ export const CalculatorScreen = (): React.JSX.Element => {
         style={styles.calculateButton}
       />
       {egfrResult && (
-        <Text style={styles.result} accessibilityLiveRegion="polite">
+        <AppText style={styles.result} accessibilityLiveRegion="polite">
           {egfrResult}
-        </Text>
+        </AppText>
       )}
     </View>
   );
 
   const renderIBWCalculator = () => (
     <View style={styles.calculatorContent}>
-      <Text style={styles.label} nativeID="ibw-height-label">
+      <AppText style={styles.label} nativeID="ibw-height-label">
         {t('calculator.ibw.height')} (cm)
-      </Text>
+      </AppText>
       <TextInput
         style={styles.input}
         keyboardType="numeric"
@@ -454,21 +454,21 @@ export const CalculatorScreen = (): React.JSX.Element => {
         accessibilityLabel={t('calculator.ibw.height')}
         accessibilityLabelledBy="ibw-height-label"
       />
-      <Text style={styles.label}>{t('calculator.ibw.gender')}</Text>
+      <AppText style={styles.label}>{t('calculator.ibw.gender')}</AppText>
       <View style={styles.genderContainer} accessibilityRole="radiogroup">
         <TouchableOpacity
           style={[styles.genderButton, ibwGender === 'male' && styles.genderButtonActive]}
           onPress={() => setIbwGender('male')}
           accessibilityRole="radio"
           accessibilityState={{ checked: ibwGender === 'male' }}>
-          <Text style={styles.genderButtonText}>{t('patientInfo.male')}</Text>
+          <AppText style={styles.genderButtonText}>{t('patientInfo.male')}</AppText>
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.genderButton, ibwGender === 'female' && styles.genderButtonActive]}
           onPress={() => setIbwGender('female')}
           accessibilityRole="radio"
           accessibilityState={{ checked: ibwGender === 'female' }}>
-          <Text style={styles.genderButtonText}>{t('patientInfo.female')}</Text>
+          <AppText style={styles.genderButtonText}>{t('patientInfo.female')}</AppText>
         </TouchableOpacity>
       </View>
       <AppButton
@@ -477,18 +477,18 @@ export const CalculatorScreen = (): React.JSX.Element => {
         style={styles.calculateButton}
       />
       {ibwResult && (
-        <Text style={styles.result} accessibilityLiveRegion="polite">
+        <AppText style={styles.result} accessibilityLiveRegion="polite">
           {ibwResult}
-        </Text>
+        </AppText>
       )}
     </View>
   );
 
   const renderBMRCalculator = () => (
     <View style={styles.calculatorContent}>
-      <Text style={styles.label} nativeID="bmr-weight-label">
+      <AppText style={styles.label} nativeID="bmr-weight-label">
         {t('calculator.bmr.weight')} (kg)
-      </Text>
+      </AppText>
       <TextInput
         style={styles.input}
         keyboardType="numeric"
@@ -498,9 +498,9 @@ export const CalculatorScreen = (): React.JSX.Element => {
         accessibilityLabel={t('calculator.bmr.weight')}
         accessibilityLabelledBy="bmr-weight-label"
       />
-      <Text style={styles.label} nativeID="bmr-height-label">
+      <AppText style={styles.label} nativeID="bmr-height-label">
         {t('calculator.bmr.height')} (cm)
-      </Text>
+      </AppText>
       <TextInput
         style={styles.input}
         keyboardType="numeric"
@@ -510,9 +510,9 @@ export const CalculatorScreen = (): React.JSX.Element => {
         accessibilityLabel={t('calculator.bmr.height')}
         accessibilityLabelledBy="bmr-height-label"
       />
-      <Text style={styles.label} nativeID="bmr-age-label">
+      <AppText style={styles.label} nativeID="bmr-age-label">
         {t('calculator.bmr.age')}
-      </Text>
+      </AppText>
       <TextInput
         style={styles.input}
         keyboardType="numeric"
@@ -522,21 +522,21 @@ export const CalculatorScreen = (): React.JSX.Element => {
         accessibilityLabel={t('calculator.bmr.age')}
         accessibilityLabelledBy="bmr-age-label"
       />
-      <Text style={styles.label}>{t('calculator.bmr.gender')}</Text>
+      <AppText style={styles.label}>{t('calculator.bmr.gender')}</AppText>
       <View style={styles.genderContainer} accessibilityRole="radiogroup">
         <TouchableOpacity
           style={[styles.genderButton, bmrGender === 'male' && styles.genderButtonActive]}
           onPress={() => setBmrGender('male')}
           accessibilityRole="radio"
           accessibilityState={{ checked: bmrGender === 'male' }}>
-          <Text style={styles.genderButtonText}>{t('patientInfo.male')}</Text>
+          <AppText style={styles.genderButtonText}>{t('patientInfo.male')}</AppText>
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.genderButton, bmrGender === 'female' && styles.genderButtonActive]}
           onPress={() => setBmrGender('female')}
           accessibilityRole="radio"
           accessibilityState={{ checked: bmrGender === 'female' }}>
-          <Text style={styles.genderButtonText}>{t('patientInfo.female')}</Text>
+          <AppText style={styles.genderButtonText}>{t('patientInfo.female')}</AppText>
         </TouchableOpacity>
       </View>
       <AppButton
@@ -545,9 +545,9 @@ export const CalculatorScreen = (): React.JSX.Element => {
         style={styles.calculateButton}
       />
       {bmrResult && (
-        <Text style={styles.result} accessibilityLiveRegion="polite">
+        <AppText style={styles.result} accessibilityLiveRegion="polite">
           {bmrResult}
-        </Text>
+        </AppText>
       )}
     </View>
   );

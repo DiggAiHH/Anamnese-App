@@ -61,6 +61,17 @@
     "openPatient": "Otwórz",
     "resumeQuestionnaire": "Wznów",
     "selectLanguage": "Wybierz język",
+    "roleSelection": {
+      "title": "Gdzie odbywa się wywiad medyczny?",
+      "practice": "W gabinecie",
+      "private": "Prywatnie (w domu)",
+      "admin": "Admin / Panel"
+    },
+    "accessibility": {
+      "fontScale": "Rozmiar czcionki",
+      "highContrast": "Wysoki kontrast",
+      "language": "Język"
+    },
     "modeSelection": {
       "title": "Kto korzysta z aplikacji?",
       "subtitle": "Proszę wybrać swoją rolę",
@@ -725,5 +736,45 @@
       "decryptionFailed": "Decryption failed",
       "unknown": "Unknown error"
     }
+  },
+  "accessibility": {
+    "toggleZoom": "Włącz/wyłącz powiększenie",
+    "zoomHint": "Włącza większe czcionki i przyciski",
+    "zoomEnabled": "Powiększenie włączone",
+    "zoomDisabled": "Powiększenie wyłączone"
+  },
+  "months": {
+    "january": "Styczeń",
+    "february": "Luty",
+    "march": "Marzec",
+    "april": "Kwiecień",
+    "may": "Maj",
+    "june": "Czerwiec",
+    "july": "Lipiec",
+    "august": "Sierpień",
+    "september": "Wrzesień",
+    "october": "Październik",
+    "november": "Listopad",
+    "december": "Grudzień"
+  },
+  "fastTrack": {
+    "title": "Szybki dostęp",
+    "prescription": "Zamów receptę",
+    "referral": "Zażądaj skierowania",
+    "subtitle": "Bez pełnej anamnez",
+    "errorRequired": "Wypełnij wszystkie wymagane pola",
+    "successMessage": "Twoje żądanie zostało pomyślnie wysłane",
+    "errorSubmit": "Błąd podczas wysyłania",
+    "medicationLabel": "Żądany lek",
+    "medicationPlaceholder": "np: Ibuprofen 400mg",
+    "referralLabel": "Powód skierowania",
+    "referralPlaceholder": "np: Kardiologia"
+  },
+  "buttons": {
+    "submit": "Wyślij"
+  },
+  "placeholders": {
+    "vorname": "np: Jan",
+    "nachname": "np: Kowalski"
   }
 }

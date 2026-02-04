@@ -125,6 +125,7 @@ export class AnswerValidator {
       radio: () => typeof value === 'string' || typeof value === 'number',
       select: () => typeof value === 'string' || typeof value === 'number',
       multiselect: () => Array.isArray(value),
+      hidden: () => true,
     };
 
     const isValid = typeChecks[type]?.() ?? true;

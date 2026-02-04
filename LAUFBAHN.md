@@ -57,6 +57,154 @@ It defines the always-on checklist and records what was done, when, and where.
 
 ## AKTUELLER LAUF: 5 Pflichtpunkte (LIVE)
 
+> **Run-ID:** RUN-20260203-web-__DEV__-defineplugin-fix | **Status:** ✅ COMPLETED
+
+1) **Ziel**
+- Outcome: Fix Web "White Screen of Death" caused by `Uncaught ReferenceError: __DEV__ is not defined` (react-native-gesture-handler).
+- DoD:
+  1. Webpack injects `__DEV__` via DefinePlugin in dev/prod. ✅
+  2. Regression test for DefinePlugin passes. ✅
+  3. Web dev server starts and localhost responds with HTTP 200. ✅
+  4. Evidence captured in `buildLogs/`. ✅
+- Nicht-Ziele: Runtime feature changes, app logic changes.
+
+2) **Methodik**
+- Root Cause: Web bundle lacked RN global `__DEV__` identifier.
+- Fix: Converted `webpack.config.js` to argv-aware factory and added `webpack.DefinePlugin({ __DEV__, process.env.NODE_ENV })`.
+- Verification:
+  - Jest targeted run: `__tests__/build/webpackDevGlobals.test.js` PASS.
+  - Localhost header check: `curl -I http://localhost:3000/` => 200 OK.
+
+3) **Sprachen/Stack**
+- React Native Web, Webpack 5, Jest.
+
+4) **Struktur**
+- Modified:
+  - `webpack.config.js`
+- Added:
+  - `__tests__/build/webpackDevGlobals.test.js`
+- Evidence:
+  - `buildLogs/test_webpack_dev_globals_pass.err.log`
+  - `buildLogs/test_webpack_dev_globals_pass.out.log`
+
+5) **Qualitaet/Muster**
+- Deterministic build-time injection (no fragile runtime globals).
+- Minimal surface area change.
+
+---
+
+> **Run-ID:** RUN-20260203-web-localhost-launch | **Status:** ✅ COMPLETED
+
+1) **Ziel**
+- Outcome: Launch Anamnese-App in browser for localhost testing.
+- DoD:
+  1. Web dev server (webpack-dev-server) running on port 3000. ✅
+  2. Webpack compilation successful (no errors). ✅
+  3. Simple Browser opened at http://localhost:3000. ✅
+  4. UI accessibility confirmed (HomeScreen visible). ✅
+  5. Evidence captured in buildLogs/web_dev_server_latest.log. ✅
+- Nicht-Ziele: New features, Windows native build.
+
+2) **Methodik**
+- LAUFBAHN-First: Read LAUFBAHN.md, identified no blocking tasks.
+- Deep Codebase Analysis: Documented technical handover (data model, state, architecture).
+- Dependency Check: Verified webpack, react-native-web installed.
+- Execution: Launched webpack-dev-server in dedicated terminal (to avoid interruption).
+- Evidence: Logs confirm successful compilation in 26.5 seconds.
+
+3) **Sprachen/Stack**
+- React Native Web, Webpack 5, TypeScript.
+- Tools: webpack-dev-server, PowerShell.
+
+4) **Struktur**
+- `webpack.config.js` (web build config)
+- `web/index.js` (web entry point)
+- `web/index.html` (HTML shell)
+- `buildLogs/web_dev_server_latest.log` (evidence)
+
+5) **Qualitaet/Muster**
+- Server launched in dedicated terminal to prevent signal interference.
+- Port 3000 confirmed listening (Test-NetConnection).
+- Bundle size: 7.09 MiB (development mode, expected).
+- Zero webpack errors.
+
+---
+
+> **Run-ID:** RUN-20260131-troubleshoot | **Status:** ✅ COMPLETED (Session archived)
+
+1) **Ziel**
+- Outcome: Fix environment sync issue (App not reloading, changes invisible).
+
+2) **Methodik**
+- Cleanup: taskkill for node and app.
+
+3) **Sprachen/Stack**
+- PowerShell, Metro.
+
+4) **Struktur**
+- `scripts/windows-launch.ps1`
+
+5) **Qualitaet/Muster**
+- Non-interactive cleanup.
+
+---
+
+> **Run-ID:** RUN-20260130-password-fixes | **Status:** ✅ COMPLETED
+
+1) **Ziel**
+- Outcome: Fix critical UI bugs on MasterPasswordScreen (validation, navigation, layout).
+- DoD:
+  1. No immediate validation error on password input focus/tap.
+  2. Language selection element appears exactly once.
+  3. Back button functions correctly (or is explicitly managed).
+  4. `npm run type-check` PASS.
+- Nicht-Ziele: New features.
+
+2) **Methodik**
+- Planning First: Created `implementation_plan.md` based on user report.
+- Component Replacement: Replace raw `TextInput` with `AppInput` for consistency.
+- Navigation Cleanup: Guard against duplicate headers.
+
+3) **Sprachen/Stack**
+- TypeScript, React Native.
+
+4) **Struktur**
+- `src/presentation/screens/MasterPasswordScreen.tsx`
+- `src/presentation/navigation/RootNavigator.tsx`
+
+5) **Qualitaet/Muster**
+- Minimal updates to fix regressions.
+- Evidence: `npm run type-check` passed (0 errors).
+
+---
+
+> **Run-ID:** RUN-20260129-verification | **Status:** ✅ COMPLETED
+
+1) **Ziel**
+- Outcome: Cross-platform verification of recent backend and UI changes.
+- DoD:
+  1. `npm run type-check` passes. ✅
+  2. `npm test` passes (all suites). ✅
+  3. Windows app builds and launches. ✅
+  4. Web dev server starts. ✅
+  5. Evidence captured in `buildLogs/`. ✅
+
+
+2) **Methodik**
+- Verification-focused run. No new feature code unless fixing regressions.
+- Evidence-First: Capture logs for every step.
+
+3) **Sprachen/Stack**
+- TypeScript, React Native (Windows/Web).
+
+4) **Struktur**
+- Verification only. Not expecting file structure changes.
+
+5) **Qualitaet/Muster**
+- Stability focus.
+
+---
+
 > **Run-ID:** RUN-20260126-backend-improvements | **Status:** ✅ COMPLETED
 
 1) **Ziel**
@@ -1102,6 +1250,124 @@ It defines the always-on checklist and records what was done, when, and where.
   - Erst diese Datei lesen.
   - 5-Punkt Schema kurz aktualisieren.
   - Execution Log mit Datum + konkreten Files + Verifikation ergaenzen.
+
+---
+
+### RUN-20260204-windows-theme-provider-fix
+- **Timestamp:** 2026-02-04 10:25:00
+- **Objective:** Fix "used theme must be used with a theme provider" crash on Windows startup
+- **Root Cause:** `ErrorBoundary` wraps `App` in `index.js`, but called `useTheme()` before `ThemeProvider` existed in component tree
+- **Changed Files:**
+  - [src/presentation/components/ErrorBoundary.tsx](src/presentation/components/ErrorBoundary.tsx): Removed `AppButton` dependency (uses theme), replaced with `Pressable` + hardcoded safe styles
+- **Key Changes:**
+  1. Removed `import { AppButton } from './AppButton'`
+  2. Added `Pressable` to React Native imports
+  3. Replaced `<AppButton>` with `<Pressable>` + inline styles
+  4. Added `retryButton` and `retryText` styles (theme-agnostic)
+- **Verification Evidence:**
+  - `npm run type-check`: ✅ PASSED (no errors)
+  - Fast Lane reload: `npm.cmd run windows:run:skipbuild:log`
+- **Status:** ✅ COMPLETED (ErrorBoundary now theme-independent, safe to render before providers)
+
+---
+
+### RUN-20260204-windows-cold-build-verification
+- **Timestamp:** 2026-02-04 10:22:38
+- **Objective:** Clean Windows native build (PHASE 3: Cold Build) + verify Gold Master package installation
+- **Changed Files:** None (verification only, all purge/build via scripts/npm)
+- **Key Actions:**
+  1. PHASE 1 (Purge): Killed node.exe/anamnese-mobile, cleared Metro cache, deleted windows/build artifacts
+  2. PHASE 2 (Verify): Confirmed App.cpp entry point (index.windows bundle, Fast Refresh in Debug)
+  3. PHASE 3 (Cold Build): Executed `npm run windows:run:log` → MSBuild + Metro + UWP Package
+  4. Build completed successfully: Package signed, installed, Status=Ok
+  5. App launched manually via `shell:AppsFolder\cc3a5ac8-ac09-4f03-b6c9-0cfd812841a0_4dnmwfyw5v01r!App` (PID 14600)
+  6. Metro bundler started manually (`npm run start`), listening on [::]:8081 (PID 15084)
+- **Verification Evidence:**
+  - `buildLogs/windows-dev-run_latest.out.log`: Package install/launch success
+  - `buildLogs/windows-dev-run_latest.err.log`: NuGet reflection warning (non-fatal)
+  - `Get-AppxPackage`: Status=Ok, Version=1.0.0.0
+  - `Get-Process anamnese-mobile`: PID 14600 running (launched 2026-02-04 10:21:57)
+  - `Get-NetTCPConnection -LocalPort 8081`: Metro listening (OwningProcess 15084)
+- **Fast Lane Command:** `npm.cmd run windows:run:skipbuild:log` (JS-only reload, no C++ rebuild)
+- **Status:** ✅ COMPLETED (Gold Master build verified, app running, Metro serving)
+
+---
+
+> **Run-ID:** RUN-20260204-windows-skipbuild-resilience-errorboundary-diag | **Status:** ✅ COMPLETED
+
+1) **Ziel**
+- Outcome: Stabilize Windows fast-lane install/run so it does not uninstall and then abort ("Die Pipeline wurde beendet."), and improve dev-only diagnostics for the RNW crash "Text strings must be rendered within a <Text> component".
+
+2) **Methodik (Stop-and-Fix)**
+- Root Cause (script): `scripts/windows-dev-run.ps1` removed existing AppX preemptively; in some environments `Remove-AppxPackage` intermittently throws a terminating pipeline error.
+- Fix: Prefer in-place `Add-AppxPackage -ForceUpdateFromAnyVersion` first; only do uninstall + reinstall once after an install failure; guard uninstall with try/catch so the script doesn’t abort and leave the package removed.
+- Fix (Metro auto-start): Background Metro start now uses the local RN CLI (`node_modules/react-native/cli.js`) to avoid "react-native not found" and to make `buildLogs/metro_latest.log` reliable.
+- Diagnostics: Keep ErrorBoundary provider-agnostic and add dev-only, PII-safe logs to make component-stack extraction reliable from Metro logs.
+
+3) **Sprachen/Stack**
+- PowerShell 5.1, React Native 0.73 / RNW 0.73.22, TypeScript, Jest.
+
+4) **Struktur (geändert)**
+- Modified: `scripts/windows-dev-run.ps1`
+- Modified: `src/presentation/components/ErrorBoundary.tsx`
+- Modified: `index.js`
+- Added: `src/shared/devNakedTextGuard.ts`
+- Added: `__tests__/build/devNakedTextGuard.test.ts`
+
+5) **Verifikation + Evidence**
+- Windows skipbuild run succeeded end-to-end (install + launch): `buildLogs/windows-dev-run-transcript_latest.log`
+- Jest naked-text static scan still PASS: `buildLogs/test_naked_text_nodes_20260204_121240.err.log`
+- Type-check executed: `buildLogs/type_check_20260204_121348.out.log`
+- Metro auto-start log (server output): `buildLogs/metro_latest.log`
+
+---
+
+### RUN-20260204-windows-naked-text-crash-fix-patientprovider-comment
+- **Timestamp:** 2026-02-04 13:24:44
+- **Objective:** Fix RNW startup crash: "Text strings must be rendered within a <Text> component"
+- **Root Cause:** An inline JSX comment inside the `<PatientProvider>` opening tag created a whitespace text node under a non-`<Text>` parent (RNW treats this as an invalid text child and crashes).
+- **Changed Files:**
+  - [src/presentation/App.tsx](src/presentation/App.tsx): Removed the inline JSX comment so `<PatientProvider>` has no text/whitespace children.
+  - [scripts/windows-dev-run.ps1](scripts/windows-dev-run.ps1): Cleaned up PowerShell helper names/variables to avoid `$args` automatic variable side-effects and align with approved verbs.
+- **Verification Evidence:**
+  - Type-check: `buildLogs/type_check_verify_latest.out.log`, `buildLogs/type_check_verify_latest.err.log` (empty)
+  - Jest (targeted): `buildLogs/jest_build_verify_latest.err.log`, `buildLogs/jest_build_verify_latest.out.log`
+  - Windows relaunch transcript: `buildLogs/windows-launch-transcript_latest.log`
+- **Status:** ✅ COMPLETED
+
+---
+
+### RUN-20260204-i18n-home-roleSelection-accessibility-sync
+- **Timestamp:** 2026-02-04 18:44:50Z
+- **Objective:** Ensure all configured locales contain the new HomeScreen keys (`home.roleSelection.*`, `home.accessibility.*`) so i18n never falls back to raw keys.
+- **Root Cause:** 17 locales were missing 7 keys present in `en.json`/`de.json`. Additionally, an earlier patch accidentally inserted the new blocks into `nav` for `ja.json`/`ko.json`, breaking JSON parse.
+- **Changed Files:**
+  - [scripts/i18n-audit-and-sync.cjs](scripts/i18n-audit-and-sync.cjs): Deterministic audit tool (union of `en`+`de` keys) with improved parse error reporting.
+  - [scripts/debug-json-snippet.cjs](scripts/debug-json-snippet.cjs): Debug helper to inspect JSON parse error positions.
+  - Locales patched (added missing keys under `home`):
+    - [src/presentation/i18n/locales/ar.json](src/presentation/i18n/locales/ar.json)
+    - [src/presentation/i18n/locales/el.json](src/presentation/i18n/locales/el.json)
+    - [src/presentation/i18n/locales/es.json](src/presentation/i18n/locales/es.json)
+    - [src/presentation/i18n/locales/fa.json](src/presentation/i18n/locales/fa.json)
+    - [src/presentation/i18n/locales/fr.json](src/presentation/i18n/locales/fr.json)
+    - [src/presentation/i18n/locales/it.json](src/presentation/i18n/locales/it.json)
+    - [src/presentation/i18n/locales/ja.json](src/presentation/i18n/locales/ja.json) (also restored valid `nav` block)
+    - [src/presentation/i18n/locales/ko.json](src/presentation/i18n/locales/ko.json) (also restored valid `nav` block)
+    - [src/presentation/i18n/locales/nl.json](src/presentation/i18n/locales/nl.json)
+    - [src/presentation/i18n/locales/pl.json](src/presentation/i18n/locales/pl.json)
+    - [src/presentation/i18n/locales/pt.json](src/presentation/i18n/locales/pt.json)
+    - [src/presentation/i18n/locales/ro.json](src/presentation/i18n/locales/ro.json)
+    - [src/presentation/i18n/locales/ru.json](src/presentation/i18n/locales/ru.json)
+    - [src/presentation/i18n/locales/tr.json](src/presentation/i18n/locales/tr.json)
+    - [src/presentation/i18n/locales/uk.json](src/presentation/i18n/locales/uk.json)
+    - [src/presentation/i18n/locales/vi.json](src/presentation/i18n/locales/vi.json)
+    - [src/presentation/i18n/locales/zh.json](src/presentation/i18n/locales/zh.json)
+- **Verification Evidence:**
+  - i18n audit report: `buildLogs/i18n_missing_report.json` (all missing counts = 0)
+  - Type-check: `buildLogs/typecheck_i18nfix.out.log`, `buildLogs/typecheck_i18nfix.err.log` (empty)
+  - Jest: `buildLogs/jest_i18nfix.out.log`, `buildLogs/jest_i18nfix.err.log` (empty)
+  - Debug artifact: `buildLogs/debug_ja_json_snippet.json`
+- **Status:** ✅ COMPLETED
 
 ## Related Documents
 - Workflow Playbook (detailed): `AGENT_WORKFLOW_PLAYBOOK.md` (root)

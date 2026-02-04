@@ -61,6 +61,17 @@
     "openPatient": "Apri",
     "resumeQuestionnaire": "Riprendi",
     "selectLanguage": "Seleziona lingua",
+    "roleSelection": {
+      "title": "Dove si svolge l’anamnesi?",
+      "practice": "In ambulatorio",
+      "private": "Privato (a casa)",
+      "admin": "Admin / Dashboard"
+    },
+    "accessibility": {
+      "fontScale": "Dimensione carattere",
+      "highContrast": "Alto contrasto",
+      "language": "Lingua"
+    },
     "modeSelection": {
       "title": "Chi sta usando l'app?",
       "subtitle": "Seleziona il tuo ruolo",
@@ -725,5 +736,45 @@
       "decryptionFailed": "Decryption failed",
       "unknown": "Unknown error"
     }
+  },
+  "accessibility": {
+    "toggleZoom": "Attiva/disattiva zoom",
+    "zoomHint": "Abilita caratteri e pulsanti più grandi",
+    "zoomEnabled": "Zoom attivato",
+    "zoomDisabled": "Zoom disattivato"
+  },
+  "months": {
+    "january": "Gennaio",
+    "february": "Febbraio",
+    "march": "Marzo",
+    "april": "Aprile",
+    "may": "Maggio",
+    "june": "Giugno",
+    "july": "Luglio",
+    "august": "Agosto",
+    "september": "Settembre",
+    "october": "Ottobre",
+    "november": "Novembre",
+    "december": "Dicembre"
+  },
+  "fastTrack": {
+    "title": "Accesso rapido",
+    "prescription": "Ordina ricetta",
+    "referral": "Richiedi rinvio",
+    "subtitle": "Senza anamnesi completa",
+    "errorRequired": "Si prega di compilare tutti i campi obbligatori",
+    "successMessage": "La tua richiesta è stata inviata con successo",
+    "errorSubmit": "Errore durante l'invio",
+    "medicationLabel": "Farmaco richiesto",
+    "medicationPlaceholder": "es: Ibuprofene 400mg",
+    "referralLabel": "Motivo del rinvio",
+    "referralPlaceholder": "es: Cardiologia"
+  },
+  "buttons": {
+    "submit": "Invia"
+  },
+  "placeholders": {
+    "vorname": "es: Marco",
+    "nachname": "es: Rossi"
   }
 }

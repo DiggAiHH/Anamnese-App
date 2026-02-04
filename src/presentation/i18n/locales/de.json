@@ -61,6 +61,17 @@
     "openPatient": "Öffnen",
     "resumeQuestionnaire": "Fortsetzen",
     "selectLanguage": "Sprache auswählen",
+    "roleSelection": {
+      "title": "Wo findet die Anamnese statt?",
+      "practice": "In der Praxis",
+      "private": "Privat (Zu Hause)",
+      "admin": "Admin / Dashboard"
+    },
+    "accessibility": {
+      "fontScale": "Schriftgröße",
+      "highContrast": "Kontrastmodus",
+      "language": "Sprache"
+    },
     "modeSelection": {
       "title": "Wer nutzt die App?",
       "subtitle": "Bitte wählen Sie Ihre Rolle",
@@ -725,5 +736,45 @@
       "decryptionFailed": "Entschlüsselung fehlgeschlagen",
       "unknown": "Unbekannter Fehler"
     }
+  },
+  "accessibility": {
+    "toggleZoom": "Zoom umschalten",
+    "zoomHint": "Aktiviert größere Schrift und Buttons",
+    "zoomEnabled": "Zoom aktiviert",
+    "zoomDisabled": "Zoom deaktiviert"
+  },
+  "months": {
+    "january": "Januar",
+    "february": "Februar",
+    "march": "März",
+    "april": "April",
+    "may": "Mai",
+    "june": "Juni",
+    "july": "Juli",
+    "august": "August",
+    "september": "September",
+    "october": "Oktober",
+    "november": "November",
+    "december": "Dezember"
+  },
+  "fastTrack": {
+    "title": "Schnellzugang",
+    "prescription": "Rezept bestellen",
+    "referral": "Überweisung anfordern",
+    "subtitle": "Ohne vollständige Anamnese",
+    "errorRequired": "Bitte füllen Sie alle Pflichtfelder aus.",
+    "successMessage": "Ihre Anfrage wurde erfolgreich übermittelt.",
+    "errorSubmit": "Fehler beim Senden.",
+    "medicationLabel": "Gewünschtes Medikament",
+    "medicationPlaceholder": "z.B. Ibuprofen 400mg",
+    "referralLabel": "Grund der Überweisung",
+    "referralPlaceholder": "z.B. Kardiologie"
+  },
+  "buttons": {
+    "submit": "Absenden"
+  },
+  "placeholders": {
+    "vorname": "z.B. Max",
+    "nachname": "z.B. Mustermann"
   }
 }

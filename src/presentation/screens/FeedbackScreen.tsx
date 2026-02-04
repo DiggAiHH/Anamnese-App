@@ -9,7 +9,6 @@
 import React, { useState } from 'react';
 import {
   View,
-  Text,
   StyleSheet,
   TouchableOpacity,
   TextInput,
@@ -24,6 +23,7 @@ import type { RootStackParamList } from '../navigation/RootNavigator';
 import { FeedbackTextBuilder, FeedbackCategory } from '../../domain/services/FeedbackTextBuilder';
 import { colors, spacing, radius } from '../theme/tokens';
 import { AppButton } from '../components/AppButton';
+import { AppText } from '../components/AppText';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Feedback'>;
 
@@ -138,17 +138,17 @@ export const FeedbackScreen = (_props: Props): React.JSX.Element => {
   return (
     <ScrollView style={styles.container} testID="feedback-screen">
       <View style={styles.content}>
-        <Text style={styles.title}>{t('feedback.title', { defaultValue: 'Send Feedback' })}</Text>
-        <Text style={styles.subtitle}>
+        <AppText style={styles.title}>{t('feedback.title', { defaultValue: 'Send Feedback' })}</AppText>
+        <AppText style={styles.subtitle}>
           {t('feedback.subtitle', {
             defaultValue: 'Help us improve the app by sharing your thoughts.',
           })}
-        </Text>
+        </AppText>
 
         {/* Category Selection */}
-        <Text style={styles.label}>
+        <AppText style={styles.label}>
           {t('feedback.categoryLabel', { defaultValue: 'Category' })}
-        </Text>
+        </AppText>
         <View style={styles.categoryContainer}>
           {CATEGORIES.map(({ key, labelKey }) => (
             <TouchableOpacity
@@ -162,21 +162,21 @@ export const FeedbackScreen = (_props: Props): React.JSX.Element => {
               accessibilityRole="button"
               accessibilityState={{ selected: selectedCategory === key }}
               accessibilityLabel={t(labelKey, { defaultValue: key })}>
-              <Text
+              <AppText
                 style={[
                   styles.categoryButtonText,
                   selectedCategory === key && styles.categoryButtonTextSelected,
                 ]}>
                 {t(labelKey, { defaultValue: key })}
-              </Text>
+              </AppText>
             </TouchableOpacity>
           ))}
         </View>
 
         {/* Description Input */}
-        <Text style={styles.label}>
+        <AppText style={styles.label}>
           {t('feedback.descriptionLabel', { defaultValue: 'Description' })}
-        </Text>
+        </AppText>
         <TextInput
           style={styles.textInput}
           multiline
@@ -191,7 +191,7 @@ export const FeedbackScreen = (_props: Props): React.JSX.Element => {
           testID="feedback-description-input"
           accessibilityLabel={t('feedback.descriptionLabel', { defaultValue: 'Description' })}
         />
-        <Text style={styles.charCount}>{description.length} / 2000</Text>
+        <AppText style={styles.charCount}>{description.length} / 2000</AppText>
 
         {/* Submit Buttons */}
         <View style={styles.buttonContainer}>
@@ -215,12 +215,12 @@ export const FeedbackScreen = (_props: Props): React.JSX.Element => {
 
         {/* Privacy Note */}
         <View style={styles.privacyNote}>
-          <Text style={styles.privacyText}>
+          <AppText style={styles.privacyText}>
             {t('feedback.privacyNote', {
               defaultValue:
                 'Your feedback is sent directly to the developer. No personal data is collected.',
             })}
-          </Text>
+          </AppText>
         </View>
       </View>
     </ScrollView>

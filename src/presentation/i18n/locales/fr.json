@@ -61,6 +61,17 @@
     "openPatient": "Ouvrir",
     "resumeQuestionnaire": "Reprendre",
     "selectLanguage": "Choisir la langue",
+    "roleSelection": {
+      "title": "Où se déroule l’anamnèse ?",
+      "practice": "Au cabinet",
+      "private": "Privé (à domicile)",
+      "admin": "Admin / Tableau de bord"
+    },
+    "accessibility": {
+      "fontScale": "Taille de police",
+      "highContrast": "Contraste élevé",
+      "language": "Langue"
+    },
     "modeSelection": {
       "title": "Qui utilise l'application ?",
       "subtitle": "Veuillez sélectionner votre rôle",
@@ -725,5 +736,45 @@
       "decryptionFailed": "Decryption failed",
       "unknown": "Unknown error"
     }
+  },
+  "accessibility": {
+    "toggleZoom": "Activer/désactiver le zoom",
+    "zoomHint": "Active une police et des boutons plus grands",
+    "zoomEnabled": "Zoom activé",
+    "zoomDisabled": "Zoom désactivé"
+  },
+  "months": {
+    "january": "Janvier",
+    "february": "Février",
+    "march": "Mars",
+    "april": "Avril",
+    "may": "Mai",
+    "june": "Juin",
+    "july": "Juillet",
+    "august": "Août",
+    "september": "Septembre",
+    "october": "Octobre",
+    "november": "Novembre",
+    "december": "Décembre"
+  },
+  "fastTrack": {
+    "title": "Accès rapide",
+    "prescription": "Commander une ordonnance",
+    "referral": "Demander une référence",
+    "subtitle": "Sans anamnèse complète",
+    "errorRequired": "Veuillez remplir tous les champs obligatoires",
+    "successMessage": "Votre demande a été envoyée avec succès",
+    "errorSubmit": "Erreur lors de l'envoi",
+    "medicationLabel": "Médicament demandé",
+    "medicationPlaceholder": "ex: Ibuprofène 400mg",
+    "referralLabel": "Raison de la référence",
+    "referralPlaceholder": "ex: Cardiologie"
+  },
+  "buttons": {
+    "submit": "Soumettre"
+  },
+  "placeholders": {
+    "vorname": "ex: Pierre",
+    "nachname": "ex: Dupont"
   }
 }

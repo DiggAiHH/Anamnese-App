@@ -4,7 +4,9 @@
  */
 
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, Alert } from 'react-native';
+import { View, StyleSheet, ScrollView, Alert } from 'react-native';
+import { useTheme } from '../theme/ThemeContext';
+import { AppText } from '../components/AppText';
 import { useTranslation } from 'react-i18next';
 import { BackupUseCase } from '../../application/use-cases/BackupUseCase';
 import { RestoreUseCase, RestoreStrategy } from '../../application/use-cases/RestoreUseCase';
@@ -49,8 +51,11 @@ const getShareModule = (): ShareModule | null => {
 // Navigation Props type (kept for future use)
 // type Props = NativeStackScreenProps<RootStackParamList, 'DataManagement'>;
 
-export const DataManagementScreen = (): React.JSX.Element => {
+import { RootNavigationProp } from '../navigation/RootNavigator';
+
+export const DataManagementScreen = ({ navigation }: { navigation: RootNavigationProp }): React.JSX.Element => {
   const { t } = useTranslation();
+  useTheme();
   const [isProcessing, setIsProcessing] = useState(false);
   const { encryptionKey } = useQuestionnaireStore();
 
@@ -190,17 +195,17 @@ export const DataManagementScreen = (): React.JSX.Element => {
             message={t('common.featureUnavailableMessage', { feature: t('dataManagement.title') })}
           />
         )}
-        <Text style={styles.title} accessibilityRole="header">
+        <AppText style={styles.title} accessibilityRole="header">
           {t('dataManagement.title')}
-        </Text>
-        <Text style={styles.subtitle}>{t('dataManagement.subtitle')}</Text>
+        </AppText>
+        <AppText style={styles.subtitle}>{t('dataManagement.subtitle')}</AppText>
 
         {/* Backup Section */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle} accessibilityRole="header">
+          <AppText style={styles.sectionTitle} accessibilityRole="header">
             {t('dataManagement.backup.title')}
-          </Text>
-          <Text style={styles.sectionDescription}>{t('dataManagement.backup.description')}</Text>
+          </AppText>
+          <AppText style={styles.sectionDescription}>{t('dataManagement.backup.description')}</AppText>
           <AppButton
             title={t('dataManagement.backup.createBackup')}
             onPress={handleBackup}
@@ -211,10 +216,10 @@ export const DataManagementScreen = (): React.JSX.Element => {
 
         {/* Restore Section */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle} accessibilityRole="header">
+          <AppText style={styles.sectionTitle} accessibilityRole="header">
             {t('dataManagement.restore.title')}
-          </Text>
-          <Text style={styles.sectionDescription}>{t('dataManagement.restore.description')}</Text>
+          </AppText>
+          <AppText style={styles.sectionDescription}>{t('dataManagement.restore.description')}</AppText>
 
           <AppButton
             title={t('dataManagement.restore.mergeButton')}
@@ -233,16 +238,31 @@ export const DataManagementScreen = (): React.JSX.Element => {
           />
         </View>
 
+        {/* Analysis Section */}
+        <View style={styles.section}>
+          <AppText style={styles.sectionTitle} accessibilityRole="header">
+            {t('dashboard.title', 'Analysis & Statistics')}
+          </AppText>
+          <AppText style={styles.sectionDescription}>
+            {t('dashboard.description', 'View statistics and completion rates for your questionnaires.')}
+          </AppText>
+          <AppButton
+            title={t('dashboard.open', 'Open Dashboard')}
+            onPress={() => navigation.navigate('Dashboard')}
+            variant="primary"
+          />
+        </View>
+
         {/* Info Section */}
         <View style={styles.infoCard}>
-          <Text style={styles.infoTitle} accessibilityRole="header">
+          <AppText style={styles.infoTitle} accessibilityRole="header">
             {t('dataManagement.info.title')}
-          </Text>
-          <Text style={styles.infoText}>
+          </AppText>
+          <AppText style={styles.infoText}>
             • {t('dataManagement.info.encrypted')}
             {'\n'}• {t('dataManagement.info.localOnly')}
             {'\n'}• {t('dataManagement.info.gdprCompliant')}
-          </Text>
+          </AppText>
         </View>
       </View>
     </ScrollView>
@@ -261,7 +281,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     color: colors.text,
-    marginBottom: spacing.sm,
+    marginBottom: spacing.xs,
   },
   subtitle: {
     fontSize: 16,
@@ -273,43 +293,45 @@ const styles = StyleSheet.create({
     borderRadius: radius.lg,
     padding: spacing.lg,
     marginBottom: spacing.lg,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    borderWidth: 1,
+    borderColor: colors.border,
   },
   sectionTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: '700',
     color: colors.text,
-    marginBottom: spacing.sm,
+    marginBottom: spacing.xs,
   },
   sectionDescription: {
     fontSize: 14,
-    color: colors.textMuted,
-    marginBottom: spacing.md,
+    color: colors.textSecondary,
+    marginBottom: spacing.lg,
     lineHeight: 20,
   },
   actionButton: {
     marginBottom: spacing.sm,
   },
   infoCard: {
-    backgroundColor: colors.surface,
+    backgroundColor: colors.primaryLight,
     borderRadius: radius.lg,
     padding: spacing.lg,
-    borderLeftWidth: 4,
-    borderLeftColor: colors.primary,
+    borderWidth: 1,
+    borderColor: colors.primary,
   },
   infoTitle: {
     fontSize: 16,
-    fontWeight: 'bold',
-    color: colors.text,
-    marginBottom: spacing.sm,
+    fontWeight: '700',
+    color: colors.primaryDark,
+    marginBottom: spacing.xs,
   },
   infoText: {
     fontSize: 14,
-    color: colors.textSecondary,
+    color: colors.primaryDark,
     lineHeight: 22,
   },
+  // High Contrast
+  textHighContrast: { color: '#ffffff' },
+  textHighContrastInverse: { color: '#000000' },
+  bgHighContrast: { backgroundColor: '#000000' },
+  surfaceHighContrast: { backgroundColor: '#ffffff' },
 });

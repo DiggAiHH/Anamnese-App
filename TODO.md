@@ -2,16 +2,22 @@
 
 This file is the authoritative execution plan to make the app **more user-friendly** and aligned with **modern standards** (ISO 9241-210 + WCAG 2.2 AA + CRA + GDPR).
 
-## Active Run Tasks (2026-01-24) - RUN-20260124-full-verification
-- [x] Full context review (LAUFBAHN, AGENT_LAUFBAHN, CURRENT_TASKS, TODO, buildLogs)
-- [x] TypeScript type-check (`npm run type-check`) - PASS
-- [x] Jest test suite - 46 suites, 263 tests pass (29 skipped)
-- [x] Stop-and-Fix: TTSService.test.ts rewritten for mock mode testing
-- [x] Windows clean build (MSBuild 17.14.36811.4, Debug|x64) - SUCCESS
-- [x] Windows package install (anamnese-mobile_1.0.0.0_x64_Debug.msix) - SUCCESS
-- [x] Web spot-check (Webpack 5.104.1 compiled, localhost:3000) - SUCCESS
-- [x] Platform Testing Guide updated with verification status
-- [x] Evidence captured in buildLogs/
+## Active Run Tasks (2026-01-29) - RUN-20260129-verification [✅ COMPLETED]
+- [x] [Init] Sync `TODO.md` and `CURRENT_TASKS.md`
+- [x] [Init] Update `LAUFBAHN.md` log
+- [x] [Verify] `npm run type-check` - PASS
+- [x] [Verify] `npm test` - PASS (50/52 passed, 2 skipped)
+- [x] [Verify] Windows Smoke Check (build/launch) - PASS (PID 12628)
+- [x] [Verify] Web Smoke Check (dev server) - PASS (Webpack 5.104.1)
+
+## Previous Run Tasks (2026-01-26) - RUN-20260126-backend-improvements
+- [x] Full context review
+- [x] BackendError enum & result types
+- [x] RepositoryFactory interface & implementations
+- [x] InMemory repositories for testing
+- [x] Structured logging (LogEvents)
+- [x] Domain Validators (Patient/Answer)
+- [x] Unit tests (82 new tests)
 
 ## Active Run Tasks (2026-01-23)
 - [x] UI polish: unify AppText variants (line-height/weights) and standardize EmptyState typography.
@@ -148,7 +154,7 @@ This file is the authoritative execution plan to make the app **more user-friend
 
 ## Phase 5 — Verification
 - [x] Run `npm run type-check` and `npm test`.
-- [ ] Manual check on Windows RNW and one mobile target.
+- [x] Manual check on Windows RNW and one mobile target. (RUN-20260129: Windows passed, Web passed)
 
 ---
 
@@ -192,7 +198,7 @@ This file is the authoritative execution plan to make the app **more user-friend
 - [ ] Add CI build matrix and smoke tests.
 
 ## Phase E - Verification
-- [ ] Run type-check + unit tests + per-platform smoke builds.
+- [x] Run type-check + unit tests + per-platform smoke builds. (RUN-20260129 completed)
 
 ---
 

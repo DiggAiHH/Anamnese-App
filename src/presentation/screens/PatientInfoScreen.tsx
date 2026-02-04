@@ -1,29 +1,39 @@
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import {
   View,
-  Text,
   TouchableOpacity,
   StyleSheet,
   ScrollView,
   Alert,
-  Platform,
+  // Platform,
 } from 'react-native';
+import { useTheme } from '../theme/ThemeContext';
+import { AppText } from '../components/AppText';
 import { useTranslation } from 'react-i18next';
-import DatePicker from 'react-native-date-picker';
+// import DatePicker from 'react-native-date-picker';
 import { useQuestionnaireStore } from '../state/useQuestionnaireStore';
-import { PatientEntity, Patient } from '@domain/entities/Patient';
+import { Patient } from '@domain/entities/Patient';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/RootNavigator';
 import { SUPPORTED_LANGUAGES } from '../i18n/config';
 import { AppButton } from '../components/AppButton';
 import { AppInput } from '../components/AppInput';
 import { colors, spacing, radius } from '../theme/tokens';
+import { usePatientContext } from '../../application/PatientContext';
+import { CreatePatientUseCase, CreatePatientInput } from '../../application/use-cases/CreatePatientUseCase';
+import { SQLitePatientRepository } from '../../infrastructure/persistence/SQLitePatientRepository';
+import { SQLiteGDPRConsentRepository } from '../../infrastructure/persistence/SQLiteGDPRConsentRepository';
+import { database } from '../../infrastructure/persistence/DatabaseConnection';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'PatientInfo'>;
 
 export const PatientInfoScreen: React.FC<Props> = ({ navigation }) => {
   const { t, i18n } = useTranslation();
-  const { setPatient } = useQuestionnaireStore();
+  const { setPatient, encryptionKey } = useQuestionnaireStore();
+  useTheme();
+  const { patientStatus, visitReason, insuranceNumber, setInsuranceNumber, birthDate: ctxBirthDate, setBirthDate: setCtxBirthDate, insuranceType, setInsuranceType } = usePatientContext();
+
+  const isReturning = patientStatus === 'returning';
 
   const normalizeLanguage = (language: string | null | undefined): Patient['language'] => {
     const normalized = (language ?? '').split('-')[0].toLowerCase();
@@ -32,554 +42,418 @@ export const PatientInfoScreen: React.FC<Props> = ({ navigation }) => {
       : 'de';
   };
 
+  // Local state for New Patient fields
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
-  const [birthDate, setBirthDate] = useState<Date | null>(null);
+  // const [localBirthDate, setLocalBirthDate] = useState<Date | null>(null); // For legacy date picker if needed, but we prefer dropdowns now
   const [gender, setGender] = useState<'male' | 'female' | 'other' | null>(null);
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
-  const [showDatePicker, setShowDatePicker] = useState(false);
+
+  // Address State
+  const [street, setStreet] = useState('');
+  const [houseNumber, setHouseNumber] = useState('');
+  const [zip, setZip] = useState('');
+  const [city, setCity] = useState('');
+  const [country, setCountry] = useState('DE'); // Default Germany
+
+  // Returning Patient State
+  const [hasDataChanged, setHasDataChanged] = useState(false);
+
+  // Dropdown state
   const [openDateDropdown, setOpenDateDropdown] = useState<'day' | 'month' | 'year' | null>(null);
 
+  // Insurance Number is in Context (shared)
+
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  // Sync context birthdate to local Date object (legacy compat)
+  // useEffect(() => {
+  //   if (ctxBirthDate.year && ctxBirthDate.month && ctxBirthDate.day) {
+  //     // setLocalBirthDate(new Date(parseInt(ctxBirthDate.year), parseInt(ctxBirthDate.month) - 1, parseInt(ctxBirthDate.day)));
+  //   }
+  // }, [ctxBirthDate]);
+
 
   const validate = (): boolean => {
     const newErrors: Record<string, string> = {};
 
-    if (!firstName.trim()) {
-      newErrors.firstName = t('validation.required');
-    } else if (firstName.length < 2) {
-      newErrors.firstName = t('validation.minLength', { count: 2 });
-    }
-
-    if (!lastName.trim()) {
-      newErrors.lastName = t('validation.required');
-    } else if (lastName.length < 2) {
-      newErrors.lastName = t('validation.minLength', { count: 2 });
-    }
-
-    if (!birthDate) {
+    // Common Validation
+    if (!ctxBirthDate.day || !ctxBirthDate.month || !ctxBirthDate.year) {
       newErrors.birthDate = t('validation.required');
-    } else {
-      const age = calculateAge(birthDate);
-      if (age < 0 || age > 150) {
-        newErrors.birthDate = t('validation.invalidDate');
+    }
+
+    if (isReturning) {
+      // Returning Patient Validation
+      if (!insuranceNumber.trim()) {
+        newErrors.insuranceNumber = t('validation.required');
       }
-    }
+    } else {
+      // New Patient (or Returning + Changed) Validation
+      const nameRegex = /^[a-zA-ZäöüÄÖÜß\s-]{3,}$/; // Min 3 chars, no numbers
 
-    if (!gender) {
-      newErrors.gender = t('validation.required');
-    }
+      if (!firstName.trim()) newErrors.firstName = t('validation.required');
+      else if (!nameRegex.test(firstName.trim())) newErrors.firstName = t('validation.nameInvalid', { defaultValue: 'Min. 3 letters, no numbers' });
 
-    if (email && !isValidEmail(email)) {
-      newErrors.email = t('validation.invalidEmail');
-    }
+      if (!lastName.trim()) newErrors.lastName = t('validation.required');
+      else if (!nameRegex.test(lastName.trim())) newErrors.lastName = t('validation.nameInvalid');
 
-    if (phone && !isValidPhone(phone)) {
-      newErrors.phone = t('validation.invalidPhone');
+      if (!gender) newErrors.gender = t('validation.required');
+      // Insurance Type is only for NEW, not necessarily update? Let's assume update validates it too if shown.
+      if (!isReturning && !insuranceType) newErrors.insuranceType = t('validation.required');
+
+      if (!insuranceNumber.trim()) newErrors.insuranceNumber = t('validation.required');
+
+      // Age Check > 3
+      if (ctxBirthDate.year) {
+        const birthYear = parseInt(ctxBirthDate.year);
+        const currentYear = new Date().getFullYear();
+        if (currentYear - birthYear < 3) {
+          newErrors.birthDate = t('validation.tooYoung', { defaultValue: 'Patient must be at least 3 years old' });
+        }
+      }
+
+      // Address Validation
+      if (!street.trim()) newErrors.street = t('validation.required');
+      if (!houseNumber.trim()) newErrors.houseNumber = t('validation.required');
+      else if (!/^\d+\w?$/.test(houseNumber.trim())) newErrors.houseNumber = t('validation.numberOnly', { defaultValue: 'Number (e.g. 12, 12a)' });
+
+      if (!zip.trim()) newErrors.zip = t('validation.required');
+      if (!city.trim()) newErrors.city = t('validation.required');
     }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (!validate()) {
       Alert.alert(t('common.error'), t('patientInfo.validationError'), [{ text: t('common.ok') }]);
       return;
     }
 
-    const languageCode = normalizeLanguage(i18n.language);
-
-    // Store patient data in Zustand
-    const patient = PatientEntity.create({
-      firstName,
-      lastName,
-      birthDate: birthDate!.toISOString().split('T')[0],
-      language: languageCode,
-      gender: gender ?? undefined,
-      email: email.trim() ? email.trim() : undefined,
-      phone: phone.trim() ? phone.trim() : undefined,
-    });
-
-    setPatient(patient);
-
-    // Navigate to GDPR consent screen
-    navigation.navigate('GDPRConsent');
-  };
-
-  const calculateAge = (date: Date): number => {
-    const today = new Date();
-    let age = today.getFullYear() - date.getFullYear();
-    const monthDiff = today.getMonth() - date.getMonth();
-
-    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < date.getDate())) {
-      age--;
+    if (!encryptionKey) {
+      Alert.alert(t('common.error'), t('error.missingKey', { defaultValue: 'Verschlüsselungsschlüssel fehlt. Bitte Neustart.' }));
+      return;
     }
 
-    return age;
+    const languageCode = normalizeLanguage(i18n.language);
+    const fName = isReturning ? 'Returning' : firstName;
+    const lName = isReturning ? 'Patient' : lastName;
+    const bDate = `${ctxBirthDate.year}-${ctxBirthDate.month.padStart(2, '0')}-${ctxBirthDate.day.padStart(2, '0')}`;
+
+    try {
+      // clean architecture: Use Case
+      const patientRepo = new SQLitePatientRepository();
+      const gdprRepo = new SQLiteGDPRConsentRepository(database);
+      const useCase = new CreatePatientUseCase(patientRepo, gdprRepo);
+
+      // Prepare proper input
+      const input: CreatePatientInput = {
+        firstName: fName,
+        lastName: lName,
+        birthDate: bDate,
+        language: languageCode,
+        gender: gender ?? undefined,
+        email: isReturning ? undefined : (email.trim() || undefined),
+        phone: isReturning && !hasDataChanged ? undefined : (phone.trim() || undefined),
+        insurance: insuranceType ?? undefined,
+        insuranceNumber: insuranceNumber,
+        address: (isReturning && !hasDataChanged) ? undefined : {
+          street,
+          houseNumber,
+          zip,
+          city,
+          country
+        },
+        encryptionKey,
+        consents: {
+          dataProcessing: true, // Implied by Privacy Screen acceptance
+          dataStorage: true,
+          ocrProcessing: false,
+          voiceRecognition: false
+        }
+      };
+
+      const result = await useCase.execute(input);
+
+      if (!result.success || !result.patientId) {
+        throw new Error(result.error ?? 'Unknown Error creating patient');
+      }
+
+      // Fetch back the full entity to put in store
+      // Note: Repository.findById should handle decryption if key is set active
+      const savedPatient = await patientRepo.findById(result.patientId);
+
+      if (!savedPatient) {
+        throw new Error('Verification failed: Patient not found after save.');
+      }
+
+      setPatient(savedPatient);
+
+      // Flow Logic
+      if (visitReason === 'termin') {
+        navigation.navigate('Questionnaire'); // Start Anamnese
+      } else {
+        // Direct Submit / Summary
+        navigation.navigate('Summary', { questionnaireId: 'reason-only' });
+      }
+
+    } catch (err) {
+      Alert.alert(t('common.error'), err instanceof Error ? err.message : 'Save Failed');
+    }
   };
 
-  const isValidEmail = (email: string): boolean => {
-    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return regex.test(email);
+  // Helper for Date Dropdowns
+  const updateDatePart = (part: 'day' | 'month' | 'year', val: string) => {
+    setCtxBirthDate({ ...ctxBirthDate, [part]: val });
   };
 
-  const isValidPhone = (phone: string): boolean => {
-    // Basic phone validation (international format)
-    const regex = /^\+?[0-9\s\-()]{8,20}$/;
-    return regex.test(phone);
-  };
+  const today = new Date();
+  const currentYear = today.getFullYear();
+  const years = Array.from({ length: 110 }, (_, i) => String(currentYear - i));
+  const months = Array.from({ length: 12 }, (_, i) => String(i + 1));
+  const daysInSelectedMonth = ctxBirthDate.year && ctxBirthDate.month
+    ? new Date(parseInt(ctxBirthDate.year), parseInt(ctxBirthDate.month), 0).getDate()
+    : 31;
+  const days = Array.from({ length: daysInSelectedMonth }, (_, i) => String(i + 1));
 
-  const isWindows = Platform.OS === 'windows';
-  const today = useMemo(() => new Date(), []);
-  const minBirthDate = useMemo(() => new Date(1900, 0, 1), []);
 
-  const years = useMemo(() => {
-    const currentYear = today.getFullYear();
-    const minYear = 1900;
-    const out: number[] = [];
-    for (let y = currentYear; y >= minYear; y--) out.push(y);
-    return out;
-  }, [today]);
+  const renderDateDropdowns = () => (
+    <View style={styles.datePickerRow}>
+      {/* Day */}
+      <View style={[styles.dateDropdownCell, openDateDropdown === 'day' && styles.dateDropdownCellActive]}>
+        <AppText style={styles.dropdownLabel}>Tag</AppText>
+        <TouchableOpacity style={styles.dateDropdownButton} onPress={() => setOpenDateDropdown(openDateDropdown === 'day' ? null : 'day')}>
+          <AppText style={styles.dateDropdownText}>{ctxBirthDate.day || 'TT'}</AppText>
+        </TouchableOpacity>
+        {openDateDropdown === 'day' && (
+          <View style={styles.dateDropdownMenu}>
+            <ScrollView nestedScrollEnabled style={{ maxHeight: 200 }}>
+              {days.map(d => (
+                <TouchableOpacity key={d} style={styles.dateDropdownOption} onPress={() => { updateDatePart('day', d); setOpenDateDropdown(null); }}>
+                  <AppText>{d}</AppText>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+          </View>
+        )}
+      </View>
 
-  const clampDate = (date: Date): Date => {
-    if (date.getTime() > today.getTime()) return new Date(today);
-    if (date.getTime() < minBirthDate.getTime()) return new Date(minBirthDate);
-    return date;
-  };
+      {/* Month */}
+      <View style={[styles.dateDropdownCell, openDateDropdown === 'month' && styles.dateDropdownCellActive]}>
+        <AppText style={styles.dropdownLabel}>Monat</AppText>
+        <TouchableOpacity style={styles.dateDropdownButton} onPress={() => setOpenDateDropdown(openDateDropdown === 'month' ? null : 'month')}>
+          <AppText style={styles.dateDropdownText}>{ctxBirthDate.month || 'MM'}</AppText>
+        </TouchableOpacity>
+        {openDateDropdown === 'month' && (
+          <View style={styles.dateDropdownMenu}>
+            <ScrollView nestedScrollEnabled style={{ maxHeight: 200 }}>
+              {months.map(m => (
+                <TouchableOpacity key={m} style={styles.dateDropdownOption} onPress={() => { updateDatePart('month', m); setOpenDateDropdown(null); }}>
+                  <AppText>{m}</AppText>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+          </View>
+        )}
+      </View>
 
-  const daysInMonth = (year: number, month1to12: number): number => {
-    return new Date(year, month1to12, 0).getDate();
-  };
-
-  const setBirthDatePart = (next: { year?: number; month?: number; day?: number }) => {
-    const base = birthDate ?? today;
-    const year = next.year ?? base.getFullYear();
-    const month1 = next.month ?? base.getMonth() + 1;
-    const maxDay = daysInMonth(year, month1);
-    const day = Math.min(next.day ?? base.getDate(), maxDay);
-
-    const nextDate = clampDate(new Date(year, month1 - 1, day));
-    setBirthDate(nextDate);
-  };
-
-  const closeDateDropdowns = () => setOpenDateDropdown(null);
+      {/* Year */}
+      <View style={[styles.dateDropdownCell, openDateDropdown === 'year' && styles.dateDropdownCellActive]}>
+        <AppText style={styles.dropdownLabel}>Jahr</AppText>
+        <TouchableOpacity style={styles.dateDropdownButton} onPress={() => setOpenDateDropdown(openDateDropdown === 'year' ? null : 'year')}>
+          <AppText style={styles.dateDropdownText}>{ctxBirthDate.year || 'JJJJ'}</AppText>
+        </TouchableOpacity>
+        {openDateDropdown === 'year' && (
+          <View style={styles.dateDropdownMenu}>
+            <ScrollView nestedScrollEnabled style={{ maxHeight: 200 }}>
+              {years.map(y => (
+                <TouchableOpacity key={y} style={styles.dateDropdownOption} onPress={() => { updateDatePart('year', y); setOpenDateDropdown(null); }}>
+                  <AppText>{y}</AppText>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+          </View>
+        )}
+      </View>
+    </View>
+  );
 
   return (
-    <ScrollView style={styles.container} testID="patient-info-screen">
+    <ScrollView style={styles.container} testID="patient-info-screen" nestedScrollEnabled>
       <View style={styles.header}>
-        <Text style={styles.title}>{t('patientInfo.title')}</Text>
-        <Text style={styles.subtitle}>{t('patientInfo.subtitle')}</Text>
+        <AppText style={styles.title}>{isReturning ? 'Willkommen zurück' : 'Neue Patientenaufnahme'}</AppText>
+        <AppText style={styles.subtitle}>{isReturning ? 'Bitte identifizieren Sie sich.' : 'Bitte geben Sie Ihre Daten ein.'}</AppText>
       </View>
 
       <View style={styles.form}>
-        {/* First Name */}
-        <AppInput
-          label={t('patientInfo.firstName')}
-          required
-          value={firstName}
-          onChangeText={setFirstName}
-          placeholder={t('patientInfo.firstNamePlaceholder')}
-          testID="input-first_name"
-          autoCapitalize="words"
-          autoComplete="name"
-          error={errors.firstName}
-        />
 
-        {/* Last Name */}
-        <AppInput
-          label={t('patientInfo.lastName')}
-          required
-          value={lastName}
-          onChangeText={setLastName}
-          placeholder={t('patientInfo.lastNamePlaceholder')}
-          testID="input-last_name"
-          autoCapitalize="words"
-          autoComplete="name-family"
-          error={errors.lastName}
-        />
-
-        {/* Birth Date */}
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>
-            {t('patientInfo.birthDate')} <Text style={styles.required}>*</Text>
-          </Text>
-          {isWindows && !birthDate && (
-            <Text style={styles.hintText}>{t('patientInfo.birthDateHint')}</Text>
-          )}
-          <TouchableOpacity
-            style={[
-              styles.input,
-              styles.dateButton,
-              errors.birthDate ? styles.inputError : undefined,
-            ]}
-            onPress={() => {
-              if (isWindows) {
-                if (!showDatePicker && !birthDate) {
-                  // Match non-Windows behavior where the picker opens with today's date.
-                  setBirthDate(today);
-                }
-                const nextOpen = !showDatePicker;
-                setShowDatePicker(nextOpen);
-                if (!nextOpen) closeDateDropdowns();
-                return;
-              }
-
-              setShowDatePicker(true);
-            }}
-            testID="input-birth_date">
-            <Text style={birthDate ? styles.dateText : styles.datePlaceholder}>
-              {birthDate ? birthDate.toLocaleDateString() : t('patientInfo.birthDatePlaceholder')}
-            </Text>
-          </TouchableOpacity>
-          {errors.birthDate && <Text style={styles.errorText}>{errors.birthDate}</Text>}
-        </View>
-
-        {/* Date Input */}
-        {isWindows ? (
-          showDatePicker && (
-            <View style={styles.datePickerRow}>
-              {(() => {
-                const valueDate = birthDate ?? today;
-                const selectedDay = valueDate.getDate();
-                const selectedMonth = valueDate.getMonth() + 1;
-                const selectedYear = valueDate.getFullYear();
-                const dayOptions = Array.from(
-                  { length: daysInMonth(selectedYear, selectedMonth) },
-                  (_, i) => i + 1,
-                );
-
-                const renderDropdown = (
-                  kind: 'day' | 'month' | 'year',
-                  selected: number,
-                  options: number[],
-                  onSelect: (v: number) => void,
-                  testID: string,
-                ) => (
-                  <View
-                    style={[
-                      styles.dateDropdownCell,
-                      openDateDropdown === kind && styles.dateDropdownCellActive,
-                    ]}>
-                    <TouchableOpacity
-                      style={styles.dateDropdownButton}
-                      onPress={() => setOpenDateDropdown(cur => (cur === kind ? null : kind))}
-                      testID={testID}>
-                      <Text style={styles.dateDropdownText}>{String(selected)}</Text>
-                    </TouchableOpacity>
-
-                    {openDateDropdown === kind && (
-                      <View style={styles.dateDropdownMenu}>
-                        <ScrollView style={styles.dateDropdownScroll}>
-                          {options.map(opt => (
-                            <TouchableOpacity
-                              key={opt}
-                              style={styles.dateDropdownOption}
-                              onPress={() => {
-                                onSelect(opt);
-                                closeDateDropdowns();
-                              }}
-                              testID={`${testID}-opt-${opt}`}>
-                              <Text style={styles.dateDropdownOptionText}>{String(opt)}</Text>
-                            </TouchableOpacity>
-                          ))}
-                        </ScrollView>
-                      </View>
-                    )}
-                  </View>
-                );
-
-                return (
-                  <>
-                    {/* Year first for better UX - helps determine valid days in month */}
-                    {renderDropdown(
-                      'year',
-                      selectedYear,
-                      years,
-                      v => setBirthDatePart({ year: v }),
-                      'dropdown-birth_year',
-                    )}
-                    {renderDropdown(
-                      'month',
-                      selectedMonth,
-                      Array.from({ length: 12 }, (_, i) => i + 1),
-                      v => setBirthDatePart({ month: v }),
-                      'dropdown-birth_month',
-                    )}
-                    {renderDropdown(
-                      'day',
-                      selectedDay,
-                      dayOptions,
-                      v => setBirthDatePart({ day: v }),
-                      'dropdown-birth_day',
-                    )}
-                  </>
-                );
-              })()}
+        {/* NEW PATIENT: Insurance Type */}
+        {!isReturning && (
+          <View style={styles.inputGroup}>
+            <AppText style={styles.label}>Versicherungsart <AppText style={styles.required}>*</AppText></AppText>
+            <View style={styles.radioGroup}>
+              <TouchableOpacity style={[styles.radioButton, insuranceType === 'public' && styles.radioButtonSelected]} onPress={() => setInsuranceType('public')}>
+                <View style={styles.radio}>{insuranceType === 'public' && <View style={styles.radioSelected} />}</View>
+                <AppText style={styles.radioLabel}>Gesetzlich</AppText>
+              </TouchableOpacity>
+              <TouchableOpacity style={[styles.radioButton, insuranceType === 'private' && styles.radioButtonSelected]} onPress={() => setInsuranceType('private')}>
+                <View style={styles.radio}>{insuranceType === 'private' && <View style={styles.radioSelected} />}</View>
+                <AppText style={styles.radioLabel}>Privat</AppText>
+              </TouchableOpacity>
             </View>
-          )
-        ) : (
-          <DatePicker
-            modal
-            open={showDatePicker}
-            date={birthDate || new Date()}
-            mode="date"
-            maximumDate={new Date()}
-            minimumDate={new Date(1900, 0, 1)}
-            onConfirm={(date: Date) => {
-              setShowDatePicker(false);
-              setBirthDate(date);
-            }}
-            onCancel={() => setShowDatePicker(false)}
-            title={t('patientInfo.selectBirthDate')}
-          />
+            {errors.insuranceType && <AppText style={styles.errorText}>{errors.insuranceType}</AppText>}
+          </View>
         )}
 
-        {/* Gender */}
+        {/* SHARED: Insurance Number */}
+        <AppInput
+          label={t('patientInfo.insuranceNumber', { defaultValue: 'Versicherungsnummer' })}
+          required
+          value={insuranceNumber}
+          onChangeText={setInsuranceNumber}
+          placeholder="z.B. A123456789"
+          error={errors.insuranceNumber}
+        />
+
+        {/* SHARED: DOB (Dropdowns) */}
         <View style={styles.inputGroup}>
-          <Text style={styles.label}>
-            {t('patientInfo.gender')} <Text style={styles.required}>*</Text>
-          </Text>
-          <View style={styles.radioGroup}>
-            <TouchableOpacity
-              style={[styles.radioButton, gender === 'male' && styles.radioButtonSelected]}
-              onPress={() => setGender('male')}
-              testID="input-gender-male">
-              <View style={styles.radio}>
-                {gender === 'male' && <View style={styles.radioSelected} />}
-              </View>
-              <Text style={styles.radioLabel}>{t('patientInfo.male')}</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={[styles.radioButton, gender === 'female' && styles.radioButtonSelected]}
-              onPress={() => setGender('female')}
-              testID="input-gender-female">
-              <View style={styles.radio}>
-                {gender === 'female' && <View style={styles.radioSelected} />}
-              </View>
-              <Text style={styles.radioLabel}>{t('patientInfo.female')}</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={[styles.radioButton, gender === 'other' && styles.radioButtonSelected]}
-              onPress={() => setGender('other')}
-              testID="input-gender-other">
-              <View style={styles.radio}>
-                {gender === 'other' && <View style={styles.radioSelected} />}
-              </View>
-              <Text style={styles.radioLabel}>{t('patientInfo.other')}</Text>
-            </TouchableOpacity>
-          </View>
-          {errors.gender && <Text style={styles.errorText}>{errors.gender}</Text>}
+          <AppText style={styles.label}>{t('patientInfo.birthDate')} <AppText style={styles.required}>*</AppText></AppText>
+          {renderDateDropdowns()}
+          {errors.birthDate && <AppText style={styles.errorText}>{errors.birthDate}</AppText>}
         </View>
 
-        {/* Email (Optional) */}
-        <AppInput
-          label={t('patientInfo.email')}
-          value={email}
-          onChangeText={setEmail}
-          placeholder={t('patientInfo.emailPlaceholder')}
-          testID="input-email"
-          keyboardType="email-address"
-          autoCapitalize="none"
-          autoComplete="email"
-          error={errors.email}
-        />
 
-        {/* Phone (Optional) */}
-        <AppInput
-          label={t('patientInfo.phone')}
-          value={phone}
-          onChangeText={setPhone}
-          placeholder={t('patientInfo.phonePlaceholder')}
-          testID="input-phone"
-          keyboardType="phone-pad"
-          autoComplete="tel"
-          error={errors.phone}
-        />
+        {/* Returning Patient: Data Changed Toggle */}
+        {isReturning && (
+          <TouchableOpacity style={styles.toggleContainer} onPress={() => setHasDataChanged(!hasDataChanged)}>
+            <View style={[styles.checkbox, hasDataChanged && styles.checkboxChecked]} />
+            <AppText style={styles.toggleLabel}>{t('patientInfo.dataChanged', { defaultValue: 'Meine persönlichen Daten haben sich geändert' })}</AppText>
+          </TouchableOpacity>
+        )}
+
+        {/* DETAILS: Show if New Patient OR (Returning AND Data Changed) */}
+        {(!isReturning || hasDataChanged) && (
+          <>
+            <AppInput
+              label={t('patientInfo.firstName')}
+              required
+              value={firstName}
+              onChangeText={setFirstName}
+              error={errors.firstName}
+              placeholder="Min. 3 letters"
+            />
+            <AppInput
+              label={t('patientInfo.lastName')}
+              required
+              value={lastName}
+              onChangeText={setLastName}
+              error={errors.lastName}
+            />
+
+            <View style={styles.inputGroup}>
+              <AppText style={styles.label}>{t('patientInfo.gender')} <AppText style={styles.required}>*</AppText></AppText>
+              <View style={styles.radioGroup}>
+                <TouchableOpacity style={[styles.radioButton, gender === 'male' && styles.radioButtonSelected]} onPress={() => setGender('male')}>
+                  <View style={styles.radio}>{gender === 'male' && <View style={styles.radioSelected} />}</View>
+                  <AppText>Männlich</AppText>
+                </TouchableOpacity>
+                <TouchableOpacity style={[styles.radioButton, gender === 'female' && styles.radioButtonSelected]} onPress={() => setGender('female')}>
+                  <View style={styles.radio}>{gender === 'female' && <View style={styles.radioSelected} />}</View>
+                  <AppText>Weiblich</AppText>
+                </TouchableOpacity>
+                <TouchableOpacity style={[styles.radioButton, gender === 'other' && styles.radioButtonSelected]} onPress={() => setGender('other')}>
+                  <View style={styles.radio}>{gender === 'other' && <View style={styles.radioSelected} />}</View>
+                  <AppText>Divers</AppText>
+                </TouchableOpacity>
+              </View>
+              {errors.gender && <AppText style={styles.errorText}>{errors.gender}</AppText>}
+            </View>
+
+            {/* ADDRESS SECTION */}
+            <AppText style={styles.sectionHeader}>{t('patientInfo.address', { defaultValue: 'Adresse' })}</AppText>
+
+            <AppInput label={t('patientInfo.country')} value={country} onChangeText={setCountry} placeholder="Land (z.B. DE)" />
+
+            <View style={styles.row}>
+              <View style={{ flex: 3, marginRight: 10 }}>
+                <AppInput label={t('patientInfo.street')} required value={street} onChangeText={setStreet} error={errors.street} />
+              </View>
+              <View style={{ flex: 1 }}>
+                <AppInput label={t('patientInfo.houseNumber')} required value={houseNumber} onChangeText={setHouseNumber} error={errors.houseNumber} keyboardType="numeric" />
+              </View>
+            </View>
+
+            <View style={styles.row}>
+              <View style={{ flex: 1.5, marginRight: 10 }}>
+                <AppInput label={t('patientInfo.zip')} required value={zip} onChangeText={setZip} error={errors.zip} keyboardType="numeric" />
+              </View>
+              <View style={{ flex: 3 }}>
+                <AppInput label={t('patientInfo.city')} required value={city} onChangeText={setCity} error={errors.city} />
+              </View>
+            </View>
+
+            <AppInput label={t('patientInfo.email')} value={email} onChangeText={setEmail} keyboardType="email-address" />
+            <AppInput label={t('patientInfo.phone')} value={phone} onChangeText={setPhone} keyboardType="phone-pad" />
+          </>
+        )}
+
       </View>
 
-      {/* Next Button */}
       <AppButton
-        label={t('patientInfo.toConsents')}
+        label={t('common.next')}
         onPress={handleNext}
-        testID="patient-info-next-btn"
         style={styles.nextButton}
       />
 
-      <Text style={styles.requiredNote}>
-        <Text style={styles.required}>*</Text> {t('common.requiredField')}
-      </Text>
+      <View style={{ height: 100 }} />
     </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
-  header: {
-    padding: spacing.xl,
-    backgroundColor: colors.surface,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.divider,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: colors.textPrimary,
-    marginBottom: spacing.sm,
-  },
-  subtitle: {
-    fontSize: 14,
-    color: colors.textSecondary,
-  },
-  form: {
-    padding: spacing.xl,
-  },
-  inputGroup: {
-    marginBottom: spacing.xl,
-  },
-  label: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: colors.textPrimary,
-    marginBottom: spacing.sm,
-  },
-  required: {
-    color: colors.dangerText,
-  },
-  input: {
-    backgroundColor: colors.surface,
-    borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: radius.md,
-    padding: spacing.md,
-    fontSize: 16,
-    color: colors.textPrimary,
-  },
-  inputError: {
-    borderColor: colors.dangerBorder,
-  },
-  errorText: {
-    color: colors.dangerText,
-    fontSize: 12,
-    marginTop: spacing.xs,
-  },
-  hintText: {
-    color: colors.textSecondary,
-    fontSize: 12,
-    marginBottom: spacing.xs,
-    fontStyle: 'italic',
-  },
-  dateButton: {
-    justifyContent: 'center',
-  },
-  dateText: {
-    color: colors.textPrimary,
-  },
-  datePlaceholder: {
-    color: colors.textSecondary,
-  },
-  datePickerRow: {
-    flexDirection: 'row',
-    gap: spacing.sm,
-    paddingHorizontal: spacing.xl,
-    marginTop: -spacing.md,
-    marginBottom: spacing.xl,
-  },
-  dateDropdownCell: {
-    flex: 1,
-    position: 'relative',
-  },
-  dateDropdownCellActive: {
-    zIndex: 50,
-  },
-  dateDropdownButton: {
-    backgroundColor: colors.surface,
-    borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: radius.md,
-    paddingVertical: spacing.md,
-    paddingHorizontal: spacing.md,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  dateDropdownText: {
-    color: colors.textPrimary,
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  dateDropdownMenu: {
-    backgroundColor: colors.surface,
-    borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: radius.md,
-    marginTop: spacing.sm,
-    maxHeight: 220,
-    overflow: 'hidden',
-  },
-  dateDropdownScroll: {
-    maxHeight: 220,
-  },
-  dateDropdownOption: {
-    paddingVertical: spacing.sm,
-    paddingHorizontal: spacing.md,
-  },
-  dateDropdownOptionText: {
-    color: colors.textPrimary,
-    fontSize: 14,
-  },
-  radioGroup: {
-    flexDirection: 'row',
-    gap: spacing.md,
-  },
-  radioButton: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: colors.surface,
-    borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: radius.md,
-    padding: spacing.md,
-  },
-  radioButtonSelected: {
-    borderColor: colors.primary,
-    backgroundColor: colors.infoSurface,
-  },
-  radio: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    borderWidth: 2,
-    borderColor: colors.border,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: spacing.sm,
-  },
-  radioSelected: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-    backgroundColor: colors.primary,
-  },
-  radioLabel: {
-    fontSize: 14,
-    color: colors.textPrimary,
-  },
-  nextButton: {
-    marginHorizontal: spacing.xl,
-    marginTop: spacing.xl,
-  },
-  requiredNote: {
-    fontSize: 12,
-    color: colors.textSecondary,
-    textAlign: 'center',
-    marginTop: spacing.md,
-    marginBottom: spacing.xxxl,
-  },
+  container: { flex: 1, backgroundColor: colors.background },
+  header: { padding: spacing.xl, backgroundColor: colors.surface, borderBottomWidth: 1, borderColor: colors.divider },
+  title: { color: colors.textPrimary },
+  subtitle: { color: colors.textSecondary },
+  form: { padding: spacing.xl },
+  inputGroup: { marginBottom: spacing.xl },
+  label: { marginBottom: spacing.sm, color: colors.textPrimary },
+  dropdownLabel: { marginBottom: 4 },
+  required: { color: colors.dangerText },
+  errorText: { color: colors.dangerText, marginTop: 4 },
+  nextButton: { marginHorizontal: spacing.xl, marginTop: spacing.xl },
+
+  // High Contrast
+  textHighContrast: { color: '#ffffff' },
+  textHighContrastInverse: { color: '#000000' },
+  bgHighContrast: { backgroundColor: '#000000' },
+  surfaceHighContrast: { backgroundColor: '#ffffff' },
+  borderHighContrast: { borderColor: '#000000' },
+
+  // Radio
+  radioGroup: { flexDirection: 'row', gap: spacing.md, flexWrap: 'wrap' },
+  radioButton: { flexDirection: 'row', alignItems: 'center', backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border, borderRadius: radius.md, padding: spacing.md, minWidth: 100 },
+  radioButtonSelected: { borderColor: colors.primary, backgroundColor: colors.infoSurface },
+  radio: { width: 20, height: 20, borderRadius: 10, borderWidth: 2, borderColor: colors.border, alignItems: 'center', justifyContent: 'center', marginRight: spacing.sm },
+  radioSelected: { width: 10, height: 10, borderRadius: 5, backgroundColor: colors.primary },
+  radioLabel: { color: colors.textPrimary },
+
+  // Date Picker Custom Row
+  datePickerRow: { flexDirection: 'row', gap: spacing.md },
+  dateDropdownCell: { flex: 1 },
+  dateDropdownCellActive: { zIndex: 9999 }, // FIX: Elevate active dropdown (K1-2: dropdown z-index)
+  dateDropdownButton: { backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border, borderRadius: radius.md, padding: spacing.md, alignItems: 'center' },
+  dateDropdownText: { color: colors.textPrimary },
+  dateDropdownMenu: { position: 'absolute', top: '100%', left: 0, right: 0, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border, borderRadius: radius.md, zIndex: 9999, elevation: 10, maxHeight: 200 },
+  dateDropdownOption: { padding: spacing.md, borderBottomWidth: 1, borderBottomColor: colors.background },
+
+  // New Styles
+  row: { flexDirection: 'row' },
+  sectionHeader: { marginTop: spacing.lg, marginBottom: spacing.md, color: colors.textPrimary },
+  toggleContainer: { flexDirection: 'row', alignItems: 'center', marginBottom: spacing.lg, padding: spacing.sm },
+  checkbox: { width: 24, height: 24, borderWidth: 2, borderColor: colors.primary, borderRadius: 4, marginRight: spacing.md },
+  checkboxChecked: { backgroundColor: colors.primary },
+  toggleLabel: { color: colors.textPrimary },
 });

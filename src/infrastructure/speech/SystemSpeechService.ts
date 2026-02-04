@@ -1,3 +1,4 @@
+import { logInfo } from '../../shared/logger';
 import { supportsSpeechToText } from '@shared/platformCapabilities';
 
 // Conditional import: Only load @react-native-voice/voice on non-Windows platforms
@@ -81,7 +82,7 @@ export class SystemSpeechService implements ISpeechService {
   private logDebug(message: string): void {
     if (typeof __DEV__ !== 'undefined' && __DEV__) {
       // eslint-disable-next-line no-console
-      console.log(message);
+      logInfo(message);
     }
   }
 

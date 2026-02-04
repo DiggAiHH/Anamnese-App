@@ -5,9 +5,11 @@
  * - Navigation
  * - i18n
  * - Providers
+ * 
+ * Performance: Memoized navigation theme to prevent unnecessary re-renders
  */
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -17,6 +19,9 @@ import { StyleSheet } from 'react-native';
 import { RootNavigator } from './navigation/RootNavigator';
 
 import { ToastProvider } from './components/ToastProvider';
+import { PatientProvider } from '../application/PatientContext';
+import { ThemeProvider } from './theme/ThemeContext';
+import { colors } from './theme/tokens';
 
 // i18n
 import i18n from './i18n/config';
@@ -31,6 +36,22 @@ import { installGlobalErrorHandlers } from '@shared/globalErrorHandlers';
 import { showUserErrorAlert } from '@shared/userFacingError';
 
 const App = (): React.JSX.Element => {
+  // Memoize navigation theme to prevent unnecessary re-renders (Performance Fix)
+  const navigationTheme = useMemo(
+    () => ({
+      dark: false,
+      colors: {
+        primary: colors.primary,
+        background: colors.background,
+        card: colors.surface,
+        text: colors.text,
+        border: colors.border,
+        notification: colors.error,
+      },
+    }),
+    []
+  );
+
   useEffect(() => {
     installGlobalErrorHandlers({
       onUserError: () =>
@@ -75,11 +96,15 @@ const App = (): React.JSX.Element => {
   return (
     <GestureHandlerRootView style={styles.container}>
       <SafeAreaProvider>
-        <ToastProvider>
-          <NavigationContainer>
-            <RootNavigator />
-          </NavigationContainer>
-        </ToastProvider>
+        <ThemeProvider>
+          <ToastProvider>
+            <PatientProvider>
+              <NavigationContainer theme={navigationTheme}>
+                <RootNavigator />
+              </NavigationContainer>
+            </PatientProvider>
+          </ToastProvider>
+        </ThemeProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>
   );

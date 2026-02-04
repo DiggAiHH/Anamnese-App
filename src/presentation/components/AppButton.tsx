@@ -5,10 +5,10 @@ import {
   PressableProps,
   StyleProp,
   StyleSheet,
-  Text,
   View,
   ViewStyle,
 } from 'react-native';
+import { AppText } from './AppText';
 import { colors, radius, spacing } from '../theme/tokens';
 
 export type ButtonVariant =
@@ -113,6 +113,8 @@ type Props = Omit<PressableProps, 'style'> & {
   style?: StyleProp<ViewStyle>;
 };
 
+import { useTheme } from '../theme/ThemeContext';
+
 export const AppButton: React.FC<Props> = ({
   label,
   title,
@@ -126,9 +128,21 @@ export const AppButton: React.FC<Props> = ({
   style,
   ...props
 }) => {
+  const { fontScale, isHighContrast } = useTheme();
   const colorsForVariant = getButtonColors(variant, disabled || loading);
   const displayText = title ?? label ?? '';
   const sizeStyle = sizeStyles[size];
+
+  // Adjust colors for high contrast mode
+  let backgroundColor = colorsForVariant.backgroundColor;
+  let borderColor = colorsForVariant.borderColor;
+  let textColor = colorsForVariant.textColor;
+
+  if (isHighContrast) {
+    backgroundColor = '#ffffff';
+    borderColor = '#000000';
+    textColor = '#000000';
+  }
 
   return (
     <Pressable
@@ -139,10 +153,10 @@ export const AppButton: React.FC<Props> = ({
       style={({ pressed }) => [
         styles.base,
         {
-          backgroundColor: colorsForVariant.backgroundColor,
-          borderColor: colorsForVariant.borderColor,
-          paddingVertical: sizeStyle.paddingVertical,
-          paddingHorizontal: sizeStyle.paddingHorizontal,
+          backgroundColor: backgroundColor,
+          borderColor: borderColor,
+          paddingVertical: sizeStyle.paddingVertical * fontScale, // Also scale padding to accommodate larger text
+          paddingHorizontal: sizeStyle.paddingHorizontal * fontScale,
         },
         fullWidth && styles.fullWidth,
         (disabled || loading) && styles.disabled,
@@ -150,17 +164,17 @@ export const AppButton: React.FC<Props> = ({
         style,
       ]}>
       {loading ? (
-        <ActivityIndicator color={colorsForVariant.textColor} />
+        <ActivityIndicator color={textColor} />
       ) : (
         <View style={styles.content}>
           {iconLeft && <View style={styles.iconLeft}>{iconLeft}</View>}
-          <Text
+          <AppText
             style={[
               styles.text,
-              { color: colorsForVariant.textColor, fontSize: sizeStyle.fontSize },
+              { color: textColor, fontSize: sizeStyle.fontSize * fontScale },
             ]}>
             {displayText}
-          </Text>
+          </AppText>
           {iconRight && <View style={styles.iconRight}>{iconRight}</View>}
         </View>
       )}

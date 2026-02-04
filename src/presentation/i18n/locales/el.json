@@ -61,6 +61,17 @@
     "openPatient": "Άνοιγμα",
     "resumeQuestionnaire": "Συνέχεια",
     "selectLanguage": "Επιλογή γλώσσας",
+    "roleSelection": {
+      "title": "Πού πραγματοποιείται το ιστορικό;",
+      "practice": "Στο ιατρείο",
+      "private": "Ιδιωτικά (στο σπίτι)",
+      "admin": "Διαχειριστής / Πίνακας"
+    },
+    "accessibility": {
+      "fontScale": "Μέγεθος γραμματοσειράς",
+      "highContrast": "Υψηλή αντίθεση",
+      "language": "Γλώσσα"
+    },
     "modeSelection": {
       "title": "Ποιος χρησιμοποιεί την εφαρμογή;",
       "subtitle": "Παρακαλώ επιλέξτε τον ρόλο σας",
@@ -725,5 +736,45 @@
       "decryptionFailed": "Decryption failed",
       "unknown": "Unknown error"
     }
+  },
+  "accessibility": {
+    "toggleZoom": "Εναλλαγή zoom",
+    "zoomHint": "Ενεργοποιεί μεγαλύτερα γράμματα και κουμπιά",
+    "zoomEnabled": "Zoom ενεργοποιημένο",
+    "zoomDisabled": "Zoom απενεργοποιημένο"
+  },
+  "months": {
+    "january": "Ιανουάριος",
+    "february": "Φεβρουάριος",
+    "march": "Μάρτιος",
+    "april": "Απρίλιος",
+    "may": "Μάιος",
+    "june": "Ιούνιος",
+    "july": "Ιούλιος",
+    "august": "Αύγουστος",
+    "september": "Σεπτέμβριος",
+    "october": "Οκτώβριος",
+    "november": "Νοέμβριος",
+    "december": "Δεκέμβριος"
+  },
+  "fastTrack": {
+    "title": "Γρήγορη πρόσβαση",
+    "prescription": "Παραγγελία συνταγής",
+    "referral": "Αίτηση παραπομπής",
+    "subtitle": "Χωρίς πλήρη ανάμνηση",
+    "errorRequired": "Συμπληρώστε όλα τα υποχρεωτικά πεδία",
+    "successMessage": "Το αίτημά σας στάλθηκε επιτυχώς",
+    "errorSubmit": "Σφάλμα αποστολής",
+    "medicationLabel": "Ζητούμενο φάρμακο",
+    "medicationPlaceholder": "π.χ.: Ibuprofen 400mg",
+    "referralLabel": "Λόγος παραπομπής",
+    "referralPlaceholder": "π.χ.: Καρδιολογία"
+  },
+  "buttons": {
+    "submit": "Υποβολή"
+  },
+  "placeholders": {
+    "vorname": "π.χ.: Γιώργος",
+    "nachname": "π.χ.: Παπαδόπουλος"
   }
 }

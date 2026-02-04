@@ -47,7 +47,7 @@ export class ExportGDTUseCase {
     private readonly questionnaireRepository: IQuestionnaireRepository,
     private readonly answerRepository: IAnswerRepository,
     private readonly gdprRepository: IGDPRConsentRepository,
-  ) {}
+  ) { }
 
   async execute(input: ExportGDTInput): Promise<ExportGDTOutput> {
     try {
@@ -167,8 +167,9 @@ export class ExportGDTUseCase {
     let text = 'MEDIZINISCHE ANAMNESE\n\n';
 
     for (const section of questionnaire.sections) {
-      text += `${section.titleKey.toUpperCase()}\n`;
-      text += '='.repeat(section.titleKey.length) + '\n\n';
+      const title = section.titleKey ?? section.title ?? 'SECTION'; // Fallback
+      text += `${title.toUpperCase()}\n`;
+      text += '='.repeat(title.length) + '\n\n';
 
       for (const question of section.questions) {
         const answer = answersMap.get(question.id);

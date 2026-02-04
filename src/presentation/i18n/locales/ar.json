@@ -61,6 +61,17 @@
     "openPatient": "فتح",
     "resumeQuestionnaire": "استئناف",
     "selectLanguage": "اختيار اللغة",
+    "roleSelection": {
+      "title": "أين يتم أخذ التاريخ المرضي؟",
+      "practice": "في العيادة",
+      "private": "خاص (في المنزل)",
+      "admin": "المسؤول / لوحة التحكم"
+    },
+    "accessibility": {
+      "fontScale": "حجم الخط",
+      "highContrast": "تباين عالٍ",
+      "language": "اللغة"
+    },
     "modeSelection": {
       "title": "من يستخدم التطبيق؟",
       "subtitle": "يرجى اختيار دورك",
@@ -725,5 +736,45 @@
       "decryptionFailed": "Decryption failed",
       "unknown": "Unknown error"
     }
+  },
+  "accessibility": {
+    "toggleZoom": "تبديل التكبير",
+    "zoomHint": "يتيح خطوطًا وأزرارًا أكبر",
+    "zoomEnabled": "التكبير مفعّل",
+    "zoomDisabled": "التكبير معطل"
+  },
+  "months": {
+    "january": "يناير",
+    "february": "فبراير",
+    "march": "مارس",
+    "april": "أبريل",
+    "may": "مايو",
+    "june": "يونيو",
+    "july": "يوليو",
+    "august": "أغسطس",
+    "september": "سبتمبر",
+    "october": "أكتوبر",
+    "november": "نوفمبر",
+    "december": "ديسمبر"
+  },
+  "fastTrack": {
+    "title": "الوصول السريع",
+    "prescription": "طلب وصفة طبية",
+    "referral": "طلب إحالة",
+    "subtitle": "بدون سجل طبي كامل",
+    "errorRequired": "يرجى ملء جميع الحقول المطلوبة",
+    "successMessage": "تم إرسال طلبك بنجاح",
+    "errorSubmit": "خطأ في الإرسال",
+    "medicationLabel": "الدواء المطلوب",
+    "medicationPlaceholder": "مثال: إيبوبروفين 400 ملغ",
+    "referralLabel": "سبب الإحالة",
+    "referralPlaceholder": "مثال: أمراض القلب"
+  },
+  "buttons": {
+    "submit": "إرسال"
+  },
+  "placeholders": {
+    "vorname": "مثال: محمد",
+    "nachname": "مثال: أحمد"
   }
 }

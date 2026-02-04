@@ -61,6 +61,17 @@
     "openPatient": "Открыть",
     "resumeQuestionnaire": "Продолжить",
     "selectLanguage": "Выбрать язык",
+    "roleSelection": {
+      "title": "Где проводится анамнез?",
+      "practice": "В клинике",
+      "private": "Дома (частно)",
+      "admin": "Админ / Панель"
+    },
+    "accessibility": {
+      "fontScale": "Размер шрифта",
+      "highContrast": "Высокая контрастность",
+      "language": "Язык"
+    },
     "modeSelection": {
       "title": "Кто использует приложение?",
       "subtitle": "Пожалуйста, выберите вашу роль",
@@ -725,5 +736,45 @@
       "decryptionFailed": "Decryption failed",
       "unknown": "Unknown error"
     }
+  },
+  "accessibility": {
+    "toggleZoom": "Включить/выключить масштаб",
+    "zoomHint": "Включает увеличенный шрифт и кнопки",
+    "zoomEnabled": "Масштаб включен",
+    "zoomDisabled": "Масштаб выключен"
+  },
+  "months": {
+    "january": "Январь",
+    "february": "Февраль",
+    "march": "Март",
+    "april": "Апрель",
+    "may": "Май",
+    "june": "Июнь",
+    "july": "Июль",
+    "august": "Август",
+    "september": "Сентябрь",
+    "october": "Октябрь",
+    "november": "Ноябрь",
+    "december": "Декабрь"
+  },
+  "fastTrack": {
+    "title": "Быстрый доступ",
+    "prescription": "Заказать рецепт",
+    "referral": "Запросить направление",
+    "subtitle": "Без полного анамнеза",
+    "errorRequired": "Пожалуйста, заполните все обязательные поля",
+    "successMessage": "Ваш запрос успешно отправлен",
+    "errorSubmit": "Ошибка при отправке",
+    "medicationLabel": "Запрашиваемое лекарство",
+    "medicationPlaceholder": "напр.: Ибупрофен 400мг",
+    "referralLabel": "Причина направления",
+    "referralPlaceholder": "напр.: Кардиология"
+  },
+  "buttons": {
+    "submit": "Отправить"
+  },
+  "placeholders": {
+    "vorname": "напр.: Иван",
+    "nachname": "напр.: Иванов"
   }
 }

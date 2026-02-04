@@ -203,13 +203,13 @@ export class PDFTemplateService {
         const answer = answers.get(q.id);
         const answerDisplay = this.formatAnswer(answer, q.type, options.language);
         // Use labelKey as question text (in production, translate via i18n)
-        return this.renderQuestion(q.labelKey, answerDisplay, options.template);
+        return this.renderQuestion(q.labelKey ?? q.text ?? '', answerDisplay, options.template);
       })
       .join('\n');
 
     return `
     <div class="section">
-      <div class="section-title">${this.escapeHtml(section.titleKey)}</div>
+      <div class="section-title">${this.escapeHtml(section.titleKey ?? section.title ?? '')}</div>
       ${questions}
     </div>`;
   }

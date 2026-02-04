@@ -15,6 +15,10 @@ export const isMissingRequiredAnswer = (
   if (typeof value === 'boolean') return value === false;
 
   if (typeof value === 'number') {
+    // Fix: Allow 0 if it is explicitly defined in options (e.g. "No" = 0)
+    if (value === 0 && question.options?.some(o => o.value === 0 || o.value === '0')) {
+      return false;
+    }
     if (question.type === 'select' || question.type === 'radio') return value === 0;
     if (question.type === 'checkbox' || question.type === 'multiselect') return value === 0;
     return false;

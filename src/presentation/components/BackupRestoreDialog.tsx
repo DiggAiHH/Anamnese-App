@@ -168,7 +168,10 @@ export const BackupRestoreDialog = ({
         placeholder={t('backup.passwordPlaceholder')}
         placeholderTextColor={colors.textMuted}
         value={password}
-        onChangeText={setPassword}
+        onChangeText={(text) => {
+          setPassword(text);
+          if (error) setError(null);
+        }}
         autoFocus
         accessibilityLabel={t('backup.passwordInput')}
       />
@@ -265,7 +268,7 @@ export const BackupRestoreDialog = ({
                 style={[
                   styles.conflictButton,
                   conflictResolutions.get(conflict.id) === 'backup' &&
-                    styles.conflictButtonSelected,
+                  styles.conflictButtonSelected,
                 ]}
                 onPress={() => handleConflictResolution(conflict.id, 'backup')}>
                 <Text style={styles.conflictButtonText}>{t('backup.useBackup')}</Text>
@@ -354,7 +357,7 @@ export const BackupRestoreDialog = ({
               style={[
                 styles.progressDot,
                 ['file', 'password', 'strategy', 'conflicts', 'progress', 'result'].indexOf(step) >=
-                  i && styles.progressDotActive,
+                i && styles.progressDotActive,
               ]}
             />
           ))}

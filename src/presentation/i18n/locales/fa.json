@@ -61,6 +61,17 @@
     "openPatient": "باز کردن",
     "resumeQuestionnaire": "ادامه",
     "selectLanguage": "انتخاب زبان",
+    "roleSelection": {
+      "title": "شرح حال کجا انجام می‌شود؟",
+      "practice": "در مطب",
+      "private": "خصوصی (در خانه)",
+      "admin": "مدیر / داشبورد"
+    },
+    "accessibility": {
+      "fontScale": "اندازهٔ فونت",
+      "highContrast": "کنتراست بالا",
+      "language": "زبان"
+    },
     "modeSelection": {
       "title": "چه کسی از اپلیکیشن استفاده می‌کند؟",
       "subtitle": "لطفاً نقش خود را انتخاب کنید",
@@ -725,5 +736,45 @@
       "decryptionFailed": "Decryption failed",
       "unknown": "Unknown error"
     }
+  },
+  "accessibility": {
+    "toggleZoom": "تغییر بزرگ‌نمایی",
+    "zoomHint": "فونت و دکمه‌های بزرگتر را فعال می‌کند",
+    "zoomEnabled": "بزرگ‌نمایی فعال",
+    "zoomDisabled": "بزرگ‌نمایی غیرفعال"
+  },
+  "months": {
+    "january": "ژانویه",
+    "february": "فوریه",
+    "march": "مارس",
+    "april": "آوریل",
+    "may": "مه",
+    "june": "ژوئن",
+    "july": "ژوئیه",
+    "august": "اوت",
+    "september": "سپتامبر",
+    "october": "اکتبر",
+    "november": "نوامبر",
+    "december": "دسامبر"
+  },
+  "fastTrack": {
+    "title": "دسترسی سریع",
+    "prescription": "درخواست نسخه",
+    "referral": "درخواست ارجاع",
+    "subtitle": "بدون شرح حال کامل",
+    "errorRequired": "لطفاً تمام فیلدهای ضروری را پر کنید",
+    "successMessage": "درخواست شما با موفقیت ارسال شد",
+    "errorSubmit": "خطا در ارسال",
+    "medicationLabel": "داروی درخواستی",
+    "medicationPlaceholder": "مثال: ایبوپروفن 400مگ",
+    "referralLabel": "دلیل ارجاع",
+    "referralPlaceholder": "مثال: قلب و عروق"
+  },
+  "buttons": {
+    "submit": "ارسال"
+  },
+  "placeholders": {
+    "vorname": "مثال: علی",
+    "nachname": "مثال: رضایی"
   }
 }

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, TextInput, TextInputProps, View } from 'react-native';
+import { StyleSheet, TextInput, TextInputProps, View } from 'react-native';
 import { colors, focus, radius, spacing } from '../theme/tokens';
 
 export const getInputBorderColor = (hasError: boolean, isFocused: boolean): string => {
@@ -18,6 +18,9 @@ type Props = TextInputProps & {
   disabled?: boolean;
 };
 
+import { useTheme } from '../theme/ThemeContext';
+import { AppText } from './AppText';
+
 export const AppInput: React.FC<Props> = ({
   label,
   required,
@@ -29,16 +32,31 @@ export const AppInput: React.FC<Props> = ({
   onBlur,
   ...props
 }) => {
+  const { fontScale, isHighContrast } = useTheme();
   const [isFocused, setIsFocused] = useState(false);
   const borderColor = getInputBorderColor(Boolean(error), isFocused);
   const hasError = Boolean(error);
 
+  // High Contrast adjustments
+  let inputBackgroundColor = colors.surface;
+  let labelColor = colors.textPrimary;
+  let contrastBorderColor = borderColor;
+
+  if (isHighContrast) {
+    inputBackgroundColor = '#ffffff';
+    labelColor = '#000000';
+    contrastBorderColor = '#000000';
+  }
+
   return (
     <View style={styles.container}>
-      <Text style={styles.label} nativeID={`${label}-label`}>
+      <AppText
+        style={[styles.label, { color: labelColor }]}
+        nativeID={`${label}-label`}
+      >
         {label}
-        {required ? <Text style={styles.required}> *</Text> : null}
-      </Text>
+        {required ? <AppText style={styles.required}> *</AppText> : null}
+      </AppText>
       <TextInput
         {...props}
         editable={!disabled}
@@ -46,12 +64,16 @@ export const AppInput: React.FC<Props> = ({
         accessibilityState={{ disabled }}
         style={[
           styles.input,
-          { borderColor },
+          {
+            borderColor: contrastBorderColor,
+            backgroundColor: inputBackgroundColor,
+            fontSize: 16 * fontScale,
+          },
           isFocused && styles.focused,
           disabled && styles.disabled,
           style,
         ]}
-        placeholderTextColor={colors.textMuted}
+        placeholderTextColor={isHighContrast ? '#666666' : colors.textMuted}
         onFocus={e => {
           setIsFocused(true);
           onFocus?.(e);
@@ -61,8 +83,16 @@ export const AppInput: React.FC<Props> = ({
           onBlur?.(e);
         }}
       />
-      {hasError && <Text style={styles.errorText}>{error}</Text>}
-      {!hasError && helperText && <Text style={styles.helperText}>{helperText}</Text>}
+      {hasError && (
+        <AppText variant="small" style={styles.errorText}>
+          {error}
+        </AppText>
+      )}
+      {!hasError && helperText && (
+        <AppText variant="small" style={styles.helperText}>
+          {helperText}
+        </AppText>
+      )}
     </View>
   );
 };

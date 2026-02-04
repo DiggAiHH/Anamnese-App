@@ -3,7 +3,7 @@
  */
 
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/RootNavigator';
@@ -12,6 +12,9 @@ import { useQuestionnaireStore } from '../state/useQuestionnaireStore';
 import { colors, spacing, radius } from '../theme/tokens';
 import { AppButton } from '../components/AppButton';
 import { Container } from '../components/Container';
+import { AppText } from '../components/AppText';
+
+// FIXED: Removed duplicate __DEV__ declaration (global from webpack.config.js)
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
 
@@ -56,55 +59,55 @@ export const HomeScreen = ({ navigation }: Props): React.JSX.Element => {
   return (
     <Container scroll>
       <View style={styles.content}>
-        <Text style={styles.title}>{t('home.title')}</Text>
-        <Text style={styles.subtitle}>{t('home.subtitle')}</Text>
+        <AppText style={styles.title}>{t('home.title')}</AppText>
+        <AppText style={styles.subtitle}>{t('home.subtitle')}</AppText>
 
         {/* Mode Selection Card */}
         <View style={styles.modeCard}>
-          <Text style={styles.modeTitle}>
+          <AppText style={styles.modeTitle}>
             {t('home.modeSelection.title', { defaultValue: 'Wer nutzt die App?' })}
-          </Text>
-          <Text style={styles.modeSubtitle}>
+          </AppText>
+          <AppText style={styles.modeSubtitle}>
             {t('home.modeSelection.subtitle', { defaultValue: 'Bitte wählen Sie Ihre Rolle' })}
-          </Text>
+          </AppText>
 
           <View style={styles.modeButtons}>
             <TouchableOpacity
               style={[styles.modeButton, selectedMode === 'doctor' && styles.modeButtonSelected]}
               onPress={() => setSelectedMode('doctor')}
               testID="btn-mode-doctor">
-              <Text style={styles.modeIcon}>🩺</Text>
-              <Text
+              <AppText style={styles.modeIcon}>🩺</AppText>
+              <AppText
                 style={[
                   styles.modeButtonTitle,
                   selectedMode === 'doctor' && styles.modeButtonTitleSelected,
                 ]}>
                 {t('home.modeSelection.doctor', { defaultValue: 'Arzt/Praxis' })}
-              </Text>
-              <Text style={styles.modeButtonDescription}>
+              </AppText>
+              <AppText style={styles.modeButtonDescription}>
                 {t('home.modeSelection.doctorDescription', {
                   defaultValue: 'Tablet dem Patienten übergeben',
                 })}
-              </Text>
+              </AppText>
             </TouchableOpacity>
 
             <TouchableOpacity
               style={[styles.modeButton, selectedMode === 'patient' && styles.modeButtonSelected]}
               onPress={() => setSelectedMode('patient')}
               testID="btn-mode-patient">
-              <Text style={styles.modeIcon}>👤</Text>
-              <Text
+              <AppText style={styles.modeIcon}>👤</AppText>
+              <AppText
                 style={[
                   styles.modeButtonTitle,
                   selectedMode === 'patient' && styles.modeButtonTitleSelected,
                 ]}>
                 {t('home.modeSelection.patient', { defaultValue: 'Patient' })}
-              </Text>
-              <Text style={styles.modeButtonDescription}>
+              </AppText>
+              <AppText style={styles.modeButtonDescription}>
                 {t('home.modeSelection.patientDescription', {
                   defaultValue: 'Selbstständig ausfüllen',
                 })}
-              </Text>
+              </AppText>
             </TouchableOpacity>
           </View>
         </View>
@@ -115,7 +118,7 @@ export const HomeScreen = ({ navigation }: Props): React.JSX.Element => {
             disabled={!selectedMode}
             onPress={() => {
               useQuestionnaireStore.getState().setUserMode(selectedMode);
-              navigation.navigate('MasterPassword', { mode: 'setup' });
+              navigation.navigate('GDPRConsent');
             }}
             style={styles.primaryButton}
             accessibilityLabel={t('home.startNew')}
@@ -151,29 +154,55 @@ export const HomeScreen = ({ navigation }: Props): React.JSX.Element => {
           />
         </View>
 
+        {/* Fast Track Section */}
+        <View style={styles.fastTrackSection}>
+          <AppText style={styles.fastTrackTitle}>
+            {t('fastTrack.title', { defaultValue: 'Schnellzugang' })}
+          </AppText>
+          <AppText style={styles.fastTrackSubtitle}>
+            {t('fastTrack.subtitle', { defaultValue: 'Ohne vollständige Anamnese' })}
+          </AppText>
+          <View style={styles.fastTrackButtons}>
+            <AppButton
+              title={t('fastTrack.prescription', { defaultValue: 'Rezept bestellen' })}
+              onPress={() => navigation.navigate('FastTrack', { type: 'prescription' })}
+              variant="outline"
+              style={styles.fastTrackButton}
+              testID="btn-fast-track-prescription"
+            />
+            <AppButton
+              title={t('fastTrack.referral', { defaultValue: 'Überweisung' })}
+              onPress={() => navigation.navigate('FastTrack', { type: 'referral' })}
+              variant="outline"
+              style={styles.fastTrackButton}
+              testID="btn-fast-track-referral"
+            />
+          </View>
+        </View>
+
         <View style={styles.infoCard}>
-          <Text style={styles.infoTitle}>{t('home.privacyTitle')}</Text>
-          <Text style={styles.infoText}>
+          <AppText style={styles.infoTitle}>{t('home.privacyTitle')}</AppText>
+          <AppText style={styles.infoText}>
             • {t('home.privacyBullet1')}
             {'\n'}• {t('home.privacyBullet2')}
             {'\n'}• {t('home.privacyBullet3')}
             {'\n'}• {t('home.privacyBullet4')}
-          </Text>
+          </AppText>
         </View>
 
         <View style={styles.featuresList}>
-          <Text style={styles.featuresTitle}>{t('home.featuresTitle')}</Text>
-          <Text style={styles.featureItem}>✓ {t('home.featureLanguages')}</Text>
-          <Text style={styles.featureItem}>✓ {t('home.featureOffline')}</Text>
-          <Text style={styles.featureItem}>• {t('home.featureVoice')}</Text>
-          <Text style={styles.featureItem}>• {t('home.featureOcr')}</Text>
-          <Text style={styles.featureItem}>✓ {t('home.featureGdt')}</Text>
+          <AppText style={styles.featuresTitle}>{t('home.featuresTitle')}</AppText>
+          <AppText style={styles.featureItem}>✓ {t('home.featureLanguages')}</AppText>
+          <AppText style={styles.featureItem}>✓ {t('home.featureOffline')}</AppText>
+          <AppText style={styles.featureItem}>• {t('home.featureVoice')}</AppText>
+          <AppText style={styles.featureItem}>• {t('home.featureOcr')}</AppText>
+          <AppText style={styles.featureItem}>✓ {t('home.featureGdt')}</AppText>
         </View>
 
         <View style={styles.dangerZone}>
-          <Text style={styles.dangerTitle}>
+          <AppText style={styles.dangerTitle}>
             {t('settings.dangerZone', { defaultValue: 'Data Management' })}
-          </Text>
+          </AppText>
           <AppButton
             title={t('settings.deleteAllData', { defaultValue: 'Delete All Data (GDPR)' })}
             variant="danger"
@@ -225,6 +254,30 @@ export const HomeScreen = ({ navigation }: Props): React.JSX.Element => {
             accessibilityLabel={t('dataManagement.title', { defaultValue: 'Data Management' })}
           />
         </View>
+
+        {/* DEV ONLY: Dashboard/Admin */}
+        {__DEV__ && (
+          <View style={styles.devSection}>
+            <AppButton
+              title="[DEV] Dashboard"
+              variant="outline"
+              onPress={() => navigation.navigate('Dashboard')}
+              testID="btn-dev-dashboard"
+            />
+          </View>
+        )}
+
+        {/* DEV ONLY: Dashboard/Admin */}
+        {__DEV__ && (
+          <View style={styles.devSection}>
+            <AppButton
+              title="[DEV] Dashboard"
+              variant="outline"
+              onPress={() => navigation.navigate('Dashboard')}
+              testID="btn-dev-dashboard"
+            />
+          </View>
+        )}
       </View>
     </Container>
   );
@@ -379,4 +432,35 @@ const styles = StyleSheet.create({
   dataManagementSection: {
     marginTop: spacing.lg,
   },
+  fastTrackSection: {
+    marginTop: spacing.xxl,
+    backgroundColor: colors.surface,
+    borderRadius: radius.lg,
+    padding: spacing.lg,
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
+  fastTrackTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: colors.textPrimary,
+    marginBottom: spacing.xs,
+  },
+  fastTrackSubtitle: {
+    fontSize: 14,
+    color: colors.textSecondary,
+    marginBottom: spacing.md,
+  },
+  fastTrackButtons: {
+    flexDirection: 'row',
+    gap: spacing.sm,
+  },
+  fastTrackButton: {
+    flex: 1,
+  },
+  devSection: {
+    marginTop: spacing.xl,
+    opacity: 0.5,
+  },
 });
+

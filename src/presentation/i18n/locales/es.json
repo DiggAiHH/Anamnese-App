@@ -61,6 +61,17 @@
     "openPatient": "Abrir",
     "resumeQuestionnaire": "Reanudar",
     "selectLanguage": "Seleccionar idioma",
+    "roleSelection": {
+      "title": "¿Dónde se realiza la anamnesis?",
+      "practice": "En la consulta",
+      "private": "Privado (en casa)",
+      "admin": "Admin / Panel"
+    },
+    "accessibility": {
+      "fontScale": "Tamaño de fuente",
+      "highContrast": "Alto contraste",
+      "language": "Idioma"
+    },
     "modeSelection": {
       "title": "¿Quién usa la aplicación?",
       "subtitle": "Por favor, seleccione su rol",
@@ -725,5 +736,45 @@
       "decryptionFailed": "Decryption failed",
       "unknown": "Unknown error"
     }
+  },
+  "accessibility": {
+    "toggleZoom": "Activar/desactivar zoom",
+    "zoomHint": "Activa fuente y botones más grandes",
+    "zoomEnabled": "Zoom activado",
+    "zoomDisabled": "Zoom desactivado"
+  },
+  "months": {
+    "january": "Enero",
+    "february": "Febrero",
+    "march": "Marzo",
+    "april": "Abril",
+    "may": "Mayo",
+    "june": "Junio",
+    "july": "Julio",
+    "august": "Agosto",
+    "september": "Septiembre",
+    "october": "Octubre",
+    "november": "Noviembre",
+    "december": "Diciembre"
+  },
+  "fastTrack": {
+    "title": "Acceso rápido",
+    "prescription": "Solicitar receta",
+    "referral": "Solicitar derivación",
+    "subtitle": "Sin anamnesis completa",
+    "errorRequired": "Por favor complete todos los campos obligatorios",
+    "successMessage": "Su solicitud se envió correctamente",
+    "errorSubmit": "Error al enviar",
+    "medicationLabel": "Medicamento solicitado",
+    "medicationPlaceholder": "ej: Ibuprofeno 400mg",
+    "referralLabel": "Motivo de derivación",
+    "referralPlaceholder": "ej: Cardiología"
+  },
+  "buttons": {
+    "submit": "Enviar"
+  },
+  "placeholders": {
+    "vorname": "ej: Juan",
+    "nachname": "ej: Pérez"
   }
 }

@@ -8,10 +8,12 @@
  */
 
 import React, { useMemo, useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Switch } from 'react-native';
+import { View, StyleSheet, Alert, Switch, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
 import Clipboard from '@react-native-clipboard/clipboard';
 import { useTranslation } from 'react-i18next';
 import { PasswordGenerator } from '../../domain/services/PasswordGenerator';
+import { usePatientContext } from '../../application/PatientContext';
+import { AppText } from '../components/AppText';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/RootNavigator';
 import { useQuestionnaireStore } from '../state/useQuestionnaireStore';
@@ -24,7 +26,10 @@ import {
   isSecureKeyStorageAvailable,
   setActiveEncryptionKey,
 } from '@shared/keyManager';
+import { colors, spacing } from '../theme/tokens';
 import { AppButton } from '../components/AppButton';
+import { AppInput } from '../components/AppInput';
+import { IconButton } from '../components/IconButton';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'MasterPassword'>;
 
@@ -33,8 +38,10 @@ export const MasterPasswordScreen = ({ navigation, route }: Props): React.JSX.El
   const mode = route.params?.mode ?? 'setup';
 
   const { encryptionKey, setEncryptionKey, reset } = useQuestionnaireStore();
+  const { userRole } = usePatientContext();
 
   const [password, setPassword] = useState('');
+  const [error, setError] = useState<string | null>(null);
   const [isWorking, setIsWorking] = useState(false);
   const [rememberKey, setRememberKey] = useState(false);
   const [secureAvailable, setSecureAvailable] = useState(false);
@@ -136,7 +143,7 @@ export const MasterPasswordScreen = ({ navigation, route }: Props): React.JSX.El
 
   const handleContinue = async (): Promise<void> => {
     if (!password.trim()) {
-      Alert.alert(t('common.error'), t('masterPassword.errorEmpty'));
+      setError(t('masterPassword.errorEmpty'));
       return;
     }
 
@@ -161,7 +168,11 @@ export const MasterPasswordScreen = ({ navigation, route }: Props): React.JSX.El
       setEncryptionKey(derived.key);
       await setActiveEncryptionKey(derived.key, { persist: rememberKey });
       if (mode === 'unlock') {
-        navigation.goBack();
+        if (userRole === 'doctor') {
+          navigation.navigate('PatientStatus');
+        } else {
+          navigation.goBack();
+        }
       } else {
         navigation.replace('PatientInfo');
       }
@@ -175,169 +186,251 @@ export const MasterPasswordScreen = ({ navigation, route }: Props): React.JSX.El
     }
   };
 
-  return (
-    <View style={styles.container} testID="master-password-screen">
-      <Text style={styles.title}>{title}</Text>
-      <Text style={styles.subtitle}>{t('masterPassword.subtitle')}</Text>
+  if (Platform.OS === 'windows') {
+    return (
+      <View style={styles.container}>
+        <ScrollView
+          style={styles.container}
+          contentContainerStyle={styles.contentContainer}
+          keyboardShouldPersistTaps="handled"
+          testID="master-password-screen">
+          <AppText style={styles.title}>{title}</AppText>
+          <AppText style={styles.subtitle}>{t('masterPassword.subtitle')}</AppText>
 
-      <View style={styles.card}>
-        <Text style={styles.label}>{t('masterPassword.label')}</Text>
-        <View style={styles.passwordRow}>
-          <TextInput
+          <View style={styles.card}>
+            <AppInput
+              label={t('masterPassword.label')}
+              value={password}
+              onChangeText={(text) => {
+                setPassword(text);
+                if (error) setError(null);
+              }}
+              placeholder={t('masterPassword.placeholder')}
+              secureTextEntry
+              autoCapitalize="none"
+              autoCorrect={false}
+              error={error ?? undefined}
+              testID="input-master_password"
+              onSubmitEditing={() => {
+                void handleContinue();
+              }}
+              returnKeyType="go"
+            />
+
+            <View style={styles.actionRow}>
+              <IconButton
+                icon={<AppText style={styles.iconEmoji}>🎲</AppText>}
+                onPress={handleGenerateAndCopy}
+                testID="btn-generate-password"
+              />
+              <IconButton
+                icon={<AppText style={styles.iconEmoji}>📋</AppText>}
+                onPress={handleCopy}
+                disabled={!password}
+                testID="btn-copy-password"
+              />
+            </View>
+
+            <AppButton
+              title={t('masterPassword.unlock')}
+              onPress={() => {
+                void handleContinue();
+              }}
+              disabled={isWorking}
+              loading={isWorking}
+              testID="btn-continue"
+              style={styles.primaryButton}
+            />
+
+            {!!encryptionKey && (
+              <AppButton
+                title={t('masterPassword.resetSession')}
+                variant="secondary"
+                onPress={() => {
+                  reset();
+                  setPassword('');
+                  void clearActiveEncryptionKey({ removePersisted: true });
+                  Alert.alert(t('masterPassword.resetTitle'), t('masterPassword.resetMessage'));
+                }}
+                testID="btn-reset-session"
+              />
+            )}
+          </View>
+
+          <View style={styles.rememberRow}>
+            <View style={styles.rememberTextWrap}>
+              <AppText style={styles.rememberTitle}>{t('masterPassword.rememberKey')}</AppText>
+              <AppText style={styles.rememberHint}>
+                {secureAvailable
+                  ? t('masterPassword.rememberKeyHint')
+                  : t('masterPassword.rememberKeyUnavailable')}
+              </AppText>
+            </View>
+            <Switch
+              value={rememberKey}
+              onValueChange={next => {
+                if (!secureAvailable && next) {
+                  Alert.alert(t('common.error'), t('masterPassword.rememberKeyUnavailable'));
+                  return;
+                }
+                setRememberKey(next);
+              }}
+            />
+          </View>
+        </ScrollView>
+      </View>
+    );
+  }
+
+  return (
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={styles.keyboardAvoidingView}>
+      <ScrollView
+        style={styles.container}
+        contentContainerStyle={styles.contentContainer}
+        keyboardShouldPersistTaps="handled"
+        testID="master-password-screen">
+        <AppText style={styles.title}>{title}</AppText>
+        <AppText style={styles.subtitle}>{t('masterPassword.subtitle')}</AppText>
+
+        <View style={styles.card}>
+          <AppInput
+            label={t('masterPassword.label')}
             value={password}
-            onChangeText={setPassword}
+            onChangeText={(text) => {
+              setPassword(text);
+              if (error) setError(null);
+            }}
             placeholder={t('masterPassword.placeholder')}
             secureTextEntry
             autoCapitalize="none"
             autoCorrect={false}
-            style={[styles.input, styles.passwordInput]}
+            error={error ?? undefined}
             testID="input-master_password"
-          />
-
-          <TouchableOpacity
-            style={styles.iconButton}
-            onPress={handleGenerateAndCopy}
-            accessibilityLabel={t('masterPassword.generate')}
-            testID="btn-generate-password">
-            <Text style={styles.iconEmoji}>🎲</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[styles.iconButton, !password && styles.iconButtonDisabled]}
-            onPress={handleCopy}
-            disabled={!password}
-            accessibilityLabel={t('masterPassword.copy')}
-            testID="btn-copy-password">
-            <Text style={styles.iconEmoji}>📋</Text>
-          </TouchableOpacity>
-        </View>
-
-        <AppButton
-          title={t('masterPassword.unlock')}
-          onPress={() => {
-            handleContinue();
-          }}
-          disabled={isWorking}
-          loading={isWorking}
-          testID="btn-continue"
-          style={styles.primaryButton}
-        />
-
-        {!!encryptionKey && (
-          <AppButton
-            title={t('masterPassword.resetSession')}
-            variant="secondary"
-            onPress={() => {
-              reset();
-              setPassword('');
-              void clearActiveEncryptionKey({ removePersisted: true });
-              Alert.alert(t('masterPassword.resetTitle'), t('masterPassword.resetMessage'));
+            onSubmitEditing={() => {
+              void handleContinue();
             }}
-            testID="btn-reset-session"
+            returnKeyType="go"
           />
-        )}
-      </View>
 
-      <View style={styles.rememberRow}>
-        <View style={styles.rememberTextWrap}>
-          <Text style={styles.rememberTitle}>{t('masterPassword.rememberKey')}</Text>
-          <Text style={styles.rememberHint}>
-            {secureAvailable
-              ? t('masterPassword.rememberKeyHint')
-              : t('masterPassword.rememberKeyUnavailable')}
-          </Text>
+          <View style={styles.actionRow}>
+            <IconButton
+              icon={<AppText style={styles.iconEmoji}>🎲</AppText>}
+              onPress={handleGenerateAndCopy}
+              testID="btn-generate-password"
+            />
+            <IconButton
+              icon={<AppText style={styles.iconEmoji}>📋</AppText>}
+              onPress={handleCopy}
+              disabled={!password}
+              testID="btn-copy-password"
+            />
+          </View>
+
+          <AppButton
+            title={t('masterPassword.unlock')}
+            onPress={() => {
+              void handleContinue();
+            }}
+            disabled={isWorking}
+            loading={isWorking}
+            testID="btn-continue"
+            style={styles.primaryButton}
+          />
+
+          {!!encryptionKey && (
+            <AppButton
+              title={t('masterPassword.resetSession')}
+              variant="secondary"
+              onPress={() => {
+                reset();
+                setPassword('');
+                void clearActiveEncryptionKey({ removePersisted: true });
+                Alert.alert(t('masterPassword.resetTitle'), t('masterPassword.resetMessage'));
+              }}
+              testID="btn-reset-session"
+            />
+          )}
         </View>
-        <Switch
-          value={rememberKey}
-          onValueChange={next => {
-            if (!secureAvailable && next) {
-              Alert.alert(t('common.error'), t('masterPassword.rememberKeyUnavailable'));
-              return;
-            }
-            setRememberKey(next);
-          }}
-        />
-      </View>
-    </View>
+
+        <View style={styles.rememberRow}>
+          <View style={styles.rememberTextWrap}>
+            <AppText style={styles.rememberTitle}>{t('masterPassword.rememberKey')}</AppText>
+            <AppText style={styles.rememberHint}>
+              {secureAvailable
+                ? t('masterPassword.rememberKeyHint')
+                : t('masterPassword.rememberKeyUnavailable')}
+            </AppText>
+          </View>
+          <Switch
+            value={rememberKey}
+            onValueChange={next => {
+              if (!secureAvailable && next) {
+                Alert.alert(t('common.error'), t('masterPassword.rememberKeyUnavailable'));
+                return;
+              }
+              setRememberKey(next);
+            }}
+          />
+        </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 
 const styles = StyleSheet.create({
+  keyboardAvoidingView: {
+    flex: 1,
+  },
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
-    padding: 20,
+    backgroundColor: colors.background,
+  },
+  contentContainer: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    padding: spacing.xl,
+    // Add extra padding at bottom for keyboard safety
+    paddingBottom: spacing.xxl * 2,
   },
   title: {
     fontSize: 22,
     fontWeight: '700',
-    color: '#1f2937',
+    color: colors.text,
     marginBottom: 8,
   },
   subtitle: {
     fontSize: 14,
-    color: '#6b7280',
+    color: colors.textMuted,
     marginBottom: 16,
     lineHeight: 20,
   },
   card: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.surface,
     padding: 16,
     borderRadius: 8,
   },
-  label: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#1f2937',
-    marginBottom: 8,
-  },
-  input: {
-    backgroundColor: '#f9fafb',
-    borderWidth: 1,
-    borderColor: '#d1d5db',
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 12,
-    color: '#111827',
-    marginBottom: 12,
-  },
-  passwordRow: {
+  actionRow: {
     flexDirection: 'row',
-    gap: 8,
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  passwordInput: {
-    flex: 1,
-    marginBottom: 0,
-  },
-  iconButton: {
-    width: 44,
-    height: 44,
-    borderRadius: 8,
-    backgroundColor: '#fff',
-    borderWidth: 1,
-    borderColor: '#d1d5db',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  iconButtonDisabled: {
-    opacity: 0.6,
-  },
-  iconEmoji: {
-    fontSize: 18,
-    color: '#2563eb',
+    gap: 12,
+    marginBottom: 16,
+    justifyContent: 'flex-start',
   },
   primaryButton: {
     marginBottom: 10,
+  },
+  iconEmoji: {
+    fontSize: 18,
+    color: colors.primary,
   },
   rememberRow: {
     marginTop: 16,
     padding: 12,
     borderRadius: 8,
-    backgroundColor: '#fff',
+    backgroundColor: colors.surface,
     borderWidth: 1,
-    borderColor: '#e5e7eb',
+    borderColor: colors.border,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -349,11 +442,16 @@ const styles = StyleSheet.create({
   rememberTitle: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#111827',
+    color: colors.text,
     marginBottom: 4,
   },
   rememberHint: {
     fontSize: 12,
-    color: '#6b7280',
+    color: colors.textMuted,
   },
+  // High Contrast
+  textHighContrast: { color: '#ffffff' },
+  textHighContrastInverse: { color: '#000000' },
+  bgHighContrast: { backgroundColor: '#000000' },
+  surfaceHighContrast: { backgroundColor: '#ffffff' },
 });

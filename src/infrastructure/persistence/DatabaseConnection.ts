@@ -76,12 +76,12 @@ export class DatabaseConnection {
         transaction: (_scope: (tx: SQLiteTransaction) => void) => {
           logWarn('[Database] transaction called on Mock DB');
           return Promise.resolve({
-            executeSql: (_sql: string, _params?: unknown[]) => {},
+            executeSql: (_sql: string, _params?: unknown[]) => { },
           } as unknown as SQLiteTransaction);
         },
         readTransaction: (_scope: (tx: SQLiteTransaction) => void) =>
           Promise.resolve({
-            executeSql: (_sql: string, _params?: unknown[]) => {},
+            executeSql: (_sql: string, _params?: unknown[]) => { },
           } as unknown as SQLiteTransaction),
         executeSql: (_stat: string, _params?: unknown[]) => {
           logWarn('[Database] executeSql called on Mock DB');
@@ -245,6 +245,38 @@ export class DatabaseConnection {
     await this.db.executeSql(`
       CREATE INDEX IF NOT EXISTS idx_documents_patient_id 
       ON documents(patient_id);
+    `);
+
+    // Questions Table (QuestionUniverse)
+    await this.db.executeSql(`
+      CREATE TABLE IF NOT EXISTS questions (
+        id TEXT PRIMARY KEY,
+        template_id TEXT NOT NULL,
+        section_id TEXT,
+        type TEXT NOT NULL,
+        label_key TEXT NOT NULL,
+        placeholder_key TEXT,
+        required INTEGER NOT NULL DEFAULT 0,
+        options_json TEXT,
+        validation_json TEXT,
+        conditions_json TEXT,
+        depends_on TEXT,
+        metadata_json TEXT NOT NULL,
+        created_at INTEGER NOT NULL,
+        updated_at INTEGER NOT NULL,
+        version INTEGER NOT NULL DEFAULT 1
+      );
+    `);
+
+    // Create indices for common lookups
+    await this.db.executeSql(`
+      CREATE INDEX IF NOT EXISTS idx_questions_template_id 
+      ON questions(template_id);
+    `);
+
+    await this.db.executeSql(`
+      CREATE INDEX IF NOT EXISTS idx_questions_section_id 
+      ON questions(section_id);
     `);
 
     // GDPR Consents Table

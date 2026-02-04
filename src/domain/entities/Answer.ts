@@ -35,6 +35,7 @@ export const AnswerSchema = z.object({
     'radio',
     'select',
     'multiselect',
+    'hidden',
   ]),
   answeredAt: z.date(),
   updatedAt: z.date(),

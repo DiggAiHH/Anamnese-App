@@ -4,7 +4,7 @@
  */
 
 import React, { useMemo } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Platform } from 'react-native';
+import { View, StyleSheet, ScrollView, TouchableOpacity, Platform, Alert } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/RootNavigator';
@@ -12,6 +12,7 @@ import { useQuestionnaireStore, selectProgress } from '../state/useQuestionnaire
 import { colors, spacing, radius } from '../theme/tokens';
 import { Card } from '../components/Card';
 import { AppButton } from '../components/AppButton';
+import { AppText } from '../components/AppText';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Summary'>;
 
@@ -54,7 +55,9 @@ export const SummaryScreen = ({ navigation, route }: Props): React.JSX.Element =
           }
 
           sectionQuestions.push({
-            questionText: t(question.labelKey, { defaultValue: question.labelKey }),
+            questionText: question.labelKey
+              ? t(question.labelKey!, { defaultValue: question.text ?? question.labelKey ?? '' })
+              : (question.text ?? ''),
             answer: displayAnswer,
             questionId: question.id,
           });
@@ -63,7 +66,9 @@ export const SummaryScreen = ({ navigation, route }: Props): React.JSX.Element =
 
       if (sectionQuestions.length > 0) {
         summary.push({
-          sectionTitle: t(section.titleKey, { defaultValue: section.titleKey }),
+          sectionTitle: section.titleKey
+            ? t(section.titleKey!, { defaultValue: section.title ?? section.titleKey ?? '' })
+            : (section.title ?? ''),
           questions: sectionQuestions,
         });
       }
@@ -88,6 +93,15 @@ export const SummaryScreen = ({ navigation, route }: Props): React.JSX.Element =
       if (pd.gender) {
         text += `${t('patientInfo.gender')}: ${pd.gender}\n`;
       }
+      text += '\n---\n\n';
+
+      // Address
+      if (pd.address) {
+        text += `${pd.address.street} ${pd.address.houseNumber}\n`;
+        text += `${pd.address.zip} ${pd.address.city}, ${pd.address.country}\n`;
+      }
+      if (pd.phone) text += `Tel: ${pd.phone}\n`;
+      if (pd.email) text += `Email: ${pd.email}\n`;
       text += '\n---\n\n';
     }
 
@@ -139,12 +153,12 @@ export const SummaryScreen = ({ navigation, route }: Props): React.JSX.Element =
         testID="summary-screen"
         accessibilityRole="scrollbar"
         accessibilityLabel={t('summary.title')}>
-        <Text style={styles.title} accessibilityRole="header">
+        <AppText style={styles.title} accessibilityRole="header">
           {t('summary.title')}
-        </Text>
-        <Text style={styles.noAnswersText}>
+        </AppText>
+        <AppText style={styles.noAnswersText}>
           {t('summary.noAnswers', { defaultValue: 'Keine Antworten vorhanden' })}
-        </Text>
+        </AppText>
         <AppButton
           variant="secondary"
           title={t('common.continue', { defaultValue: 'Continue' })}
@@ -161,68 +175,91 @@ export const SummaryScreen = ({ navigation, route }: Props): React.JSX.Element =
       testID="summary-screen"
       accessibilityRole="scrollbar"
       accessibilityLabel={t('summary.title')}>
-      <Text style={styles.title} accessibilityRole="header">
+      <AppText style={styles.title} accessibilityRole="header">
         {t('summary.title')}
-      </Text>
-      <Text style={styles.subtitle}>{t('summary.subtitle', { id: questionnaireId })}</Text>
+      </AppText>
+      <AppText style={styles.subtitle}>{t('summary.subtitle', { id: questionnaireId })}</AppText>
 
       {/* Progress Card */}
       <Card style={styles.progressCard}>
-        <Text style={styles.cardTitle} accessibilityRole="header">
+        <AppText style={styles.cardTitle} accessibilityRole="header">
           {t('summary.statusTitle')}
-        </Text>
-        <Text style={styles.cardText}>
+        </AppText>
+        <AppText style={styles.cardText}>
           {t('summary.progress', { percent: Math.round(safeProgress) })}
-        </Text>
-        <Text style={styles.answeredText}>
+        </AppText>
+        <AppText style={styles.answeredText}>
           {t('summary.answeredQuestions', {
             count: safeAnsweredCount,
             defaultValue: '{{count}} Fragen beantwortet',
           })}
-        </Text>
+        </AppText>
       </Card>
 
       {/* Output Box - Answer Summary */}
       <View style={styles.outputBox}>
         <View style={styles.outputHeader}>
-          <Text style={styles.outputTitle}>
+          <AppText style={styles.outputTitle}>
             {t('summary.outputBoxTitle', { defaultValue: 'Ihre Antworten' })}
-          </Text>
+          </AppText>
           <TouchableOpacity
             style={styles.copyButton}
             onPress={handleCopyToClipboard}
             testID="btn-copy-summary"
             accessibilityRole="button">
-            <Text style={styles.copyButtonText}>
+            <AppText style={styles.copyButtonText}>
               {t('summary.copyButton', { defaultValue: '📋 Kopieren' })}
-            </Text>
+            </AppText>
           </TouchableOpacity>
         </View>
 
         {/* Patient Info Section */}
         {patient && (
           <View style={styles.patientSection}>
-            <Text style={styles.sectionTitle}>
+            <AppText style={styles.sectionTitle}>
               {t('summary.patientData', { defaultValue: 'Patientendaten' })}
-            </Text>
+            </AppText>
             <View style={styles.patientRow}>
-              <Text style={styles.patientLabel}>{t('patientInfo.firstName')}:</Text>
-              <Text style={styles.patientValue}>{patient.encryptedData.firstName}</Text>
+              <AppText style={styles.patientLabel}>{t('patientInfo.firstName')}:</AppText>
+              <AppText style={styles.patientValue}>{patient.encryptedData.firstName}</AppText>
             </View>
             <View style={styles.patientRow}>
-              <Text style={styles.patientLabel}>{t('patientInfo.lastName')}:</Text>
-              <Text style={styles.patientValue}>{patient.encryptedData.lastName}</Text>
+              <AppText style={styles.patientLabel}>{t('patientInfo.lastName')}:</AppText>
+              <AppText style={styles.patientValue}>{patient.encryptedData.lastName}</AppText>
             </View>
             {patient.encryptedData.birthDate && (
               <View style={styles.patientRow}>
-                <Text style={styles.patientLabel}>{t('patientInfo.birthDate')}:</Text>
-                <Text style={styles.patientValue}>{patient.encryptedData.birthDate}</Text>
+                <AppText style={styles.patientLabel}>{t('patientInfo.birthDate')}:</AppText>
+                <AppText style={styles.patientValue}>{patient.encryptedData.birthDate}</AppText>
               </View>
             )}
             {patient.encryptedData.gender && (
               <View style={styles.patientRow}>
-                <Text style={styles.patientLabel}>{t('patientInfo.gender')}:</Text>
-                <Text style={styles.patientValue}>{patient.encryptedData.gender}</Text>
+                <AppText style={styles.patientLabel}>{t('patientInfo.gender')}:</AppText>
+                <AppText style={styles.patientValue}>{patient.encryptedData.gender}</AppText>
+              </View>
+            )}
+            {patient.encryptedData.address && (
+              <>
+                <View style={styles.patientRow}>
+                  <AppText style={styles.patientLabel}>{t('patientInfo.address')}:</AppText>
+                  <AppText style={styles.patientValue}>
+                    {patient.encryptedData.address.street} {patient.encryptedData.address.houseNumber}{'\n'}
+                    {patient.encryptedData.address.zip} {patient.encryptedData.address.city} ({patient.encryptedData.address.country})
+                  </AppText>
+                </View>
+              </>
+            )}
+            {patient.encryptedData.phone && (
+              <View style={styles.patientRow}>
+                <AppText style={styles.patientLabel}>{t('patientInfo.phone')}:</AppText>
+                <AppText style={styles.patientValue}>{patient.encryptedData.phone}</AppText>
+              </View>
+            )}
+            {patient.encryptedData.email && (
+              <View style={styles.patientRow}>
+                <AppText style={styles.patientLabel}>{t('patientInfo.email')}:</AppText>
+                <AppText style={styles.patientValue}>{patient.encryptedData.email}</AppText>
               </View>
             )}
           </View>
@@ -231,24 +268,24 @@ export const SummaryScreen = ({ navigation, route }: Props): React.JSX.Element =
         {/* Answers by Section */}
         {answerSummary.map((section, sectionIdx) => (
           <View key={sectionIdx} style={styles.answerSection}>
-            <Text style={styles.sectionTitle}>{section.sectionTitle}</Text>
+            <AppText style={styles.sectionTitle}>{section.sectionTitle}</AppText>
             {section.questions.map((q, qIdx) => (
               <View key={qIdx} style={styles.answerItem}>
-                <Text style={styles.questionText}>{q.questionText}</Text>
-                <Text style={styles.answerText}>→ {q.answer}</Text>
+                <AppText style={styles.questionText}>{q.questionText}</AppText>
+                <AppText style={styles.answerText}>→ {q.answer}</AppText>
               </View>
             ))}
           </View>
         ))}
 
         {answerSummary.length === 0 && (
-          <Text style={styles.noAnswersText}>
+          <AppText style={styles.noAnswersText}>
             {t('summary.noAnswers', { defaultValue: 'Keine Antworten vorhanden' })}
-          </Text>
+          </AppText>
         )}
       </View>
 
-      <Text style={styles.exportHint}>{t('summary.exportHint')}</Text>
+      <AppText style={styles.exportHint}>{t('summary.exportHint')}</AppText>
 
       <AppButton
         variant="secondary"
@@ -275,6 +312,30 @@ export const SummaryScreen = ({ navigation, route }: Props): React.JSX.Element =
         }}
         testID="btn-new"
       />
+
+      {/* NUCLEAR OPTION */}
+      <TouchableOpacity
+        style={styles.nuclearButton}
+        onPress={() => {
+          Alert.alert(
+            t('common.warning', { defaultValue: 'WARNUNG' }),
+            t('summary.nuclearWarning', { defaultValue: 'Möchten Sie wirklich ALLE Daten unwiderruflich löschen? Dies kann nicht rückgängig gemacht werden.' }),
+            [
+              { text: t('common.cancel'), style: 'cancel' },
+              {
+                text: t('common.delete', { defaultValue: 'Löschen' }),
+                style: 'destructive',
+                onPress: () => {
+                  reset();
+                  navigation.popToTop(); // Or navigate to a "Goodbye" screen
+                }
+              }
+            ]
+          );
+        }}
+      >
+        <AppText style={styles.nuclearButtonText}>⚠️ {t('summary.nuclearOption', { defaultValue: 'Daten vollständig vernichten (Nuclear Option)' })}</AppText>
+      </TouchableOpacity>
     </ScrollView>
   );
 };
@@ -288,13 +349,10 @@ const styles = StyleSheet.create({
     padding: spacing.lg,
   },
   title: {
-    fontSize: 22,
-    fontWeight: '700',
     color: colors.text,
     marginBottom: spacing.sm,
   },
   subtitle: {
-    fontSize: 13,
     color: colors.textMuted,
     marginBottom: spacing.md,
   },
@@ -302,21 +360,25 @@ const styles = StyleSheet.create({
     marginBottom: spacing.lg,
   },
   cardTitle: {
-    fontSize: 16,
     fontWeight: '700',
     color: colors.text,
     marginBottom: spacing.sm,
   },
   cardText: {
-    fontSize: 14,
     color: colors.textSecondary,
     marginBottom: spacing.xs,
   },
   answeredText: {
-    fontSize: 14,
     color: colors.successText,
     fontWeight: '500',
   },
+  // High Contrast
+  textHighContrast: { color: '#ffffff' },
+  textHighContrastInverse: { color: '#000000' },
+  bgHighContrast: { backgroundColor: '#000000' },
+  surfaceHighContrast: { backgroundColor: '#ffffff' },
+  borderHighContrast: { borderColor: '#000000' },
+
   // Output Box Styles
   outputBox: {
     backgroundColor: colors.surface,
@@ -336,7 +398,6 @@ const styles = StyleSheet.create({
     borderBottomColor: colors.border,
   },
   outputTitle: {
-    fontSize: 18,
     fontWeight: '700',
     color: colors.textPrimary,
   },
@@ -347,7 +408,6 @@ const styles = StyleSheet.create({
     borderRadius: radius.sm,
   },
   copyButtonText: {
-    fontSize: 14,
     color: colors.primaryDark,
     fontWeight: '500',
   },
@@ -358,7 +418,6 @@ const styles = StyleSheet.create({
     borderBottomColor: colors.border,
   },
   sectionTitle: {
-    fontSize: 16,
     fontWeight: '600',
     color: colors.textPrimary,
     marginBottom: spacing.sm,
@@ -371,12 +430,10 @@ const styles = StyleSheet.create({
     marginBottom: spacing.xs,
   },
   patientLabel: {
-    fontSize: 14,
     color: colors.textSecondary,
     width: 120,
   },
   patientValue: {
-    fontSize: 14,
     color: colors.textPrimary,
     fontWeight: '500',
     flex: 1,
@@ -417,4 +474,18 @@ const styles = StyleSheet.create({
   primaryButtonSpacing: {
     marginBottom: spacing.sm,
   },
+  nuclearButton: {
+    marginTop: spacing.xl,
+    backgroundColor: '#fee2e2',
+    borderWidth: 2,
+    borderColor: '#ef4444',
+    padding: spacing.md,
+    borderRadius: radius.md,
+    alignItems: 'center',
+  },
+  nuclearButtonText: {
+    color: '#b91c1c',
+    fontWeight: 'bold',
+    fontSize: 14,
+  }
 });

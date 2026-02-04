@@ -61,6 +61,17 @@
     "openPatient": "Open",
     "resumeQuestionnaire": "Resume",
     "selectLanguage": "Select language",
+    "roleSelection": {
+      "title": "Where does the anamnesis take place?",
+      "practice": "In the practice",
+      "private": "Private (At home)",
+      "admin": "Admin / Dashboard"
+    },
+    "accessibility": {
+      "fontScale": "Font Size",
+      "highContrast": "High Contrast",
+      "language": "Language"
+    },
     "modeSelection": {
       "title": "Who is using the app?",
       "subtitle": "Please select your role",
@@ -725,5 +736,45 @@
       "decryptionFailed": "Decryption failed",
       "unknown": "Unknown error"
     }
+  },
+  "accessibility": {
+    "toggleZoom": "Toggle zoom",
+    "zoomHint": "Enables larger fonts and buttons",
+    "zoomEnabled": "Zoom enabled",
+    "zoomDisabled": "Zoom disabled"
+  },
+  "months": {
+    "january": "January",
+    "february": "February",
+    "march": "March",
+    "april": "April",
+    "may": "May",
+    "june": "June",
+    "july": "July",
+    "august": "August",
+    "september": "September",
+    "october": "October",
+    "november": "November",
+    "december": "December"
+  },
+  "fastTrack": {
+    "title": "Quick Access",
+    "prescription": "Order Prescription",
+    "referral": "Request Referral",
+    "subtitle": "Without full anamnesis",
+    "errorRequired": "Please fill all required fields.",
+    "successMessage": "Your request was submitted successfully.",
+    "errorSubmit": "Error sending request.",
+    "medicationLabel": "Desired Medication",
+    "medicationPlaceholder": "e.g. Ibuprofen 400mg",
+    "referralLabel": "Referral Reason",
+    "referralPlaceholder": "e.g. Cardiology"
+  },
+  "buttons": {
+    "submit": "Submit"
+  },
+  "placeholders": {
+    "vorname": "e.g. John",
+    "nachname": "e.g. Doe"
   }
 }

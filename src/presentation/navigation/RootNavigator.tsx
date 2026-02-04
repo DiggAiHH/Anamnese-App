@@ -5,22 +5,23 @@
 import React, { useRef } from 'react';
 import {
   StyleSheet,
-  Text,
   TouchableOpacity,
   Alert,
   Platform,
   InteractionManager,
   Easing,
+  View,
 } from 'react-native';
+import { AppText } from '../components/AppText';
 import {
   createStackNavigator,
   StackScreenProps,
-
   // @ts-expect-error - TransitionPresets exists but moduleResolution: node16 can't find it
   TransitionPresets,
 } from '@react-navigation/stack';
 import { useTranslation } from 'react-i18next';
 import { logError, logDebug } from '../../shared/logger';
+import { useAccessibilityZoom } from '../hooks/useAccessibilityZoom';
 
 // Screens
 import { HomeScreen } from '../screens/HomeScreen';
@@ -36,11 +37,23 @@ import { FeedbackScreen } from '../screens/FeedbackScreen';
 import { VoiceScreen } from '../screens/VoiceScreen';
 import { CalculatorScreen } from '../screens/CalculatorScreen';
 import { DataManagementScreen } from '../screens/DataManagementScreen';
+import { DashboardScreen } from '../screens/DashboardScreen';
+import { FastTrackScreen } from '../screens/FastTrackScreen';
+
+// New Flow Screens
+import { RoleSelectionScreen } from '../screens/RoleSelectionScreen';
+import { PrivacyScreen } from '../screens/PrivacyScreen';
+import { VisitReasonScreen } from '../screens/VisitReasonScreen';
+import { PatientStatusScreen } from '../screens/PatientStatusScreen';
 
 export type RootStackParamList = {
   Home: undefined;
   SelectLanguage: undefined;
   MasterPassword: { mode: 'setup' | 'unlock' };
+  RoleSelection: undefined;
+  Privacy: undefined;
+  VisitReason: undefined;
+  PatientStatus: undefined;
   PatientInfo: undefined;
   GDPRConsent: undefined;
   Questionnaire: { questionnaireId?: string } | undefined;
@@ -51,12 +64,16 @@ export type RootStackParamList = {
   Voice: undefined;
   Calculator: undefined;
   DataManagement: undefined;
+  Dashboard: undefined;
+  FastTrack: { type: 'prescription' | 'referral' };
 };
 
 const Stack = createStackNavigator<RootStackParamList>();
 
+export type RootNavigationProp = StackScreenProps<RootStackParamList>['navigation'];
+
 export const RootNavigator = (): React.JSX.Element => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const isNavigatingRef = useRef(false);
   const isWindows = Platform.OS === 'windows';
 
@@ -77,13 +94,6 @@ export const RootNavigator = (): React.JSX.Element => {
     },
   };
 
-  type RootNavigationProp = StackScreenProps<RootStackParamList>['navigation'];
-
-  /**
-   * Renders the language button for the header.
-   * Includes defensive guards against null navigation and t() function.
-   * @security Handles platform-specific navigation issues gracefully
-   */
   const renderLanguageButton = (navigation: RootNavigationProp | null | undefined) => {
     // DEV: Log navigation state for debugging (Windows-specific)
     logDebug(
@@ -161,8 +171,7 @@ export const RootNavigator = (): React.JSX.Element => {
       }
     };
 
-    // Safely get label with fallback
-    const label = typeof t === 'function' ? t('nav.selectLanguage', 'Language') : 'Language';
+    const label = 'DIAGNOSTIC LANG';
 
     return (
       <TouchableOpacity
@@ -171,36 +180,91 @@ export const RootNavigator = (): React.JSX.Element => {
         testID="btn-header-language"
         accessibilityRole="button"
         accessibilityLabel={label}>
-        <Text style={styles.headerRightText}>{label}</Text>
+        <AppText style={styles.headerRightText}>{(i18n.language || 'de').toUpperCase()}</AppText>
       </TouchableOpacity>
     );
   };
 
+  /**
+   * Global Accessibility Zoom Button
+   * Renders in header on all screens
+   */
+  const AccessibilityZoomButton: React.FC = () => {
+    const { isZoomed, toggleZoom } = useAccessibilityZoom();
+    const { t } = useTranslation();
+
+    return (
+      <TouchableOpacity
+        onPress={toggleZoom}
+        style={styles.zoomButton}
+        accessibilityRole="button"
+        accessibilityLabel={t('accessibility.toggleZoom', 'Zoom umschalten')}
+        accessibilityState={{ checked: isZoomed }}
+        accessibilityHint={t('accessibility.zoomHint', 'Aktiviert größere Schrift und Buttons')}>
+        <AppText style={styles.zoomIcon}>{isZoomed ? '🔍' : '🔎'}</AppText>
+      </TouchableOpacity>
+    );
+  };
+
+  const renderHeaderRight = (navigation: RootNavigationProp | null | undefined) => (
+    <View style={styles.headerRight}>
+      <AccessibilityZoomButton />
+      {renderLanguageButton(navigation)}
+    </View>
+  );
+
   return (
     <Stack.Navigator
-      initialRouteName="Home"
+      initialRouteName="RoleSelection" // Start with Role selection per user prompt
       screenOptions={{
         animationEnabled: true,
         animationTypeForReplace: 'push',
         gestureEnabled: true,
         transitionSpec: fastTransitionSpec,
         ...(isWindows
-          ? TransitionPresets.FadeFromBottomAndroid
-          : TransitionPresets.SlideFromRightIOS),
+          ? (TransitionPresets?.FadeFromBottomAndroid || {})
+          : (TransitionPresets?.SlideFromRightIOS || {})),
         headerStyle: {
           backgroundColor: '#2563eb',
         },
-        headerTintColor: '#fff',
+        headerTintColor: '#ffffff',
         headerTitleStyle: {
           fontWeight: 'bold',
         },
       }}>
+
+      {/* --- NEW FLOW START --- */}
+      <Stack.Screen
+        name="RoleSelection"
+        component={RoleSelectionScreen}
+        options={{ title: 'Willkommen', headerLeft: () => null }}
+      />
+      <Stack.Screen
+        name="Privacy"
+        component={PrivacyScreen}
+        options={({ navigation }: { navigation: RootNavigationProp }) => ({
+          title: t('nav.consents'),
+          headerRight: () => renderLanguageButton(navigation),
+        })}
+      />
+      <Stack.Screen
+        name="VisitReason"
+        component={VisitReasonScreen}
+        options={{ title: 'Besuchsgrund' }}
+      />
+      <Stack.Screen
+        name="PatientStatus"
+        component={PatientStatusScreen}
+        options={{ title: 'Patientenstatus' }}
+      />
+      {/* ---------------------- */}
+
       <Stack.Screen
         name="Home"
         component={HomeScreen}
-        options={({ navigation }: { navigation: RootNavigationProp }) => ({
+        options={() => ({
           title: t('nav.home'),
-          headerRight: () => renderLanguageButton(navigation),
+          headerRight: () => null,
         })}
       />
       <Stack.Screen
@@ -209,11 +273,34 @@ export const RootNavigator = (): React.JSX.Element => {
         options={{ title: t('nav.selectLanguage') }}
       />
       <Stack.Screen
+        name="GDPRConsent"
+        component={GDPRConsentScreen}
+        options={({ navigation }: { navigation: RootNavigationProp }) => ({
+          title: t('nav.consents'),
+          headerRight: () => renderHeaderRight(navigation),
+        })}
+      />
+      <Stack.Screen
         name="MasterPassword"
         component={MasterPasswordScreen}
+        options={({ route }: { route: any }) => ({
+          title:
+            route.params?.mode === 'setup'
+              ? t('masterPassword.setupTitle', { defaultValue: 'Set Master Password' })
+              : t('masterPassword.unlockTitle', { defaultValue: 'Unlock' }),
+        })}
+      />
+      <Stack.Screen
+        name="FastTrack"
+        component={FastTrackScreen}
         options={({ navigation }: { navigation: RootNavigationProp }) => ({
+          title: t('fastTrack.title', { defaultValue: 'Schnellzugang' }),
+          headerRight: () => renderHeaderRight(navigation),
+        })}
+      />
           title: t('nav.masterPassword'),
-          headerRight: () => renderLanguageButton(navigation),
+          headerLeft: route.params?.mode === 'unlock' ? () => null : undefined,
+          gestureEnabled: route.params?.mode !== 'unlock',
         })}
       />
       <Stack.Screen
@@ -221,7 +308,7 @@ export const RootNavigator = (): React.JSX.Element => {
         component={PatientInfoScreen}
         options={({ navigation }: { navigation: RootNavigationProp }) => ({
           title: t('nav.patient'),
-          headerRight: () => renderLanguageButton(navigation),
+          headerRight: () => renderHeaderRight(navigation),
         })}
       />
       <Stack.Screen
@@ -229,15 +316,16 @@ export const RootNavigator = (): React.JSX.Element => {
         component={GDPRConsentScreen}
         options={({ navigation }: { navigation: RootNavigationProp }) => ({
           title: t('nav.consents'),
-          headerRight: () => renderLanguageButton(navigation),
+          headerRight: () => renderHeaderRight(navigation),
         })}
       />
       <Stack.Screen
         name="Questionnaire"
         component={QuestionnaireScreen}
-        options={({ navigation }: { navigation: RootNavigationProp }) => ({
+        options={() => ({
           title: t('nav.questionnaire'),
-          headerRight: () => renderLanguageButton(navigation),
+          headerRight: () => null,
+          gestureEnabled: false,
         })}
       />
       <Stack.Screen
@@ -296,6 +384,14 @@ export const RootNavigator = (): React.JSX.Element => {
           headerRight: () => renderLanguageButton(navigation),
         })}
       />
+      <Stack.Screen
+        name="Dashboard"
+        component={DashboardScreen}
+        options={({ navigation }: { navigation: RootNavigationProp }) => ({
+          title: t('dashboard.title', { defaultValue: 'Analysis' }),
+          headerRight: () => renderLanguageButton(navigation),
+        })}
+      />
     </Stack.Navigator>
   );
 };
@@ -309,5 +405,18 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 14,
     fontWeight: '600',
+  },
+  zoomButton: {
+    paddingHorizontal: 8,
+    paddingVertical: 6,
+    marginRight: 8,
+  },
+  zoomIcon: {
+    fontSize: 20,
+  },
+  headerRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginRight: 8,
   },
 });

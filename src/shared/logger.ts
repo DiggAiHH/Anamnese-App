@@ -49,6 +49,15 @@ export const logWarn: LogFn = message => {
 };
 
 /**
+ * Info logging (dev only)
+ */
+export const logInfo: LogFn = message => {
+  if (isDev) {
+    console.info(message);
+  }
+};
+
+/**
  * Error logging with PII sanitization (GDPR Art. 9 compliant)
  * In production: logs only sanitized error type
  * In dev: logs full sanitized error details

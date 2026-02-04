@@ -8,6 +8,7 @@
  * @privacy GDPR Art. 25 compliant - no PII transmitted.
  */
 
+import { logWarn } from '../../shared/logger';
 import * as platformCapabilities from '@shared/platformCapabilities';
 
 type TtsApi = {
@@ -132,7 +133,7 @@ export class TTSService implements ITTSService {
   private logDebug(message: string): void {
     if (typeof __DEV__ !== 'undefined' && __DEV__) {
       // eslint-disable-next-line no-console
-      console.log(`[TTS] ${message}`);
+      logWarn(`[TTS] ${message}`);
     }
   }
 

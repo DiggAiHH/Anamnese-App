@@ -61,6 +61,17 @@
     "openPatient": "開く",
     "resumeQuestionnaire": "再開",
     "selectLanguage": "言語を選択",
+    "roleSelection": {
+      "title": "問診はどこで行いますか？",
+      "practice": "クリニックで",
+      "private": "自宅（プライベート）",
+      "admin": "管理者 / ダッシュボード"
+    },
+    "accessibility": {
+      "fontScale": "文字サイズ",
+      "highContrast": "高コントラスト",
+      "language": "言語"
+    },
     "modeSelection": {
       "title": "アプリを使用するのは誰ですか？",
       "subtitle": "役割を選択してください",
@@ -725,5 +736,45 @@
       "decryptionFailed": "Decryption failed",
       "unknown": "Unknown error"
     }
+  },
+  "accessibility": {
+    "toggleZoom": "ズームの切り替え",
+    "zoomHint": "大きなフォントとボタンを有効にします",
+    "zoomEnabled": "ズーム有効",
+    "zoomDisabled": "ズーム無効"
+  },
+  "months": {
+    "january": "1月",
+    "february": "2月",
+    "march": "3月",
+    "april": "4月",
+    "may": "5月",
+    "june": "6月",
+    "july": "7月",
+    "august": "8月",
+    "september": "9月",
+    "october": "10月",
+    "november": "11月",
+    "december": "12月"
+  },
+  "fastTrack": {
+    "title": "クイックアクセス",
+    "prescription": "処方箋を注文",
+    "referral": "紹介状を要求",
+    "subtitle": "完全な問診なし",
+    "errorRequired": "必須項目をすべて入力してください",
+    "successMessage": "リクエストが正常に送信されました",
+    "errorSubmit": "送信エラー",
+    "medicationLabel": "希望する薬",
+    "medicationPlaceholder": "例：イブプロフェン400mg",
+    "referralLabel": "紹介の理由",
+    "referralPlaceholder": "例：循環器科"
+  },
+  "buttons": {
+    "submit": "送信"
+  },
+  "placeholders": {
+    "vorname": "例：太郎",
+    "nachname": "例：山田"
   }
 }

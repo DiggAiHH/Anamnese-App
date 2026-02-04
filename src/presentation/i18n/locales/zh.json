@@ -61,6 +61,17 @@
     "openPatient": "打开",
     "resumeQuestionnaire": "继续",
     "selectLanguage": "选择语言",
+    "roleSelection": {
+      "title": "问诊在哪里进行？",
+      "practice": "在诊所",
+      "private": "私人（在家）",
+      "admin": "管理员 / 控制台"
+    },
+    "accessibility": {
+      "fontScale": "字体大小",
+      "highContrast": "高对比度",
+      "language": "语言"
+    },
     "modeSelection": {
       "title": "谁在使用此应用？",
       "subtitle": "请选择您的角色",
@@ -725,5 +736,45 @@
       "decryptionFailed": "Decryption failed",
       "unknown": "Unknown error"
     }
+  },
+  "accessibility": {
+    "toggleZoom": "切换缩放",
+    "zoomHint": "启用更大的字体和按钮",
+    "zoomEnabled": "缩放已启用",
+    "zoomDisabled": "缩放已禁用"
+  },
+  "months": {
+    "january": "一月",
+    "february": "二月",
+    "march": "三月",
+    "april": "四月",
+    "may": "五月",
+    "june": "六月",
+    "july": "七月",
+    "august": "八月",
+    "september": "九月",
+    "october": "十月",
+    "november": "十一月",
+    "december": "十二月"
+  },
+  "fastTrack": {
+    "title": "快速访问",
+    "prescription": "请求处方",
+    "referral": "请求转诊",
+    "subtitle": "无需完整病史",
+    "errorRequired": "请填写所有必填字段",
+    "successMessage": "您的请求已成功发送",
+    "errorSubmit": "发送错误",
+    "medicationLabel": "所需药物",
+    "medicationPlaceholder": "例：布洛芬400mg",
+    "referralLabel": "转诊原因",
+    "referralPlaceholder": "例：心脏科"
+  },
+  "buttons": {
+    "submit": "提交"
+  },
+  "placeholders": {
+    "vorname": "例：张",
+    "nachname": "例：三"
   }
 }

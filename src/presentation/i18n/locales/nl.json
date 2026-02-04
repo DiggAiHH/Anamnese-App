@@ -61,6 +61,17 @@
     "openPatient": "Openen",
     "resumeQuestionnaire": "Hervatten",
     "selectLanguage": "Taal kiezen",
+    "roleSelection": {
+      "title": "Waar vindt de anamnese plaats?",
+      "practice": "In de praktijk",
+      "private": "Privé (thuis)",
+      "admin": "Admin / Dashboard"
+    },
+    "accessibility": {
+      "fontScale": "Tekstgrootte",
+      "highContrast": "Hoog contrast",
+      "language": "Taal"
+    },
     "modeSelection": {
       "title": "Wie gebruikt de app?",
       "subtitle": "Selecteer uw rol",
@@ -725,5 +736,45 @@
       "decryptionFailed": "Decryption failed",
       "unknown": "Unknown error"
     }
+  },
+  "accessibility": {
+    "toggleZoom": "Zoom in-/uitschakelen",
+    "zoomHint": "Activeert grotere lettertypen en knoppen",
+    "zoomEnabled": "Zoom ingeschakeld",
+    "zoomDisabled": "Zoom uitgeschakeld"
+  },
+  "months": {
+    "january": "Januari",
+    "february": "Februari",
+    "march": "Maart",
+    "april": "April",
+    "may": "Mei",
+    "june": "Juni",
+    "july": "Juli",
+    "august": "Augustus",
+    "september": "September",
+    "october": "Oktober",
+    "november": "November",
+    "december": "December"
+  },
+  "fastTrack": {
+    "title": "Snelle toegang",
+    "prescription": "Recept aanvragen",
+    "referral": "Verwijzing aanvragen",
+    "subtitle": "Zonder volledige anamnese",
+    "errorRequired": "Vul alle verplichte velden in",
+    "successMessage": "Uw verzoek is succesvol verzonden",
+    "errorSubmit": "Fout bij verzenden",
+    "medicationLabel": "Gewenst medicijn",
+    "medicationPlaceholder": "bijv: Ibuprofen 400mg",
+    "referralLabel": "Reden verwijzing",
+    "referralPlaceholder": "bijv: Cardiologie"
+  },
+  "buttons": {
+    "submit": "Verzenden"
+  },
+  "placeholders": {
+    "vorname": "bijv: Jan",
+    "nachname": "bijv: de Vries"
   }
 }

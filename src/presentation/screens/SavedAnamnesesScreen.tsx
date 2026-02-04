@@ -13,7 +13,6 @@
 import React, { useCallback, useEffect, useMemo, useState, memo } from 'react';
 import {
   View,
-  Text,
   StyleSheet,
   TouchableOpacity,
   FlatList,
@@ -27,6 +26,7 @@ import type { StackScreenProps } from '@react-navigation/stack';
 import type { RootStackParamList } from '../navigation/RootNavigator';
 import { colors, spacing, radius } from '../theme/tokens';
 import { Card } from '../components/Card';
+import { AppText } from '../components/AppText';
 
 import { SQLitePatientRepository } from '@infrastructure/persistence/SQLitePatientRepository';
 import { SQLiteQuestionnaireRepository } from '@infrastructure/persistence/SQLiteQuestionnaireRepository';
@@ -88,10 +88,10 @@ const PatientRow = memo(
         accessibilityRole="button"
         accessibilityLabel={name}>
         <View style={styles.rowText}>
-          <Text style={styles.rowTitle}>{name}</Text>
-          <Text style={styles.rowSubtitle}>{metaText}</Text>
+          <AppText style={styles.rowTitle}>{name}</AppText>
+          <AppText style={styles.rowSubtitle}>{metaText}</AppText>
         </View>
-        <Text style={styles.rowAction}>{nextLabel}</Text>
+        <AppText style={styles.rowAction}>{nextLabel}</AppText>
       </TouchableOpacity>
     );
   },
@@ -256,12 +256,11 @@ export const SavedAnamnesesScreen = ({ navigation }: Props): React.JSX.Element =
   const ListHeader = useMemo(
     () => (
       <View style={styles.listHeader}>
-        <Text style={styles.title} accessibilityRole="header">
+        <AppText style={styles.title} accessibilityRole="header">
           {t('home.saved')}
-        </Text>
-        <Text style={styles.subtitle}>{subtitle}</Text>
+        </AppText>
+        <AppText style={styles.subtitle}>{subtitle}</AppText>
 
-        {/* Search Input */}
         <View style={styles.searchContainer}>
           <TextInput
             style={styles.searchInput}
@@ -278,7 +277,7 @@ export const SavedAnamnesesScreen = ({ navigation }: Props): React.JSX.Element =
               onPress={() => setSearchQuery('')}
               testID="clear-search"
               accessibilityLabel={t('common.clear')}>
-              <Text style={styles.clearButtonText}>✕</Text>
+              <AppText style={styles.clearButtonText}>✕</AppText>
             </TouchableOpacity>
           )}
         </View>
@@ -305,45 +304,45 @@ export const SavedAnamnesesScreen = ({ navigation }: Props): React.JSX.Element =
               testID={`filter-${item.key}`}
               accessibilityRole="radio"
               accessibilityState={{ selected: activeFilter === item.key }}>
-              <Text
+              <AppText
                 style={[
                   styles.filterChipText,
                   activeFilter === item.key && styles.filterChipTextActive,
                 ]}>
                 {item.label}
-              </Text>
+              </AppText>
             </TouchableOpacity>
           )}
         />
 
         {/* Sort Toggle */}
         <View style={styles.sortContainer}>
-          <Text style={styles.sortLabel}>{t('search.sortBy')}:</Text>
+          <AppText style={styles.sortLabel}>{t('search.sortBy')}:</AppText>
           <TouchableOpacity
             style={[styles.sortButton, sortBy === 'date' && styles.sortButtonActive]}
             onPress={() => setSortBy('date')}
             accessibilityRole="radio"
             accessibilityState={{ selected: sortBy === 'date' }}>
-            <Text style={[styles.sortButtonText, sortBy === 'date' && styles.sortButtonTextActive]}>
+            <AppText style={[styles.sortButtonText, sortBy === 'date' && styles.sortButtonTextActive]}>
               {t('search.sortDate')}
-            </Text>
+            </AppText>
           </TouchableOpacity>
           <TouchableOpacity
             style={[styles.sortButton, sortBy === 'name' && styles.sortButtonActive]}
             onPress={() => setSortBy('name')}
             accessibilityRole="radio"
             accessibilityState={{ selected: sortBy === 'name' }}>
-            <Text style={[styles.sortButtonText, sortBy === 'name' && styles.sortButtonTextActive]}>
+            <AppText style={[styles.sortButtonText, sortBy === 'name' && styles.sortButtonTextActive]}>
               {t('search.sortName')}
-            </Text>
+            </AppText>
           </TouchableOpacity>
         </View>
 
         {/* Results Count */}
         {searchQuery.length > 0 && (
-          <Text style={styles.resultsCount}>
+          <AppText style={styles.resultsCount}>
             {t('search.results', { count: filteredRows.length })}
-          </Text>
+          </AppText>
         )}
       </View>
     ),
@@ -354,12 +353,12 @@ export const SavedAnamnesesScreen = ({ navigation }: Props): React.JSX.Element =
   const ListEmpty = useMemo(
     () => (
       <Card>
-        <Text style={styles.cardText}>
+        <AppText style={styles.cardText}>
           {searchQuery.length > 0 ? t('search.noResults') : t('questionnaire.noneLoaded')}
-        </Text>
-        <Text style={styles.cardSubtext}>
+        </AppText>
+        <AppText style={styles.cardSubtext}>
           {searchQuery.length > 0 ? t('search.tryDifferent') : t('home.startNew')}
-        </Text>
+        </AppText>
       </Card>
     ),
     [searchQuery, t],

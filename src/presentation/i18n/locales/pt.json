@@ -61,6 +61,17 @@
     "openPatient": "Abrir",
     "resumeQuestionnaire": "Retomar",
     "selectLanguage": "Selecionar idioma",
+    "roleSelection": {
+      "title": "Onde acontece a anamnese?",
+      "practice": "Na clínica",
+      "private": "Privado (em casa)",
+      "admin": "Admin / Painel"
+    },
+    "accessibility": {
+      "fontScale": "Tamanho da fonte",
+      "highContrast": "Alto contraste",
+      "language": "Idioma"
+    },
     "modeSelection": {
       "title": "Quem está usando o app?",
       "subtitle": "Por favor, selecione o seu papel",
@@ -725,5 +736,45 @@
       "decryptionFailed": "Decryption failed",
       "unknown": "Unknown error"
     }
+  },
+  "accessibility": {
+    "toggleZoom": "Ativar/desativar zoom",
+    "zoomHint": "Ativa fonte e botões maiores",
+    "zoomEnabled": "Zoom ativado",
+    "zoomDisabled": "Zoom desativado"
+  },
+  "months": {
+    "january": "Janeiro",
+    "february": "Fevereiro",
+    "march": "Março",
+    "april": "Abril",
+    "may": "Maio",
+    "june": "Junho",
+    "july": "Julho",
+    "august": "Agosto",
+    "september": "Setembro",
+    "october": "Outubro",
+    "november": "Novembro",
+    "december": "Dezembro"
+  },
+  "fastTrack": {
+    "title": "Acesso rápido",
+    "prescription": "Solicitar receita",
+    "referral": "Solicitar encaminhamento",
+    "subtitle": "Sem anamnese completa",
+    "errorRequired": "Por favor, preencha todos os campos obrigatórios",
+    "successMessage": "Sua solicitação foi enviada com sucesso",
+    "errorSubmit": "Erro ao enviar",
+    "medicationLabel": "Medicamento solicitado",
+    "medicationPlaceholder": "ex: Ibuprofeno 400mg",
+    "referralLabel": "Motivo do encaminhamento",
+    "referralPlaceholder": "ex: Cardiologia"
+  },
+  "buttons": {
+    "submit": "Enviar"
+  },
+  "placeholders": {
+    "vorname": "ex: João",
+    "nachname": "ex: Silva"
   }
 }

@@ -61,6 +61,17 @@
     "openPatient": "Aç",
     "resumeQuestionnaire": "Devam Et",
     "selectLanguage": "Dil seç",
+    "roleSelection": {
+      "title": "Anamnez nerede yapılacak?",
+      "practice": "Klinikte",
+      "private": "Özel (evde)",
+      "admin": "Yönetici / Panel"
+    },
+    "accessibility": {
+      "fontScale": "Yazı boyutu",
+      "highContrast": "Yüksek kontrast",
+      "language": "Dil"
+    },
     "modeSelection": {
       "title": "Uygulamayı kim kullanıyor?",
       "subtitle": "Lütfen rolünüzü seçin",
@@ -725,5 +736,45 @@
       "decryptionFailed": "Decryption failed",
       "unknown": "Unknown error"
     }
+  },
+  "accessibility": {
+    "toggleZoom": "Yakınlaştırmayı aç/kapa",
+    "zoomHint": "Daha büyük yazı tipi ve düğmeleri etkinleştirir",
+    "zoomEnabled": "Yakınlaştırma etkin",
+    "zoomDisabled": "Yakınlaştırma devre dışı"
+  },
+  "months": {
+    "january": "Ocak",
+    "february": "Şubat",
+    "march": "Mart",
+    "april": "Nisan",
+    "may": "Mayıs",
+    "june": "Haziran",
+    "july": "Temmuz",
+    "august": "Ağustos",
+    "september": "Eylül",
+    "october": "Ekim",
+    "november": "Kasım",
+    "december": "Aralık"
+  },
+  "fastTrack": {
+    "title": "Hızlı Erişim",
+    "prescription": "Reçete Sipariş Et",
+    "referral": "Sevk Talep Et",
+    "subtitle": "Tam anamnez olmadan",
+    "errorRequired": "Lütfen tüm zorunlu alanları doldurun",
+    "successMessage": "Talebiniz başarıyla gönderildi",
+    "errorSubmit": "Gönderilirken hata oluştu",
+    "medicationLabel": "İstenen İlaç",
+    "medicationPlaceholder": "ör. Ibuprofen 400mg",
+    "referralLabel": "Sevk Nedeni",
+    "referralPlaceholder": "ör. Kardiyoloji"
+  },
+  "buttons": {
+    "submit": "Gönder"
+  },
+  "placeholders": {
+    "vorname": "ör. Ahmet",
+    "nachname": "ör. Yılmaz"
   }
 }

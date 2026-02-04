@@ -61,6 +61,17 @@
     "openPatient": "열기",
     "resumeQuestionnaire": "재개",
     "selectLanguage": "언어 선택",
+    "roleSelection": {
+      "title": "문진은 어디에서 진행되나요?",
+      "practice": "병원에서",
+      "private": "개인(집에서)",
+      "admin": "관리자 / 대시보드"
+    },
+    "accessibility": {
+      "fontScale": "글자 크기",
+      "highContrast": "고대비",
+      "language": "언어"
+    },
     "modeSelection": {
       "title": "앱을 사용하는 사람은 누구인가요?",
       "subtitle": "역할을 선택해 주세요",
@@ -725,5 +736,45 @@
       "decryptionFailed": "Decryption failed",
       "unknown": "Unknown error"
     }
+  },
+  "accessibility": {
+    "toggleZoom": "확대/축소 전환",
+    "zoomHint": "더 큰 글꼴과 버튼을 활성화합니다",
+    "zoomEnabled": "확대 활성화",
+    "zoomDisabled": "확대 비활성화"
+  },
+  "months": {
+    "january": "1월",
+    "february": "2월",
+    "march": "3월",
+    "april": "4월",
+    "may": "5월",
+    "june": "6월",
+    "july": "7월",
+    "august": "8월",
+    "september": "9월",
+    "october": "10월",
+    "november": "11월",
+    "december": "12월"
+  },
+  "fastTrack": {
+    "title": "빠른 액세스",
+    "prescription": "처방전 요청",
+    "referral": "의뢰 요청",
+    "subtitle": "전체 기록 없이",
+    "errorRequired": "모든 필수 필드를 입력하세요",
+    "successMessage": "요청이 성공적으로 전송되었습니다",
+    "errorSubmit": "전송 오류",
+    "medicationLabel": "요청 약물",
+    "medicationPlaceholder": "예: 이부프로펜 400mg",
+    "referralLabel": "의뢰 이유",
+    "referralPlaceholder": "예: 심장학"
+  },
+  "buttons": {
+    "submit": "제출"
+  },
+  "placeholders": {
+    "vorname": "예: 민수",
+    "nachname": "예: 김"
   }
 }

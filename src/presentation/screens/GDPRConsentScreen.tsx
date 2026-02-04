@@ -5,7 +5,6 @@
 import React, { useMemo, useState } from 'react';
 import {
   View,
-  Text,
   StyleSheet,
   TouchableOpacity,
   Alert,
@@ -72,6 +71,9 @@ type ConsentState = {
   ocrProcessing: boolean;
   voiceRecognition: boolean;
 };
+
+import { AppText } from '../components/AppText';
+import { useTheme } from '../theme/ThemeContext';
 
 export const GDPRConsentScreen = ({ navigation }: Props): React.JSX.Element => {
   const { t } = useTranslation();
@@ -207,8 +209,8 @@ export const GDPRConsentScreen = ({ navigation }: Props): React.JSX.Element => {
       style={styles.container}
       contentContainerStyle={styles.content}
       testID="gdpr-consent-screen">
-      <Text style={styles.title}>{t('gdpr.title')}</Text>
-      <Text style={styles.subtitle}>{t('gdpr.subtitle')}</Text>
+      <AppText variant="h1" style={styles.title}>{t('gdpr.title')}</AppText>
+      <AppText style={styles.subtitle}>{t('gdpr.subtitle')}</AppText>
 
       {/* Privacy Policy Link - with error handling for Windows */}
       <TouchableOpacity
@@ -224,9 +226,9 @@ export const GDPRConsentScreen = ({ navigation }: Props): React.JSX.Element => {
         }}
         testID="btn-privacy-policy"
         accessibilityRole="button">
-        <Text style={styles.privacyLinkText}>
+        <AppText style={styles.privacyLinkText}>
           {t('gdpr.privacyPolicyLink', { defaultValue: 'Datenschutzerklärung lesen' })}
-        </Text>
+        </AppText>
       </TouchableOpacity>
 
       <Card style={styles.card}>
@@ -234,27 +236,27 @@ export const GDPRConsentScreen = ({ navigation }: Props): React.JSX.Element => {
         <View style={styles.legend}>
           <View style={styles.legendItem}>
             <View style={[styles.badge, styles.badgeRequired]}>
-              <Text style={styles.badgeText}>
+              <AppText style={styles.badgeText}>
                 {t('gdpr.requiredLabel', { defaultValue: 'Pflicht' })}
-              </Text>
+              </AppText>
             </View>
-            <Text style={styles.legendText}>
+            <AppText style={styles.legendText}>
               {t('gdpr.requiredExplanation', {
                 defaultValue: 'Diese Einwilligungen sind für die App-Nutzung erforderlich',
               })}
-            </Text>
+            </AppText>
           </View>
           <View style={styles.legendItem}>
             <View style={[styles.badge, styles.badgeOptional]}>
-              <Text style={styles.badgeTextOptional}>
+              <AppText style={styles.badgeTextOptional}>
                 {t('gdpr.optionalLabel', { defaultValue: 'Optional' })}
-              </Text>
+              </AppText>
             </View>
-            <Text style={styles.legendText}>
+            <AppText style={styles.legendText}>
               {t('gdpr.optionalExplanation', {
                 defaultValue: 'Diese Funktionen können bei Bedarf aktiviert werden',
               })}
-            </Text>
+            </AppText>
           </View>
         </View>
 
@@ -317,12 +319,12 @@ export const GDPRConsentScreen = ({ navigation }: Props): React.JSX.Element => {
           <View style={styles.modalOverlay}>
             <View style={styles.modalContent}>
               <ScrollView style={styles.modalScroll}>
-                <Text style={styles.modalTitle}>
+                <AppText style={styles.modalTitle}>
                   {t('gdpr.privacyPolicyTitle', { defaultValue: 'Datenschutzerklärung' })}
-                </Text>
-                <Text style={styles.modalText}>
+                </AppText>
+                <AppText style={styles.modalText}>
                   {t('gdpr.privacyPolicyFullText', { defaultValue: PRIVACY_POLICY_TEXT })}
-                </Text>
+                </AppText>
               </ScrollView>
               <AppButton
                 label={t('common.ok', { defaultValue: 'OK' })}
@@ -349,12 +351,12 @@ export const GDPRConsentScreen = ({ navigation }: Props): React.JSX.Element => {
           <View style={styles.modalOverlay}>
             <View style={styles.modalContent}>
               <ScrollView style={styles.modalScroll}>
-                <Text style={styles.modalTitle}>
+                <AppText style={styles.modalTitle}>
                   {t('gdpr.privacyPolicyTitle', { defaultValue: 'Datenschutzerklärung' })}
-                </Text>
-                <Text style={styles.modalText}>
+                </AppText>
+                <AppText style={styles.modalText}>
                   {t('gdpr.privacyPolicyFullText', { defaultValue: PRIVACY_POLICY_TEXT })}
-                </Text>
+                </AppText>
               </ScrollView>
               <AppButton
                 label={t('common.ok', { defaultValue: 'OK' })}
@@ -377,25 +379,38 @@ const ConsentRow = (props: {
   onToggle: () => void;
   required: boolean;
 }): React.JSX.Element => {
+  const { isHighContrast } = useTheme();
+  const textColor = isHighContrast ? '#000000' : colors.textPrimary;
+  const descColor = isHighContrast ? '#333333' : colors.textSecondary;
+  const checkboxColor = isHighContrast ? '#000000' : colors.primary;
+
   return (
     <TouchableOpacity
-      style={[styles.consentRow, props.required && !props.value && styles.consentRowMissing]}
+      style={[
+        styles.consentRow,
+        props.required && !props.value && styles.consentRowMissing,
+        isHighContrast && styles.consentRowHighContrast
+      ]}
       onPress={props.onToggle}
       testID={`consent-${props.title}`}
       accessibilityRole="button">
-      <View style={[styles.checkbox, props.required && styles.checkboxRequired]}>
-        {props.value ? <View style={styles.checkboxSelected} /> : null}
+      <View style={[
+        styles.checkbox,
+        { borderColor: props.required ? colors.danger : checkboxColor },
+        isHighContrast && { backgroundColor: '#ffffff' }
+      ]}>
+        {props.value ? <View style={[styles.checkboxSelected, { backgroundColor: checkboxColor }]} /> : null}
       </View>
       <View style={styles.consentText}>
         <View style={styles.titleRow}>
-          <Text style={styles.consentTitle}>{props.title}</Text>
+          <AppText style={[styles.consentTitle, { color: textColor }]}>{props.title}</AppText>
           {props.required && (
             <View style={[styles.badge, styles.badgeRequiredSmall]}>
-              <Text style={styles.badgeTextSmall}>*</Text>
+              <AppText style={styles.badgeTextSmall}>*</AppText>
             </View>
           )}
         </View>
-        <Text style={styles.consentDescription}>{props.description}</Text>
+        <AppText style={[styles.consentDescription, { color: descColor }]}>{props.description}</AppText>
       </View>
     </TouchableOpacity>
   );
@@ -495,6 +510,12 @@ const styles = StyleSheet.create({
     marginHorizontal: -spacing.sm,
     paddingHorizontal: spacing.sm,
     borderRadius: radius.sm,
+  },
+  consentRowHighContrast: {
+    backgroundColor: '#FFFF00', // Yellow background for rows in high contrast
+    marginVertical: 2,
+    borderWidth: 1,
+    borderColor: '#000000',
   },
   checkbox: {
     width: 22,

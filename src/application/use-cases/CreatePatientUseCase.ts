@@ -25,6 +25,13 @@ export interface CreatePatientInput {
   phone?: string;
   insurance?: string;
   insuranceNumber?: string;
+  address?: {
+    street: string;
+    houseNumber: string;
+    zip: string;
+    city: string;
+    country: string;
+  };
   encryptionKey: string;
   // GDPR Consents
   consents: {
@@ -48,7 +55,7 @@ export class CreatePatientUseCase {
   constructor(
     private readonly patientRepository: IPatientRepository,
     private readonly gdprRepository: IGDPRConsentRepository,
-  ) {}
+  ) { }
 
   async execute(input: CreatePatientInput): Promise<CreatePatientOutput> {
     try {
@@ -71,6 +78,7 @@ export class CreatePatientUseCase {
         phone: input.phone,
         insurance: input.insurance,
         insuranceNumber: input.insuranceNumber,
+        address: input.address,
       });
 
       // Step 2b: Ensure encryption key is available for persistence

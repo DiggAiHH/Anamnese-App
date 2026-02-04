@@ -61,6 +61,17 @@
     "openPatient": "Відкрити",
     "resumeQuestionnaire": "Продовжити",
     "selectLanguage": "Вибрати мову",
+    "roleSelection": {
+      "title": "Де проводиться анамнез?",
+      "practice": "У клініці",
+      "private": "Вдома (приватно)",
+      "admin": "Адмін / Панель"
+    },
+    "accessibility": {
+      "fontScale": "Розмір шрифту",
+      "highContrast": "Високий контраст",
+      "language": "Мова"
+    },
     "modeSelection": {
       "title": "Хто використовує застосунок?",
       "subtitle": "Будь ласка, оберіть свою роль",
@@ -725,5 +736,45 @@
       "decryptionFailed": "Decryption failed",
       "unknown": "Unknown error"
     }
+  },
+  "accessibility": {
+    "toggleZoom": "Увімкнути/вимкнути масштаб",
+    "zoomHint": "Вмикає більший шрифт і кнопки",
+    "zoomEnabled": "Масштаб увімкнено",
+    "zoomDisabled": "Масштаб вимкнено"
+  },
+  "months": {
+    "january": "Січень",
+    "february": "Лютий",
+    "march": "Березень",
+    "april": "Квітень",
+    "may": "Травень",
+    "june": "Червень",
+    "july": "Липень",
+    "august": "Серпень",
+    "september": "Вересень",
+    "october": "Жовтень",
+    "november": "Листопад",
+    "december": "Грудень"
+  },
+  "fastTrack": {
+    "title": "Швидкий доступ",
+    "prescription": "Замовити рецепт",
+    "referral": "Запитати направлення",
+    "subtitle": "Без повного анамнезу",
+    "errorRequired": "Будь ласка, заповніть всі обов'язкові поля",
+    "successMessage": "Ваш запит успішно надіслано",
+    "errorSubmit": "Помилка при надсиланні",
+    "medicationLabel": "Запитуваний лікарський засіб",
+    "medicationPlaceholder": "напр.: Ібупрофен 400мг",
+    "referralLabel": "Причина направлення",
+    "referralPlaceholder": "напр.: Кардіологія"
+  },
+  "buttons": {
+    "submit": "Надіслати"
+  },
+  "placeholders": {
+    "vorname": "напр.: Іван",
+    "nachname": "напр.: Петренко"
   }
 }

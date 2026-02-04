@@ -58,6 +58,26 @@ function Test-MetroListening {
   }
 }
 
+function Test-MetroStatus {
+  param(
+    [string]$HostName = '127.0.0.1',
+    [int]$Port = 8081
+  )
+
+  $url = "http://$HostName`:$Port/status"
+  try {
+    $resp = Invoke-WebRequest -UseBasicParsing -Uri $url -TimeoutSec 2
+    $content = $resp.Content
+    if ($content -is [byte[]]) {
+      $content = [Text.Encoding]::UTF8.GetString($content)
+    }
+    $content = [string]$content
+    return ($content.Trim() -eq 'packager-status:running')
+  } catch {
+    return $false
+  }
+}
+
 function Start-MetroDetached {
   param(
     [Parameter(Mandatory = $true)]
@@ -70,15 +90,23 @@ function Start-MetroDetached {
   $logPath = Join-Path $BuildLogsDir 'metro_latest.log'
   try { Remove-Item -Path $logPath -Force -ErrorAction SilentlyContinue } catch { }
 
-  $args = '/d /c "npm.cmd start -- --reset-cache > ""' + $logPath + '"" 2>&1"'
+  # IMPORTANT: do not rely on a global `react-native` shim being discoverable.
+  # Use the local CLI to make Metro auto-start deterministic.
+  $rnCli = Join-Path $RepoRoot 'node_modules\react-native\cli.js'
+  if (Test-Path $rnCli) {
+    $metroCmdArgs = '/d /c "node ""' + $rnCli + '"" start --reset-cache > ""' + $logPath + '"" 2>&1"'
+  } else {
+    # Fallback: npm start (may fail on some environments if PATH shims are broken)
+    $metroCmdArgs = '/d /c "npm.cmd start -- --reset-cache > ""' + $logPath + '"" 2>&1"'
+  }
   try {
-    Start-Process -FilePath 'cmd.exe' -ArgumentList $args -WorkingDirectory $RepoRoot -WindowStyle Hidden | Out-Null
+    Start-Process -FilePath 'cmd.exe' -ArgumentList $metroCmdArgs -WorkingDirectory $RepoRoot -WindowStyle Hidden | Out-Null
   } catch {
     Write-Host "Failed to auto-start Metro: $($_.Exception.Message)" -ForegroundColor Yellow
   }
 }
 
-function Ensure-LoopbackExempt {
+function Enable-LoopbackExemption {
   param(
     [Parameter(Mandatory=$true)] [string]$PackageFamilyName
   )
@@ -157,8 +185,8 @@ if (-not $SkipBuild) {
       throw 'npm.cmd not found in PATH. Install Node.js or add it to PATH.'
     }
 
-    $args = @('run','windows','--','--no-telemetry','--logging','--arch', $Platform)
-    & $npm @args
+    $rnwArgs = @('run','windows','--','--no-telemetry','--logging','--arch', $Platform)
+    & $npm @rnwArgs
     if ($LASTEXITCODE -ne 0) {
       Write-Host "\nNOTE: 'react-native run-windows' returned exit code $LASTEXITCODE (often deploy-only failure). Continuing with manual install..." -ForegroundColor Yellow
     }
@@ -392,7 +420,7 @@ Write-Host "Publisher: $publisher" -ForegroundColor Yellow
 Write-Step 'Ensuring dev code-signing certificate exists'
 $friendlyName = 'AnamneseMobile Dev Certificate'
 
-function Has-CodeSigningEku($cert) {
+function Test-CodeSigningEku($cert) {
   if (-not $cert -or -not $cert.EnhancedKeyUsageList) { return $false }
   foreach ($eku in $cert.EnhancedKeyUsageList) {
     # Use OID instead of localized FriendlyName
@@ -402,7 +430,7 @@ function Has-CodeSigningEku($cert) {
 }
 
 $existingCert = Get-ChildItem -Path Cert:\CurrentUser\My |
-  Where-Object { $_.Subject -eq $publisher -and (Has-CodeSigningEku $_) } |
+  Where-Object { $_.Subject -eq $publisher -and (Test-CodeSigningEku $_) } |
   Sort-Object NotAfter |
   Select-Object -Last 1
 
@@ -472,8 +500,7 @@ Write-Host "Note: We'll try a non-admin install first (CurrentUser trust)." -For
 
 $installed = Get-AppxPackage | Where-Object { $_.Name -eq $identityName } | Select-Object -First 1
 if ($installed) {
-  Write-Host "Existing install detected ($($installed.PackageFullName)); removing to avoid update issues..." -ForegroundColor Yellow
-  Remove-AppxPackage -Package $installed.PackageFullName -ErrorAction SilentlyContinue
+  Write-Host "Existing install detected ($($installed.PackageFullName)); attempting in-place update first..." -ForegroundColor Yellow
 }
 
 $ps = Get-Command powershell.exe -ErrorAction SilentlyContinue
@@ -632,8 +659,37 @@ if (-not $isElevated) {
     $elapsed = New-TimeSpan -Start $installStart -End $installEnd
     Write-Host ("Add-AppxPackage completed at {0:O} (elapsed: {1})" -f $installEnd, $elapsed) -ForegroundColor Green
   } catch {
-    Write-Host 'Non-admin package install failed. If this is a policy/dev-mode issue, re-run in an elevated PowerShell once to trust the cert for LocalMachine.' -ForegroundColor Yellow
-    throw
+    $firstError = $_
+    Write-Host 'Add-AppxPackage failed on first attempt.' -ForegroundColor Yellow
+
+    if ($installed -and $installed.PackageFullName) {
+      Write-Host 'Attempting uninstall + reinstall once (to recover from update conflicts)...' -ForegroundColor Yellow
+      try {
+        Remove-AppxPackage -Package $installed.PackageFullName -ErrorAction Stop
+        Start-Sleep -Seconds 1
+      } catch {
+        Write-Host "Remove-AppxPackage failed (continuing to throw original install error): $($_.Exception.Message)" -ForegroundColor Yellow
+        throw $firstError
+      }
+
+      try {
+        if ($dependencyPaths.Count -gt 0) {
+          Add-AppxPackage -Path $stagedMsixPath -DependencyPath $dependencyPaths -ForceApplicationShutdown -ForceUpdateFromAnyVersion -ErrorAction Stop
+        } else {
+          Add-AppxPackage -Path $stagedMsixPath -ForceApplicationShutdown -ForceUpdateFromAnyVersion -ErrorAction Stop
+        }
+
+        $installEnd = Get-Date
+        $elapsed = New-TimeSpan -Start $installStart -End $installEnd
+        Write-Host ("Add-AppxPackage succeeded after uninstall at {0:O} (elapsed: {1})" -f $installEnd, $elapsed) -ForegroundColor Green
+      } catch {
+        Write-Host 'Reinstall attempt failed.' -ForegroundColor Yellow
+        throw
+      }
+    } else {
+      Write-Host 'Non-admin package install failed. If this is a policy/dev-mode issue, re-run in an elevated PowerShell once to trust the cert for LocalMachine.' -ForegroundColor Yellow
+      throw
+    }
   }
 } else {
   & $ps.Source -NoProfile -NonInteractive -ExecutionPolicy Bypass -File $stagedAddAppDevPackage -Force -SkipLoggingTelemetry
@@ -649,22 +705,31 @@ if (-not $pkg) {
 }
 
 Write-Step 'Checking Metro (packager) availability'
-if (-not (Test-MetroListening -HostName '127.0.0.1' -Port 8081)) {
+if (-not (Test-MetroStatus -HostName '127.0.0.1' -Port 8081)) {
   Write-Host 'Metro is NOT reachable on http://127.0.0.1:8081 right now.' -ForegroundColor Yellow
   Write-Host 'Auto-starting Metro in the background (logs: buildLogs\metro_latest.log)...' -ForegroundColor Yellow
   Start-MetroDetached -RepoRoot $repoRoot -BuildLogsDir $buildLogsDir
-  Start-Sleep -Seconds 2
 
-  if (-not (Test-MetroListening -HostName '127.0.0.1' -Port 8081)) {
+  $started = $false
+  for ($i = 0; $i -lt 12; $i++) {
+    Start-Sleep -Milliseconds 750
+    if (Test-MetroStatus -HostName '127.0.0.1' -Port 8081) {
+      $started = $true
+      break
+    }
+  }
+
+  if (-not $started) {
     Write-Host 'Metro still NOT reachable. Start it manually in a separate terminal and keep it running:' -ForegroundColor Yellow
-    Write-Host '  npm.cmd start -- --reset-cache' -ForegroundColor Yellow
+    Write-Host '  node node_modules\react-native\cli.js start --reset-cache' -ForegroundColor Yellow
+    Write-Host 'If it fails, check buildLogs\metro_latest.log.' -ForegroundColor Yellow
   } else {
     Write-Host '✅ Metro is reachable now.' -ForegroundColor Green
   }
 }
 
 Write-Step 'Enabling loopback for localhost Metro'
-Ensure-LoopbackExempt -PackageFamilyName $pkg.PackageFamilyName
+Enable-LoopbackExemption -PackageFamilyName $pkg.PackageFamilyName
 
 $aumid = "$($pkg.PackageFamilyName)!App"
 

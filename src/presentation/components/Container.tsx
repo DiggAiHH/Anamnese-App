@@ -16,15 +16,16 @@ type Props = {
 /**
  * Standard container with consistent padding for screen layouts.
  * Use scroll=true for scrollable content.
+ * 
+ * FIXED: Removed hardcoded paddingTop that caused 2cm touch offset on Windows
  */
 export const Container: React.FC<Props> = ({
   children,
   scroll = false,
-  safe = false,
   padding = layout.screenPadding,
   style,
 }) => {
-  const containerStyle = [styles.base, { padding }, safe && styles.safeArea, style];
+  const containerStyle = [styles.base, { padding }, style];
 
   if (scroll) {
     return (
@@ -44,9 +45,5 @@ const styles = StyleSheet.create({
   base: {
     flex: 1,
     backgroundColor: colors.background,
-  },
-  safeArea: {
-    paddingTop: 44, // iOS safe area approximate
-    paddingBottom: 34,
   },
 });

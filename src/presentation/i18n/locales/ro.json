@@ -61,6 +61,17 @@
     "openPatient": "Deschide",
     "resumeQuestionnaire": "Reia",
     "selectLanguage": "Selectează limba",
+    "roleSelection": {
+      "title": "Unde are loc anamneza?",
+      "practice": "La cabinet",
+      "private": "Privat (acasă)",
+      "admin": "Admin / Panou"
+    },
+    "accessibility": {
+      "fontScale": "Mărimea fontului",
+      "highContrast": "Contrast ridicat",
+      "language": "Limbă"
+    },
     "modeSelection": {
       "title": "Cine folosește aplicația?",
       "subtitle": "Vă rugăm să selectați rolul dvs.",
@@ -725,5 +736,45 @@
       "decryptionFailed": "Decryption failed",
       "unknown": "Unknown error"
     }
+  },
+  "accessibility": {
+    "toggleZoom": "Comută zoom",
+    "zoomHint": "Activează fonturi și butoane mai mari",
+    "zoomEnabled": "Zoom activat",
+    "zoomDisabled": "Zoom dezactivat"
+  },
+  "months": {
+    "january": "Ianuarie",
+    "february": "Februarie",
+    "march": "Martie",
+    "april": "Aprilie",
+    "may": "Mai",
+    "june": "Iunie",
+    "july": "Iulie",
+    "august": "August",
+    "september": "Septembrie",
+    "october": "Octombrie",
+    "november": "Noiembrie",
+    "december": "Decembrie"
+  },
+  "fastTrack": {
+    "title": "Acces rapid",
+    "prescription": "Comandă rețetă",
+    "referral": "Solicită trimitere",
+    "subtitle": "Fără anamneză completă",
+    "errorRequired": "Vă rugăm să completați toate câmpurile obligatorii",
+    "successMessage": "Cererea dumneavoastră a fost trimisă cu succes",
+    "errorSubmit": "Eroare la trimitere",
+    "medicationLabel": "Medicamentul solicitat",
+    "medicationPlaceholder": "ex: Ibuprofen 400mg",
+    "referralLabel": "Motivul trimiterii",
+    "referralPlaceholder": "ex: Cardiologie"
+  },
+  "buttons": {
+    "submit": "Trimite"
+  },
+  "placeholders": {
+    "vorname": "ex: Ion",
+    "nachname": "ex: Popescu"
   }
 }

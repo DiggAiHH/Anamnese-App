@@ -21,6 +21,13 @@ export const PatientSchema = z.object({
     phone: z.string().optional(),
     insurance: z.string().optional(),
     insuranceNumber: z.string().optional(),
+    address: z.object({
+      street: z.string(),
+      houseNumber: z.string(),
+      zip: z.string(),
+      city: z.string(),
+      country: z.string(),
+    }).optional(),
   }),
   // Unverschlüsselte Metadaten
   createdAt: z.date(),
@@ -100,6 +107,13 @@ export class PatientEntity {
     phone?: string;
     insurance?: string;
     insuranceNumber?: string;
+    address?: {
+      street: string;
+      houseNumber: string;
+      zip: string;
+      city: string;
+      country: string;
+    };
   }): PatientEntity {
     const id = crypto.randomUUID();
     const now = new Date();
@@ -115,6 +129,7 @@ export class PatientEntity {
         phone: params.phone,
         insurance: params.insurance,
         insuranceNumber: params.insuranceNumber,
+        address: params.address,
       },
       createdAt: now,
       updatedAt: now,

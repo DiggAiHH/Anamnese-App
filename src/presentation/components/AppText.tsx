@@ -48,15 +48,27 @@ type Props = TextProps & {
   color?: AppTextColor;
 };
 
+import { useTheme } from '../theme/ThemeContext';
+
 export const AppText: React.FC<Props> = ({
   variant = 'body',
   color = 'default',
   style,
   ...props
 }) => {
+  const { fontScale, isHighContrast } = useTheme();
   const variantStyle = getTextVariantStyle(variant);
-  const textColor = getTextColor(color);
-  return <Text style={[styles.base, variantStyle, { color: textColor }, style]} {...props} />;
+
+  // High Contrast: Default to white on black, unless inverse is requested
+  let textColor = getTextColor(color);
+  if (isHighContrast) {
+    textColor = color === 'inverse' ? '#000000' : '#ffffff';
+  }
+
+  // Scale font size
+  const scaledFontSize = variantStyle.fontSize * fontScale;
+
+  return <Text style={[styles.base, variantStyle, { fontSize: scaledFontSize || 16, color: textColor }, style]} {...props} />;
 };
 
 const styles = StyleSheet.create({

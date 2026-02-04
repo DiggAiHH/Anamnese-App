@@ -25,6 +25,17 @@ Produce a **Release** MSIX that is **self-contained** (ships JS bundle) and **la
 
 ## Log Entries
 
+### 2026-01-30 (RUN-20260130-password-fixes)
+- **Goal:** Fix critical UI bugs on MasterPasswordScreen (Immediate validation errors, Duplicate header, Broken back button).
+- **Changes:**
+  - `MasterPasswordScreen.tsx`: Replaced `TextInput` + `Alert` with `AppInput` + inline errors. Added `IconButton`s for Generate/Copy. Restored `iconEmoji` style.
+  - `RootNavigator.tsx`: Conditional `headerLeft` (hidden in unlock mode) and removed `headerRight` for `MasterPassword`.
+- **Verification:**
+  - `npm run type-check`: ✅ PASS (0 errors).
+- **Evidence:**
+  - `npm run type-check` exit code 0.
+
+
 ### 2026-01-24 (Lint/format cleanup)
 - **Goal:** Run lint and auto-fix for code cleanup.
 - **Evidence:**

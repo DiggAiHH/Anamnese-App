@@ -61,6 +61,17 @@
     "openPatient": "Mở",
     "resumeQuestionnaire": "Tiếp tục",
     "selectLanguage": "Chọn ngôn ngữ",
+    "roleSelection": {
+      "title": "Khám/khai thác bệnh sử diễn ra ở đâu?",
+      "practice": "Tại phòng khám",
+      "private": "Riêng tư (tại nhà)",
+      "admin": "Quản trị / Bảng điều khiển"
+    },
+    "accessibility": {
+      "fontScale": "Cỡ chữ",
+      "highContrast": "Tương phản cao",
+      "language": "Ngôn ngữ"
+    },
     "modeSelection": {
       "title": "Ai đang sử dụng ứng dụng?",
       "subtitle": "Vui lòng chọn vai trò của bạn",
@@ -725,5 +736,45 @@
       "decryptionFailed": "Decryption failed",
       "unknown": "Unknown error"
     }
+  },
+  "accessibility": {
+    "toggleZoom": "Bật/tắt phóng to",
+    "zoomHint": "Kích hoạt phông chữ và nút lớn hơn",
+    "zoomEnabled": "Phóng to đã bật",
+    "zoomDisabled": "Phóng to đã tắt"
+  },
+  "months": {
+    "january": "Tháng 1",
+    "february": "Tháng 2",
+    "march": "Tháng 3",
+    "april": "Tháng 4",
+    "may": "Tháng 5",
+    "june": "Tháng 6",
+    "july": "Tháng 7",
+    "august": "Tháng 8",
+    "september": "Tháng 9",
+    "october": "Tháng 10",
+    "november": "Tháng 11",
+    "december": "Tháng 12"
+  },
+  "fastTrack": {
+    "title": "Truy cập nhanh",
+    "prescription": "Yêu cầu đơn thuốc",
+    "referral": "Yêu cầu giấy giới thiệu",
+    "subtitle": "Không cần tiền sử đầy đủ",
+    "errorRequired": "Vui lòng điền đầy đủ các trường bắt buộc",
+    "successMessage": "Yêu cầu của bạn đã được gửi thành công",
+    "errorSubmit": "Lỗi khi gửi",
+    "medicationLabel": "Thuốc yêu cầu",
+    "medicationPlaceholder": "ví dụ: Ibuprofen 400mg",
+    "referralLabel": "Lý do giấy giới thiệu",
+    "referralPlaceholder": "ví dụ: Tim mạch"
+  },
+  "buttons": {
+    "submit": "Gửi"
+  },
+  "placeholders": {
+    "vorname": "ví dụ: Minh",
+    "nachname": "ví dụ: Nguyễn"
   }
 }
