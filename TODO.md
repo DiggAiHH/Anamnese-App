@@ -2,6 +2,10 @@
 
 This file is the authoritative execution plan to make the app **more user-friendly** and aligned with **modern standards** (ISO 9241-210 + WCAG 2.2 AA + CRA + GDPR).
 
+## Last Stand Update (2026-02-05)
+- ✅ i18n locale parity regression fixed (mis-nested keys removed).
+- ✅ Type-check and Jest re-verified with evidence in `buildLogs/`.
+
 ## Active Run Tasks (2026-01-29) - RUN-20260129-verification [✅ COMPLETED]
 - [x] [Init] Sync `TODO.md` and `CURRENT_TASKS.md`
 - [x] [Init] Update `LAUFBAHN.md` log

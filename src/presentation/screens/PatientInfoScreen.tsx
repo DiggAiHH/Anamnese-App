@@ -417,10 +417,10 @@ const styles = StyleSheet.create({
   header: { padding: spacing.xl, backgroundColor: colors.surface, borderBottomWidth: 1, borderColor: colors.divider },
   title: { color: colors.textPrimary },
   subtitle: { color: colors.textSecondary },
-  form: { padding: spacing.xl },
-  inputGroup: { marginBottom: spacing.xl },
+  form: { padding: spacing.xl, zIndex: 1 }, // FIX: form zIndex for dropdown layering
+  inputGroup: { marginBottom: spacing.xl, zIndex: 1 }, // FIX: input group zIndex
   label: { marginBottom: spacing.sm, color: colors.textPrimary },
-  dropdownLabel: { marginBottom: 4 },
+  dropdownLabel: { marginBottom: 4, color: colors.textPrimary },
   required: { color: colors.dangerText },
   errorText: { color: colors.dangerText, marginTop: 4 },
   nextButton: { marginHorizontal: spacing.xl, marginTop: spacing.xl },
@@ -441,13 +441,29 @@ const styles = StyleSheet.create({
   radioLabel: { color: colors.textPrimary },
 
   // Date Picker Custom Row
-  datePickerRow: { flexDirection: 'row', gap: spacing.md },
-  dateDropdownCell: { flex: 1 },
+  datePickerRow: { flexDirection: 'row', gap: spacing.md, zIndex: 100 },
+  dateDropdownCell: { flex: 1, position: 'relative', zIndex: 1 },
   dateDropdownCellActive: { zIndex: 9999 }, // FIX: Elevate active dropdown (K1-2: dropdown z-index)
   dateDropdownButton: { backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border, borderRadius: radius.md, padding: spacing.md, alignItems: 'center' },
   dateDropdownText: { color: colors.textPrimary },
-  dateDropdownMenu: { position: 'absolute', top: '100%', left: 0, right: 0, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border, borderRadius: radius.md, zIndex: 9999, elevation: 10, maxHeight: 200 },
-  dateDropdownOption: { padding: spacing.md, borderBottomWidth: 1, borderBottomColor: colors.background },
+  dateDropdownMenu: {
+    position: 'absolute',
+    top: '100%',
+    left: 0,
+    right: 0,
+    backgroundColor: colors.surface || '#FFFFFF', // FIX: Ensure opaque background
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: radius.md,
+    zIndex: 10000,
+    elevation: 20, // FIX: Higher elevation for Android
+    maxHeight: 200,
+    shadowColor: '#000', // FIX: Add shadow for iOS
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+  },
+  dateDropdownOption: { padding: spacing.md, borderBottomWidth: 1, borderBottomColor: colors.background, backgroundColor: colors.surface || '#FFFFFF' },
 
   // New Styles
   row: { flexDirection: 'row' },

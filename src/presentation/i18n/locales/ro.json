@@ -407,50 +407,8 @@
     "insuranceNumber": "Număr de asigurare"
   },
   "placeholders": {
-    "nachname": "z.B. Mustermann",
-    "vorname": "z.B. Max",
-    "beschwerden_freitext": "Beschreiben Sie hier Ihre Beschwerden...",
-    "kreatinin_wert": "z.B. 1.2",
-    "station": "z.B. Chirurgie Station 3",
-    "uhrzeit": "z.B. 14:30",
-    "untersuchung_freitext": "z.B. Kontrolle nach OP",
-    "strasse": "z.B. Musterstraße 123",
-    "plz": "z.B. 12345",
-    "wohnort": "z.B. Musterstadt",
-    "telefon_privat": "z.B. 030 12345678",
-    "telefon_mobil": "z.B. 0170 1234567",
-    "email": "z.B. max.mustermann@email.de",
-    "hausarzt_name": "z.B. Dr. med. Schmidt",
-    "hausarzt_strasse": "z.B. Arztstraße 1",
-    "hausarzt_plz": "z.B. 12345",
-    "hausarzt_ort": "z.B. Musterstadt",
-    "hausarzt_telefon": "z.B. 030 12345678",
-    "hausarzt_fax": "z.B. 030 12345679",
-    "ueberweiser_name": "z.B. Dr. med. Müller",
-    "ueberweiser_strasse": "z.B. Facharztweg 5",
-    "ueberweiser_plz": "z.B. 12345",
-    "ueberweiser_ort": "z.B. Musterstadt",
-    "ueberweiser_telefon": "z.B. 030 87654321",
-    "ueberweiser_fax": "z.B. 030 87654322",
-    "groesse_cm": "z.B. 175",
-    "gewicht_kg": "z.B. 70",
-    "zigaretten_tag": "z.B. 10",
-    "raucherjahre": "z.B. 15",
-    "rauchstopp_jahre": "z.B. 5",
-    "diabetes_medikament": "z.B. Metformin 500mg",
-    "metformin_pause": "z.B. vor 2 Tagen",
-    "sonstige_implantate": "z.B. Cochlea-Implantat links",
-    "allergien_freitext": "z.B. Penicillin, Nüsse",
-    "ssw": "z.B. 12",
-    "sonstige_erkrankungen": "z.B. Migräne",
-    "operationen_freitext": "z.B. Blinddarm-OP 2010, Knie-OP 2015",
-    "medikamente_liste": "z.B. Aspirin 100mg, Ramipril 5mg",
-    "blutverd_medikament": "z.B. Marcumar, Xarelto",
-    "betablocker_medikament": "z.B. Bisoprolol 5mg",
-    "kontakt_name": "z.B. Maria Mustermann",
-    "kontakt_telefon": "z.B. 0170 9876543",
-    "kontakt_beziehung": "z.B. Ehefrau",
-    "unterschrift": "Unterschreiben Sie hier"
+    "vorname": "ex: Ion",
+    "nachname": "ex: Popescu"
   },
   "options": {
     "ja": "Ja",
@@ -486,12 +444,7 @@
     "diverse": "Divers"
   },
   "buttons": {
-    "next": "Înainte",
-    "back": "Înapoi",
-    "save": "Salvează",
-    "cancel": "Anulează",
-    "submit": "Trimite",
-    "export": "Export"
+    "submit": "Trimite"
   },
   "feedback": {
     "title": "Trimite feedback",
@@ -770,11 +723,76 @@
     "referralLabel": "Motivul trimiterii",
     "referralPlaceholder": "ex: Cardiologie"
   },
-  "buttons": {
-    "submit": "Trimite"
+  "patientType": {
+    "title": "Welcome",
+    "subtitle": "How can we help you?",
+    "newPatient": "New patient",
+    "newPatientDesc": "First visit or new registration",
+    "returningPatient": "Returning patient",
+    "returningPatientDesc": "Already known to our practice"
   },
-  "placeholders": {
-    "vorname": "ex: Ion",
-    "nachname": "ex: Popescu"
+  "documentRequest": {
+    "title": "What do you need?",
+    "subtitle": "Choose the requested service.",
+    "prescription": "Prescription",
+    "prescriptionDesc": "Repeat prescription or new medication",
+    "referral": "Referral",
+    "referralDesc": "To a specialist or laboratory",
+    "sickNote": "Sick note",
+    "sickNoteDesc": "Request a certificate of incapacity for work"
+  },
+  "prescription": {
+    "title": "Request prescription",
+    "subtitle": "Please enter the medication information.",
+    "medicationName": "Medication",
+    "medicationPlaceholder": "e.g. Ibuprofen 400mg",
+    "dosage": "Dosage (optional)",
+    "dosagePlaceholder": "e.g. 3x daily",
+    "quantity": "Quantity (optional)",
+    "quantityPlaceholder": "e.g. 2 packs",
+    "notes": "Notes (optional)",
+    "notesPlaceholder": "Additional information...",
+    "infoText": "Your request will be encrypted and sent to the practice. You will be notified when it is ready.",
+    "submit": "Send request",
+    "continue": "Continue to anamnesis",
+    "errorMedicationRequired": "Please enter the medication name.",
+    "errorSubmit": "Request could not be created."
+  },
+  "referral": {
+    "title": "Request referral",
+    "subtitle": "Please select the desired specialty.",
+    "specialty": "Specialty",
+    "selectSpecialty": "Select specialty",
+    "selectSpecialtyPlaceholder": "Select specialty...",
+    "reason": "Reason (optional)",
+    "reasonPlaceholder": "e.g. back pain for 2 weeks",
+    "preferredDoctor": "Preferred doctor (optional)",
+    "preferredDoctorPlaceholder": "e.g. Dr. Smith, cardiology",
+    "notes": "Notes (optional)",
+    "notesPlaceholder": "Additional information...",
+    "infoText": "Your request will be encrypted and sent to the practice for review.",
+    "submit": "Send request",
+    "continue": "Continue to anamnesis",
+    "errorSpecialtyRequired": "Please select a specialty.",
+    "errorSubmit": "Request could not be created."
+  },
+  "sickNote": {
+    "title": "Request sick note",
+    "subtitle": "Please provide the period of incapacity for work.",
+    "startDate": "Start date",
+    "endDate": "End date (optional)",
+    "reason": "Reason (optional)",
+    "reasonPlaceholder": "e.g. cold, back pain",
+    "notes": "Notes (optional)",
+    "notesPlaceholder": "Additional information...",
+    "infoText": "A sick note can only be issued after medical review.",
+    "warningTitle": "Important notice",
+    "warningText": "A certificate of incapacity for work can only be issued after consultation with a doctor.",
+    "submit": "Send request",
+    "continue": "Continue to anamnesis",
+    "errorStartDateRequired": "Please enter a valid start date (DD.MM.YYYY).",
+    "errorEndDateInvalid": "The end date is invalid (DD.MM.YYYY).",
+    "errorEndBeforeStart": "End date must not be before start date.",
+    "errorSubmit": "Request could not be created."
   }
 }

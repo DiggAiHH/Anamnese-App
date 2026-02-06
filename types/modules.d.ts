@@ -83,12 +83,45 @@ declare module 'react-native-share';
 declare module 'react-native-date-picker';
 declare module 'react-native-vector-icons/*';
 declare module '@react-navigation/native' {
-  export const NavigationContainer: React.ComponentType<{ children?: React.ReactNode }>;
+  export type Theme = {
+    dark: boolean;
+    colors: {
+      primary: string;
+      background: string;
+      card: string;
+      text: string;
+      border: string;
+      notification: string;
+    } & Record<string, string>;
+  };
+
+  export const DefaultTheme: Theme;
+  export const DarkTheme: Theme;
+
+  export type NavigationContainerProps = {
+    children?: import('react').ReactNode;
+    theme?: Theme;
+    linking?: unknown;
+    fallback?: import('react').ReactNode;
+    onReady?: () => void;
+    onStateChange?: (state: unknown) => void;
+    documentTitle?: unknown;
+  };
+
+  export const NavigationContainer: import('react').ComponentType<NavigationContainerProps>;
+
   export interface NavigationContainerRef<T = unknown> {
     navigate: (...args: unknown[]) => void;
     goBack: () => void;
     getCurrentRoute?: () => T | undefined;
   }
+
+  export type NavigationProp = {
+    navigate: (...args: unknown[]) => void;
+    goBack: () => void;
+  } & Record<string, unknown>;
+
+  export function useNavigation<T = NavigationProp>(): T;
 }
 
 declare module '@react-navigation/stack' {

@@ -20,7 +20,8 @@ export type ButtonVariant =
   | 'success'
   | 'info'
   | 'warning'
-  | 'accent';
+  | 'accent'
+  | 'outline';
 
 export type ButtonSize = 'sm' | 'md' | 'lg';
 
@@ -80,6 +81,12 @@ export const getButtonColors = (variant: ButtonVariant, disabled?: boolean) => {
       return {
         backgroundColor: 'transparent',
         borderColor: 'transparent',
+        textColor: colors.primary,
+      };
+    case 'outline':
+      return {
+        backgroundColor: 'transparent',
+        borderColor: colors.primary,
         textColor: colors.primary,
       };
     default:

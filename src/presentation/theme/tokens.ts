@@ -37,6 +37,7 @@ export const colors = {
   dangerBorder: '#fca5a5',
   dangerText: '#991b1b',
   danger: '#ef4444',
+  error: '#ef4444',
 
   warningSurface: '#fef3c7',
   warningBorder: '#fcd34d',

@@ -1,15 +1,8 @@
 import React from 'react';
 import { View, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
-// @ts-ignore
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
-// import { StackNavigationProp } from '@react-navigation/stack';
-// import { StackNavigationProp } from '@react-navigation/stack';
-// import { RootStackParamList } from '../navigation/RootNavigator';
 import { usePatientContext, VisitReason } from '../../application/PatientContext';
-
-// type NavigationProp = StackNavigationProp<RootStackParamList, 'VisitReason'>;
-
 import { useTheme } from '../theme/ThemeContext';
 import { AppText } from '../components/AppText';
 

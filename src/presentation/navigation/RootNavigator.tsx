@@ -39,6 +39,7 @@ import { CalculatorScreen } from '../screens/CalculatorScreen';
 import { DataManagementScreen } from '../screens/DataManagementScreen';
 import { DashboardScreen } from '../screens/DashboardScreen';
 import { FastTrackScreen } from '../screens/FastTrackScreen';
+import { colors } from '../theme/tokens';
 
 // New Flow Screens
 import { RoleSelectionScreen } from '../screens/RoleSelectionScreen';
@@ -46,14 +47,30 @@ import { PrivacyScreen } from '../screens/PrivacyScreen';
 import { VisitReasonScreen } from '../screens/VisitReasonScreen';
 import { PatientStatusScreen } from '../screens/PatientStatusScreen';
 
+// Document Request Flow Screens (Sanad Port)
+import { PatientTypeScreen } from '../screens/PatientTypeScreen';
+import { DocumentRequestScreen } from '../screens/DocumentRequestScreen';
+import { PrescriptionRequestScreen } from '../screens/PrescriptionRequestScreen';
+import { ReferralRequestScreen } from '../screens/ReferralRequestScreen';
+import { SickNoteRequestScreen } from '../screens/SickNoteRequestScreen';
+
+// Document request type for navigation
+import type { IDocumentRequest } from '../../domain/entities/DocumentRequest';
+
 export type RootStackParamList = {
   Home: undefined;
   SelectLanguage: undefined;
   MasterPassword: { mode: 'setup' | 'unlock' };
   RoleSelection: undefined;
   Privacy: undefined;
+  PatientType: undefined;
   VisitReason: undefined;
   PatientStatus: undefined;
+  DocumentRequest: undefined;
+  PrescriptionRequest: undefined;
+  ReferralRequest: undefined;
+  SickNoteRequest: undefined;
+  RequestSummary: { request: IDocumentRequest };
   PatientInfo: undefined;
   GDPRConsent: undefined;
   Questionnaire: { questionnaireId?: string } | undefined;
@@ -225,9 +242,9 @@ export const RootNavigator = (): React.JSX.Element => {
           ? (TransitionPresets?.FadeFromBottomAndroid || {})
           : (TransitionPresets?.SlideFromRightIOS || {})),
         headerStyle: {
-          backgroundColor: '#2563eb',
+          backgroundColor: colors.primary,
         },
-        headerTintColor: '#ffffff',
+        headerTintColor: colors.textInverse,
         headerTitleStyle: {
           fontWeight: 'bold',
         },
@@ -256,6 +273,31 @@ export const RootNavigator = (): React.JSX.Element => {
         name="PatientStatus"
         component={PatientStatusScreen}
         options={{ title: 'Patientenstatus' }}
+      />
+      <Stack.Screen
+        name="PatientType"
+        component={PatientTypeScreen}
+        options={{ title: 'Patiententyp' }}
+      />
+      <Stack.Screen
+        name="DocumentRequest"
+        component={DocumentRequestScreen}
+        options={{ title: 'Anfrage' }}
+      />
+      <Stack.Screen
+        name="PrescriptionRequest"
+        component={PrescriptionRequestScreen}
+        options={{ title: 'Rezept' }}
+      />
+      <Stack.Screen
+        name="ReferralRequest"
+        component={ReferralRequestScreen}
+        options={{ title: 'Überweisung' }}
+      />
+      <Stack.Screen
+        name="SickNoteRequest"
+        component={SickNoteRequestScreen}
+        options={{ title: 'Krankschreibung' }}
       />
       {/* ---------------------- */}
 
@@ -298,24 +340,11 @@ export const RootNavigator = (): React.JSX.Element => {
           headerRight: () => renderHeaderRight(navigation),
         })}
       />
-          title: t('nav.masterPassword'),
-          headerLeft: route.params?.mode === 'unlock' ? () => null : undefined,
-          gestureEnabled: route.params?.mode !== 'unlock',
-        })}
-      />
       <Stack.Screen
         name="PatientInfo"
         component={PatientInfoScreen}
         options={({ navigation }: { navigation: RootNavigationProp }) => ({
           title: t('nav.patient'),
-          headerRight: () => renderHeaderRight(navigation),
-        })}
-      />
-      <Stack.Screen
-        name="GDPRConsent"
-        component={GDPRConsentScreen}
-        options={({ navigation }: { navigation: RootNavigationProp }) => ({
-          title: t('nav.consents'),
           headerRight: () => renderHeaderRight(navigation),
         })}
       />
@@ -402,7 +431,7 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
   },
   headerRightText: {
-    color: '#fff',
+    color: colors.textInverse,
     fontSize: 14,
     fontWeight: '600',
   },

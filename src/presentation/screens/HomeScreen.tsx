@@ -255,23 +255,11 @@ export const HomeScreen = ({ navigation }: Props): React.JSX.Element => {
           />
         </View>
 
-        {/* DEV ONLY: Dashboard/Admin */}
+        {/* Analytics Dashboard - accessible via DataManagement for production users */}
         {__DEV__ && (
           <View style={styles.devSection}>
             <AppButton
-              title="[DEV] Dashboard"
-              variant="outline"
-              onPress={() => navigation.navigate('Dashboard')}
-              testID="btn-dev-dashboard"
-            />
-          </View>
-        )}
-
-        {/* DEV ONLY: Dashboard/Admin */}
-        {__DEV__ && (
-          <View style={styles.devSection}>
-            <AppButton
-              title="[DEV] Dashboard"
+              title="[DEV] Analytics Dashboard"
               variant="outline"
               onPress={() => navigation.navigate('Dashboard')}
               testID="btn-dev-dashboard"

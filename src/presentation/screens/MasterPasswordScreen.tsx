@@ -174,7 +174,8 @@ export const MasterPasswordScreen = ({ navigation, route }: Props): React.JSX.El
           navigation.goBack();
         }
       } else {
-        navigation.replace('PatientInfo');
+        // After setup, navigate to VisitReason to continue the onboarding flow
+        navigation.replace('VisitReason');
       }
     } catch (error) {
       Alert.alert(

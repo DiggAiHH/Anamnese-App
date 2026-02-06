@@ -11,6 +11,7 @@
 
 import React, { useEffect, useMemo } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
+import type { Theme } from '@react-navigation/native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { StyleSheet } from 'react-native';
@@ -37,7 +38,7 @@ import { showUserErrorAlert } from '@shared/userFacingError';
 
 const App = (): React.JSX.Element => {
   // Memoize navigation theme to prevent unnecessary re-renders (Performance Fix)
-  const navigationTheme = useMemo(
+  const navigationTheme: Theme = useMemo(
     () => ({
       dark: false,
       colors: {

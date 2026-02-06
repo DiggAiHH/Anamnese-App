@@ -54,7 +54,7 @@ import {
 import { AnswerValue } from '@domain/entities/Answer';
 import type { Question } from '@domain/entities/Questionnaire';
 import { colors, spacing, radius } from '../theme/tokens';
-import { logWarn } from '../../shared/logger';
+import { logWarn, logError } from '../../shared/logger';
 import { isMissingRequiredAnswer } from '../../shared/questionnaireValidation';
 
 // Use Cases
@@ -162,7 +162,7 @@ export const QuestionnaireScreen = ({ route, navigation }: Props): React.JSX.Ele
         const migration = new TemplateMigrationService();
         await migration.migrate();
       } catch (e) {
-        console.error('Migration failed', e);
+        logError('Migration failed', e);
       }
       loadQuestionnaire();
     };

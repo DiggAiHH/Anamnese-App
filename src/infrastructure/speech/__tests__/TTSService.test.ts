@@ -30,10 +30,14 @@ const setupService = async (supportsTTS: boolean) => {
   jest.doMock('@shared/platformCapabilities', () => ({
     supportsTTS,
   }));
-  jest.doMock('react-native-tts', () => ({
-    __esModule: true,
-    default: tts,
-  }));
+  jest.doMock(
+    'react-native-tts',
+    () => ({
+      __esModule: true,
+      default: tts,
+    }),
+    { virtual: true }
+  );
 
   const { TTSService } = require('../TTSService');
   const service = new TTSService();

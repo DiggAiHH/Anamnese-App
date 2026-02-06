@@ -10,15 +10,13 @@ import { View, StyleSheet, ScrollView, Alert } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/RootNavigator';
-import { colors, spacing, radius } from '../theme/tokens';
+import { colors, spacing } from '../theme/tokens';
 import { AppText } from '../components/AppText';
 import { AppInput } from '../components/AppInput';
 import { AppButton } from '../components/AppButton';
 import { Card } from '../components/Card';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'FastTrack'>;
-
-type RequestType = 'prescription' | 'referral';
 
 export const FastTrackScreen = ({ navigation, route }: Props): React.JSX.Element => {
   const { t } = useTranslation();

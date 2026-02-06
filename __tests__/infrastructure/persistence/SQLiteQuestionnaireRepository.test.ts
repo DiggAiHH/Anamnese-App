@@ -15,7 +15,7 @@ beforeAll(() => {
 describe('SQLiteQuestionnaireRepository (template)', () => {
   it('getLatestTemplateVersion() returns version from template JSON', async () => {
     const repo = new SQLiteQuestionnaireRepository();
-    await expect(repo.getLatestTemplateVersion()).resolves.toBe('2.0.0');
+    await expect(repo.getLatestTemplateVersion()).resolves.toBe('3.0.0');
   });
 
   it('loadTemplate() returns default sections when no versions map exists', async () => {

@@ -1,8 +1,10 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
+import { DocumentType } from '../domain/entities/DocumentRequest';
 
 export type PatientStatus = 'new' | 'returning' | null;
 export type VisitReason = 'termin' | 'recipe' | 'au' | 'referral' | 'documents' | null;
 export type InsuranceType = 'private' | 'public' | null;
+export type SelectedConcern = DocumentType | null;
 
 interface PatientState {
     patientStatus: PatientStatus;
@@ -15,6 +17,10 @@ interface PatientState {
         year: string;
     };
     userRole: 'doctor' | 'patient' | null;
+    /** Selected document concern for existing patients (Rezept, Überweisung, AU) */
+    selectedConcern: SelectedConcern;
+    /** Whether the patient wants to skip full anamnesis (existing patient quick flow) */
+    skipFullAnamnesis: boolean;
 }
 
 interface PatientContextType extends PatientState {
@@ -24,6 +30,8 @@ interface PatientContextType extends PatientState {
     setInsuranceNumber: (num: string) => void;
     setBirthDate: (date: { day: string; month: string; year: string }) => void;
     setUserRole: (role: 'doctor' | 'patient' | null) => void;
+    setSelectedConcern: (concern: SelectedConcern) => void;
+    setSkipFullAnamnesis: (skip: boolean) => void;
     resetPatientData: () => void;
 }
 
@@ -36,6 +44,8 @@ export const PatientProvider = ({ children }: { children: ReactNode }) => {
     const [insuranceNumber, setInsuranceNumber] = useState<string>('');
     const [birthDate, setBirthDate] = useState({ day: '', month: '', year: '' });
     const [userRole, setUserRole] = useState<'doctor' | 'patient' | null>(null);
+    const [selectedConcern, setSelectedConcern] = useState<SelectedConcern>(null);
+    const [skipFullAnamnesis, setSkipFullAnamnesis] = useState<boolean>(false);
 
     const resetPatientData = () => {
         setPatientStatus(null);
@@ -44,6 +54,8 @@ export const PatientProvider = ({ children }: { children: ReactNode }) => {
         setInsuranceNumber('');
         setBirthDate({ day: '', month: '', year: '' });
         setUserRole(null);
+        setSelectedConcern(null);
+        setSkipFullAnamnesis(false);
     };
 
     return (
@@ -61,6 +73,10 @@ export const PatientProvider = ({ children }: { children: ReactNode }) => {
                 setBirthDate,
                 userRole,
                 setUserRole,
+                selectedConcern,
+                setSelectedConcern,
+                skipFullAnamnesis,
+                setSkipFullAnamnesis,
                 resetPatientData,
             }}>
             {children}

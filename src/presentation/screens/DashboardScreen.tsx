@@ -6,6 +6,7 @@ import { colors, spacing, typography, radius } from '../theme/tokens';
 import { AnalyticsService, GroupStatistics } from '../../application/services/AnalyticsService';
 import { AppButton } from '../components/AppButton';
 import { useQuestionnaireStore } from '../state/useQuestionnaireStore';
+import { logError } from '@shared/logger';
 
 import { RootNavigationProp } from '../navigation/RootNavigator';
 
@@ -29,7 +30,7 @@ export const DashboardScreen = ({ navigation }: { navigation: RootNavigationProp
             const data = await service.getCompletionByGroup(targetId);
             setStats(data);
         } catch (error) {
-            console.error(error);
+            logError('Failed to load dashboard data', error);
         } finally {
             setLoading(false);
         }
