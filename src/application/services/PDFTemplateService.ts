@@ -107,10 +107,10 @@ export class PDFTemplateService {
     const patientBlock = options.includePatientInfo
       ? this.renderPatientInfo(patient, options.language)
       : '';
-    
+
     // Get questionnaire title from options or use default
     const questionnaireTitle = options.title ?? `Anamnese - ${patient.id.substring(0, 8)}`;
-    
+
     const sectionsBlock = this.renderSections(questionnaire, answers, options);
     const footerBlock = this.renderFooter(options);
 
@@ -161,9 +161,10 @@ export class PDFTemplateService {
   private static renderPatientInfo(patient: PatientEntity, lang: string): string {
     // Only show anonymized info - never full name unless explicit consent
     const encData = patient.encryptedData;
-    const displayName = encData?.firstName && encData?.lastName 
-      ? `${encData.firstName} ${encData.lastName.charAt(0)}.`
-      : 'Patient';
+    const displayName =
+      encData?.firstName && encData?.lastName
+        ? `${encData.firstName} ${encData.lastName.charAt(0)}.`
+        : 'Patient';
     const birthYear = encData?.birthDate ? new Date(encData.birthDate).getFullYear() : '—';
     const gender = this.translateGender(encData?.gender, lang);
 
@@ -202,13 +203,13 @@ export class PDFTemplateService {
         const answer = answers.get(q.id);
         const answerDisplay = this.formatAnswer(answer, q.type, options.language);
         // Use labelKey as question text (in production, translate via i18n)
-        return this.renderQuestion(q.labelKey, answerDisplay, options.template);
+        return this.renderQuestion(q.labelKey ?? q.text ?? '', answerDisplay, options.template);
       })
       .join('\n');
 
     return `
     <div class="section">
-      <div class="section-title">${this.escapeHtml(section.titleKey)}</div>
+      <div class="section-title">${this.escapeHtml(section.titleKey ?? section.title ?? '')}</div>
       ${questions}
     </div>`;
   }
@@ -252,7 +253,7 @@ export class PDFTemplateService {
 
     // Handle different answer types
     if (typeof answer === 'boolean') {
-      return lang === 'de' ? (answer ? 'Ja' : 'Nein') : (answer ? 'Yes' : 'No');
+      return lang === 'de' ? (answer ? 'Ja' : 'Nein') : answer ? 'Yes' : 'No';
     }
 
     if (typeof answer === 'number') {
@@ -275,9 +276,10 @@ export class PDFTemplateService {
    */
   private static renderFooter(options: PDFTemplateOptions): string {
     if (!options.footerText) {
-      const defaultText = options.language === 'de'
-        ? 'Erstellt mit Anamnese-App • Alle Daten lokal gespeichert • DSGVO-konform'
-        : 'Created with Anamnese-App • All data stored locally • GDPR compliant';
+      const defaultText =
+        options.language === 'de'
+          ? 'Erstellt mit Anamnese-App • Alle Daten lokal gespeichert • DSGVO-konform'
+          : 'Created with Anamnese-App • All data stored locally • GDPR compliant';
       return `<div class="footer">${this.escapeHtml(defaultText)}</div>`;
     }
     return `<div class="footer">${this.escapeHtml(options.footerText)}</div>`;
@@ -304,10 +306,7 @@ export class PDFTemplateService {
     questionnaire: QuestionnaireEntity,
     template: PDFTemplateType,
   ): number {
-    const totalQuestions = questionnaire.sections.reduce(
-      (sum, s) => sum + s.questions.length,
-      0,
-    );
+    const totalQuestions = questionnaire.sections.reduce((sum, s) => sum + s.questions.length, 0);
 
     // Rough estimates based on template density
     const questionsPerPage: Record<PDFTemplateType, number> = {

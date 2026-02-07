@@ -1,6 +1,6 @@
 /**
  * ExportGDT Use Case - Export zu Praxissystem (GDT Format)
- * 
+ *
  * FLOW:
  * Presentation Layer (ExportScreen)
  *   → Use Case
@@ -20,6 +20,7 @@ import { QuestionnaireEntity } from '@domain/entities/Questionnaire';
 import { AnswerValue } from '@domain/entities/Answer';
 import { GDTExportVO, GDTRecordBuilder } from '@domain/value-objects/GDTExport';
 import { decodeMultiChoiceBitset } from '@domain/value-objects/CompartmentAnswerEncoding';
+import { encryptionService } from '@infrastructure/encryption/encryptionService';
 import { requireRNFS } from '@shared/rnfsSafe';
 import { supportsRNFS } from '@shared/platformCapabilities';
 
@@ -47,15 +48,12 @@ export class ExportGDTUseCase {
     private readonly questionnaireRepository: IQuestionnaireRepository,
     private readonly answerRepository: IAnswerRepository,
     private readonly gdprRepository: IGDPRConsentRepository,
-  ) {}
+  ) { }
 
   async execute(input: ExportGDTInput): Promise<ExportGDTOutput> {
     try {
       // Step 1: Check GDPR Consent für GDT Export
-      const hasConsent = await this.gdprRepository.hasActiveConsent(
-        input.patientId,
-        'gdt_export',
-      );
+      const hasConsent = await this.gdprRepository.hasActiveConsent(input.patientId, 'gdt_export');
 
       if (!hasConsent) {
         return {
@@ -89,18 +87,16 @@ export class ExportGDTUseCase {
       );
 
       // Step 5: Build GDT Export
-      const gdtExport = await this.buildGDTExport(
-        patient,
-        questionnaire,
-        answersMap,
-        input,
-      );
+      const gdtExport = await this.buildGDTExport(patient, questionnaire, answersMap, input);
 
       // Step 6: Save to File
-      const filePath = await this.saveGDTFile(gdtExport, input.patientId);
+      const filePath = await this.saveGDTFile(gdtExport, input.encryptionKey);
 
       // Step 7: Add Audit Log
-      const updatedPatient = patient.addAuditLog('exported', `GDT export to ${input.receiverId ?? 'PVS'}`);
+      const updatedPatient = patient.addAuditLog(
+        'exported',
+        `GDT export to ${input.receiverId ?? 'PVS'}`,
+      );
       await this.patientRepository.save(updatedPatient);
 
       return {
@@ -172,16 +168,17 @@ export class ExportGDTUseCase {
     let text = 'MEDIZINISCHE ANAMNESE\n\n';
 
     for (const section of questionnaire.sections) {
-      text += `${section.titleKey.toUpperCase()}\n`;
-      text += '='.repeat(section.titleKey.length) + '\n\n';
+      const title = section.titleKey ?? section.title ?? 'SECTION'; // Fallback
+      text += `${title.toUpperCase()}\n`;
+      text += '='.repeat(title.length) + '\n\n';
 
       for (const question of section.questions) {
         const answer = answersMap.get(question.id);
-        
+
         if (answer !== undefined && answer !== null) {
           text += `${question.labelKey}: `;
           text += this.formatAnswer(question, answer);
-          
+
           text += '\n';
         }
       }
@@ -198,7 +195,7 @@ export class ExportGDTUseCase {
   ): string {
     // Legacy array-based multiselect
     if (Array.isArray(answer)) {
-      return answer.map((v) => String(v)).join(', ');
+      return answer.map(v => String(v)).join(', ');
     }
 
     if (typeof answer === 'boolean') {
@@ -211,14 +208,14 @@ export class ExportGDTUseCase {
       if (question.type === 'multiselect' || question.type === 'checkbox') {
         const selectedBitPositions = decodeMultiChoiceBitset(answer);
         const labels = selectedBitPositions
-          .map((bitPos) => question.options?.find((o) => o.value === bitPos)?.labelKey)
+          .map(bitPos => question.options?.find(o => o.value === bitPos)?.labelKey)
           .filter((v): v is string => typeof v === 'string' && v.length > 0);
 
         return labels.length > 0 ? labels.join(', ') : answer.toString();
       }
 
       // Single-choice numeric option values
-      const match = question.options.find((o) => o.value === answer);
+      const match = question.options.find(o => o.value === answer);
       if (match) {
         return String(match.labelKey);
       }
@@ -231,26 +228,27 @@ export class ExportGDTUseCase {
   /**
    * Save GDT File
    */
-  private async saveGDTFile(gdtExport: GDTExportVO, patientId: string): Promise<string> {
+  private async saveGDTFile(gdtExport: GDTExportVO, encryptionKey: string): Promise<string> {
     if (!supportsRNFS) {
       throw new Error('File system export is not supported on this platform');
     }
     const RNFS = requireRNFS();
 
     // Create exports directory
-    const exportsDir = `${RNFS.DocumentDirectoryPath}/exports`;
+    const exportsDir = RNFS.TemporaryDirectoryPath ?? `${RNFS.DocumentDirectoryPath}/exports`;
     await RNFS.mkdir(exportsDir);
 
-    // Generate filename
+    // Generate filename (no patient identifiers)
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-    const fileName = `anamnese_${patientId.substring(0, 8)}_${timestamp}.gdt`;
+    const fileName = `anamnese_${timestamp}.gdt.enc`;
     const filePath = `${exportsDir}/${fileName}`;
 
     // Convert to GDT string
     const gdtString = gdtExport.toGDTString();
 
-    // Write file (ISO-8859-1 encoding für GDT)
-    await RNFS.writeFile(filePath, gdtString, 'ascii');
+    // Encrypt export before writing to disk
+    const encrypted = await encryptionService.encrypt(gdtString, encryptionKey);
+    await RNFS.writeFile(filePath, encrypted.toString(), 'utf8');
 
     return filePath;
   }

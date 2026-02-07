@@ -24,15 +24,19 @@ const OUT_PATH = path.join(
 );
 
 function parseBool(v) {
-  return String(v || '').trim().toLowerCase() === 'yes';
+  return (
+    String(v || '')
+      .trim()
+      .toLowerCase() === 'yes'
+  );
 }
 
 function splitCsv(value) {
   if (!value) return [];
   return String(value)
     .split(',')
-    .map((s) => s.trim())
-    .filter((s) => s.length > 0);
+    .map(s => s.trim())
+    .filter(s => s.length > 0);
 }
 
 function baseCodeFromFieldName(fieldName) {
@@ -126,7 +130,9 @@ function parseStrukturOrder(strukturText) {
 }
 
 function mapQuestionType(fieldType) {
-  const t = String(fieldType || '').trim().toLowerCase();
+  const t = String(fieldType || '')
+    .trim()
+    .toLowerCase();
   switch (t) {
     case 'text':
       return 'text';
@@ -158,7 +164,7 @@ function normalizeOptionLabel(label) {
 }
 
 function isYesNoOptionSet(optionLabels) {
-  const lowered = optionLabels.map((l) => l.toLowerCase());
+  const lowered = optionLabels.map(l => l.toLowerCase());
   return lowered.includes('ja') && lowered.includes('nein') && optionLabels.length === 2;
 }
 
@@ -170,7 +176,10 @@ function parseOptionMappings(optionLabels, questionType) {
   // Birthdate select lists from Master include a leading placeholder label
   // (Tag/Monat/Jahr) and then real values.
   const firstLower = labels[0]?.toLowerCase();
-  if (questionType !== 'multiselect' && (firstLower === 'tag' || firstLower === 'monat' || firstLower === 'jahr')) {
+  if (
+    questionType !== 'multiselect' &&
+    (firstLower === 'tag' || firstLower === 'monat' || firstLower === 'jahr')
+  ) {
     const mapped = [{ value: 0, labelKey: labels[0] }];
     for (let i = 1; i < labels.length; i++) {
       const label = labels[i];
@@ -194,7 +203,7 @@ function parseOptionMappings(optionLabels, questionType) {
 
   if (isYesNoOptionSet(labels)) {
     // standardize: Ja=1, Nein=0
-    return labels.map((label) => {
+    return labels.map(label => {
       const lower = label.toLowerCase();
       return { value: lower === 'ja' ? 1 : 0, labelKey: label };
     });
@@ -212,7 +221,10 @@ function parseGotoMap(mapStr) {
   if (!raw) return [];
 
   const cleaned = raw.replace(/\s+/g, ' ');
-  const parts = cleaned.split(/;|\s{2,}/g).map((p) => p.trim()).filter(Boolean);
+  const parts = cleaned
+    .split(/;|\s{2,}/g)
+    .map(p => p.trim())
+    .filter(Boolean);
 
   const edges = [];
   for (const part of parts) {
@@ -225,16 +237,20 @@ function parseGotoMap(mapStr) {
 
 function sectionIdFromAnchor(anchor) {
   // "#q1001" -> "q1001"
-  return String(anchor || '').trim().replace(/^#/, '');
+  return String(anchor || '')
+    .trim()
+    .replace(/^#/, '');
 }
 
 function parseMasterRows(tsv) {
-  const lines = tsv.split(/\r?\n/).filter((l) => l.trim().length > 0);
+  const lines = tsv.split(/\r?\n/).filter(l => l.trim().length > 0);
   if (lines.length === 0) return [];
 
-  const header = lines[0]
-    .split('\t')
-    .map((h) => String(h).replace(/^\uFEFF/, '').trim());
+  const header = lines[0].split('\t').map(h =>
+    String(h)
+      .replace(/^\uFEFF/, '')
+      .trim(),
+  );
   const rows = [];
   for (let i = 1; i < lines.length; i++) {
     const cols = lines[i].split('\t');
@@ -310,7 +326,10 @@ function main() {
       if (max) validation.max = Number(max);
     }
 
-    const hidden = String(getCol(row, 'field_type') || '').trim().toLowerCase() === 'hidden';
+    const hidden =
+      String(getCol(row, 'field_type') || '')
+        .trim()
+        .toLowerCase() === 'hidden';
 
     const orderHintRaw = String(getCol(row, 'section_order_hint') || '').trim();
     const orderHint = orderHintRaw ? Number(orderHintRaw) : undefined;
@@ -378,15 +397,11 @@ function main() {
     const a = sectionsById.get(aId);
     const b = sectionsById.get(bId);
     const aMin = Math.min(
-      ...a.questions
-        .map((q) => q.metadata?.strukturOrder)
-        .filter((v) => typeof v === 'number'),
+      ...a.questions.map(q => q.metadata?.strukturOrder).filter(v => typeof v === 'number'),
       Number.POSITIVE_INFINITY,
     );
     const bMin = Math.min(
-      ...b.questions
-        .map((q) => q.metadata?.strukturOrder)
-        .filter((v) => typeof v === 'number'),
+      ...b.questions.map(q => q.metadata?.strukturOrder).filter(v => typeof v === 'number'),
       Number.POSITIVE_INFINITY,
     );
     if (aMin !== bMin) return aMin - bMin;
@@ -436,18 +451,21 @@ function main() {
   function resolveEncodedOptionValue(sourceQuestion, optionText) {
     if (!sourceQuestion || !sourceQuestion.options) return undefined;
 
-    const needle = String(optionText || '').trim().toLowerCase();
+    const needle = String(optionText || '')
+      .trim()
+      .toLowerCase();
 
     // Match by labelKey (human label)
     const match = sourceQuestion.options.find(
-      (o) => String(o.labelKey || '').trim().toLowerCase() === needle,
+      o =>
+        String(o.labelKey || '')
+          .trim()
+          .toLowerCase() === needle,
     );
     if (match) return match.value;
 
     // Fallback: try raw equality
-    const match2 = sourceQuestion.options.find(
-      (o) => String(o.labelKey || '').includes(optionText),
-    );
+    const match2 = sourceQuestion.options.find(o => String(o.labelKey || '').includes(optionText));
     return match2 ? match2.value : undefined;
   }
 
@@ -502,7 +520,7 @@ function main() {
 
   const out = {
     version: 'master-generated-1',
-    sections: sectionOrder.map((id) => sectionsById.get(id)),
+    sections: sectionOrder.map(id => sectionsById.get(id)),
   };
 
   fs.mkdirSync(path.dirname(OUT_PATH), { recursive: true });

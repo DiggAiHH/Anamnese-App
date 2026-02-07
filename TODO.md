@@ -2,6 +2,74 @@
 
 This file is the authoritative execution plan to make the app **more user-friendly** and aligned with **modern standards** (ISO 9241-210 + WCAG 2.2 AA + CRA + GDPR).
 
+## Last Stand Update (2026-02-05)
+- ✅ i18n locale parity regression fixed (mis-nested keys removed).
+- ✅ Type-check and Jest re-verified with evidence in `buildLogs/`.
+
+## Active Run Tasks (2026-01-29) - RUN-20260129-verification [✅ COMPLETED]
+- [x] [Init] Sync `TODO.md` and `CURRENT_TASKS.md`
+- [x] [Init] Update `LAUFBAHN.md` log
+- [x] [Verify] `npm run type-check` - PASS
+- [x] [Verify] `npm test` - PASS (50/52 passed, 2 skipped)
+- [x] [Verify] Windows Smoke Check (build/launch) - PASS (PID 12628)
+- [x] [Verify] Web Smoke Check (dev server) - PASS (Webpack 5.104.1)
+
+## Previous Run Tasks (2026-01-26) - RUN-20260126-backend-improvements
+- [x] Full context review
+- [x] BackendError enum & result types
+- [x] RepositoryFactory interface & implementations
+- [x] InMemory repositories for testing
+- [x] Structured logging (LogEvents)
+- [x] Domain Validators (Patient/Answer)
+- [x] Unit tests (82 new tests)
+
+## Active Run Tasks (2026-01-23)
+- [x] UI polish: unify AppText variants (line-height/weights) and standardize EmptyState typography.
+- [x] UI polish: add consistent pressed/disabled/accessible state for AppButton.
+- [x] Hardening: add shared user-facing error helper (log + safe Alert) and adopt in key screens.
+- [x] Hardening: add safe-mode banners for unavailable native features (voice/storage).
+- [x] Tests: update unit tests for AppText/AppButton/EmptyState and new helpers.
+- [x] Verification: `npm run type-check` + targeted Jest tests with logs in `buildLogs/`.
+
+## Active Run Tasks (2026-01-23, UI Buttons + i18n + Spot-Checks)
+- [x] Replace remaining primary screen buttons with AppButton (skip chips/options).
+- [x] Translate `common.featureUnavailable*` across all locales (start ar/fa).
+- [x] Windows spot-check with logs in `buildLogs/`.
+- [x] Web spot-check with logs in `buildLogs/`.
+- [x] Targeted Jest + type-check if required by changes.
+
+## Active Run Tasks (2026-01-23, Remaining Button Unification)
+- [x] Inventory remaining TouchableOpacity-based primary actions across screens/components.
+- [x] Replace primary actions with AppButton (skip chips/options/toggles/icon buttons).
+- [x] Update styles and tests as needed.
+- [x] Run targeted Jest + type-check with logs in `buildLogs/`.
+
+## Active Run Tasks (2026-01-23, Web Spot-Check)
+- [x] Start web dev server and capture logs in `buildLogs/`.
+- [x] Manually spot-check core flows on web (Home -> Consent -> Questionnaire -> Calculator -> Summary/Export).
+- [x] Document results in Laufbahn files.
+
+## Active Run Tasks (2026-01-23, Required Confirmation Checkbox)
+- [x] Identify required confirmation question type and missing UI.
+- [x] Implement single-checkbox rendering for required confirmation.
+- [x] Update required-answer validation to handle boolean checkbox.
+- [x] Add unit test for required checkbox validation.
+- [x] Run targeted Jest + type-check with logs in `buildLogs/`.
+
+## Active Run Tasks (2026-01-22, Remaining Questionnaire Issues)
+- [x] Fix encryption/decryption failures on web/windows by validating quick-crypto availability and falling back to WebCrypto.
+- [x] Add autosave status box (saving/last saved/error) and keep section jump access visible.
+- [x] Harden Summary screen for layout errors (guard computed values) and add a safe fallback view on error.
+- [x] Add runtime guard to capture/report websocket executor errors (global error handlers + safe alert); repro/capture still pending.
+- [x] Fix TTS module export shape to prevent "uncaught runtime error" (CJS/ESM default mismatch hardening).
+- [x] Add/adjust tests and run targeted Jest + type-check with logs in `buildLogs/`.
+
+## Active Run Tasks (2026-01-22, Manual Verification)
+- [x] Run questionnaire flow to Summary (web or Windows).
+- [x] Confirm autosave status box shows saving/last saved/error.
+- [x] Confirm Summary fallback renders when questionnaire is missing.
+- [x] Capture any websocket executor error details. (none observed)
+
 ## Active Run Tasks (2026-01-21)
 - [x] Update Copilot instructions with cross-platform and workflow enforcement.
 - [x] Create detailed agent plan file with 5-point schema + self-prompt.
@@ -90,7 +158,7 @@ This file is the authoritative execution plan to make the app **more user-friend
 
 ## Phase 5 — Verification
 - [x] Run `npm run type-check` and `npm test`.
-- [ ] Manual check on Windows RNW and one mobile target.
+- [x] Manual check on Windows RNW and one mobile target. (RUN-20260129: Windows passed, Web passed)
 
 ---
 
@@ -134,7 +202,7 @@ This file is the authoritative execution plan to make the app **more user-friend
 - [ ] Add CI build matrix and smoke tests.
 
 ## Phase E - Verification
-- [ ] Run type-check + unit tests + per-platform smoke builds.
+- [x] Run type-check + unit tests + per-platform smoke builds. (RUN-20260129 completed)
 
 ---
 

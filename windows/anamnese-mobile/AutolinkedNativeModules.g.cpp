@@ -18,9 +18,6 @@
 // Includes from react-native-sqlite-storage
 #include <winrt/SQLitePlugin.h>
 
-// Includes from react-native-tts
-#include <winrt/RNTTS.h>
-
 namespace winrt::Microsoft::ReactNative
 {
 
@@ -36,8 +33,6 @@ void RegisterAutolinkedNativeModulePackages(winrt::Windows::Foundation::Collecti
     packageProviders.Append(winrt::ReactNativeShare::ReactPackageProvider());
     // IReactPackageProviders from react-native-sqlite-storage
     packageProviders.Append(winrt::SQLitePlugin::ReactPackageProvider());
-    // IReactPackageProviders from react-native-tts
-    packageProviders.Append(winrt::RNTTS::ReactPackageProvider());
 }
 
 }

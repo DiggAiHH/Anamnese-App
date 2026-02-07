@@ -25,12 +25,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 // Types
 // ─────────────────────────────────────────────────────────────────────────────
 
-export type EventCategory =
-  | 'screen_view'
-  | 'action'
-  | 'error'
-  | 'performance'
-  | 'feature_usage';
+export type EventCategory = 'screen_view' | 'action' | 'error' | 'performance' | 'feature_usage';
 
 export interface AnalyticsEvent {
   /** Random UUID per session (not persistent) */
@@ -154,9 +149,7 @@ export class LocalAnalyticsService {
     if (!this.initialized) await this.initialize();
 
     // Sanitize metadata - strip any potential PII patterns
-    const sanitizedMetadata = metadata
-      ? this.sanitizeMetadata(metadata)
-      : undefined;
+    const sanitizedMetadata = metadata ? this.sanitizeMetadata(metadata) : undefined;
 
     const event: AnalyticsEvent = {
       sessionId: this.sessionId,
@@ -186,7 +179,10 @@ export class LocalAnalyticsService {
   /**
    * Track action (convenience method)
    */
-  async trackAction(actionName: string, metadata?: Record<string, string | number | boolean>): Promise<void> {
+  async trackAction(
+    actionName: string,
+    metadata?: Record<string, string | number | boolean>,
+  ): Promise<void> {
     await this.trackEvent('action', actionName, metadata);
   }
 

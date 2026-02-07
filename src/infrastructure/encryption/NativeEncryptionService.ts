@@ -1,6 +1,6 @@
 /**
  * Native AES-256-GCM Encryption Service
- * 
+ *
  * Verwendet react-native-quick-crypto für hardware-beschleunigte Verschlüsselung
  * DSGVO-konform: Alle Operationen lokal, keine externen APIs
  */
@@ -22,9 +22,28 @@ type QuickCryptoModule = {
     digest: string,
     cb: (err: unknown, derivedKey: Buffer) => void,
   ) => void;
-  createCipheriv: (algorithm: string, key: Buffer, iv: Buffer) => any;
-  createDecipheriv: (algorithm: string, key: Buffer, iv: Buffer) => any;
-  createHash: (algorithm: string) => { update: (s: string) => void; digest: (enc: string) => string };
+  createCipheriv: (
+    algorithm: string,
+    key: Buffer,
+    iv: Buffer,
+  ) => {
+    update: (data: string, inputEncoding: BufferEncoding) => Buffer;
+    final: () => Buffer;
+    getAuthTag: () => Buffer;
+  };
+  createDecipheriv: (
+    algorithm: string,
+    key: Buffer,
+    iv: Buffer,
+  ) => {
+    setAuthTag: (tag: Buffer) => void;
+    update: (data: Buffer) => Buffer;
+    final: () => Buffer;
+  };
+  createHash: (algorithm: string) => {
+    update: (s: string) => void;
+    digest: (enc: string) => string;
+  };
 };
 
 function getQuickCryptoOrThrow(): QuickCryptoModule {
@@ -54,10 +73,7 @@ export class NativeEncryptionService implements IEncryptionService {
   /**
    * Master Key aus Passwort ableiten (PBKDF2)
    */
-  async deriveKey(
-    password: string,
-    salt?: string,
-  ): Promise<{ key: string; salt: string }> {
+  async deriveKey(password: string, salt?: string): Promise<{ key: string; salt: string }> {
     this.ensurePasswordStrength(password);
 
     const qc = getQuickCryptoOrThrow();
@@ -129,7 +145,9 @@ export class NativeEncryptionService implements IEncryptionService {
         salt: salt.toString('base64'),
       });
     } catch (error) {
-      throw new Error(`Encryption failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Encryption failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      );
     }
   }
 
@@ -165,7 +183,9 @@ export class NativeEncryptionService implements IEncryptionService {
 
       return plaintext.toString('utf8');
     } catch (error) {
-      throw new Error(`Decryption failed: ${error instanceof Error ? error.message : 'Wrong key or corrupted data'}`);
+      throw new Error(
+        `Decryption failed: ${error instanceof Error ? error.message : 'Wrong key or corrupted data'}`,
+      );
     }
   }
 

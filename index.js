@@ -2,6 +2,9 @@
  * @format
  */
 
+// Polyfill crypto for UUID/Password generation
+
+
 // Safe import for react-native-gesture-handler (may crash on Windows if not linked)
 try {
   require('react-native-gesture-handler');
@@ -11,6 +14,9 @@ try {
     console.warn('[GestureHandler] Not available:', e?.message || e);
   }
 }
+
+// Dev-only guard to pinpoint the source of "Text strings must be rendered within a <Text> component"
+import './src/shared/devNakedTextGuard';
 
 import React from 'react';
 import { AppRegistry } from 'react-native';

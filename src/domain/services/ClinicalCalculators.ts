@@ -147,7 +147,8 @@ export class ClinicalCalculators {
   static calculateCardiovascularRisk(input: CardioRiskInput): CardioRiskResult | null {
     // Input validation - includes NaN checks
     if (!Number.isFinite(input.age) || input.age < 20 || input.age > 100) return null;
-    if (!Number.isFinite(input.systolicBP) || input.systolicBP < 60 || input.systolicBP > 250) return null;
+    if (!Number.isFinite(input.systolicBP) || input.systolicBP < 60 || input.systolicBP > 250)
+      return null;
 
     // Base risk score calculation (simplified)
     let riskScore = 0;
@@ -338,10 +339,7 @@ export class ClinicalCalculators {
    * @param gender - 'male' or 'female'
    * @returns Ideal weight in kg, or null if invalid input
    */
-  static calculateIdealBodyWeight(
-    heightCm: number,
-    gender: 'male' | 'female',
-  ): number | null {
+  static calculateIdealBodyWeight(heightCm: number, gender: 'male' | 'female'): number | null {
     // Input validation - includes NaN check
     if (!Number.isFinite(heightCm) || heightCm <= 0 || heightCm > 300) return null;
 

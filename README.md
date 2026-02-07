@@ -43,6 +43,12 @@ Details: [docs/03_ARCHITECTURE.md](docs/03_ARCHITECTURE.md)
 # Dependencies installieren
 npm install
 
+# TypeScript Check
+npm run type-check
+
+# Tests ausführen
+npm test
+
 # Hinweis: In diesem Workspace-Snapshot sind die nativen Projektordner (z.B. android/ios/) aktuell nicht enthalten.
 # Für Builds auf Android/iOS müssen diese Ordner im Projekt vorhanden sein.
 
@@ -52,9 +58,42 @@ npm run android
 # iOS Build (wenn ios/ vorhanden)
 npm run ios
 
+# macOS Build (wenn macos/ vorhanden)
+npm run macos
+
 # Windows Build (wenn windows/ vorhanden)
 npm run windows
+
+# Web Build (Production)
+npm run web:build
+
+# Web Dev Server (Development)
+npm run web
 ```
+
+## 🌐 Web Deployment
+
+The app can be deployed as a Progressive Web App (PWA) to platforms like Netlify, Vercel, or any static hosting service.
+
+**Quick Deploy to Netlify:**
+
+```bash
+# Build production bundle
+npm run web:build
+
+# Deploy using Netlify CLI
+netlify deploy --prod --dir=web/dist
+```
+
+For detailed deployment instructions, see [DEPLOYMENT.md](DEPLOYMENT.md).
+
+**Live Demo:** _(Add your Netlify URL here after deployment)_
+
+**Note:** Web version has limited functionality compared to native apps:
+- ✅ Core questionnaire, GDPR consent, calculator, export
+- ⚠️ Storage: LocalStorage (instead of SQLite)
+- ⚠️ Encryption: WebCrypto (instead of quick-crypto)
+- ❌ Voice features (STT/TTS), secure keychain, native file system
 
 ## 🧪 Testing
 

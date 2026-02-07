@@ -70,3 +70,15 @@ coverage/
 # Temporary
 tmp/
 temp/
+
+# Build artifacts and logs
+buildLogs/
+buildLogs/*transcript*
+web/dist/
+react-native-share-*.tgz
+*.tgz
+patches/*.broken
+windows/**/obj.__old_*/
+
+# Local run notes
+CURRENT_TASKS.md

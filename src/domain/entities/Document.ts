@@ -1,6 +1,6 @@
 /**
  * Document Entity - repräsentiert ein hochgeladenes Dokument (z.B. Versichertenkarte)
- * 
+ *
  * DSGVO Requirements:
  * - Verschlüsselter Speicher
  * - OCR-Verarbeitung lokal (keine externen APIs)
@@ -157,11 +157,7 @@ export class DocumentEntity {
   /**
    * OCR Ergebnisse hinzufügen
    */
-  addOCRData(params: {
-    text: string;
-    confidence: number;
-    language: string;
-  }): DocumentEntity {
+  addOCRData(params: { text: string; confidence: number; language: string }): DocumentEntity {
     if (!this.data.ocrConsentGranted) {
       throw new Error('OCR consent not granted');
     }
@@ -261,7 +257,16 @@ export class DocumentEntity {
     const parseDate = (value: number | string | Date | undefined): Date =>
       value instanceof Date ? value : new Date(value ?? Date.now());
 
-    const rawAuditLog = typeof data.auditLog === 'string' ? JSON.parse(data.auditLog) : data.auditLog;
+    let rawAuditLog: unknown;
+    if (typeof data.auditLog === 'string') {
+      try {
+        rawAuditLog = JSON.parse(data.auditLog);
+      } catch {
+        rawAuditLog = [];
+      }
+    } else {
+      rawAuditLog = data.auditLog;
+    }
     const auditEntries: unknown[] = Array.isArray(rawAuditLog) ? rawAuditLog : [];
 
     return new DocumentEntity({
@@ -275,14 +280,16 @@ export class DocumentEntity {
       encryptedFilePath: data.encryptedFilePath,
       ocrData: data.ocrData
         ? typeof data.ocrData === 'string'
-          ? JSON.parse(data.ocrData)
+          ? (() => { try { return JSON.parse(data.ocrData as string); } catch { return undefined; } })()
           : data.ocrData
         : undefined,
       uploadedAt: parseDate(data.uploadedAt),
       updatedAt: parseDate(data.updatedAt),
       ocrConsentGranted: data.ocrConsentGranted,
       auditLog: auditEntries
-        .filter((entry): entry is Record<string, unknown> => typeof entry === 'object' && entry !== null)
+        .filter(
+          (entry): entry is Record<string, unknown> => typeof entry === 'object' && entry !== null,
+        )
         .map(entry => {
           const timestampValue = (entry as { timestamp?: unknown }).timestamp;
           return {

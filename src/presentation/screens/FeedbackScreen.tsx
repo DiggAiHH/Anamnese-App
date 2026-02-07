@@ -2,14 +2,13 @@
  * Feedback Screen
  * Allows users to submit improvement suggestions via email or clipboard.
  * ISO/WCAG: Token-based design system
- * 
+ *
  * @security No PII collected. Only category + freeform description.
  */
 
 import React, { useState } from 'react';
 import {
   View,
-  Text,
   StyleSheet,
   TouchableOpacity,
   TextInput,
@@ -23,6 +22,8 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/RootNavigator';
 import { FeedbackTextBuilder, FeedbackCategory } from '../../domain/services/FeedbackTextBuilder';
 import { colors, spacing, radius } from '../theme/tokens';
+import { AppButton } from '../components/AppButton';
+import { AppText } from '../components/AppText';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Feedback'>;
 
@@ -45,7 +46,7 @@ export const FeedbackScreen = (_props: Props): React.JSX.Element => {
     if (!description.trim()) {
       Alert.alert(
         t('common.error'),
-        t('feedback.errorEmpty', { defaultValue: 'Please enter a description.' })
+        t('feedback.errorEmpty', { defaultValue: 'Please enter a description.' }),
       );
       return;
     }
@@ -66,7 +67,7 @@ export const FeedbackScreen = (_props: Props): React.JSX.Element => {
         await Linking.openURL(mailtoUri);
         Alert.alert(
           t('common.success', { defaultValue: 'Success' }),
-          t('feedback.successEmail', { defaultValue: 'Email client opened.' })
+          t('feedback.successEmail', { defaultValue: 'Email client opened.' }),
         );
       } else {
         // Fallback: Copy to clipboard
@@ -75,8 +76,9 @@ export const FeedbackScreen = (_props: Props): React.JSX.Element => {
         Alert.alert(
           t('feedback.copiedTitle', { defaultValue: 'Copied to Clipboard' }),
           t('feedback.copiedMessage', {
-            defaultValue: 'Feedback text copied. Please paste it into an email to: ' + DEVELOPER_EMAIL,
-          })
+            defaultValue:
+              'Feedback text copied. Please paste it into an email to: ' + DEVELOPER_EMAIL,
+          }),
         );
       }
 
@@ -95,15 +97,16 @@ export const FeedbackScreen = (_props: Props): React.JSX.Element => {
         Alert.alert(
           t('feedback.copiedTitle', { defaultValue: 'Copied to Clipboard' }),
           t('feedback.copiedMessage', {
-            defaultValue: 'Feedback text copied. Please paste it into an email to: ' + DEVELOPER_EMAIL,
-          })
+            defaultValue:
+              'Feedback text copied. Please paste it into an email to: ' + DEVELOPER_EMAIL,
+          }),
         );
         setDescription('');
         setSelectedCategory('feature');
       } catch {
         Alert.alert(
           t('common.error'),
-          t('feedback.errorGeneric', { defaultValue: 'Could not send feedback.' })
+          t('feedback.errorGeneric', { defaultValue: 'Could not send feedback.' }),
         );
       }
     } finally {
@@ -115,7 +118,7 @@ export const FeedbackScreen = (_props: Props): React.JSX.Element => {
     if (!description.trim()) {
       Alert.alert(
         t('common.error'),
-        t('feedback.errorEmpty', { defaultValue: 'Please enter a description.' })
+        t('feedback.errorEmpty', { defaultValue: 'Please enter a description.' }),
       );
       return;
     }
@@ -128,22 +131,24 @@ export const FeedbackScreen = (_props: Props): React.JSX.Element => {
     Clipboard.setString(fullText);
     Alert.alert(
       t('feedback.copiedTitle', { defaultValue: 'Copied to Clipboard' }),
-      t('feedback.copiedMessageShort', { defaultValue: 'Feedback copied!' })
+      t('feedback.copiedMessageShort', { defaultValue: 'Feedback copied!' }),
     );
   };
 
   return (
     <ScrollView style={styles.container} testID="feedback-screen">
       <View style={styles.content}>
-        <Text style={styles.title}>{t('feedback.title', { defaultValue: 'Send Feedback' })}</Text>
-        <Text style={styles.subtitle}>
-          {t('feedback.subtitle', { defaultValue: 'Help us improve the app by sharing your thoughts.' })}
-        </Text>
+        <AppText style={styles.title}>{t('feedback.title', { defaultValue: 'Send Feedback' })}</AppText>
+        <AppText style={styles.subtitle}>
+          {t('feedback.subtitle', {
+            defaultValue: 'Help us improve the app by sharing your thoughts.',
+          })}
+        </AppText>
 
         {/* Category Selection */}
-        <Text style={styles.label}>
+        <AppText style={styles.label}>
           {t('feedback.categoryLabel', { defaultValue: 'Category' })}
-        </Text>
+        </AppText>
         <View style={styles.categoryContainer}>
           {CATEGORIES.map(({ key, labelKey }) => (
             <TouchableOpacity
@@ -157,21 +162,21 @@ export const FeedbackScreen = (_props: Props): React.JSX.Element => {
               accessibilityRole="button"
               accessibilityState={{ selected: selectedCategory === key }}
               accessibilityLabel={t(labelKey, { defaultValue: key })}>
-              <Text
+              <AppText
                 style={[
                   styles.categoryButtonText,
                   selectedCategory === key && styles.categoryButtonTextSelected,
                 ]}>
                 {t(labelKey, { defaultValue: key })}
-              </Text>
+              </AppText>
             </TouchableOpacity>
           ))}
         </View>
 
         {/* Description Input */}
-        <Text style={styles.label}>
+        <AppText style={styles.label}>
           {t('feedback.descriptionLabel', { defaultValue: 'Description' })}
-        </Text>
+        </AppText>
         <TextInput
           style={styles.textInput}
           multiline
@@ -186,41 +191,36 @@ export const FeedbackScreen = (_props: Props): React.JSX.Element => {
           testID="feedback-description-input"
           accessibilityLabel={t('feedback.descriptionLabel', { defaultValue: 'Description' })}
         />
-        <Text style={styles.charCount}>{description.length} / 2000</Text>
+        <AppText style={styles.charCount}>{description.length} / 2000</AppText>
 
         {/* Submit Buttons */}
         <View style={styles.buttonContainer}>
-          <TouchableOpacity
-            style={[styles.primaryButton, isSubmitting && styles.buttonDisabled]}
+          <AppButton
+            title={t('feedback.submitButton', { defaultValue: 'Send Feedback' })}
             onPress={handleSubmit}
             disabled={isSubmitting}
+            loading={isSubmitting}
             testID="feedback-submit-button"
-            accessibilityRole="button"
-            accessibilityLabel={t('feedback.submitButton', { defaultValue: 'Send Feedback' })}>
-            <Text style={styles.primaryButtonText}>
-              {t('feedback.submitButton', { defaultValue: 'Send Feedback' })}
-            </Text>
-          </TouchableOpacity>
+            accessibilityLabel={t('feedback.submitButton', { defaultValue: 'Send Feedback' })}
+          />
 
-          <TouchableOpacity
-            style={styles.secondaryButton}
+          <AppButton
+            title={t('feedback.copyButton', { defaultValue: 'Copy to Clipboard' })}
+            variant="secondary"
             onPress={handleCopyOnly}
             testID="feedback-copy-button"
-            accessibilityRole="button"
-            accessibilityLabel={t('feedback.copyButton', { defaultValue: 'Copy to Clipboard' })}>
-            <Text style={styles.secondaryButtonText}>
-              {t('feedback.copyButton', { defaultValue: 'Copy to Clipboard' })}
-            </Text>
-          </TouchableOpacity>
+            accessibilityLabel={t('feedback.copyButton', { defaultValue: 'Copy to Clipboard' })}
+          />
         </View>
 
         {/* Privacy Note */}
         <View style={styles.privacyNote}>
-          <Text style={styles.privacyText}>
+          <AppText style={styles.privacyText}>
             {t('feedback.privacyNote', {
-              defaultValue: 'Your feedback is sent directly to the developer. No personal data is collected.',
+              defaultValue:
+                'Your feedback is sent directly to the developer. No personal data is collected.',
             })}
-          </Text>
+          </AppText>
         </View>
       </View>
     </ScrollView>
@@ -299,33 +299,6 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     gap: spacing.sm,
-  },
-  primaryButton: {
-    backgroundColor: colors.primary,
-    paddingVertical: 14,
-    borderRadius: radius.md,
-    alignItems: 'center',
-  },
-  buttonDisabled: {
-    backgroundColor: colors.infoBorder,
-  },
-  primaryButtonText: {
-    color: colors.textInverse,
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  secondaryButton: {
-    backgroundColor: colors.surface,
-    paddingVertical: 14,
-    borderRadius: radius.md,
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: colors.borderLight,
-  },
-  secondaryButtonText: {
-    color: colors.textSecondary,
-    fontSize: 16,
-    fontWeight: '600',
   },
   privacyNote: {
     marginTop: spacing.xl,

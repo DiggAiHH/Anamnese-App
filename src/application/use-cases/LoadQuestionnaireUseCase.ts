@@ -1,6 +1,6 @@
 /**
  * LoadQuestionnaire Use Case - Lädt Fragebogen mit Antworten
- * 
+ *
  * FLOW:
  * Presentation Layer
  *   → Use Case
@@ -109,7 +109,9 @@ export class LoadQuestionnaireUseCase {
             }),
           ]);
         } catch {
-          logWarn('[LoadQuestionnaireUseCase] Failed to load/decrypt answers; continuing with empty answers.');
+          logWarn(
+            '[LoadQuestionnaireUseCase] Failed to load/decrypt answers; continuing with empty answers.',
+          );
           return new Map();
         } finally {
           if (timeoutId) clearTimeout(timeoutId);

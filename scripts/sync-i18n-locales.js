@@ -59,8 +59,8 @@ function main() {
 
   const files = fs
     .readdirSync(LOCALES_DIR)
-    .filter((name) => name.toLowerCase().endsWith('.json'))
-    .filter((name) => name !== BASE_LOCALE);
+    .filter(name => name.toLowerCase().endsWith('.json'))
+    .filter(name => name !== BASE_LOCALE);
 
   let updatedCount = 0;
   for (const fileName of files) {
@@ -72,7 +72,7 @@ function main() {
   }
 
   process.stdout.write(
-    `Synced ${updatedCount} locale(s) to base ${BASE_LOCALE} in ${path.relative(process.cwd(), LOCALES_DIR)}\n`
+    `Synced ${updatedCount} locale(s) to base ${BASE_LOCALE} in ${path.relative(process.cwd(), LOCALES_DIR)}\n`,
   );
 }
 

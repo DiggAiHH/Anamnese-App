@@ -1,114 +1,55 @@
-# Build and Run Progress Tracker
+# Build and Fix Progress Tracker
 
-**Started**: January 6, 2026
-**Goal**: Build and run the Anamnese-App (React Native + Windows)
-**Last Updated**: 16:45
-
----
-
-## STATUS: BUILD IN PROGRESS - SDK ISSUE FIXED
-
-### Current State (as of 16:45):
-1. ✅ WindowsTargetPlatformVersion updated to 10.0.26100.0 in vcxproj and ExperimentalFeatures.props
-2. ✅ NuGet restore completed successfully
-3. 🔄 C++ compilation started - Building dependency projects (Common, Folly, fmt)
-4. ⚠️ Build keeps getting cancelled/timing out in VS Code terminal
-
-### Key Fix Applied:
-Added `<WindowsTargetPlatformVersion>10.0.26100.0</WindowsTargetPlatformVersion>` to:
-- windows/anamnese-mobile/anamnese-mobile.vcxproj
-- windows/ExperimentalFeatures.props
-
-This resolved the SDK detection issue - builds now find Windows SDK 10.0.26100.0 correctly.
+**Goal**: Resolve User-Reported UI/UX Issues
+**Date**: February 2, 2026
 
 ---
 
-## Steps and Status
+## ✅ Completed Fixes
 
-### 1. Prerequisites Check - ✅ COMPLETED
-- Node.js v24.12.0 ✅
-- npm 11.7.0 ✅
-- PowerShell execution policy fixed: `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser`
+### 1. 🔴 Red Banner Removal
+- **Issue**: A persistent red banner appeared at the top of the screen.
+- **Cause**: Found a hardcoded `backgroundColor: '#ff0000'` // DIAGNOSTIC RED` in `src/presentation/navigation/RootNavigator.tsx`.
+- **Fix**: Changed the header background color to the app's primary blue (`#2563eb`).
 
-### 2. Install Dependencies - ✅ COMPLETED
-- `npm install` successful
-- node_modules populated
+### 2. ↕️ UI Offset ("Versatz")
+- **Issue**: A ~2cm vertical gap/offset at the top of the Master Password screen.
+- **Cause**: Hardcoded `paddingTop: 100` in `MasterPasswordScreen.tsx` specifically for Windows.
+- **Fix**: Removed the extra padding to let the standard `Container` layout handle safe areas correctly.
 
-### 3. Windows Platform Setup - ✅ COMPLETED
-- Windows folder exists with anamnese-mobile project
-
-### 4. Build Application - 🔄 IN PROGRESS
-**SDK Issue FIXED** - Configuration updated to use installed SDK 10.0.26100.0
-
-**Commands for next agent to run in a fresh terminal**:
-```powershell
-# Option 1: npm run windows (simpler but may timeout)
-npm run windows
-
-# Option 2: Direct MSBuild (more reliable)
-$msbuild = "C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\MSBuild.exe"
-& $msbuild "windows\anamnese-mobile.sln" /t:Restore,Build /p:Configuration=Debug /p:Platform=x64 /m /v:normal
-
-# Option 3: Open in Visual Studio
-# Just open windows\anamnese-mobile.sln in VS 2022 and build from there
-```
-
-**Build Output Location**: 
-- App: `windows\anamnese-mobile\x64\Debug\`
-- Dependencies: `node_modules\react-native-windows\build\x64\Debug\`
-
-### 5. Run Application - NOT_STARTED
-Will auto-launch after successful build
-
-### 6. Start Metro Bundler - NOT_STARTED  
-Command: `npm start`
+### 3. 🔘 Missing "Next" Button
+- **Issue**: Navigation buttons in the Questionnaire were missing or inaccessible.
+- **Cause**: `KeyboardAvoidingView` interactions on Windows, potentially pushing the footer off-screen.
+- **Fix**: Adjusted `KeyboardAvoidingView` behavior in `QuestionnaireScreen.tsx` (switched to `padding` based logic) to ensure the footer remains visible.
 
 ---
 
-## SUMMARY FOR NEW AGENT
 
-### ✅ Completed Successfully:
-1. **PowerShell Execution Policy**: Fixed with `Set-ExecutionPolicy RemoteSigned`
-2. **Prerequisites**: Node.js v24.12.0 and npm 11.7.0 verified
-3. **JavaScript Dependencies**: `npm install` completed, node_modules exists
-4. **Windows Platform**: windows/ folder exists with project structure
-5. **NuGet Restore**: Successfully completed
-6. **SDK Configuration**: FIXED - WindowsTargetPlatformVersion set to 10.0.26100.0
-7. **Partial Build**: C++ compilation started successfully (Common, Folly, fmt compiling)
+## Round 2 Fixes (Applied)
 
-### 🔧 Key Configuration Changes Made:
-1. Added to `windows/anamnese-mobile/anamnese-mobile.vcxproj` (in Globals PropertyGroup):
-   ```xml
-   <WindowsTargetPlatformVersion>10.0.26100.0</WindowsTargetPlatformVersion>
-   ```
-2. Added to `windows/ExperimentalFeatures.props`:
-   ```xml
-   <WindowsTargetPlatformVersion>10.0.26100.0</WindowsTargetPlatformVersion>
-   ```
+### 1. Data Integrity (Question Order)
+*   **Issue**: Questions were out of order because the app uses `questionnaire-template.json`, which was not synced with `Master.tsv`.
+*   **Fix**: Created and ran `scripts/update-questionnaire-from-tsv.ts` to parse `Master.tsv` and update the JSON template's section ordering.
 
-### ⚠️ Current Issue:
-- Build process starts correctly but gets cancelled/times out in VS Code terminal
-- Likely a terminal process timeout issue, not a build error
-- **Solution**: Run build in a longer-lived terminal or use Visual Studio 2022 GUI
+### 2. Global UI Offset
+*   **Issue**: `Container.tsx` had a hardcoded `paddingTop: 44` (originally for iOS safe area) that was applied globally, pushing content down on Windows.
+*   **Fix**: Removed the hardcoded padding. The app now relies on standard layout or safe area context where available.
 
-### 📋 Immediate Next Actions for New Agent:
-1. **FIRST**: Try `npm run windows` in a new terminal
-2. **IF TIMEOUT**: Open `windows\anamnese-mobile.sln` in Visual Studio 2022 and build from IDE
-3. **After build succeeds**: Metro bundler starts automatically, or run `npm start`
+### 3. Red Banner
+*   **Issue**: Persistent red bar at the top.
+*   **Fix**: Modified `RootNavigator.tsx` to explicitly force `headerStyle: { backgroundColor: '#2563eb' }` (Blue), overriding any potential default or theme inheritance that might default to red (e.g., error state).
 
-### 📂 Key Files:
-- Progress tracker: BUILD_PROGRESS.md (or this file)
-- Main project: windows/anamnese-mobile/anamnese-mobile.vcxproj  
-- Solution: windows/anamnese-mobile.sln
-- Build logs: buildLogs/
+### 4. Navigation Buttons (Questionnaire)
+*   **Issue**: "Next" and "Back" buttons were pushed off-screen or below the scrollable area.
+*   **Fix**: Refactored `QuestionnaireScreen.tsx` layout:
+    *   Moved the Footer (Buttons + Progress) **outside** the `ScrollView`.
+    *   This ensures the buttons are always visible at the bottom of the screen ("Sticky Footer").
+    *   Adjusted `KeyboardAvoidingView` behavior for Windows.
 
-### 🔍 System Info:
-- Windows SDK Installed: 10.0.26100.0 (at `C:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0`)
-- MSBuild Version: 17.14.23+b0019275e
-- VS 2022 Build Tools: `C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools`
-- **NOTE**: Only SDK 10.0.26100.0 is installed (older SDKs like 10.0.19041.0 are NOT present)
-
-### 🐛 Warnings (safe to ignore):
-- NU1504: Duplicate PackageReference in react-native-document-picker
-- NETSDK1138: net6.0 framework EOL warning in CodeGen project
-- NU1701: NuGet package compatibility warnings
+## Verification Steps (For User)
+1.  **Rebuild**: Run the clean build script again (`scripts/windows-cleanrun.ps1`) to ensure all changes (especially the JSON template update) are packaged.
+2.  **Verify Order**: Check if the Question Sections now match the order in `Master.tsv`.
+3.  **Verify UI**:
+    *   Check for Blue Header (No Red Banner).
+    *   Check for proper top alignment (No 2cm offset).
+    *   Check "Next" button is always visible at the bottom.

@@ -7,58 +7,94 @@
 
 ## AKTUELLER STATUS (LIVE)
 
-- **Letzter Stand (Fakten, ohne PII):** 2026-01-22 15:40 - Secure storage availability fix applied; tests + type-check PASS.
-- **Aktiver Run-ID:** RUN-20260122-1520-secure-storage
-- **Aktive Tasks:** (none) Secure storage fix complete; macOS verification pending host.
-- **Blocker:** macOS host required for runtime verification.
-- **Naechster verifizierter Schritt:** Optional macOS smoke run per platform guide.
+- **Letzter Stand (Fakten, ohne PII):** 2026-01-24 23:21 UTC - Navigation transition speed tuning started.
+- **Aktiver Run-ID:** RUN-20260124-2321-nav-transition-speed
+- **Status:** IN PROGRESS
+- **Aktive Tasks:** Faster + smoother page transitions; manual verification pending.
+- **Blocker:** None.
+- **Evidence:** Pending (manual verification).
 
-- **Update 2026-01-22 11:18:** Added TODO system to fix "count of null" error and ordered element-by-element tests.
+- **Platform Blockers (DEFERRED):**
+  - **Android:** adb/emulator missing on this host; Gradle TLS/PSK to Maven error.
+  - **macOS/iOS:** No macOS host available for builds.
+
+- **Update 2026-01-24 22:52:** PII transcript logs removed from version control; TTS tests expanded (Evidence: `buildLogs/tests_tts_service_update_20260124.out.log`).
+- **Update 2026-01-24 23:39:** Lint + auto-fix cleanup completed (Evidence: `buildLogs/lint_cleanup_20260124.out.log`, `buildLogs/lint_fix_cleanup_20260124.out.log`).
 
 ---
 
 ## AKTUELLER LAUF: 5 Pflichtpunkte (LIVE)
 
-> Run-ID: RUN-20260122-1520-secure-storage | Status: **IN_PROGRESS**
+> Run-ID: RUN-20260124-2321-nav-transition-speed | Status: **IN PROGRESS**
 
 1) **Ziel**
 
-- Outcome: Secure key storage available on macOS (where supported) and tests updated.
+- Outcome: Smoother, faster page transitions with consistent navigation flow.
 - DoD:
-  1. `supportsSecureKeychain` includes macOS.
-  2. Unit tests updated for macOS capability + keyManager behavior.
-  3. Targeted Jest tests PASS with evidence logs.
-  4. `npm run type-check` PASS with evidence logs.
-- Nicht-Ziele: No Windows keychain support (not provided by library), no new dependencies.
+  1. Transition config centralized in `src/presentation/navigation/RootNavigator.tsx`.
+  2. Faster transitions (shorter duration) on Windows and mobile.
+  3. No header or stack regressions.
+  4. Manual flow verification recorded.
+- Nicht-Ziele: No new screens, no redesign, no dependency upgrades.
 
 2) **Methodik**
 
-- Repro: Check platformCapabilities + keyManager gating.
-- Root Cause Hypothesen: macOS excluded from supportsSecureKeychain.
-- Fix-Strategie: Enable macOS flag; keep runtime keychain checks; update tests.
-- Verifikation: Jest + type-check with `buildLogs/` evidence.
+- Repro: Inspect stack navigator config, adjust transition spec/interpolator, verify navigation flow.
+- Root Cause Hypothesen: Default transition durations feel slow/inconsistent.
+- Fix-Strategie: Explicit transitionSpec + cardStyleInterpolator per platform.
+- Verifikation: Manual flow check.
 
 3) **Sprachen/Stack**
 
-- Sprachen: TypeScript/TSX, PowerShell.
-- Tools: npm, Jest.
+- Sprachen: TypeScript/TSX, React Navigation.
+- Tools: Manual UI verification.
 - Constraints: Keine PII in Logs; keine Secrets.
 
 4) **Struktur**
 
 - Dateien/Module (geplant):
-  - `src/shared/platformCapabilities.ts`
-  - `__tests__/shared/platformCapabilities.test.ts`
-  - `__tests__/shared/keyManager.test.ts`
+  - `src/presentation/navigation/RootNavigator.tsx`
+  - `LAUFBAHN.md`
+  - `docs/AGENT_LAUFBAHN.md`
 - Logs/Artefakte:
-  - `buildLogs/tests_secure_storage.*`
-  - `buildLogs/typecheck_secure_storage.*`
+  - Manual verification noted in Laufbahn.
 
 5) **Qualitaet/Muster**
 
-- Tests: Jest unit tests + type-check.
-- Security/Compliance: DSGVO Logging Policy.
-- Maintainability: minimal change-set.
+- Tests: Only if behavior change requires it.
+- Security/Compliance: DSGVO Logging Policy, no PII.
+- Maintainability: Minimal change-set, centralized config.
+
+---
+
+## PREVIOUS RUN: Rebuild after reboot (COMPLETED)
+
+3) **Sprachen/Stack**
+
+- Sprachen: PowerShell, MSBuild, RNW.
+- Tools: npm scripts, `scripts/windows-cleanrun.ps1`.
+- Constraints: Keine PII in Logs; keine Secrets.
+
+4) **Struktur**
+
+- Dateien/Module (geplant):
+  - `scripts/windows-cleanrun.ps1`
+  - `windows/*`
+  - `buildLogs/*`
+  - `LAUFBAHN.md`
+  - `docs/AGENT_LAUFBAHN.md`
+- Logs/Artefakte:
+  - `buildLogs/npm_install_rebuild_*`
+  - `buildLogs/typecheck_rebuild_*`
+  - `buildLogs/tests_rebuild_*`
+  - `buildLogs/windows-cleanrun_*`
+  - `buildLogs/windows-launch_*`
+
+5) **Qualitaet/Muster**
+
+- Tests: Type-check + Jest for rebuild evidence.
+- Security/Compliance: DSGVO Logging Policy, no PII.
+- Maintainability: Minimal change-set, path references only.
 
 ---
 
@@ -141,6 +177,7 @@
 
 | Run-ID | Timestamp (UTC+1) | Agent | Intent | Tool/Command | Files touched | Result | Evidence (Pfad) | Next |
 |---|---|---|---|---|---|---|---|---|
+| RUN-20260123-1237-question-order-audit | 2026-01-23 12:37 | Codex (GPT-5) | Locate question order sources and document them | read + edit | `docs/QUESTION_ORDER_SOURCES.md`, `CURRENT_TASKS.md`, `LAUFBAHN.md`, `docs/AGENT_LAUFBAHN.md` | PASS | `docs/QUESTION_ORDER_SOURCES.md` | Link CSV/XLSX source if provided |
 | RUN-20260121-2038-cross-platform-plan | 2026-01-21 20:38 | Copilot (GPT-5.2) | Cross-platform workflow enforcement + plan doc | edit files | `.github/copilot-instructions.md`, `docs/AGENT_OPTIMAL_PLAN.md`, `LAUFBAHN.md`, `docs/AGENT_LAUFBAHN.md`, `TODO.md` | PARTIAL (tests PASS, android FAIL) | `buildLogs/npm_test_latest.out.log`, `buildLogs/npm_test_latest.err.log`, `buildLogs/android_run_latest.out.log`, `buildLogs/android_run_latest.err.log` | Scaffold android/ios/macos/web, rerun android |
 | RUN-20260108-1500-eliminate-all-errors | 2026-01-08 15:00-16:00 | Copilot (Claude Opus 4.5) | Eliminate ALL TypeScript errors: Add findAll/update to repos, fix backup/restore types, add VoskSpeechService static methods | `npm test`, `replace_string_in_file`, `get_errors` | SQLiteQuestionnaireRepository.ts, SQLitePatientRepository.ts, BackupUseCase.ts, RestoreUseCase.ts, VoskSpeechService.ts, CalculatorScreen.tsx, DataManagementScreen.tsx, .markdownlint.json (renamed) | ✅ PASS (23 suites, 150 tests) | Terminal: 150 tests, 0 src/ errors | Await user input |
 | RUN-20260108-1400-compliance-fixes | 2026-01-08 14:00-15:30 | Copilot (Claude Opus 4.5) | GDPR Compliance: PII sanitization, dev-only logging, ErrorBoundary, markdownlint | `npm test`, `create_file`, `replace_string_in_file`, `get_errors` | sanitizeError.ts, logger.ts, ErrorBoundary.tsx, DataManagementScreen.tsx, TTSService.ts, VoskSpeechService.ts, .markdownlintrc.json, sanitizeError.test.ts | ✅ PASS (23 suites, 150 tests) | Terminal output: 150 tests passed | Await user input |
@@ -406,6 +443,11 @@ Diese 5 Punkte müssen in JEDEM neuen Vorhaben in dieser Datei stehen (Section �
 
 | Run-ID | Timestamp (UTC+1) | Agent | Intent | Tool/Command | Files touched | Result | Evidence (Pfad) | Next |
 |---|---|---|---|---|---|---|---|---|
+| RUN-20260124-2321-nav-transition-speed | 2026-01-24 23:21 | Codex (GPT-5) | Speed up and smooth stack transitions | `apply_patch` | `src/presentation/navigation/RootNavigator.tsx`, `LAUFBAHN.md`, `docs/AGENT_LAUFBAHN.md` | IN PROGRESS | (pending manual verification) | User verifies page transition flow |
+| RUN-20260123-1916-rebuild-after-reboot | 2026-01-23 19:16 | Codex (GPT-5) | Full rebuild after reboot with logs | `npm install`, `npm run type-check`, `npm test`, `windows-cleanrun.ps1 -SkipNpmCi`, `windows-launch.ps1` | `buildLogs/*`, `LAUFBAHN.md`, `docs/AGENT_LAUFBAHN.md` | PARTIAL (deploy error 100; manual install + launch OK) | `buildLogs/npm_install_rebuild_20260123_1916.*`, `buildLogs/typecheck_rebuild_20260123_1916.*`, `buildLogs/tests_rebuild_20260123_1916.*`, `buildLogs/windows-cleanrun_20260123_2015.*`, `buildLogs/windows-launch_20260123_2112.*`, `buildLogs/windows-dev-run_20260123_1916.*` | User confirms app window |
+| RUN-20260122-1920-questionnaire-manual-verify | 2026-01-22 19:20 | Copilot (GPT-5.2) | Plan manual verification run | edit files | `TODO.md`, `LAUFBAHN.md`, `docs/AGENT_LAUFBAHN.md` | PENDING (manual UI) | (n/a) | User runs flow, report observations |
+| RUN-20260122-1913-questionnaire-remaining | 2026-01-22 19:13 | Copilot (GPT-5.2) | Fix remaining questionnaire issues | `apply_patch`, `npm.cmd test`, `npm.cmd run type-check` | `src/shared/platformCapabilities.ts`, `__tests__/shared/platformCapabilities.test.ts`, `src/presentation/screens/QuestionnaireScreen.tsx`, `src/presentation/screens/SummaryScreen.tsx`, `TODO.md`, `LAUFBAHN.md`, `docs/AGENT_LAUFBAHN.md` | PARTIAL (websocket issue pending) | `buildLogs/tests_questionnaire_remaining.out.log`, `buildLogs/typecheck_questionnaire_remaining.out.log` | Capture websocket error repro/logs |
+| RUN-20260122-1748-questionnaire-errors | 2026-01-22 17:58 | Copilot (GPT-5.2) | Fix questionnaire runtime errors | `apply_patch`, `npm.cmd test`, `npm.cmd run type-check` | `src/domain/entities/Answer.ts`, `src/domain/entities/__tests__/AnswerCheckboxValidation.test.ts`, `src/presentation/screens/QuestionnaireScreen.tsx`, `src/presentation/screens/SummaryScreen.tsx`, `src/presentation/screens/DataManagementScreen.tsx`, `TODO.md`, `LAUFBAHN.md`, `docs/AGENT_LAUFBAHN.md` | PASS (tests PASS; NativeCommandError on PowerShell) | `buildLogs/tests_questionnaire_errors.out.log`, `buildLogs/typecheck_questionnaire_errors.out.log` | Manual flow check + websocket repro |
 | RUN-20260122-1054-multi-platform-ready | 2026-01-22 10:54 | Copilot (GPT-5.2) | Multi-platform readiness runs | `npm run web`, `npm run windows:run:log`, `npm run windows:launch:log`, `npm run android` | none | PARTIAL (web/Windows ok; Android blocked) | `buildLogs/web_latest.out.log`, `buildLogs/web_latest.err.log`, `buildLogs/windows-dev-run_latest.out.log`, `buildLogs/windows-dev-run_latest.err.log`, `buildLogs/windows-launch_latest.out.log`, `buildLogs/windows-launch_latest.err.log`, `buildLogs/android_run_latest.out.log`, `buildLogs/android_run_latest.err.log` | Install Android SDK/emulator; run iOS/macOS on macOS host |
 | RUN-20260122-1114-platform-guide | 2026-01-22 11:14 | Copilot (GPT-5.2) | Add platform testing guide | edit files | `docs/PLATFORM_TESTING_GUIDE.md`, `TODO.md`, `LAUFBAHN.md`, `docs/AGENT_LAUFBAHN.md` | PASS (docs only) | (n/a) | Use guide to run platform tests |
 | RUN-20260122-1118-count-null-plan | 2026-01-22 11:18 | Copilot (GPT-5.2) | Add fix plan + test order for null count error | edit files | `TODO.md`, `LAUFBAHN.md`, `docs/AGENT_LAUFBAHN.md` | PASS (docs only) | (n/a) | Locate error in logs, then implement fix |

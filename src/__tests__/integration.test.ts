@@ -79,13 +79,28 @@ class MockPatientRepository implements IPatientRepository {
 
 class MockGDPRConsentRepository implements IGDPRConsentRepository {
   async save(): Promise<void> {}
-  async findById(): Promise<GDPRConsentEntity | null> { return null; }
-  async findByPatientId(): Promise<GDPRConsentEntity[]> { return []; }
-  async findByPatientIdAndType(): Promise<GDPRConsentEntity | null> { return null; }
-  async hasActiveConsent(): Promise<boolean> { return true; }
+  async findById(): Promise<GDPRConsentEntity | null> {
+    return null;
+  }
+  async findByPatientId(): Promise<GDPRConsentEntity[]> {
+    return [];
+  }
+  async findByPatientIdAndType(): Promise<GDPRConsentEntity | null> {
+    return null;
+  }
+  async hasActiveConsent(): Promise<boolean> {
+    return true;
+  }
   async deleteByPatientId(): Promise<void> {}
-  async getAllActiveConsents(): Promise<GDPRConsentEntity[]> { return []; }
-  async getConsentHistory(_patientId: string, _type?: GDPRConsent['type']): Promise<GDPRConsentEntity[]> { return []; }
+  async getAllActiveConsents(): Promise<GDPRConsentEntity[]> {
+    return [];
+  }
+  async getConsentHistory(
+    _patientId: string,
+    _type?: GDPRConsent['type'],
+  ): Promise<GDPRConsentEntity[]> {
+    return [];
+  }
 }
 
 class MockQuestionnaireRepository implements IQuestionnaireRepository {
@@ -189,25 +204,41 @@ class MockAnswerRepository implements IAnswerRepository {
     return this.answers.filter(a => a.questionnaireId === questionnaireId);
   }
 
-  async findByQuestionId(questionnaireId: string, questionId: string): Promise<AnswerEntity | null> {
-    return this.answers.find(a => a.questionnaireId === questionnaireId && a.questionId === questionId) ?? null;
+  async findByQuestionId(
+    questionnaireId: string,
+    questionId: string,
+  ): Promise<AnswerEntity | null> {
+    return (
+      this.answers.find(
+        a => a.questionnaireId === questionnaireId && a.questionId === questionId,
+      ) ?? null
+    );
   }
 
   async delete(): Promise<void> {}
   async deleteByQuestionnaireId(): Promise<void> {}
-  async getDecryptedAnswersMap(questionnaireId: string, _encryptionKey: string): Promise<Map<string, AnswerValue>> {
+  async getDecryptedAnswersMap(
+    questionnaireId: string,
+    _encryptionKey: string,
+  ): Promise<Map<string, AnswerValue>> {
     const map = new Map<string, AnswerValue>();
     const encryption = new MockEncryptionService();
 
     const relevant = this.answers.filter(a => a.questionnaireId === questionnaireId);
     for (const ans of relevant) {
-      const decrypted = await encryption.decrypt(EncryptedDataVO.fromString(ans.encryptedValue), _encryptionKey);
+      const decrypted = await encryption.decrypt(
+        EncryptedDataVO.fromString(ans.encryptedValue),
+        _encryptionKey,
+      );
       map.set(ans.questionId, JSON.parse(decrypted));
     }
     return map;
   }
 
-  async getAnswersMap(questionnaireId: string, encryptionKey: string): Promise<Map<string, AnswerValue>> {
+  async getAnswersMap(
+    questionnaireId: string,
+    encryptionKey: string,
+  ): Promise<Map<string, AnswerValue>> {
     return this.getDecryptedAnswersMap(questionnaireId, encryptionKey);
   }
 }

@@ -1,7 +1,7 @@
 /**
  * FeedbackTextBuilder Service
  * Domain service for building structured feedback text for email/clipboard.
- * 
+ *
  * @security No PII is included in the generated text. User-provided description
  *           is sanitized (length-limited, no personal identifiers extracted).
  */
@@ -76,7 +76,10 @@ export class FeedbackTextBuilder {
   /**
    * Maps category to human-readable label.
    */
-  private static getCategoryLabel(category: FeedbackCategory, labels: Required<FeedbackLabels>): string {
+  private static getCategoryLabel(
+    category: FeedbackCategory,
+    labels: Required<FeedbackLabels>,
+  ): string {
     const categoryLabels: Record<FeedbackCategory, string> = {
       bug: labels.categoryBug,
       feature: labels.categoryFeature,
@@ -133,7 +136,11 @@ export class FeedbackTextBuilder {
    * @param customLabels Optional translated labels for i18n
    * @returns Encoded mailto: URI
    */
-  static buildMailtoUri(email: string, input: FeedbackInput, customLabels?: FeedbackLabels): string {
+  static buildMailtoUri(
+    email: string,
+    input: FeedbackInput,
+    customLabels?: FeedbackLabels,
+  ): string {
     const { subject, body } = this.build(input, customLabels);
     const encodedSubject = encodeURIComponent(subject);
     const encodedBody = encodeURIComponent(body);

@@ -19,8 +19,7 @@ function tryGetQuickCryptoWebcrypto(): RuntimeWebCrypto | null {
 }
 
 const runtimeCrypto =
-  tryGetQuickCryptoWebcrypto() ??
-  (globalThis as { crypto?: RuntimeWebCrypto } | undefined)?.crypto;
+  tryGetQuickCryptoWebcrypto() ?? (globalThis as { crypto?: RuntimeWebCrypto } | undefined)?.crypto;
 
 if (runtimeCrypto && typeof SharedEncryption.setCryptoProvider === 'function') {
   SharedEncryption.setCryptoProvider(runtimeCrypto);

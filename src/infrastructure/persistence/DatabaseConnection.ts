@@ -1,6 +1,6 @@
 /**
  * SQLite Database Setup
- * 
+ *
  * Verwendet react-native-sqlite-storage für lokale Datenbank
  * DSGVO-konform: Alle Daten lokal, verschlüsselt
  */
@@ -19,8 +19,8 @@ export type { SQLiteDatabase, SQLiteTransaction };
 export interface SQLiteExecuteResult {
   rows: {
     length: number;
-    item: (index: number) => any;
-    raw?: () => any[];
+    item: (index: number) => unknown;
+    raw?: () => unknown[];
   };
   rowsAffected: number;
   insertId?: number;
@@ -76,19 +76,22 @@ export class DatabaseConnection {
         transaction: (_scope: (tx: SQLiteTransaction) => void) => {
           logWarn('[Database] transaction called on Mock DB');
           return Promise.resolve({
-             executeSql: (_sql: string, _params?: any[]) => {},
-          } as unknown as SQLiteTransaction); 
+            executeSql: (_sql: string, _params?: unknown[]) => { },
+          } as unknown as SQLiteTransaction);
         },
-        readTransaction: (_scope: (tx: SQLiteTransaction) => void) => Promise.resolve({
-             executeSql: (_sql: string, _params?: any[]) => {},
-        } as unknown as SQLiteTransaction),
-        executeSql: (_stat: string, _params?: any[]) => {
-           logWarn('[Database] executeSql called on Mock DB');
-           return Promise.resolve([{
-             rows: { length: 0, item: (_i: number) => null, raw: () => [] },
-             rowsAffected: 0,
-             insertId: 0,
-           } as unknown as SQLiteExecuteResult]);
+        readTransaction: (_scope: (tx: SQLiteTransaction) => void) =>
+          Promise.resolve({
+            executeSql: (_sql: string, _params?: unknown[]) => { },
+          } as unknown as SQLiteTransaction),
+        executeSql: (_stat: string, _params?: unknown[]) => {
+          logWarn('[Database] executeSql called on Mock DB');
+          return Promise.resolve([
+            {
+              rows: { length: 0, item: (_i: number) => null, raw: () => [] },
+              rowsAffected: 0,
+              insertId: 0,
+            } as unknown as SQLiteExecuteResult,
+          ]);
         },
         attach: () => Promise.resolve(),
         detach: () => Promise.resolve(),
@@ -107,10 +110,12 @@ export class DatabaseConnection {
       });
 
       await this.initializeTables();
-      
+
       return this.db;
     } catch (error) {
-      throw new Error(`Failed to connect to database: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to connect to database: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      );
     }
   }
 
@@ -242,6 +247,38 @@ export class DatabaseConnection {
       ON documents(patient_id);
     `);
 
+    // Questions Table (QuestionUniverse)
+    await this.db.executeSql(`
+      CREATE TABLE IF NOT EXISTS questions (
+        id TEXT PRIMARY KEY,
+        template_id TEXT NOT NULL,
+        section_id TEXT,
+        type TEXT NOT NULL,
+        label_key TEXT NOT NULL,
+        placeholder_key TEXT,
+        required INTEGER NOT NULL DEFAULT 0,
+        options_json TEXT,
+        validation_json TEXT,
+        conditions_json TEXT,
+        depends_on TEXT,
+        metadata_json TEXT NOT NULL,
+        created_at INTEGER NOT NULL,
+        updated_at INTEGER NOT NULL,
+        version INTEGER NOT NULL DEFAULT 1
+      );
+    `);
+
+    // Create indices for common lookups
+    await this.db.executeSql(`
+      CREATE INDEX IF NOT EXISTS idx_questions_template_id 
+      ON questions(template_id);
+    `);
+
+    await this.db.executeSql(`
+      CREATE INDEX IF NOT EXISTS idx_questions_section_id 
+      ON questions(section_id);
+    `);
+
     // GDPR Consents Table
     await this.db.executeSql(`
       CREATE TABLE IF NOT EXISTS gdpr_consents (
@@ -276,11 +313,11 @@ export class DatabaseConnection {
       );
     `);
 
-    // Set DB version
-    await this.db.executeSql(`
-      INSERT OR REPLACE INTO db_metadata (key, value)
-      VALUES ('version', '${DB_VERSION}');
-    `);
+    // Set DB version (parameterized to prevent injection pattern)
+    await this.db.executeSql(
+      'INSERT OR REPLACE INTO db_metadata (key, value) VALUES (?, ?);',
+      ['version', String(DB_VERSION)],
+    );
   }
 
   /**
@@ -322,7 +359,9 @@ export class DatabaseConnection {
     if (!this.db) throw new Error('Database not connected');
 
     const [patientsResult] = await this.db.executeSql('SELECT COUNT(*) as count FROM patients;');
-    const [questionnairesResult] = await this.db.executeSql('SELECT COUNT(*) as count FROM questionnaires;');
+    const [questionnairesResult] = await this.db.executeSql(
+      'SELECT COUNT(*) as count FROM questionnaires;',
+    );
     const [answersResult] = await this.db.executeSql('SELECT COUNT(*) as count FROM answers;');
     const [documentsResult] = await this.db.executeSql('SELECT COUNT(*) as count FROM documents;');
 

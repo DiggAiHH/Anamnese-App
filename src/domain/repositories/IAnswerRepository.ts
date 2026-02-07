@@ -28,10 +28,7 @@ export interface IAnswerRepository {
   /**
    * Antwort für spezifische Frage finden
    */
-  findByQuestionId(
-    questionnaireId: string,
-    questionId: string,
-  ): Promise<AnswerEntity | null>;
+  findByQuestionId(questionnaireId: string, questionId: string): Promise<AnswerEntity | null>;
 
   /**
    * Antwort löschen
@@ -47,8 +44,5 @@ export interface IAnswerRepository {
    * Antworten als Map zurückgeben (questionId -> decrypted value)
    * Achtung: Erfordert Decryption!
    */
-  getAnswersMap(
-    questionnaireId: string,
-    decryptionKey: string,
-  ): Promise<Map<string, AnswerValue>>;
+  getAnswersMap(questionnaireId: string, decryptionKey: string): Promise<Map<string, AnswerValue>>;
 }

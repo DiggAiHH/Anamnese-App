@@ -1,10 +1,4 @@
-export type CompartmentInputType =
-  | 'binary'
-  | 'single'
-  | 'multi'
-  | 'text'
-  | 'number'
-  | 'date';
+export type CompartmentInputType = 'binary' | 'single' | 'multi' | 'text' | 'number' | 'date';
 
 export type CompartmentOption = {
   value: number;
@@ -96,7 +90,10 @@ export class CompartmentQuestion {
       throw new Error('label must be a non-empty string');
     }
 
-    if ((params.inputType === 'single' || params.inputType === 'multi') && (!params.options || params.options.length === 0)) {
+    if (
+      (params.inputType === 'single' || params.inputType === 'multi') &&
+      (!params.options || params.options.length === 0)
+    ) {
       throw new Error('options are required for single/multi choice questions');
     }
 

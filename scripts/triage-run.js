@@ -94,7 +94,7 @@ function buildSummary(lines) {
   ];
 
   for (const line of lines) {
-    if (patterns.some((re) => re.test(line))) {
+    if (patterns.some(re => re.test(line))) {
       interesting.push(line);
     }
   }
@@ -159,10 +159,10 @@ async function main() {
     else process.stdout.write(text);
   }
 
-  child.stdout.on('data', (c) => onChunk(c, false));
-  child.stderr.on('data', (c) => onChunk(c, true));
+  child.stdout.on('data', c => onChunk(c, false));
+  child.stderr.on('data', c => onChunk(c, true));
 
-  child.on('error', (err) => {
+  child.on('error', err => {
     const msg = `[triage] failed to start process: ${err && err.message ? err.message : String(err)}`;
     logStream.write(`\n${msg}\n`);
     console.error(msg);
@@ -191,7 +191,7 @@ async function main() {
     process.exit(1);
   });
 
-  child.on('close', (code) => {
+  child.on('close', code => {
     logStream.end();
 
     const summaryLines = buildSummary(allLines);
@@ -203,7 +203,9 @@ async function main() {
       `triage.log=${logPath}`,
       '',
       '--- summary (filtered) ---',
-      ...(summaryLines.length ? summaryLines : ['(no error patterns matched; check full log if needed)']),
+      ...(summaryLines.length
+        ? summaryLines
+        : ['(no error patterns matched; check full log if needed)']),
       '',
     ].join('\n');
 
@@ -215,7 +217,7 @@ async function main() {
   });
 }
 
-main().catch((e) => {
+main().catch(e => {
   console.error(e);
   process.exit(1);
 });

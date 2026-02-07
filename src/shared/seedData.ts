@@ -16,8 +16,26 @@ export interface SeedPatient {
   lastName: string;
   birthDate: string;
   gender: 'male' | 'female' | 'other';
-  language: 'de' | 'en' | 'fr' | 'es' | 'it' | 'pt' | 'nl' | 'pl' | 'tr' | 'ru' |
-    'ar' | 'fa' | 'zh' | 'ja' | 'ko' | 'vi' | 'uk' | 'ro' | 'el';
+  language:
+    | 'de'
+    | 'en'
+    | 'fr'
+    | 'es'
+    | 'it'
+    | 'pt'
+    | 'nl'
+    | 'pl'
+    | 'tr'
+    | 'ru'
+    | 'ar'
+    | 'fa'
+    | 'zh'
+    | 'ja'
+    | 'ko'
+    | 'vi'
+    | 'uk'
+    | 'ro'
+    | 'el';
 }
 
 /**
@@ -181,7 +199,7 @@ export function getRandomSeedPatient(): SeedPatient {
  * @param language - ISO language code
  */
 export function getSeedPatientByLanguage(language: string): SeedPatient | undefined {
-  return SEED_PATIENTS.find((p) => p.language === language);
+  return SEED_PATIENTS.find(p => p.language === language);
 }
 
 /**

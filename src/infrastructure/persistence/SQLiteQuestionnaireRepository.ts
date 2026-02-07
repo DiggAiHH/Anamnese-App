@@ -19,6 +19,17 @@ export class SQLiteQuestionnaireRepository implements IQuestionnaireRepository {
     return database.connect();
   }
 
+  private getTemplateSections(version?: string): Section[] {
+    const tpl = template as unknown as QuestionnaireTemplate;
+
+    const sections =
+      version && tpl.versions && tpl.versions[version]
+        ? tpl.versions[version].sections
+        : tpl.sections;
+
+    return [...sections].sort((a, b) => a.order - b.order);
+  }
+
   /**
    * Fragebogen speichern
    */
@@ -107,15 +118,7 @@ export class SQLiteQuestionnaireRepository implements IQuestionnaireRepository {
    * Hinweis: Template wird aus JSON-Datei geladen, nicht aus DB
    */
   async loadTemplate(version?: string): Promise<Section[]> {
-    const tpl = template as unknown as QuestionnaireTemplate;
-
-    // Wenn Version spezifiziert, entsprechende Version laden
-    if (version && tpl.versions && tpl.versions[version]) {
-      return tpl.versions[version].sections;
-    }
-
-    // Sonst default/latest Version
-    return tpl.sections;
+    return this.getTemplateSections(version);
   }
 
   /**
@@ -130,11 +133,70 @@ export class SQLiteQuestionnaireRepository implements IQuestionnaireRepository {
    * Helper: Row zu Entity mappen
    */
   private mapRowToEntity(row: Record<string, unknown>): QuestionnaireEntity {
+    const version = row.version as string;
+    const storedSections = JSON.parse(row.sections as string) as Section[];
+
+    // Normalize ordering against the canonical template, so older persisted questionnaires
+    // don't keep stale/misordered section/question sequences after template updates.
+    const templateSections = this.getTemplateSections(version);
+
+    const templateSectionMeta = new Map<
+      string,
+      { order: number; index: number; questionIndex: Map<string, number> }
+    >(
+      templateSections.map((s, index) => [
+        s.id,
+        {
+          order: s.order,
+          index,
+          questionIndex: new Map(s.questions.map((q, qi) => [q.id, qi])),
+        },
+      ]),
+    );
+
+    const normalizedSections = storedSections
+      .map((section, originalIndex) => {
+        const meta = templateSectionMeta.get(section.id);
+
+        const normalizedQuestions = meta
+          ? [...section.questions].sort((a, b) => {
+              const ai = meta.questionIndex.get(a.id);
+              const bi = meta.questionIndex.get(b.id);
+
+              if (ai === undefined && bi === undefined) return 0;
+              if (ai === undefined) return 1;
+              if (bi === undefined) return -1;
+              return ai - bi;
+            })
+          : section.questions;
+
+        return {
+          ...section,
+          order: meta?.order ?? section.order,
+          questions: normalizedQuestions,
+          // used for stable sorting below (not persisted)
+          __originalIndex: originalIndex,
+        } as Section & { __originalIndex: number };
+      })
+      .sort((a, b) => {
+        const ma = templateSectionMeta.get(a.id);
+        const mb = templateSectionMeta.get(b.id);
+
+        const ao = ma?.order ?? a.order ?? Number.POSITIVE_INFINITY;
+        const bo = mb?.order ?? b.order ?? Number.POSITIVE_INFINITY;
+        if (ao !== bo) return ao - bo;
+
+        const ai = ma?.index ?? a.__originalIndex;
+        const bi = mb?.index ?? b.__originalIndex;
+        return ai - bi;
+      })
+      .map(({ __originalIndex: _ignored, ...section }) => section as Section);
+
     const questionnaireData: Questionnaire = {
       id: row.id as string,
       patientId: row.patient_id as string,
-      version: row.version as string,
-      sections: JSON.parse(row.sections as string),
+      version,
+      sections: normalizedSections,
       status: row.status as Questionnaire['status'],
       createdAt: new Date(row.created_at as number),
       updatedAt: new Date(row.updated_at as number),

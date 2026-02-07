@@ -9,7 +9,16 @@ const loadCapabilities = (
   }));
 
   if (quickCryptoMode === 'present') {
-    jest.doMock('react-native-quick-crypto', () => ({}), { virtual: true });
+    jest.doMock(
+      'react-native-quick-crypto',
+      () => ({
+        randomBytes: jest.fn(),
+        pbkdf2: jest.fn(),
+        createCipheriv: jest.fn(),
+        createDecipheriv: jest.fn(),
+      }),
+      { virtual: true },
+    );
   }
 
   if (quickCryptoMode === 'missing') {
@@ -103,6 +112,12 @@ describe('platformCapabilities', () => {
   it('detects quick-crypto availability', () => {
     const capsPresent = loadCapabilities('ios', 'present');
     expect(capsPresent.canUseQuickCrypto()).toBe(true);
+
+    const capsWeb = loadCapabilities('web', 'present');
+    expect(capsWeb.canUseQuickCrypto()).toBe(false);
+
+    const capsWindows = loadCapabilities('windows', 'present');
+    expect(capsWindows.canUseQuickCrypto()).toBe(false);
 
     const capsMissing = loadCapabilities('ios', 'missing');
     expect(capsMissing.canUseQuickCrypto()).toBe(false);

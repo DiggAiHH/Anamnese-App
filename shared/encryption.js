@@ -19,9 +19,7 @@ let cryptoProvider = null;
 function getCrypto() {
   const candidate = cryptoProvider || (globalThis && globalThis.crypto);
   if (!candidate || !candidate.subtle) {
-    throw new Error(
-      'WebCrypto provider is not available. Call setCryptoProvider() first.',
-    );
+    throw new Error('WebCrypto provider is not available. Call setCryptoProvider() first.');
   }
   return candidate;
 }
@@ -70,13 +68,9 @@ async function deriveKey(password, salt /* Uint8Array */, options) {
   const crypto = getCrypto();
   const passwordBytes = utf8ToBytes(password);
 
-  const baseKey = await crypto.subtle.importKey(
-    'raw',
-    passwordBytes,
-    { name: 'PBKDF2' },
-    false,
-    ['deriveBits'],
-  );
+  const baseKey = await crypto.subtle.importKey('raw', passwordBytes, { name: 'PBKDF2' }, false, [
+    'deriveBits',
+  ]);
 
   const bits = await crypto.subtle.deriveBits(
     {
@@ -161,11 +155,7 @@ async function decryptData(encryptedBase64, password, options) {
     ['decrypt'],
   );
 
-  const plaintextBytes = await crypto.subtle.decrypt(
-    { name: 'AES-GCM', iv },
-    key,
-    data,
-  );
+  const plaintextBytes = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, data);
 
   return Buffer.from(new Uint8Array(plaintextBytes)).toString('utf8');
 }

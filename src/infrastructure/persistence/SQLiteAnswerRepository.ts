@@ -8,7 +8,7 @@ import { IAnswerRepository } from '@domain/repositories/IAnswerRepository';
 import { database } from './DatabaseConnection';
 import { encryptionService } from '../encryption/encryptionService';
 import { EncryptedDataVO } from '@domain/value-objects/EncryptedData';
-import { logError, logWarn } from '@shared/logger';
+import { logWarn } from '@shared/logger';
 import { Buffer } from 'buffer';
 
 export class SQLiteAnswerRepository implements IAnswerRepository {
@@ -53,7 +53,7 @@ export class SQLiteAnswerRepository implements IAnswerRepository {
     await db.transaction(async tx => {
       for (const answer of answers) {
         const json = answer.toJSON();
-        
+
         await tx.executeSql(
           `INSERT OR REPLACE INTO answers (
             id, questionnaire_id, question_id, encrypted_value, question_type,
@@ -149,7 +149,7 @@ export class SQLiteAnswerRepository implements IAnswerRepository {
 
   /**
    * Antworten als Map zurückgeben (questionId -> decrypted value)
-   * 
+   *
    * Achtung: Requires decryption key!
    */
   async getAnswersMap(
@@ -174,7 +174,9 @@ export class SQLiteAnswerRepository implements IAnswerRepository {
 
         answersMap.set(answer.questionId, value);
       } catch (error) {
-        logError('Failed to decrypt answer.', error);
+        // Common user-facing scenario: wrong master password / wrong session key.
+        // Avoid console.error in dev (can trigger disruptive redbox overlays).
+        logWarn('Failed to decrypt answer (wrong key or corrupted data).');
       }
     }
 
@@ -195,10 +197,19 @@ export class SQLiteAnswerRepository implements IAnswerRepository {
       confidence: (row.confidence as number | null) ?? undefined,
       answeredAt: new Date(row.answered_at as number),
       updatedAt: new Date(row.updated_at as number),
-      auditLog: JSON.parse(row.audit_log as string).map((l: Answer['auditLog'][0]) => ({
-        ...l,
-        timestamp: new Date(l.timestamp),
-      })),
+      auditLog: (() => {
+        try {
+          const parsed = JSON.parse(row.audit_log as string);
+          return Array.isArray(parsed)
+            ? parsed.map((l: Answer['auditLog'][0]) => ({
+                ...l,
+                timestamp: new Date(l.timestamp),
+              }))
+            : [];
+        } catch {
+          return [];
+        }
+      })(),
     };
 
     return AnswerEntity.fromJSON(answerData);

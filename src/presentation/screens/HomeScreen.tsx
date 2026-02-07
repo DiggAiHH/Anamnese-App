@@ -3,20 +3,18 @@
  */
 
 import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
-  Alert,
-} from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/RootNavigator';
-import { DeleteAllDataUseCase } from '../../domain/usecases/DeleteAllDataUseCase';
+import { DeleteAllDataUseCase } from '../../application/use-cases/DeleteAllDataUseCase';
 import { useQuestionnaireStore } from '../state/useQuestionnaireStore';
 import { colors, spacing, radius } from '../theme/tokens';
+import { AppButton } from '../components/AppButton';
+import { Container } from '../components/Container';
+import { AppText } from '../components/AppText';
+
+// FIXED: Removed duplicate __DEV__ declaration (global from webpack.config.js)
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
 
@@ -26,7 +24,7 @@ export const HomeScreen = ({ navigation }: Props): React.JSX.Element => {
   const { t } = useTranslation();
   const [selectedMode, setSelectedMode] = useState<UserMode>(null);
 
-  const handleDeleteAllData = () => {
+  const handleDeleteAllData = (): void => {
     Alert.alert(
       t('settings.deleteTitle', { defaultValue: 'Delete All Data?' }),
       t('settings.deleteMessage', {
@@ -54,192 +52,222 @@ export const HomeScreen = ({ navigation }: Props): React.JSX.Element => {
             }
           },
         },
-      ]
+      ],
     );
   };
 
   return (
-    <ScrollView style={styles.container}>
+    <Container scroll>
       <View style={styles.content}>
-        <Text style={styles.title}>{t('home.title')}</Text>
-        <Text style={styles.subtitle}>
-          {t('home.subtitle')}
-        </Text>
+        <AppText style={styles.title}>{t('home.title')}</AppText>
+        <AppText style={styles.subtitle}>{t('home.subtitle')}</AppText>
 
         {/* Mode Selection Card */}
         <View style={styles.modeCard}>
-          <Text style={styles.modeTitle}>
+          <AppText style={styles.modeTitle}>
             {t('home.modeSelection.title', { defaultValue: 'Wer nutzt die App?' })}
-          </Text>
-          <Text style={styles.modeSubtitle}>
+          </AppText>
+          <AppText style={styles.modeSubtitle}>
             {t('home.modeSelection.subtitle', { defaultValue: 'Bitte wählen Sie Ihre Rolle' })}
-          </Text>
-          
+          </AppText>
+
           <View style={styles.modeButtons}>
             <TouchableOpacity
-              style={[
-                styles.modeButton,
-                selectedMode === 'doctor' && styles.modeButtonSelected,
-              ]}
+              style={[styles.modeButton, selectedMode === 'doctor' && styles.modeButtonSelected]}
               onPress={() => setSelectedMode('doctor')}
               testID="btn-mode-doctor">
-              <Text style={styles.modeIcon}>🩺</Text>
-              <Text style={[
-                styles.modeButtonTitle,
-                selectedMode === 'doctor' && styles.modeButtonTitleSelected,
-              ]}>
+              <AppText style={styles.modeIcon}>🩺</AppText>
+              <AppText
+                style={[
+                  styles.modeButtonTitle,
+                  selectedMode === 'doctor' && styles.modeButtonTitleSelected,
+                ]}>
                 {t('home.modeSelection.doctor', { defaultValue: 'Arzt/Praxis' })}
-              </Text>
-              <Text style={styles.modeButtonDescription}>
-                {t('home.modeSelection.doctorDescription', { defaultValue: 'Tablet dem Patienten übergeben' })}
-              </Text>
+              </AppText>
+              <AppText style={styles.modeButtonDescription}>
+                {t('home.modeSelection.doctorDescription', {
+                  defaultValue: 'Tablet dem Patienten übergeben',
+                })}
+              </AppText>
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={[
-                styles.modeButton,
-                selectedMode === 'patient' && styles.modeButtonSelected,
-              ]}
+              style={[styles.modeButton, selectedMode === 'patient' && styles.modeButtonSelected]}
               onPress={() => setSelectedMode('patient')}
               testID="btn-mode-patient">
-              <Text style={styles.modeIcon}>👤</Text>
-              <Text style={[
-                styles.modeButtonTitle,
-                selectedMode === 'patient' && styles.modeButtonTitleSelected,
-              ]}>
+              <AppText style={styles.modeIcon}>👤</AppText>
+              <AppText
+                style={[
+                  styles.modeButtonTitle,
+                  selectedMode === 'patient' && styles.modeButtonTitleSelected,
+                ]}>
                 {t('home.modeSelection.patient', { defaultValue: 'Patient' })}
-              </Text>
-              <Text style={styles.modeButtonDescription}>
-                {t('home.modeSelection.patientDescription', { defaultValue: 'Selbstständig ausfüllen' })}
-              </Text>
+              </AppText>
+              <AppText style={styles.modeButtonDescription}>
+                {t('home.modeSelection.patientDescription', {
+                  defaultValue: 'Selbstständig ausfüllen',
+                })}
+              </AppText>
             </TouchableOpacity>
           </View>
         </View>
 
         <View style={styles.buttonContainer}>
-          <TouchableOpacity
-            style={[
-              styles.primaryButton,
-              !selectedMode && styles.primaryButtonDisabled,
-            ]}
+          <AppButton
+            title={t('home.startNew')}
             disabled={!selectedMode}
             onPress={() => {
-              // Store the mode for use in later screens
               useQuestionnaireStore.getState().setUserMode(selectedMode);
-              navigation.navigate('MasterPassword', { mode: 'setup' });
-            }}>
-            <Text style={styles.primaryButtonText}>{t('home.startNew')}</Text>
-          </TouchableOpacity>
+              navigation.navigate('GDPRConsent');
+            }}
+            style={styles.primaryButton}
+            accessibilityLabel={t('home.startNew')}
+            accessibilityHint={t('home.startNewHint', {
+              defaultValue: 'Starts a new anamnesis questionnaire',
+            })}
+          />
 
-          <TouchableOpacity
-            style={styles.secondaryButton}
+          <AppButton
+            title={t('home.saved')}
+            variant="secondary"
             onPress={() => {
               navigation.navigate('SavedAnamneses');
-            }}>
-            <Text style={styles.secondaryButtonText}>
-              {t('home.saved')}
-            </Text>
-          </TouchableOpacity>
+            }}
+            style={styles.secondaryButton}
+            accessibilityLabel={t('home.saved')}
+            accessibilityHint={t('home.savedHint', {
+              defaultValue: 'View previously saved anamnesis records',
+            })}
+          />
 
-          <TouchableOpacity
-            style={styles.tertiaryButton}
+          <AppButton
+            title={t('home.selectLanguage')}
+            variant="tertiary"
             onPress={() => {
               navigation.navigate('SelectLanguage');
-            }}>
-            <Text style={styles.tertiaryButtonText}>{t('home.selectLanguage')}</Text>
-          </TouchableOpacity>
+            }}
+            style={styles.tertiaryButton}
+            accessibilityLabel={t('home.selectLanguage')}
+            accessibilityHint={t('home.selectLanguageHint', {
+              defaultValue: 'Change the app language',
+            })}
+          />
+        </View>
+
+        {/* Fast Track Section */}
+        <View style={styles.fastTrackSection}>
+          <AppText style={styles.fastTrackTitle}>
+            {t('fastTrack.title', { defaultValue: 'Schnellzugang' })}
+          </AppText>
+          <AppText style={styles.fastTrackSubtitle}>
+            {t('fastTrack.subtitle', { defaultValue: 'Ohne vollständige Anamnese' })}
+          </AppText>
+          <View style={styles.fastTrackButtons}>
+            <AppButton
+              title={t('fastTrack.prescription', { defaultValue: 'Rezept bestellen' })}
+              onPress={() => navigation.navigate('FastTrack', { type: 'prescription' })}
+              variant="outline"
+              style={styles.fastTrackButton}
+              testID="btn-fast-track-prescription"
+            />
+            <AppButton
+              title={t('fastTrack.referral', { defaultValue: 'Überweisung' })}
+              onPress={() => navigation.navigate('FastTrack', { type: 'referral' })}
+              variant="outline"
+              style={styles.fastTrackButton}
+              testID="btn-fast-track-referral"
+            />
+          </View>
         </View>
 
         <View style={styles.infoCard}>
-          <Text style={styles.infoTitle}>{t('home.privacyTitle')}</Text>
-          <Text style={styles.infoText}>
-            • {t('home.privacyBullet1')}{'\n'}
-            • {t('home.privacyBullet2')}{'\n'}
-            • {t('home.privacyBullet3')}{'\n'}
-            • {t('home.privacyBullet4')}
-          </Text>
+          <AppText style={styles.infoTitle}>{t('home.privacyTitle')}</AppText>
+          <AppText style={styles.infoText}>
+            • {t('home.privacyBullet1')}
+            {'\n'}• {t('home.privacyBullet2')}
+            {'\n'}• {t('home.privacyBullet3')}
+            {'\n'}• {t('home.privacyBullet4')}
+          </AppText>
         </View>
 
         <View style={styles.featuresList}>
-          <Text style={styles.featuresTitle}>{t('home.featuresTitle')}</Text>
-          <Text style={styles.featureItem}>✓ {t('home.featureLanguages')}</Text>
-          <Text style={styles.featureItem}>✓ {t('home.featureOffline')}</Text>
-          <Text style={styles.featureItem}>• {t('home.featureVoice')}</Text>
-          <Text style={styles.featureItem}>• {t('home.featureOcr')}</Text>
-          <Text style={styles.featureItem}>✓ {t('home.featureGdt')}</Text>
+          <AppText style={styles.featuresTitle}>{t('home.featuresTitle')}</AppText>
+          <AppText style={styles.featureItem}>✓ {t('home.featureLanguages')}</AppText>
+          <AppText style={styles.featureItem}>✓ {t('home.featureOffline')}</AppText>
+          <AppText style={styles.featureItem}>• {t('home.featureVoice')}</AppText>
+          <AppText style={styles.featureItem}>• {t('home.featureOcr')}</AppText>
+          <AppText style={styles.featureItem}>✓ {t('home.featureGdt')}</AppText>
         </View>
 
         <View style={styles.dangerZone}>
-          <Text style={styles.dangerTitle}>
+          <AppText style={styles.dangerTitle}>
             {t('settings.dangerZone', { defaultValue: 'Data Management' })}
-          </Text>
-          <TouchableOpacity
-            style={styles.dangerButton}
+          </AppText>
+          <AppButton
+            title={t('settings.deleteAllData', { defaultValue: 'Delete All Data (GDPR)' })}
+            variant="danger"
             onPress={handleDeleteAllData}
-            testID="btn-delete-all-data">
-            <Text style={styles.dangerButtonText}>
-              {t('settings.deleteAllData', { defaultValue: 'Delete All Data (GDPR)' })}
-            </Text>
-          </TouchableOpacity>
+            testID="btn-delete-all-data"
+          />
         </View>
 
         {/* Feedback Section */}
         <View style={styles.feedbackSection}>
-          <TouchableOpacity
-            style={styles.feedbackButton}
+          <AppButton
+            title={t('feedback.homeButton', { defaultValue: 'Send Feedback' })}
+            variant="success"
             onPress={() => navigation.navigate('Feedback')}
             testID="btn-send-feedback"
-            accessibilityRole="button"
-            accessibilityLabel={t('feedback.title', { defaultValue: 'Send Feedback' })}>
-            <Text style={styles.feedbackButtonText}>
-              {t('feedback.homeButton', { defaultValue: '💬 Send Feedback' })}
-            </Text>
-          </TouchableOpacity>
+            accessibilityLabel={t('feedback.title', { defaultValue: 'Send Feedback' })}
+          />
         </View>
 
         {/* Voice Section */}
         <View style={styles.voiceSection}>
-          <TouchableOpacity
-            style={styles.voiceButton}
+          <AppButton
+            title={t('voice.homeButton', { defaultValue: 'Voice Assistant (FREE)' })}
+            variant="info"
             onPress={() => navigation.navigate('Voice')}
             testID="btn-voice-assistant"
-            accessibilityRole="button"
-            accessibilityLabel={t('voice.title', { defaultValue: 'Voice Assistant' })}>
-            <Text style={styles.voiceButtonText}>
-              {t('voice.homeButton', { defaultValue: '🎤 Voice Assistant (FREE)' })}
-            </Text>
-          </TouchableOpacity>
+            accessibilityLabel={t('voice.title', { defaultValue: 'Voice Assistant' })}
+          />
         </View>
 
         {/* Calculator Section */}
         <View style={styles.calculatorSection}>
-          <TouchableOpacity
-            style={styles.calculatorButton}
+          <AppButton
+            title={t('calculator.homeButton', { defaultValue: 'Clinical Calculators' })}
+            variant="warning"
             onPress={() => navigation.navigate('Calculator')}
             testID="btn-clinical-calculator"
-            accessibilityRole="button"
-            accessibilityLabel={t('calculator.title', { defaultValue: 'Clinical Calculators' })}>
-            <Text style={styles.calculatorButtonText}>
-              {t('calculator.homeButton', { defaultValue: '🧮 Clinical Calculators' })}
-            </Text>
-          </TouchableOpacity>
+            accessibilityLabel={t('calculator.title', { defaultValue: 'Clinical Calculators' })}
+          />
         </View>
 
         {/* Data Management Section */}
         <View style={styles.dataManagementSection}>
-          <TouchableOpacity
-            style={styles.dataManagementButton}
+          <AppButton
+            title={t('dataManagement.homeButton', { defaultValue: 'Backup & Restore' })}
+            variant="accent"
             onPress={() => navigation.navigate('DataManagement')}
             testID="btn-data-management"
-            accessibilityRole="button"
-            accessibilityLabel={t('dataManagement.title', { defaultValue: 'Data Management' })}>
-            <Text style={styles.dataManagementButtonText}>
-              {t('dataManagement.homeButton', { defaultValue: '💾 Backup & Restore' })}
-            </Text>
-          </TouchableOpacity>
+            accessibilityLabel={t('dataManagement.title', { defaultValue: 'Data Management' })}
+          />
         </View>
+
+        {/* Analytics Dashboard - accessible via DataManagement for production users */}
+        {__DEV__ && (
+          <View style={styles.devSection}>
+            <AppButton
+              title="[DEV] Analytics Dashboard"
+              variant="outline"
+              onPress={() => navigation.navigate('Dashboard')}
+              testID="btn-dev-dashboard"
+            />
+          </View>
+        )}
       </View>
-    </ScrollView>
+    </Container>
   );
 };
 
@@ -321,46 +349,13 @@ const styles = StyleSheet.create({
     marginBottom: spacing.xxl,
   },
   primaryButton: {
-    backgroundColor: colors.primary,
-    padding: spacing.lg,
-    borderRadius: radius.md,
-    alignItems: 'center',
     marginBottom: spacing.md,
   },
-  primaryButtonDisabled: {
-    backgroundColor: colors.borderLight,
-  },
-  primaryButtonText: {
-    color: colors.onPrimary,
-    fontSize: 18,
-    fontWeight: '600',
-  },
   secondaryButton: {
-    backgroundColor: colors.surface,
-    padding: spacing.lg,
-    borderRadius: radius.md,
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: colors.border,
-  },
-  secondaryButtonText: {
-    color: colors.primary,
-    fontSize: 18,
-    fontWeight: '600',
+    marginBottom: spacing.md,
   },
   tertiaryButton: {
-    backgroundColor: colors.surface,
-    padding: spacing.md,
-    borderRadius: radius.md,
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: colors.border,
     marginTop: spacing.md,
-  },
-  tertiaryButtonText: {
-    color: colors.textPrimary,
-    fontSize: 16,
-    fontWeight: '600',
   },
   infoCard: {
     backgroundColor: colors.infoSurface,
@@ -410,84 +405,50 @@ const styles = StyleSheet.create({
     marginBottom: spacing.md,
     textTransform: 'uppercase',
   },
-  dangerButton: {
-    backgroundColor: colors.dangerSurface,
-    padding: spacing.lg,
-    borderRadius: radius.md,
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: colors.dangerBorder,
-  },
-  dangerButtonText: {
-    color: colors.dangerText,
-    fontSize: 16,
-    fontWeight: '600',
-  },
   feedbackSection: {
     marginTop: spacing.xxl,
     borderTopWidth: 1,
     borderTopColor: colors.divider,
     paddingTop: spacing.lg,
   },
-  feedbackButton: {
-    backgroundColor: colors.successSurface,
-    padding: spacing.lg,
-    borderRadius: radius.md,
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: colors.successBorder,
-  },
-  feedbackButtonText: {
-    color: colors.successText,
-    fontSize: 16,
-    fontWeight: '600',
-  },
   voiceSection: {
     marginTop: spacing.lg,
-  },
-  voiceButton: {
-    backgroundColor: colors.infoSurface,
-    padding: spacing.lg,
-    borderRadius: radius.md,
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: colors.infoBorder,
-  },
-  voiceButtonText: {
-    color: colors.infoText,
-    fontSize: 16,
-    fontWeight: '600',
   },
   calculatorSection: {
     marginTop: spacing.lg,
   },
-  calculatorButton: {
-    backgroundColor: colors.warningSurface,
-    padding: spacing.lg,
-    borderRadius: radius.md,
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: colors.warningBorder,
-  },
-  calculatorButtonText: {
-    color: colors.warningText,
-    fontSize: 16,
-    fontWeight: '600',
-  },
   dataManagementSection: {
     marginTop: spacing.lg,
   },
-  dataManagementButton: {
-    backgroundColor: colors.accentSurface,
+  fastTrackSection: {
+    marginTop: spacing.xxl,
+    backgroundColor: colors.surface,
+    borderRadius: radius.lg,
     padding: spacing.lg,
-    borderRadius: radius.md,
-    alignItems: 'center',
     borderWidth: 1,
-    borderColor: colors.accentBorder,
+    borderColor: colors.border,
   },
-  dataManagementButtonText: {
-    color: colors.accentText,
-    fontSize: 16,
-    fontWeight: '600',
+  fastTrackTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: colors.textPrimary,
+    marginBottom: spacing.xs,
+  },
+  fastTrackSubtitle: {
+    fontSize: 14,
+    color: colors.textSecondary,
+    marginBottom: spacing.md,
+  },
+  fastTrackButtons: {
+    flexDirection: 'row',
+    gap: spacing.sm,
+  },
+  fastTrackButton: {
+    flex: 1,
+  },
+  devSection: {
+    marginTop: spacing.xl,
+    opacity: 0.5,
   },
 });
+

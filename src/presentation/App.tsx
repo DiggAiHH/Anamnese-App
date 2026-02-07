@@ -1,14 +1,17 @@
 /**
  * Main App Entry Point für React Native
- * 
+ *
  * Setup:
  * - Navigation
  * - i18n
  * - Providers
+ *
+ * Performance: Memoized navigation theme to prevent unnecessary re-renders
  */
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
+import type { Theme } from '@react-navigation/native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { StyleSheet } from 'react-native';
@@ -17,9 +20,14 @@ import { StyleSheet } from 'react-native';
 import { RootNavigator } from './navigation/RootNavigator';
 
 import { ToastProvider } from './components/ToastProvider';
+import { SessionTimeoutGuard } from './components/SessionGuard';
+import { ErrorBoundary } from './components/ErrorBoundary';
+import { PatientProvider } from '../application/PatientContext';
+import { ThemeProvider } from './theme/ThemeContext';
+import { colors } from './theme/tokens';
 
 // i18n
-import './i18n/config';
+import i18n from './i18n/config';
 
 // Database initialization
 import { database } from '@infrastructure/persistence/DatabaseConnection';
@@ -27,9 +35,35 @@ import { logDebug, logError } from '@shared/logger';
 import { useQuestionnaireStore } from './state/useQuestionnaireStore';
 import { loadActiveSession } from '@shared/sessionPersistence';
 import { loadPersistedEncryptionKeyIfOptedIn } from '@shared/keyManager';
+import { installGlobalErrorHandlers } from '@shared/globalErrorHandlers';
+import { showUserErrorAlert } from '@shared/userFacingError';
 
 const App = (): React.JSX.Element => {
+  // Memoize navigation theme to prevent unnecessary re-renders (Performance Fix)
+  const navigationTheme: Theme = useMemo(
+    () => ({
+      dark: false,
+      colors: {
+        primary: colors.primary,
+        background: colors.background,
+        card: colors.surface,
+        text: colors.text,
+        border: colors.border,
+        notification: colors.error,
+      },
+    }),
+    [],
+  );
+
   useEffect(() => {
+    installGlobalErrorHandlers({
+      onUserError: () =>
+        showUserErrorAlert({
+          title: i18n.t('error.boundaryTitle'),
+          message: i18n.t('error.boundaryMessage'),
+        }),
+    });
+
     // Initialize database on app start
     const initializeApp = async (): Promise<void> => {
       try {
@@ -65,11 +99,19 @@ const App = (): React.JSX.Element => {
   return (
     <GestureHandlerRootView style={styles.container}>
       <SafeAreaProvider>
-        <ToastProvider>
-          <NavigationContainer>
-            <RootNavigator />
-          </NavigationContainer>
-        </ToastProvider>
+        <ThemeProvider>
+          <ToastProvider>
+            <PatientProvider>
+              <ErrorBoundary>
+                <NavigationContainer theme={navigationTheme}>
+                  <SessionTimeoutGuard>
+                    <RootNavigator />
+                  </SessionTimeoutGuard>
+                </NavigationContainer>
+              </ErrorBoundary>
+            </PatientProvider>
+          </ToastProvider>
+        </ThemeProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>
   );

@@ -1,6 +1,6 @@
 /**
  * Patient Entity - repräsentiert einen Patienten (DSGVO-konform)
- * 
+ *
  * Privacy by Design:
  * - Minimale Datenspeicherung
  * - Verschlüsselung aller PII (Personally Identifiable Information)
@@ -21,44 +21,74 @@ export const PatientSchema = z.object({
     phone: z.string().optional(),
     insurance: z.string().optional(),
     insuranceNumber: z.string().optional(),
+    address: z.object({
+      street: z.string(),
+      houseNumber: z.string(),
+      zip: z.string(),
+      city: z.string(),
+      country: z.string(),
+    }).optional(),
   }),
   // Unverschlüsselte Metadaten
   createdAt: z.date(),
   updatedAt: z.date(),
   language: z.enum([
     // Keep in sync with src/presentation/i18n/config.ts SUPPORTED_LANGUAGES
-    'de', 'en', 'fr', 'es', 'it', 'pt', 'nl', 'pl', 'tr', 'ru',
-    'ar', 'fa', 'zh', 'ja', 'ko', 'vi', 'uk', 'ro', 'el',
+    'de',
+    'en',
+    'fr',
+    'es',
+    'it',
+    'pt',
+    'nl',
+    'pl',
+    'tr',
+    'ru',
+    'ar',
+    'fa',
+    'zh',
+    'ja',
+    'ko',
+    'vi',
+    'uk',
+    'ro',
+    'el',
 
     // Legacy/extra codes (kept for backward compatibility if data exists)
-    'ur', 'sq', 'hi',
+    'ur',
+    'sq',
+    'hi',
   ]),
   // GDPR Consent Tracking
-  gdprConsents: z.array(z.object({
-    type: z.enum([
-      'data_processing',
-      'data_storage',
-      'gdt_export',
-      'ocr_processing',
-      'voice_recognition',
-    ]),
-    granted: z.boolean(),
-    timestamp: z.date(),
-    version: z.string(), // Version der Datenschutzerklärung
-  })),
+  gdprConsents: z.array(
+    z.object({
+      type: z.enum([
+        'data_processing',
+        'data_storage',
+        'gdt_export',
+        'ocr_processing',
+        'voice_recognition',
+      ]),
+      granted: z.boolean(),
+      timestamp: z.date(),
+      version: z.string(), // Version der Datenschutzerklärung
+    }),
+  ),
   // Audit Log für DSGVO Art. 30
-  auditLog: z.array(z.object({
-    action: z.enum(['created', 'updated', 'accessed', 'exported', 'deleted']),
-    timestamp: z.date(),
-    details: z.string().optional(),
-  })),
+  auditLog: z.array(
+    z.object({
+      action: z.enum(['created', 'updated', 'accessed', 'exported', 'deleted']),
+      timestamp: z.date(),
+      details: z.string().optional(),
+    }),
+  ),
 });
 
 export type Patient = z.infer<typeof PatientSchema>;
 
 /**
  * Patient Factory - erstellt neue Patient Instanz mit Validierung
- * 
+ *
  * @throws ZodError wenn Validierung fehlschlägt
  */
 export class PatientEntity {
@@ -77,6 +107,13 @@ export class PatientEntity {
     phone?: string;
     insurance?: string;
     insuranceNumber?: string;
+    address?: {
+      street: string;
+      houseNumber: string;
+      zip: string;
+      city: string;
+      country: string;
+    };
   }): PatientEntity {
     const id = crypto.randomUUID();
     const now = new Date();
@@ -92,6 +129,7 @@ export class PatientEntity {
         phone: params.phone,
         insurance: params.insurance,
         insuranceNumber: params.insuranceNumber,
+        address: params.address,
       },
       createdAt: now,
       updatedAt: now,

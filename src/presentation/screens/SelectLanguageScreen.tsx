@@ -4,8 +4,10 @@
  */
 
 import React, { useMemo } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { AppText } from '../components/AppText';
 import { useTranslation } from 'react-i18next';
+import { logDebug } from '@shared/logger';
 import i18n, { setAppLanguage, SUPPORTED_LANGUAGES, SupportedLanguage } from '../i18n/config';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/RootNavigator';
@@ -44,14 +46,17 @@ export const SelectLanguageScreen = ({ navigation }: Props): React.JSX.Element =
   }, []);
 
   const onPick = async (language: SupportedLanguage): Promise<void> => {
+    logDebug(`[SelectLanguageScreen] Selected language: ${language}`);
     await setAppLanguage(language);
     navigation.goBack();
   };
 
   return (
-    <View style={styles.container} testID="select-language-screen">
-      <Text style={styles.title} accessibilityRole="header">{t('selectLanguage.title')}</Text>
-      <Text style={styles.subtitle}>{t('selectLanguage.subtitle')}</Text>
+    <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer} testID="select-language-screen">
+      <AppText style={styles.title} accessibilityRole="header">
+        {t('selectLanguage.title')}
+      </AppText>
+      <AppText style={styles.subtitle}>{t('selectLanguage.subtitle')}</AppText>
 
       <View style={styles.card} accessibilityRole="radiogroup">
         {SUPPORTED_LANGUAGES.map(language => {
@@ -68,12 +73,12 @@ export const SelectLanguageScreen = ({ navigation }: Props): React.JSX.Element =
               accessibilityState={{ checked: selected }}
               accessibilityLabel={LABELS[language].nativeName}>
               <View style={[styles.radio, selected && styles.radioSelected]} />
-              <Text style={styles.label}>{LABELS[language].nativeName}</Text>
+              <AppText style={styles.label}>{LABELS[language].nativeName}</AppText>
             </TouchableOpacity>
           );
         })}
       </View>
-    </View>
+    </ScrollView>
   );
 };
 
@@ -81,16 +86,16 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,
+  },
+  contentContainer: {
     padding: spacing.lg,
+    paddingBottom: spacing.xl,
   },
   title: {
-    fontSize: 22,
-    fontWeight: '700',
     color: colors.text,
     marginBottom: spacing.sm,
   },
   subtitle: {
-    fontSize: 14,
     color: colors.textMuted,
     marginBottom: spacing.md,
     lineHeight: 20,
@@ -120,8 +125,12 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primary,
   },
   label: {
-    fontSize: 16,
     color: colors.text,
     fontWeight: '600',
   },
+  // High Contrast
+  textHighContrast: { color: '#ffffff' },
+  textHighContrastInverse: { color: '#000000' },
+  bgHighContrast: { backgroundColor: '#000000' },
+  surfaceHighContrast: { backgroundColor: '#ffffff' },
 });

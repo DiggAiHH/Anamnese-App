@@ -25,6 +25,84 @@ Produce a **Release** MSIX that is **self-contained** (ships JS bundle) and **la
 
 ## Log Entries
 
+### 2026-01-30 (RUN-20260130-password-fixes)
+- **Goal:** Fix critical UI bugs on MasterPasswordScreen (Immediate validation errors, Duplicate header, Broken back button).
+- **Changes:**
+  - `MasterPasswordScreen.tsx`: Replaced `TextInput` + `Alert` with `AppInput` + inline errors. Added `IconButton`s for Generate/Copy. Restored `iconEmoji` style.
+  - `RootNavigator.tsx`: Conditional `headerLeft` (hidden in unlock mode) and removed `headerRight` for `MasterPassword`.
+- **Verification:**
+  - `npm run type-check`: ✅ PASS (0 errors).
+- **Evidence:**
+  - `npm run type-check` exit code 0.
+
+
+### 2026-01-24 (Lint/format cleanup)
+- **Goal:** Run lint and auto-fix for code cleanup.
+- **Evidence:**
+  - `buildLogs/lint_cleanup_20260124.out.log`
+  - `buildLogs/lint_cleanup_20260124.err.log`
+  - `buildLogs/lint_fix_cleanup_20260124.out.log`
+  - `buildLogs/lint_fix_cleanup_20260124.err.log`
+
+### 2026-01-25 (RUN-20260125-ui-improvements)
+- **Goal:** Comprehensive UI improvements - new components, enhanced primitives, better accessibility.
+- **Results:**
+  - Type-check: PASS
+  - Tests: PASS (AppText, AppButton, AppInput - 10 tests)
+  - 21/30 tasks completed, 1 skipped, 8 deferred
+- **New Components (11):**
+  - Container, Spacer, Divider, ScreenHeader
+  - IconButton, LoadingSkeleton, StatusBadge
+  - Checkbox, RadioGroup, Select
+  - VisuallyHidden
+- **Enhanced Components:**
+  - `tokens.ts`: typography (h1/h2/h3/small), layout constants, focus constants
+  - `AppText.tsx`: h1/h2/h3/small variants + color prop (6 colors)
+  - `AppButton.tsx`: size variants (sm/md/lg) + icon support
+  - `AppInput.tsx`: helperText + focus state
+- **Screen Updates:**
+  - `HomeScreen.tsx`: Uses Container + accessibilityHint on primary actions
+  - `RootNavigator.tsx`: TransitionPresets fix (moduleResolution issue)
+- **Key Learnings:**
+  - React Native Pressable doesn't have `focused` in style callback
+  - @react-navigation/stack exports don't resolve with moduleResolution: node16
+- **Evidence:**
+  - `CURRENT_TASKS.md`: 30-point tasklist with status
+  - `src/presentation/components/index.ts`: Central export file
+
+### 2026-01-24 (PII log scrub + TTS coverage)
+- **Goal:** Remove transcript logs with PII and restore supported-platform TTS tests.
+- **Changes:**
+  - Removed `buildLogs/*transcript*` from version control and added ignore rule.
+  - Restored supported-platform TTS coverage in `src/infrastructure/speech/__tests__/TTSService.test.ts`.
+  - Updated evidence references to existing logs.
+- **Evidence:**
+  - `buildLogs/tests_tts_service_update_20260124.out.log`
+  - `buildLogs/tests_tts_service_update_20260124.err.log`
+
+### 2026-01-24 (RUN-20260124-full-verification)
+- **Goal:** 30-point full verification run with evidence capture.
+- **Results:**
+  - Type-check: PASS
+  - Tests: PASS (46 suites, 263 tests, 29 skipped)
+  - Stop-and-Fix: `src/infrastructure/speech/__tests__/TTSService.test.ts` rewritten for mock mode testing
+  - Windows: MSBuild 17.14.36811.4, Debug|x64, `anamnese-mobile_1.0.0.0_x64_Debug.msix` signed & installed
+  - Web: Webpack 5.104.1 compiled successfully, localhost:3000 serving
+- **Files Changed:**
+  - `CURRENT_TASKS.md`: Full 30-point tasklist with completion status
+  - `docs/PLATFORM_TESTING_GUIDE.md`: Verification status table added
+  - `TODO.md`: 2026-01-24 run section added
+  - `src/infrastructure/speech/__tests__/TTSService.test.ts`: Rewritten for mock mode
+- **Evidence:**
+  - `buildLogs/typecheck_20260124_203057.log`
+  - `buildLogs/tests_20260124_203123.log`
+  - `buildLogs/windows_cleanrun_20260124_220250.log`
+  - `buildLogs/web_spotcheck.out.log`
+  - Package: cc3a5ac8-ac09-4f03-b6c9-0cfd812841a0, Version 1.0.0.0, Status Ok
+- **Known Issues:**
+  - VS Deployer fails with NuGet.VisualStudio.Contracts mismatch (workaround: manual Add-AppxPackage)
+- **Deferred:** Android (adb/emulator missing), macOS/iOS (no host)
+
 ### 2026-01-17
 	- UX/ISO plan created in `TODO.md` (phases, DoD, evidence).
 	- Added design tokens in `src/presentation/theme/tokens.ts`.

@@ -7,7 +7,7 @@
 import { SQLiteAnswerRepository } from '../../../src/infrastructure/persistence/SQLiteAnswerRepository';
 import { AnswerEntity, type Answer, type AnswerValue } from '../../../src/domain/entities/Answer';
 import { EncryptedDataVO } from '../../../src/domain/value-objects/EncryptedData';
-import { logError, logWarn } from '@shared/logger';
+import { logWarn } from '@shared/logger';
 import { Buffer } from 'buffer';
 
 const mockExecuteSql = jest.fn();
@@ -209,7 +209,7 @@ describe('SQLiteAnswerRepository', () => {
     expect(mockDecrypt).toHaveBeenCalledTimes(2);
     expect(out.has('q1')).toBe(false);
     expect(out.get('q2')).toBe('world');
-    expect((logError as unknown as jest.Mock).mock.calls.length).toBe(1);
+    expect((logWarn as unknown as jest.Mock).mock.calls.length).toBe(1);
   });
 
   it('getAnswersMap() returns empty map when decryption key is invalid length', async () => {

@@ -32,10 +32,7 @@ export interface IGDPRConsentRepository {
   /**
    * Prüft ob Patient spezifischen Consent erteilt hat
    */
-  hasActiveConsent(
-    patientId: string,
-    type: GDPRConsent['type'],
-  ): Promise<boolean>;
+  hasActiveConsent(patientId: string, type: GDPRConsent['type']): Promise<boolean>;
 
   /**
    * Alle Consents eines Patienten löschen
@@ -50,8 +47,5 @@ export interface IGDPRConsentRepository {
   /**
    * Audit: Consent-Historie für Patienten abrufen
    */
-  getConsentHistory(
-    patientId: string,
-    type?: GDPRConsent['type'],
-  ): Promise<GDPRConsentEntity[]>;
+  getConsentHistory(patientId: string, type?: GDPRConsent['type']): Promise<GDPRConsentEntity[]>;
 }

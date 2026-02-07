@@ -34,7 +34,9 @@
     "success": "Success",
     "clear": "Clear",
     "continue": "Continue",
-    "close": "Close"
+    "close": "Close",
+    "featureUnavailableTitle": "Fonction non disponible",
+    "featureUnavailableMessage": "{{feature}} n'est pas disponible sur cette plateforme."
   },
   "settings": {
     "deleteTitle": "Delete All Data?",
@@ -59,6 +61,17 @@
     "openPatient": "Ouvrir",
     "resumeQuestionnaire": "Reprendre",
     "selectLanguage": "Choisir la langue",
+    "roleSelection": {
+      "title": "Où se déroule l’anamnèse ?",
+      "practice": "Au cabinet",
+      "private": "Privé (à domicile)",
+      "admin": "Admin / Tableau de bord"
+    },
+    "accessibility": {
+      "fontScale": "Taille de police",
+      "highContrast": "Contraste élevé",
+      "language": "Langue"
+    },
     "modeSelection": {
       "title": "Qui utilise l'application ?",
       "subtitle": "Veuillez sélectionner votre rôle",
@@ -126,6 +139,7 @@
     "placeholder": "p. ex. DemoPass!2026",
     "errorEmpty": "Veuillez saisir un mot de passe maître.",
     "errorDerive": "Impossible de dériver une clé à partir du mot de passe.",
+    "errorWrongPassword": "Mot de passe maître incorrect. Veuillez réessayer.",
     "resetSession": "Réinitialiser la session",
     "resetTitle": "Réinitialisé",
     "resetMessage": "Les données de session ont été réinitialisées.",
@@ -201,6 +215,7 @@
     "progress": "Progression : {{percent}}%",
     "exportHint": "Vous pouvez lancer un export GDT maintenant (optionnel).",
     "exportButton": "Export GDT",
+    "calculatorsButton": "Ouvrir les calculateurs",
     "newButton": "Nouvelle anamnèse"
   },
   "export": {
@@ -213,8 +228,11 @@
     "missingPatientOrKey": "Le patient ou la clé de chiffrement est manquant.",
     "missingSenderId": "Veuillez fournir un ID expéditeur.",
     "failedTitle": "Échec de l’export",
+    "consentMissing": "Veuillez activer le consentement pour l’export GDT dans les paramètres de confidentialité.",
+    "openConsents": "Ouvrir les consentements",
     "successTitle": "Export réussi",
     "successMessage": "Fichier enregistré sous :\n{{path}}",
+    "shareMessage": "Partager le fichier GDT",
     "gdtVersion21": "GDT 2.1",
     "gdtVersion30": "GDT 3.0"
   },
@@ -718,5 +736,110 @@
       "decryptionFailed": "Decryption failed",
       "unknown": "Unknown error"
     }
+  },
+  "accessibility": {
+    "toggleZoom": "Activer/désactiver le zoom",
+    "zoomHint": "Active une police et des boutons plus grands",
+    "zoomEnabled": "Zoom activé",
+    "zoomDisabled": "Zoom désactivé"
+  },
+  "months": {
+    "january": "Janvier",
+    "february": "Février",
+    "march": "Mars",
+    "april": "Avril",
+    "may": "Mai",
+    "june": "Juin",
+    "july": "Juillet",
+    "august": "Août",
+    "september": "Septembre",
+    "october": "Octobre",
+    "november": "Novembre",
+    "december": "Décembre"
+  },
+  "fastTrack": {
+    "title": "Accès rapide",
+    "prescription": "Commander une ordonnance",
+    "referral": "Demander une référence",
+    "subtitle": "Sans anamnèse complète",
+    "errorRequired": "Veuillez remplir tous les champs obligatoires",
+    "successMessage": "Votre demande a été envoyée avec succès",
+    "errorSubmit": "Erreur lors de l'envoi",
+    "medicationLabel": "Médicament demandé",
+    "medicationPlaceholder": "ex: Ibuprofène 400mg",
+    "referralLabel": "Raison de la référence",
+    "referralPlaceholder": "ex: Cardiologie"
+  },
+  "patientType": {
+    "title": "Welcome",
+    "subtitle": "How can we help you?",
+    "newPatient": "New patient",
+    "newPatientDesc": "First visit or new registration",
+    "returningPatient": "Returning patient",
+    "returningPatientDesc": "Already known to our practice"
+  },
+  "documentRequest": {
+    "title": "What do you need?",
+    "subtitle": "Choose the requested service.",
+    "prescription": "Prescription",
+    "prescriptionDesc": "Repeat prescription or new medication",
+    "referral": "Referral",
+    "referralDesc": "To a specialist or laboratory",
+    "sickNote": "Sick note",
+    "sickNoteDesc": "Request a certificate of incapacity for work"
+  },
+  "prescription": {
+    "title": "Request prescription",
+    "subtitle": "Please enter the medication information.",
+    "medicationName": "Medication",
+    "medicationPlaceholder": "e.g. Ibuprofen 400mg",
+    "dosage": "Dosage (optional)",
+    "dosagePlaceholder": "e.g. 3x daily",
+    "quantity": "Quantity (optional)",
+    "quantityPlaceholder": "e.g. 2 packs",
+    "notes": "Notes (optional)",
+    "notesPlaceholder": "Additional information...",
+    "infoText": "Your request will be encrypted and sent to the practice. You will be notified when it is ready.",
+    "submit": "Send request",
+    "continue": "Continue to anamnesis",
+    "errorMedicationRequired": "Please enter the medication name.",
+    "errorSubmit": "Request could not be created."
+  },
+  "referral": {
+    "title": "Request referral",
+    "subtitle": "Please select the desired specialty.",
+    "specialty": "Specialty",
+    "selectSpecialty": "Select specialty",
+    "selectSpecialtyPlaceholder": "Select specialty...",
+    "reason": "Reason (optional)",
+    "reasonPlaceholder": "e.g. back pain for 2 weeks",
+    "preferredDoctor": "Preferred doctor (optional)",
+    "preferredDoctorPlaceholder": "e.g. Dr. Smith, cardiology",
+    "notes": "Notes (optional)",
+    "notesPlaceholder": "Additional information...",
+    "infoText": "Your request will be encrypted and sent to the practice for review.",
+    "submit": "Send request",
+    "continue": "Continue to anamnesis",
+    "errorSpecialtyRequired": "Please select a specialty.",
+    "errorSubmit": "Request could not be created."
+  },
+  "sickNote": {
+    "title": "Request sick note",
+    "subtitle": "Please provide the period of incapacity for work.",
+    "startDate": "Start date",
+    "endDate": "End date (optional)",
+    "reason": "Reason (optional)",
+    "reasonPlaceholder": "e.g. cold, back pain",
+    "notes": "Notes (optional)",
+    "notesPlaceholder": "Additional information...",
+    "infoText": "A sick note can only be issued after medical review.",
+    "warningTitle": "Important notice",
+    "warningText": "A certificate of incapacity for work can only be issued after consultation with a doctor.",
+    "submit": "Send request",
+    "continue": "Continue to anamnesis",
+    "errorStartDateRequired": "Please enter a valid start date (DD.MM.YYYY).",
+    "errorEndDateInvalid": "The end date is invalid (DD.MM.YYYY).",
+    "errorEndBeforeStart": "End date must not be before start date.",
+    "errorSubmit": "Request could not be created."
   }
 }

@@ -51,7 +51,7 @@ export class SQLiteGDPRConsentRepository implements IGDPRConsentRepository {
       return null;
     }
 
-    return this.mapRowToEntity(results.rows.item(0));
+    return this.mapRowToEntity(results.rows.item(0) as Record<string, unknown>);
   }
 
   /**
@@ -63,7 +63,7 @@ export class SQLiteGDPRConsentRepository implements IGDPRConsentRepository {
 
     const consents: GDPRConsentEntity[] = [];
     for (let i = 0; i < results.rows.length; i++) {
-      consents.push(this.mapRowToEntity(results.rows.item(i)));
+      consents.push(this.mapRowToEntity(results.rows.item(i) as Record<string, unknown>));
     }
 
     return consents;
@@ -85,7 +85,7 @@ export class SQLiteGDPRConsentRepository implements IGDPRConsentRepository {
       return null;
     }
 
-    return this.mapRowToEntity(results.rows.item(0));
+    return this.mapRowToEntity(results.rows.item(0) as Record<string, unknown>);
   }
 
   /**
@@ -101,7 +101,7 @@ export class SQLiteGDPRConsentRepository implements IGDPRConsentRepository {
 
     const consents: GDPRConsentEntity[] = [];
     for (let i = 0; i < results.rows.length; i++) {
-      consents.push(this.mapRowToEntity(results.rows.item(i)));
+      consents.push(this.mapRowToEntity(results.rows.item(i) as Record<string, unknown>));
     }
 
     return consents;
@@ -120,7 +120,7 @@ export class SQLiteGDPRConsentRepository implements IGDPRConsentRepository {
 
     const consents: GDPRConsentEntity[] = [];
     for (let i = 0; i < results.rows.length; i++) {
-      consents.push(this.mapRowToEntity(results.rows.item(i)));
+      consents.push(this.mapRowToEntity(results.rows.item(i) as Record<string, unknown>));
     }
 
     return consents;
@@ -160,7 +160,10 @@ export class SQLiteGDPRConsentRepository implements IGDPRConsentRepository {
     await this.db.executeSql(query, [patientId]);
   }
 
-  async findByPatientIdAndType(patientId: string, type: GDPRConsent['type']): Promise<GDPRConsentEntity | null> {
+  async findByPatientIdAndType(
+    patientId: string,
+    type: GDPRConsent['type'],
+  ): Promise<GDPRConsentEntity | null> {
     return this.findByPatientAndType(patientId, type);
   }
 
@@ -178,12 +181,15 @@ export class SQLiteGDPRConsentRepository implements IGDPRConsentRepository {
 
     const consents: GDPRConsentEntity[] = [];
     for (let i = 0; i < results.rows.length; i++) {
-      consents.push(this.mapRowToEntity(results.rows.item(i)));
+      consents.push(this.mapRowToEntity(results.rows.item(i) as Record<string, unknown>));
     }
     return consents;
   }
 
-  async getConsentHistory(patientId: string, type?: GDPRConsent['type']): Promise<GDPRConsentEntity[]> {
+  async getConsentHistory(
+    patientId: string,
+    type?: GDPRConsent['type'],
+  ): Promise<GDPRConsentEntity[]> {
     const query = type
       ? `SELECT * FROM gdpr_consents WHERE patient_id = ? AND type = ? ORDER BY granted_at DESC`
       : `SELECT * FROM gdpr_consents WHERE patient_id = ? ORDER BY granted_at DESC`;
@@ -193,7 +199,7 @@ export class SQLiteGDPRConsentRepository implements IGDPRConsentRepository {
 
     const consents: GDPRConsentEntity[] = [];
     for (let i = 0; i < results.rows.length; i++) {
-      consents.push(this.mapRowToEntity(results.rows.item(i)));
+      consents.push(this.mapRowToEntity(results.rows.item(i) as Record<string, unknown>));
     }
     return consents;
   }
@@ -251,12 +257,12 @@ export class SQLiteGDPRConsentRepository implements IGDPRConsentRepository {
     const now = new Date();
 
     for (let i = 0; i < results.rows.length; i++) {
-      const consent = this.mapRowToEntity(results.rows.item(i));
+      const consent = this.mapRowToEntity(results.rows.item(i) as Record<string, unknown>);
       const expirationDate = consent.calculateExpirationDate();
 
       if (expirationDate) {
         const daysUntilExpiration = Math.floor(
-          (expirationDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)
+          (expirationDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24),
         );
 
         if (daysUntilExpiration <= daysThreshold && daysUntilExpiration >= 0) {

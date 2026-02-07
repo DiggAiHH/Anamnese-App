@@ -1,6 +1,6 @@
 /**
  * Answer Entity - repräsentiert eine Antwort auf eine Frage
- * 
+ *
  * Business Rules:
  * - Antworten sind verschlüsselt
  * - Validation basiert auf Question Definition
@@ -35,6 +35,7 @@ export const AnswerSchema = z.object({
     'radio',
     'select',
     'multiselect',
+    'hidden',
   ]),
   answeredAt: z.date(),
   updatedAt: z.date(),
@@ -214,7 +215,7 @@ export class AnswerEntity {
 
 /**
  * Answer Validation Rules
- * 
+ *
  * Wird vom ValidationService verwendet
  */
 export class AnswerValidator {
@@ -236,7 +237,8 @@ export class AnswerValidator {
       const month = Number.parseInt(match[2], 10);
       const year = Number.parseInt(match[3], 10);
 
-      if (!Number.isInteger(day) || !Number.isInteger(month) || !Number.isInteger(year)) return null;
+      if (!Number.isInteger(day) || !Number.isInteger(month) || !Number.isInteger(year))
+        return null;
       if (month < 1 || month > 12) return null;
       if (day < 1 || day > 31) return null;
 
@@ -335,6 +337,13 @@ export class AnswerValidator {
 
       case 'checkbox':
       case 'multiselect':
+        if (question.type === 'checkbox' && (!question.options || question.options.length === 0)) {
+          if (typeof value !== 'boolean') {
+            errors.push('Value must be a boolean');
+          }
+          break;
+        }
+
         // New: bitset integer
         if (typeof value === 'number') {
           if (!Number.isInteger(value) || value < 0) {
@@ -348,7 +357,9 @@ export class AnswerValidator {
           errors.push('Value must be an array or integer bitset');
         } else {
           const validOptions = question.options?.map(o => o.value) ?? [];
-          const invalidOptions = value.filter(v => !validOptions.some(opt => String(opt) === String(v)));
+          const invalidOptions = value.filter(
+            v => !validOptions.some(opt => String(opt) === String(v)),
+          );
           if (invalidOptions.length > 0) {
             errors.push(`Invalid options: ${invalidOptions.join(', ')}`);
           }
@@ -361,7 +372,7 @@ export class AnswerValidator {
           errors.push('Value must be a string or number');
         } else {
           const validOptions = question.options?.map(o => o.value) ?? [];
-          const isValid = validOptions.some((opt) => String(opt) === String(value));
+          const isValid = validOptions.some(opt => String(opt) === String(value));
           if (!isValid) {
             errors.push('Invalid option');
           }

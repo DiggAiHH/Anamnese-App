@@ -1,7 +1,3 @@
-
-> anamnese-mobile@1.0.0 start
-> react-native start --reset-cache
-
 warn Package react-native-sqlite-storage contains invalid configuration: "dependency.platforms.ios.project" is not allowed. Please verify it's properly linked using "npx react-native config" command and contact the package maintainers about this.
 info Welcome to React Native v0.73
 info Starting dev server on port 8081...
@@ -25,6 +21,14 @@ warning: the transform cache was reset.
               Fast - Scalable - Integrated
 
 
+info React Native v0.83.0 is now available (your project is running on v0.73.11).
+info Changelog: https://github.com/facebook/react-native/releases/tag/v0.83.0
+info Diff: https://react-native-community.github.io/upgrade-helper/?from=0.83.0
+info For more info, check out "https://reactnative.dev/docs/upgrading?os=windows".
+warn No apps connected. Sending "reload" to all React Native apps failed. Make sure your app is running in the simulator or on a phone connected via USB.
+warn No apps connected. Sending "reload" to all React Native apps failed. Make sure your app is running in the simulator or on a phone connected via USB.
+warn No apps connected. Sending "reload" to all React Native apps failed. Make sure your app is running in the simulator or on a phone connected via USB.
+warn No apps connected. Sending "reload" to all React Native apps failed. Make sure your app is running in the simulator or on a phone connected via USB.
 info Dev server ready
 
 i - run on iOS
@@ -34,12 +38,346 @@ r - reload app
 
  BUNDLE  ./index.js 
 
-info Launching Dev Tools...
+ BUNDLE  ./index.js 
+
+ LOG  JavaScript logs will appear in your browser console
+ BUNDLE  ./index.js 
+
  BUNDLE  ./index.js 
 
  BUNDLE  ./index.js 
 
  LOG  JavaScript logs will appear in your browser console
-warn No apps connected. Sending "reload" to all React Native apps failed. Make sure your app is running in the simulator or on a phone connected via USB.
+ BUNDLE  ./index.js 
+
+ BUNDLE  ./index.js 
+
+ BUNDLE  ./index.js 
+
+ BUNDLE  ./index.js 
+
+ BUNDLE  ./index.js 
+
+ LOG  JavaScript logs will appear in your browser console
+ BUNDLE  ./index.js 
+
+ BUNDLE  ./index.js 
+
+ LOG  JavaScript logs will appear in your browser console
+ BUNDLE  ./index.js 
+
+ BUNDLE  ./index.js 
+
+ LOG  JavaScript logs will appear in your browser console
+ BUNDLE  ./index.js 
+
+ BUNDLE  ./index.js 
+
+ LOG  JavaScript logs will appear in your browser console
+error: SyntaxError: C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\src\presentation\screens\HomeScreen.tsx: Identifier '__DEV__' has already been declared. (19:14)
+
+  17 | declare const __DEV__: boolean;
+  18 |
+> 19 | declare const __DEV__: boolean;
+     |               ^
+  20 |
+  21 | type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
+  22 |
+error: SyntaxError: C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\src\presentation\screens\HomeScreen.tsx: Identifier '__DEV__' has already been declared. (19:14)
+
+  17 | declare const __DEV__: boolean;
+  18 |
+> 19 | declare const __DEV__: boolean;
+     |               ^
+  20 |
+  21 | type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
+  22 |
+error: SyntaxError: C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\src\presentation\screens\HomeScreen.tsx: Identifier '__DEV__' has already been declared. (19:14)
+
+  17 | declare const __DEV__: boolean;
+  18 |
+> 19 | declare const __DEV__: boolean;
+     |               ^
+  20 |
+  21 | type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
+  22 |
+error: SyntaxError: C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\src\presentation\screens\HomeScreen.tsx: Identifier '__DEV__' has already been declared. (19:14)
+
+  17 | declare const __DEV__: boolean;
+  18 |
+> 19 | declare const __DEV__: boolean;
+     |               ^
+  20 |
+  21 | type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
+  22 |
+error: SyntaxError: C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\src\presentation\screens\HomeScreen.tsx: Identifier '__DEV__' has already been declared. (19:14)
+
+  17 | declare const __DEV__: boolean;
+  18 |
+> 19 | declare const __DEV__: boolean;
+     |               ^
+  20 |
+  21 | type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
+  22 |
+error: SyntaxError: C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\src\presentation\screens\HomeScreen.tsx: Identifier '__DEV__' has already been declared. (19:14)
+
+  17 | declare const __DEV__: boolean;
+  18 |
+> 19 | declare const __DEV__: boolean;
+     |               ^
+  20 |
+  21 | type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
+  22 |
+error: SyntaxError: C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\src\presentation\screens\HomeScreen.tsx: Identifier '__DEV__' has already been declared. (19:14)
+
+  17 | declare const __DEV__: boolean;
+  18 |
+> 19 | declare const __DEV__: boolean;
+     |               ^
+  20 |
+  21 | type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
+  22 |
+error: SyntaxError: C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\src\presentation\screens\HomeScreen.tsx: Identifier '__DEV__' has already been declared. (19:14)
+
+  17 | declare const __DEV__: boolean;
+  18 |
+> 19 | declare const __DEV__: boolean;
+     |               ^
+  20 |
+  21 | type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
+  22 |
+error: SyntaxError: C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\src\presentation\screens\HomeScreen.tsx: Identifier '__DEV__' has already been declared. (19:14)
+
+  17 | declare const __DEV__: boolean;
+  18 |
+> 19 | declare const __DEV__: boolean;
+     |               ^
+  20 |
+  21 | type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
+  22 |
+error: SyntaxError: C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\src\presentation\screens\HomeScreen.tsx: Identifier '__DEV__' has already been declared. (19:14)
+
+  17 | declare const __DEV__: boolean;
+  18 |
+> 19 | declare const __DEV__: boolean;
+     |               ^
+  20 |
+  21 | type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
+  22 |
+ BUNDLE  ./index.js 
+
+error: SyntaxError: C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\src\presentation\screens\HomeScreen.tsx: Identifier '__DEV__' has already been declared. (19:14)
+
+  17 | declare const __DEV__: boolean;
+  18 |
+> 19 | declare const __DEV__: boolean;
+     |               ^
+  20 |
+  21 | type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
+  22 |
+ BUNDLE  ./index.js 
+
+error: SyntaxError: C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\src\presentation\screens\HomeScreen.tsx: Identifier '__DEV__' has already been declared. (19:14)
+
+  17 | declare const __DEV__: boolean;
+  18 |
+> 19 | declare const __DEV__: boolean;
+     |               ^
+  20 |
+  21 | type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
+  22 |
+ BUNDLE  ./index.js 
+
+error: SyntaxError: C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\src\presentation\screens\HomeScreen.tsx: Identifier '__DEV__' has already been declared. (19:14)
+
+  17 | declare const __DEV__: boolean;
+  18 |
+> 19 | declare const __DEV__: boolean;
+     |               ^
+  20 |
+  21 | type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
+  22 |
+ BUNDLE  ./index.js 
+
+error: SyntaxError: C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\src\presentation\screens\HomeScreen.tsx: Identifier '__DEV__' has already been declared. (19:14)
+
+  17 | declare const __DEV__: boolean;
+  18 |
+> 19 | declare const __DEV__: boolean;
+     |               ^
+  20 |
+  21 | type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
+  22 |
+ BUNDLE  ./index.js 
+
+error: SyntaxError: C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\src\presentation\screens\HomeScreen.tsx: Identifier '__DEV__' has already been declared. (19:14)
+
+  17 | declare const __DEV__: boolean;
+  18 |
+> 19 | declare const __DEV__: boolean;
+     |               ^
+  20 |
+  21 | type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
+  22 |
+ BUNDLE  ./index.js 
+
+error: SyntaxError: C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\src\presentation\screens\HomeScreen.tsx: Missing semicolon. (467:7)
+
+  465 | });
+  466 |     flexDirection: 'row',
+> 467 |     gap: spacing.sm,
+      |        ^
+  468 |   },
+  469 |   fastTrackButton: {
+  470 |     flex: 1,
+ BUNDLE  ./index.js 
+
+error: SyntaxError: C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\src\presentation\screens\HomeScreen.tsx: Missing semicolon. (467:7)
+
+  465 | });
+  466 |     flexDirection: 'row',
+> 467 |     gap: spacing.sm,
+      |        ^
+  468 |   },
+  469 |   fastTrackButton: {
+  470 |     flex: 1,
+ BUNDLE  ./index.js 
+
+error: SyntaxError: C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\src\presentation\screens\HomeScreen.tsx: Missing semicolon. (467:7)
+
+  465 | });
+  466 |     flexDirection: 'row',
+> 467 |     gap: spacing.sm,
+      |        ^
+  468 |   },
+  469 |   fastTrackButton: {
+  470 |     flex: 1,
+ BUNDLE  ./index.js 
+
+error: SyntaxError: C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\src\presentation\screens\HomeScreen.tsx: Missing semicolon. (467:7)
+
+  465 | });
+  466 |     flexDirection: 'row',
+> 467 |     gap: spacing.sm,
+      |        ^
+  468 |   },
+  469 |   fastTrackButton: {
+  470 |     flex: 1,
+ BUNDLE  ./index.js 
+
+error: SyntaxError: C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\src\presentation\screens\HomeScreen.tsx: Missing semicolon. (467:7)
+
+  465 | });
+  466 |     flexDirection: 'row',
+> 467 |     gap: spacing.sm,
+      |        ^
+  468 |   },
+  469 |   fastTrackButton: {
+  470 |     flex: 1,
+ BUNDLE  ./index.js 
+
+error: SyntaxError: C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\src\presentation\screens\HomeScreen.tsx: Missing semicolon. (467:7)
+
+  465 | });
+  466 |     flexDirection: 'row',
+> 467 |     gap: spacing.sm,
+      |        ^
+  468 |   },
+  469 |   fastTrackButton: {
+  470 |     flex: 1,
+ BUNDLE  ./index.js 
+
+error: SyntaxError: C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\src\presentation\screens\HomeScreen.tsx: Missing semicolon. (467:7)
+
+  465 | });
+  466 |     flexDirection: 'row',
+> 467 |     gap: spacing.sm,
+      |        ^
+  468 |   },
+  469 |   fastTrackButton: {
+  470 |     flex: 1,
+ BUNDLE  ./index.js 
+
+error: SyntaxError: C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\src\presentation\screens\HomeScreen.tsx: Missing semicolon. (467:7)
+
+  465 | });
+  466 |     flexDirection: 'row',
+> 467 |     gap: spacing.sm,
+      |        ^
+  468 |   },
+  469 |   fastTrackButton: {
+  470 |     flex: 1,
+ BUNDLE  ./index.js 
+
+error: SyntaxError: C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\src\presentation\screens\HomeScreen.tsx: Missing semicolon. (467:7)
+
+  465 | });
+  466 |     flexDirection: 'row',
+> 467 |     gap: spacing.sm,
+      |        ^
+  468 |   },
+  469 |   fastTrackButton: {
+  470 |     flex: 1,
+ BUNDLE  ./index.js 
+
+error: SyntaxError: C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\src\presentation\screens\HomeScreen.tsx: Missing semicolon. (467:7)
+
+  465 | });
+  466 |     flexDirection: 'row',
+> 467 |     gap: spacing.sm,
+      |        ^
+  468 |   },
+  469 |   fastTrackButton: {
+  470 |     flex: 1,
+ BUNDLE  ./index.js 
+
+error: SyntaxError: C:\Users\tubbeTEC\Desktop\Projects\Anamnese-App\Anamnese-App\src\presentation\screens\HomeScreen.tsx: Missing semicolon. (467:7)
+
+  465 | });
+  466 |     flexDirection: 'row',
+> 467 |     gap: spacing.sm,
+      |        ^
+  468 |   },
+  469 |   fastTrackButton: {
+  470 |     flex: 1,
+ BUNDLE  ./index.js 
+
+ BUNDLE  ./index.js 
+
+ LOG  JavaScript logs will appear in your browser console
+ BUNDLE  ./index.js 
+
+ BUNDLE  ./index.js 
+
+ LOG  JavaScript logs will appear in your browser console
+ BUNDLE  ./index.js 
+
+ BUNDLE  ./index.js 
+
+ LOG  JavaScript logs will appear in your browser console
+ BUNDLE  ./index.js 
+
+ BUNDLE  ./index.js 
+
+ LOG  JavaScript logs will appear in your browser console
+ BUNDLE  ./index.js 
+
+ BUNDLE  ./index.js 
+
+ LOG  JavaScript logs will appear in your browser console
+ BUNDLE  ./index.js 
+
+ BUNDLE  ./index.js 
+
+ LOG  JavaScript logs will appear in your browser console
+ BUNDLE  ./index.js 
+
+ BUNDLE  ./index.js 
+
+ BUNDLE  ./index.js 
+
+ BUNDLE  ./index.js 
+
+ LOG  JavaScript logs will appear in your browser console
 warn No apps connected. Sending "reload" to all React Native apps failed. Make sure your app is running in the simulator or on a phone connected via USB.
 warn No apps connected. Sending "reload" to all React Native apps failed. Make sure your app is running in the simulator or on a phone connected via USB.

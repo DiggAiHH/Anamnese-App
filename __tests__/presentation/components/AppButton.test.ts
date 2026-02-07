@@ -18,6 +18,14 @@ describe('getButtonColors', () => {
     });
   });
 
+  it('returns success colors for success variant', () => {
+    expect(getButtonColors('success')).toEqual({
+      backgroundColor: colors.successSurface,
+      borderColor: colors.successBorder,
+      textColor: colors.successText,
+    });
+  });
+
   it('returns disabled colors when disabled', () => {
     expect(getButtonColors('primary', true)).toEqual({
       backgroundColor: colors.divider,

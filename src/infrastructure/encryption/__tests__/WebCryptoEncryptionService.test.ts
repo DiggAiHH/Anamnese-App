@@ -4,8 +4,9 @@ import { WebCryptoEncryptionService } from '../WebCryptoEncryptionService';
 // so the service can run in unit tests.
 import { webcrypto } from 'crypto';
 
-if (!(globalThis as any).crypto) {
-  (globalThis as any).crypto = webcrypto;
+const globalWithCrypto = globalThis as unknown as { crypto?: Crypto };
+if (!globalWithCrypto.crypto) {
+  globalWithCrypto.crypto = webcrypto as unknown as Crypto;
 }
 
 describe('WebCryptoEncryptionService', () => {

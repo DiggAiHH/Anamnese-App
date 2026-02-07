@@ -29,10 +29,10 @@ const buildKeyManager = (os: 'ios' | 'android' | 'windows' | 'macos') => {
   let module!: typeof import('../../src/shared/keyManager');
   let storage!: typeof import('@react-native-async-storage/async-storage').default;
   jest.isolateModules(() => {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
     const storageModule = require('@react-native-async-storage/async-storage');
-    storage = (storageModule.default ?? storageModule) as typeof import('@react-native-async-storage/async-storage').default;
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    storage = (storageModule.default ??
+      storageModule) as typeof import('@react-native-async-storage/async-storage').default;
+
     module = require('../../src/shared/keyManager');
   });
 

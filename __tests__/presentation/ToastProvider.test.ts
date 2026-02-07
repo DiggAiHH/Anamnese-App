@@ -1,7 +1,7 @@
 describe('shouldShowToast', () => {
   it('returns true when no throttleKey is provided', () => {
     jest.resetModules();
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+
     const { shouldShowToast } = require('../../src/presentation/components/ToastProvider') as {
       shouldShowToast: (
         lastShownAtMs: number | undefined,
@@ -20,7 +20,7 @@ describe('shouldShowToast', () => {
 
   it('throttles calls within throttle window and allows after window', () => {
     jest.resetModules();
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+
     const { shouldShowToast } = require('../../src/presentation/components/ToastProvider') as {
       shouldShowToast: (
         lastShownAtMs: number | undefined,

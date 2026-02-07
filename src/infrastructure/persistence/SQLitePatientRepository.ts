@@ -1,6 +1,6 @@
 /**
  * SQLite Patient Repository Implementation
- * 
+ *
  * Implementiert IPatientRepository für lokale Datenbank
  */
 
@@ -11,7 +11,7 @@ import { database } from './DatabaseConnection';
 import { encryptionService } from '@infrastructure/encryption/encryptionService';
 import { EncryptedDataVO } from '@domain/value-objects/EncryptedData';
 import { getActiveEncryptionKey } from '@shared/keyManager';
-import { logError, logWarn } from '@shared/logger';
+import { logWarn } from '@shared/logger';
 
 export class SQLitePatientRepository implements IPatientRepository {
   private async getDb(): Promise<SQLiteDatabase> {
@@ -70,25 +70,30 @@ export class SQLitePatientRepository implements IPatientRepository {
       const parsed = JSON.parse(decryptedJson) as Patient['encryptedData'];
       return { data: parsed, wasPlaintext: false };
     } catch (error) {
-      logError('Failed to decrypt patient data', error);
+      // Common user-facing scenario: wrong master password / wrong session key.
+      // Avoid console.error in dev (can trigger disruptive redbox overlays).
+      logWarn('Failed to decrypt patient data (wrong key or corrupted data).');
       return { data: this.maskEncryptedData(), wasPlaintext: false };
     }
   }
 
-  private async reencryptIfNeeded(patientId: string, plaintext: Patient['encryptedData']): Promise<void> {
+  private async reencryptIfNeeded(
+    patientId: string,
+    plaintext: Patient['encryptedData'],
+  ): Promise<void> {
     const key = getActiveEncryptionKey();
     if (!key) return;
 
     try {
       const encrypted = await this.encryptPatientData(plaintext, key);
       const db = await this.getDb();
-      await db.executeSql(
-        'UPDATE patients SET encrypted_data = ?, updated_at = ? WHERE id = ?;',
-        [encrypted, new Date().getTime(), patientId],
-      );
-    } catch (error) {
+      await db.executeSql('UPDATE patients SET encrypted_data = ?, updated_at = ? WHERE id = ?;', [
+        encrypted,
+        new Date().getTime(),
+        patientId,
+      ]);
+    } catch {
       logWarn('Failed to re-encrypt legacy patient data.');
-      logError('Re-encryption error', error);
     }
   }
 

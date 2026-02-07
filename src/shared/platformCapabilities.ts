@@ -1,4 +1,5 @@
 import { Platform } from 'react-native';
+import { isRNFSAvailable } from './rnfsSafe';
 
 export const platformOS = Platform.OS;
 export const isWindows = platformOS === 'windows';
@@ -12,7 +13,7 @@ export const supportsSpeechToText = isIOS || isAndroid;
 export const supportsOCR = isIOS || isAndroid;
 export const supportsDocumentPicker = isIOS || isAndroid;
 export const supportsShare = isIOS || isAndroid;
-export const supportsRNFS = isIOS || isAndroid;
+export const supportsRNFS = (isIOS || isAndroid || isWindows) && isRNFSAvailable();
 export const supportsSQLite = isIOS || isAndroid || isWindows;
 export const supportsSecureKeychain = isIOS || isAndroid || isMacOS;
 
@@ -24,10 +25,21 @@ export const supportsWebCrypto = (): boolean => {
 };
 
 export const canUseQuickCrypto = (): boolean => {
+  if (isWeb || isWindows) return false;
   try {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
-    require('react-native-quick-crypto');
-    return true;
+    const qc = require('react-native-quick-crypto') as {
+      randomBytes?: unknown;
+      pbkdf2?: unknown;
+      createCipheriv?: unknown;
+      createDecipheriv?: unknown;
+    };
+    return (
+      typeof qc?.randomBytes === 'function' &&
+      typeof qc?.pbkdf2 === 'function' &&
+      typeof qc?.createCipheriv === 'function' &&
+      typeof qc?.createDecipheriv === 'function'
+    );
   } catch {
     return false;
   }

@@ -116,10 +116,7 @@ export class RestoreUseCase {
       }>;
       try {
         const patientsVO = EncryptedDataVO.fromString(backupData.patients);
-        const decryptedPatients = await encryptionService.decrypt(
-          patientsVO,
-          input.encryptionKey,
-        );
+        const decryptedPatients = await encryptionService.decrypt(patientsVO, input.encryptionKey);
         patients = JSON.parse(decryptedPatients);
       } catch {
         return {
@@ -158,10 +155,7 @@ export class RestoreUseCase {
       }>;
       try {
         const answersVO = EncryptedDataVO.fromString(backupData.answers);
-        const decryptedAnswers = await encryptionService.decrypt(
-          answersVO,
-          input.encryptionKey,
-        );
+        const decryptedAnswers = await encryptionService.decrypt(answersVO, input.encryptionKey);
         answers = JSON.parse(decryptedAnswers);
       } catch {
         return {
@@ -180,7 +174,7 @@ export class RestoreUseCase {
       // Restore patients
       for (const patient of patients) {
         const existing = await this.patientRepository.findById(patient.id);
-        
+
         if (existing) {
           const resolution = this.resolveConflict(
             input.strategy,
@@ -236,7 +230,7 @@ export class RestoreUseCase {
       // Restore questionnaires
       for (const questionnaire of questionnaires) {
         const existing = await this.questionnaireRepository.findById(questionnaire.id);
-        
+
         if (existing) {
           const resolution = this.resolveConflict(
             input.strategy,
@@ -321,25 +315,25 @@ export class RestoreUseCase {
     switch (strategy) {
       case 'replace':
         return 'backup';
-      
+
       case 'merge':
         return 'local';
-      
+
       case 'newer-wins': {
         const localTime = new Date(localUpdatedAt).getTime();
         const backupTime = new Date(backupUpdatedAt).getTime();
-        
+
         // Handle invalid dates
         if (isNaN(localTime) && isNaN(backupTime)) return 'local';
         if (isNaN(localTime)) return 'backup';
         if (isNaN(backupTime)) return 'local';
-        
+
         return backupTime > localTime ? 'backup' : 'local';
       }
-      
+
       case 'manual':
         return 'conflict';
-      
+
       default:
         return 'local';
     }

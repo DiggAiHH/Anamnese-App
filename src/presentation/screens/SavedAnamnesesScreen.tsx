@@ -13,7 +13,6 @@
 import React, { useCallback, useEffect, useMemo, useState, memo } from 'react';
 import {
   View,
-  Text,
   StyleSheet,
   TouchableOpacity,
   FlatList,
@@ -27,6 +26,7 @@ import type { StackScreenProps } from '@react-navigation/stack';
 import type { RootStackParamList } from '../navigation/RootNavigator';
 import { colors, spacing, radius } from '../theme/tokens';
 import { Card } from '../components/Card';
+import { AppText } from '../components/AppText';
 
 import { SQLitePatientRepository } from '@infrastructure/persistence/SQLitePatientRepository';
 import { SQLiteQuestionnaireRepository } from '@infrastructure/persistence/SQLiteQuestionnaireRepository';
@@ -53,10 +53,10 @@ const ROW_HEIGHT = 62; // paddingVertical: 14*2 + content ~34
 const fuzzyMatch = (text: string, search: string): boolean => {
   const searchLower = search.toLowerCase().trim();
   const textLower = text.toLowerCase();
-  
+
   // Split search into words for multi-term matching
   const searchTerms = searchLower.split(/\s+/).filter(t => t.length > 0);
-  
+
   // All terms must match
   return searchTerms.every(term => textLower.includes(term));
 };
@@ -72,28 +72,30 @@ interface PatientRowProps {
   nextLabel: string;
 }
 
-const PatientRow = memo(({ patient, latestQuestionnaire, onPress, metaText, nextLabel }: PatientRowProps) => {
-  const name = `${patient.encryptedData.lastName}, ${patient.encryptedData.firstName}`;
-  
-  const handlePress = useCallback(() => {
-    onPress({ patient, latestQuestionnaire });
-  }, [patient, latestQuestionnaire, onPress]);
-  
-  return (
-    <TouchableOpacity
-      style={styles.row}
-      onPress={handlePress}
-      testID={`saved-row-${patient.id}`}
-      accessibilityRole="button"
-      accessibilityLabel={name}>
-      <View style={styles.rowText}>
-        <Text style={styles.rowTitle}>{name}</Text>
-        <Text style={styles.rowSubtitle}>{metaText}</Text>
-      </View>
-      <Text style={styles.rowAction}>{nextLabel}</Text>
-    </TouchableOpacity>
-  );
-});
+const PatientRow = memo(
+  ({ patient, latestQuestionnaire, onPress, metaText, nextLabel }: PatientRowProps) => {
+    const name = `${patient.encryptedData.lastName}, ${patient.encryptedData.firstName}`;
+
+    const handlePress = useCallback(() => {
+      onPress({ patient, latestQuestionnaire });
+    }, [patient, latestQuestionnaire, onPress]);
+
+    return (
+      <TouchableOpacity
+        style={styles.row}
+        onPress={handlePress}
+        testID={`saved-row-${patient.id}`}
+        accessibilityRole="button"
+        accessibilityLabel={name}>
+        <View style={styles.rowText}>
+          <AppText style={styles.rowTitle}>{name}</AppText>
+          <AppText style={styles.rowSubtitle}>{metaText}</AppText>
+        </View>
+        <AppText style={styles.rowAction}>{nextLabel}</AppText>
+      </TouchableOpacity>
+    );
+  },
+);
 
 export const SavedAnamnesesScreen = ({ navigation }: Props): React.JSX.Element => {
   const { t } = useTranslation();
@@ -101,7 +103,7 @@ export const SavedAnamnesesScreen = ({ navigation }: Props): React.JSX.Element =
 
   const [rows, setRows] = useState<Row[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  
+
   // Search and filter state
   const [searchQuery, setSearchQuery] = useState('');
   const [activeFilter, setActiveFilter] = useState<FilterType>('all');
@@ -167,19 +169,17 @@ export const SavedAnamnesesScreen = ({ navigation }: Props): React.JSX.Element =
 
     switch (activeFilter) {
       case 'completed':
-        result = result.filter(({ latestQuestionnaire }) => 
-          latestQuestionnaire?.status === 'completed'
+        result = result.filter(
+          ({ latestQuestionnaire }) => latestQuestionnaire?.status === 'completed',
         );
         break;
       case 'inProgress':
-        result = result.filter(({ latestQuestionnaire }) => 
-          latestQuestionnaire?.status === 'in_progress'
+        result = result.filter(
+          ({ latestQuestionnaire }) => latestQuestionnaire?.status === 'in_progress',
         );
         break;
       case 'recent':
-        result = result.filter(({ patient }) => 
-          patient.updatedAt >= sevenDaysAgo
-        );
+        result = result.filter(({ patient }) => patient.updatedAt >= sevenDaysAgo);
         break;
     }
 
@@ -198,149 +198,171 @@ export const SavedAnamnesesScreen = ({ navigation }: Props): React.JSX.Element =
     return result;
   }, [rows, searchQuery, activeFilter, sortBy]);
 
-  const handleOpen = useCallback((row: Row): void => {
-    if (!encryptionKey) {
-      Alert.alert(t('common.error'), t('questionnaire.patientMissing'));
-      navigation.navigate('MasterPassword', { mode: 'unlock' });
-      return;
-    }
+  const handleOpen = useCallback(
+    (row: Row): void => {
+      if (!encryptionKey) {
+        Alert.alert(t('common.error'), t('questionnaire.patientMissing'));
+        navigation.navigate('MasterPassword', { mode: 'unlock' });
+        return;
+      }
 
-    if (!row.latestQuestionnaire) {
-      Alert.alert(t('common.error'), t('questionnaire.noneLoaded'));
-      return;
-    }
+      if (!row.latestQuestionnaire) {
+        Alert.alert(t('common.error'), t('questionnaire.noneLoaded'));
+        return;
+      }
 
-    setPatient(row.patient);
-    navigation.navigate('Questionnaire', { questionnaireId: row.latestQuestionnaire.id });
-  }, [encryptionKey, t, navigation, setPatient]);
+      setPatient(row.patient);
+      navigation.navigate('Questionnaire', { questionnaireId: row.latestQuestionnaire.id });
+    },
+    [encryptionKey, t, navigation, setPatient],
+  );
 
   /** FlatList performance: fixed item height for fast scrolling */
-  const getItemLayout = useCallback((_: unknown, index: number) => ({
-    length: ROW_HEIGHT,
-    offset: ROW_HEIGHT * index,
-    index,
-  }), []);
+  const getItemLayout = useCallback(
+    (_: unknown, index: number) => ({
+      length: ROW_HEIGHT,
+      offset: ROW_HEIGHT * index,
+      index,
+    }),
+    [],
+  );
 
   /** FlatList key extractor */
   const keyExtractor = useCallback((item: Row) => item.patient.id, []);
 
   /** FlatList render item */
-  const renderItem: ListRenderItem<Row> = useCallback(({ item }) => {
-    const meta = item.latestQuestionnaire
-      ? t('summary.subtitle', { id: item.latestQuestionnaire.id })
-      : t('questionnaire.noneLoaded');
-    
-    return (
-      <PatientRow
-        patient={item.patient}
-        latestQuestionnaire={item.latestQuestionnaire}
-        onPress={handleOpen}
-        metaText={meta}
-        nextLabel={item.latestQuestionnaire ? t('home.resumeQuestionnaire') : t('home.openPatient')}
-      />
-    );
-  }, [handleOpen, t]);
+  const renderItem: ListRenderItem<Row> = useCallback(
+    ({ item }) => {
+      const meta = item.latestQuestionnaire
+        ? t('summary.subtitle', { id: item.latestQuestionnaire.id })
+        : t('questionnaire.noneLoaded');
+
+      return (
+        <PatientRow
+          patient={item.patient}
+          latestQuestionnaire={item.latestQuestionnaire}
+          onPress={handleOpen}
+          metaText={meta}
+          nextLabel={
+            item.latestQuestionnaire ? t('home.resumeQuestionnaire') : t('home.openPatient')
+          }
+        />
+      );
+    },
+    [handleOpen, t],
+  );
 
   /** FlatList header component */
-  const ListHeader = useMemo(() => (
-    <View style={styles.listHeader}>
-      <Text style={styles.title} accessibilityRole="header">
-        {t('home.saved')}
-      </Text>
-      <Text style={styles.subtitle}>{subtitle}</Text>
+  const ListHeader = useMemo(
+    () => (
+      <View style={styles.listHeader}>
+        <AppText style={styles.title} accessibilityRole="header">
+          {t('home.saved')}
+        </AppText>
+        <AppText style={styles.subtitle}>{subtitle}</AppText>
 
-      {/* Search Input */}
-      <View style={styles.searchContainer}>
-        <TextInput
-          style={styles.searchInput}
-          placeholder={t('search.placeholder')}
-          value={searchQuery}
-          onChangeText={setSearchQuery}
-          placeholderTextColor={colors.textMuted}
-          testID="search-input"
-          accessibilityLabel={t('search.placeholder')}
+        <View style={styles.searchContainer}>
+          <TextInput
+            style={styles.searchInput}
+            placeholder={t('search.placeholder')}
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+            placeholderTextColor={colors.textMuted}
+            testID="search-input"
+            accessibilityLabel={t('search.placeholder')}
+          />
+          {searchQuery.length > 0 && (
+            <TouchableOpacity
+              style={styles.clearButton}
+              onPress={() => setSearchQuery('')}
+              testID="clear-search"
+              accessibilityLabel={t('common.clear')}>
+              <AppText style={styles.clearButtonText}>✕</AppText>
+            </TouchableOpacity>
+          )}
+        </View>
+
+        {/* Filter Chips */}
+        <FlatList
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={styles.filterContainer}
+          contentContainerStyle={styles.filterContent}
+          data={
+            [
+              { key: 'all', label: t('search.filterAll') },
+              { key: 'recent', label: t('search.filterRecent') },
+              { key: 'inProgress', label: t('search.filterInProgress') },
+              { key: 'completed', label: t('search.filterCompleted') },
+            ] as const
+          }
+          keyExtractor={item => item.key}
+          renderItem={({ item }) => (
+            <TouchableOpacity
+              style={[styles.filterChip, activeFilter === item.key && styles.filterChipActive]}
+              onPress={() => setActiveFilter(item.key as FilterType)}
+              testID={`filter-${item.key}`}
+              accessibilityRole="radio"
+              accessibilityState={{ selected: activeFilter === item.key }}>
+              <AppText
+                style={[
+                  styles.filterChipText,
+                  activeFilter === item.key && styles.filterChipTextActive,
+                ]}>
+                {item.label}
+              </AppText>
+            </TouchableOpacity>
+          )}
         />
-        {searchQuery.length > 0 && (
-          <TouchableOpacity
-            style={styles.clearButton}
-            onPress={() => setSearchQuery('')}
-            testID="clear-search"
-            accessibilityLabel={t('common.clear')}>
-            <Text style={styles.clearButtonText}>✕</Text>
-          </TouchableOpacity>
-        )}
-      </View>
 
-      {/* Filter Chips */}
-      <FlatList
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        style={styles.filterContainer}
-        contentContainerStyle={styles.filterContent}
-        data={[
-          { key: 'all', label: t('search.filterAll') },
-          { key: 'recent', label: t('search.filterRecent') },
-          { key: 'inProgress', label: t('search.filterInProgress') },
-          { key: 'completed', label: t('search.filterCompleted') },
-        ] as const}
-        keyExtractor={(item) => item.key}
-        renderItem={({ item }) => (
+        {/* Sort Toggle */}
+        <View style={styles.sortContainer}>
+          <AppText style={styles.sortLabel}>{t('search.sortBy')}:</AppText>
           <TouchableOpacity
-            style={[styles.filterChip, activeFilter === item.key && styles.filterChipActive]}
-            onPress={() => setActiveFilter(item.key as FilterType)}
-            testID={`filter-${item.key}`}
+            style={[styles.sortButton, sortBy === 'date' && styles.sortButtonActive]}
+            onPress={() => setSortBy('date')}
             accessibilityRole="radio"
-            accessibilityState={{ selected: activeFilter === item.key }}>
-            <Text style={[styles.filterChipText, activeFilter === item.key && styles.filterChipTextActive]}>
-              {item.label}
-            </Text>
+            accessibilityState={{ selected: sortBy === 'date' }}>
+            <AppText style={[styles.sortButtonText, sortBy === 'date' && styles.sortButtonTextActive]}>
+              {t('search.sortDate')}
+            </AppText>
           </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.sortButton, sortBy === 'name' && styles.sortButtonActive]}
+            onPress={() => setSortBy('name')}
+            accessibilityRole="radio"
+            accessibilityState={{ selected: sortBy === 'name' }}>
+            <AppText style={[styles.sortButtonText, sortBy === 'name' && styles.sortButtonTextActive]}>
+              {t('search.sortName')}
+            </AppText>
+          </TouchableOpacity>
+        </View>
+
+        {/* Results Count */}
+        {searchQuery.length > 0 && (
+          <AppText style={styles.resultsCount}>
+            {t('search.results', { count: filteredRows.length })}
+          </AppText>
         )}
-      />
-
-      {/* Sort Toggle */}
-      <View style={styles.sortContainer}>
-        <Text style={styles.sortLabel}>{t('search.sortBy')}:</Text>
-        <TouchableOpacity
-          style={[styles.sortButton, sortBy === 'date' && styles.sortButtonActive]}
-          onPress={() => setSortBy('date')}
-          accessibilityRole="radio"
-          accessibilityState={{ selected: sortBy === 'date' }}>
-          <Text style={[styles.sortButtonText, sortBy === 'date' && styles.sortButtonTextActive]}>
-            {t('search.sortDate')}
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.sortButton, sortBy === 'name' && styles.sortButtonActive]}
-          onPress={() => setSortBy('name')}
-          accessibilityRole="radio"
-          accessibilityState={{ selected: sortBy === 'name' }}>
-          <Text style={[styles.sortButtonText, sortBy === 'name' && styles.sortButtonTextActive]}>
-            {t('search.sortName')}
-          </Text>
-        </TouchableOpacity>
       </View>
-
-      {/* Results Count */}
-      {searchQuery.length > 0 && (
-        <Text style={styles.resultsCount}>
-          {t('search.results', { count: filteredRows.length })}
-        </Text>
-      )}
-    </View>
-  ), [t, subtitle, searchQuery, activeFilter, sortBy, filteredRows.length]);
+    ),
+    [t, subtitle, searchQuery, activeFilter, sortBy, filteredRows.length],
+  );
 
   /** Empty state component */
-  const ListEmpty = useMemo(() => (
-    <Card>
-      <Text style={styles.cardText}>
-        {searchQuery.length > 0 ? t('search.noResults') : t('questionnaire.noneLoaded')}
-      </Text>
-      <Text style={styles.cardSubtext}>
-        {searchQuery.length > 0 ? t('search.tryDifferent') : t('home.startNew')}
-      </Text>
-    </Card>
-  ), [searchQuery, t]);
+  const ListEmpty = useMemo(
+    () => (
+      <Card>
+        <AppText style={styles.cardText}>
+          {searchQuery.length > 0 ? t('search.noResults') : t('questionnaire.noneLoaded')}
+        </AppText>
+        <AppText style={styles.cardSubtext}>
+          {searchQuery.length > 0 ? t('search.tryDifferent') : t('home.startNew')}
+        </AppText>
+      </Card>
+    ),
+    [searchQuery, t],
+  );
 
   if (isLoading) {
     return (

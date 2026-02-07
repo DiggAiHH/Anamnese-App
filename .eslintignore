@@ -1,0 +1,13 @@
+node_modules/
+build/
+buildLogs/
+tmp/
+windows/
+android/
+ios/
+macos/
+web/
+patches/
+*.binlog
+msbuild*.log
+*.tgz

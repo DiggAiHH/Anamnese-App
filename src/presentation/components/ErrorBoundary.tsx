@@ -8,7 +8,7 @@
  */
 
 import React, { Component, ErrorInfo, ReactNode } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Pressable } from 'react-native';
 import { withTranslation, WithTranslation } from 'react-i18next';
 import { sanitizeError, SanitizedError } from '../../shared/sanitizeError';
 import { logError, logDebug } from '../../shared/logger';
@@ -22,6 +22,7 @@ interface Props extends WithTranslation {
 interface State {
   hasError: boolean;
   errorType?: string;
+  componentStack?: string;
 }
 
 /**
@@ -57,7 +58,24 @@ class ErrorBoundaryClass extends Component<Props, State> {
     logError('[ErrorBoundary] Caught error', safeError);
     if (typeof __DEV__ !== 'undefined' && __DEV__) {
       // Component stack is safe (no user data), log it in dev
-      logDebug(`[ErrorBoundary] Component stack: ${errorInfo.componentStack}`);
+      const componentStack = String(errorInfo.componentStack || '').trim();
+      if (componentStack) {
+        logDebug(`[ErrorBoundary] Component stack:\n${componentStack}`);
+      }
+
+      // Allowlisted dev hint: safe to log because message is generic and contains no user data.
+      // Do NOT log arbitrary error messages (may contain PII).
+      if (
+        typeof safeError.message === 'string' &&
+        safeError.message.includes('Text strings must be rendered within a <Text> component')
+      ) {
+        logDebug('[ErrorBoundary] Hint: RN "naked text" render error detected. Use the component stack above to locate the offending component.');
+      }
+
+      // Also keep the stack in state for on-screen diagnostics (dev only)
+      if (componentStack) {
+        this.setState({ componentStack });
+      }
     }
 
     // Call optional error handler with sanitized error
@@ -83,15 +101,21 @@ class ErrorBoundaryClass extends Component<Props, State> {
         <View style={styles.container}>
           <Text style={styles.emoji}>⚠️</Text>
           <Text style={styles.title}>{t('error.boundaryTitle')}</Text>
-          <Text style={styles.subtitle}>
-            {t('error.boundaryMessage')}
-          </Text>
-          <Text style={styles.subtitle}>
-            {t('error.dataSafe')}
-          </Text>
-          <TouchableOpacity style={styles.button} onPress={this.handleRetry}>
-            <Text style={styles.buttonText}>{t('error.tryAgain')}</Text>
-          </TouchableOpacity>
+          <Text style={styles.subtitle}>{t('error.boundaryMessage')}</Text>
+          <Text style={styles.subtitle}>{t('error.dataSafe')}</Text>
+
+          {typeof __DEV__ !== 'undefined' && __DEV__ && this.state.componentStack ? (
+            <View style={styles.debugBox}>
+              <Text style={styles.debugTitle}>DEV Component Stack</Text>
+              <Text style={styles.debugStack} selectable>
+                {this.state.componentStack}
+              </Text>
+            </View>
+          ) : null}
+
+          <Pressable onPress={this.handleRetry} style={styles.retryButton}>
+            <Text style={styles.retryText}>{t('error.tryAgain')}</Text>
+          </Pressable>
         </View>
       );
     }
@@ -125,17 +149,39 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 4,
   },
-  button: {
+  retryButton: {
     marginTop: 24,
     backgroundColor: '#007AFF',
-    paddingHorizontal: 24,
     paddingVertical: 12,
+    paddingHorizontal: 24,
     borderRadius: 8,
+    minWidth: 120,
   },
-  buttonText: {
-    color: '#fff',
+  debugBox: {
+    marginTop: 16,
+    padding: 12,
+    borderRadius: 8,
+    backgroundColor: '#ffffff',
+    borderWidth: 1,
+    borderColor: '#e6e6e6',
+    maxWidth: 520,
+  },
+  debugTitle: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#1a1a2e',
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  debugStack: {
+    fontSize: 10,
+    color: '#333',
+  },
+  retryText: {
+    color: '#FFFFFF',
     fontSize: 16,
     fontWeight: '600',
+    textAlign: 'center',
   },
 });
 

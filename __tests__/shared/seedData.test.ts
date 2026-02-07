@@ -18,19 +18,19 @@ describe('SeedData', () => {
     });
 
     it('should have patients with different languages', () => {
-      const languages = new Set(SEED_PATIENTS.map((p) => p.language));
+      const languages = new Set(SEED_PATIENTS.map(p => p.language));
       expect(languages.size).toBeGreaterThanOrEqual(8);
     });
 
     it('should have patients with all genders', () => {
-      const genders = new Set(SEED_PATIENTS.map((p) => p.gender));
+      const genders = new Set(SEED_PATIENTS.map(p => p.gender));
       expect(genders.has('male')).toBe(true);
       expect(genders.has('female')).toBe(true);
       expect(genders.has('other')).toBe(true);
     });
 
     it('should have valid birth dates (ISO 8601)', () => {
-      SEED_PATIENTS.forEach((p) => {
+      SEED_PATIENTS.forEach(p => {
         const date = new Date(p.birthDate);
         expect(date.toString()).not.toBe('Invalid Date');
       });
@@ -64,8 +64,8 @@ describe('SeedData', () => {
       const patient = createSeedPatient(seed);
 
       expect(patient.gdprConsents.length).toBeGreaterThanOrEqual(3);
-      
-      const consentTypes = patient.gdprConsents.map((c) => c.type);
+
+      const consentTypes = patient.gdprConsents.map(c => c.type);
       expect(consentTypes).toContain('data_processing');
       expect(consentTypes).toContain('data_storage');
       expect(consentTypes).toContain('gdt_export');

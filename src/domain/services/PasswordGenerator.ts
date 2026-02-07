@@ -15,27 +15,34 @@ export class PasswordGenerator {
     const symbols = '!@#$%^&*()-_=+[]{};:,.?';
     const all = `${lower}${upper}${digits}${symbols}`;
 
+    const getRandomInt = (max: number): number => {
+      try {
+        if (typeof crypto !== 'undefined' && typeof crypto.getRandomValues === 'function') {
+          const buf = new Uint32Array(1);
+          crypto.getRandomValues(buf);
+          return buf[0] % max;
+        }
+      } catch (e) {
+        // Fallback
+      }
+      return Math.floor(Math.random() * max);
+    };
+
     const pick = (chars: string): string => {
-      // Create a buffer for 1 32-bit integer
-      const buf = new Uint32Array(1);
-      // Use global crypto (available in RN via polyfill/native or web)
-      crypto.getRandomValues(buf); 
-      return chars[buf[0] % chars.length];
+      return chars[getRandomInt(chars.length)];
     };
 
     // Ensure at least one character from each set
     const out: string[] = [pick(lower), pick(upper), pick(digits), pick(symbols)];
 
     // Fill the rest
-    for (let i = out.length; i < length; i++) {
+    while (out.length < length) {
       out.push(pick(all));
     }
 
     // Fisher–Yates shuffle
     for (let i = out.length - 1; i > 0; i--) {
-      const buf = new Uint32Array(1);
-      crypto.getRandomValues(buf);
-      const j = buf[0] % (i + 1);
+      const j = getRandomInt(i + 1);
       [out[i], out[j]] = [out[j], out[i]];
     }
 

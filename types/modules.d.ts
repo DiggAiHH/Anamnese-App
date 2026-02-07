@@ -32,7 +32,7 @@ declare module 'react-native-sqlite-storage' {
     params: OpenDatabaseParams | string,
     version?: string,
     displayName?: string,
-    size?: number
+    size?: number,
   ) => Promise<SQLiteDatabase>;
 
   const SQLite: {
@@ -83,12 +83,45 @@ declare module 'react-native-share';
 declare module 'react-native-date-picker';
 declare module 'react-native-vector-icons/*';
 declare module '@react-navigation/native' {
-  export const NavigationContainer: React.ComponentType<{ children?: React.ReactNode }>;
+  export type Theme = {
+    dark: boolean;
+    colors: {
+      primary: string;
+      background: string;
+      card: string;
+      text: string;
+      border: string;
+      notification: string;
+    } & Record<string, string>;
+  };
+
+  export const DefaultTheme: Theme;
+  export const DarkTheme: Theme;
+
+  export type NavigationContainerProps = {
+    children?: import('react').ReactNode;
+    theme?: Theme;
+    linking?: unknown;
+    fallback?: import('react').ReactNode;
+    onReady?: () => void;
+    onStateChange?: (state: unknown) => void;
+    documentTitle?: unknown;
+  };
+
+  export const NavigationContainer: import('react').ComponentType<NavigationContainerProps>;
+
   export interface NavigationContainerRef<T = unknown> {
     navigate: (...args: unknown[]) => void;
     goBack: () => void;
     getCurrentRoute?: () => T | undefined;
   }
+
+  export type NavigationProp = {
+    navigate: (...args: unknown[]) => void;
+    goBack: () => void;
+  } & Record<string, unknown>;
+
+  export function useNavigation<T = NavigationProp>(): T;
 }
 
 declare module '@react-navigation/stack' {
@@ -109,6 +142,7 @@ declare module '@react-navigation/stack' {
       navigate: (...args: unknown[]) => void;
       goBack: () => void;
       addListener: (event: string, callback: () => void) => () => void;
+      dispatch: (action: unknown) => void;
     } & Record<string, unknown>;
     route: { key: string; name: RouteName; params: ParamList[RouteName] };
   };
@@ -121,7 +155,7 @@ declare module '@react-navigation/stack' {
 declare module '@react-navigation/native-stack' {
   export type NativeStackScreenProps<
     ParamList extends Record<string, object | undefined> = Record<string, object | undefined>,
-    RouteName extends keyof ParamList = keyof ParamList
+    RouteName extends keyof ParamList = keyof ParamList,
   > = {
     navigation: {
       navigate: (...args: unknown[]) => void;
