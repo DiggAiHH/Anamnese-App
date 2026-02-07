@@ -1,8 +1,4 @@
-import { DeleteAllDataUseCase } from '../../src/domain/usecases/DeleteAllDataUseCase';
-import { database } from '../../src/infrastructure/persistence/DatabaseConnection';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
-// Mock dependencies
+// Mock dependencies before imports to ensure mocks are applied before modules are loaded
 jest.mock('../../src/infrastructure/persistence/DatabaseConnection', () => ({
   database: {
     deleteAllData: jest.fn(),
@@ -12,6 +8,11 @@ jest.mock('../../src/infrastructure/persistence/DatabaseConnection', () => ({
 jest.mock('@react-native-async-storage/async-storage', () => ({
   clear: jest.fn(),
 }));
+
+// Import after mocks
+import { DeleteAllDataUseCase } from '../../src/domain/usecases/DeleteAllDataUseCase';
+import { database } from '../../src/infrastructure/persistence/DatabaseConnection';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 describe('DeleteAllDataUseCase Integration', () => {
   let useCase: DeleteAllDataUseCase;

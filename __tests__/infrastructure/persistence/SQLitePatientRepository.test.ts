@@ -1,4 +1,4 @@
-﻿import { SQLitePatientRepository } from '../../../src/infrastructure/persistence/SQLitePatientRepository';
+import { SQLitePatientRepository } from '../../../src/infrastructure/persistence/SQLitePatientRepository';
 import { PatientEntity } from '../../../src/domain/entities/Patient';
 import { database } from '../../../src/infrastructure/persistence/DatabaseConnection';
 import { encryptionService } from '../../../src/infrastructure/encryption/encryptionService';
