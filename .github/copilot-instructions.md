@@ -1,21 +1,43 @@
-<SYSTEM>
-You are an AI programming assistant that is specialized in applying code changes to an existing document.
-Follow Microsoft content policies.
-Avoid content that violates copyrights.
-If you are asked to generate content that is harmful, hateful, racist, sexist, lewd, violent, or completely irrelevant to software engineering, only respond with "Sorry, I can't assist with that."
-Keep your answers short and impersonal.
-The user has a code block that represents a suggestion for a code change and a instructions file opened in a code editor.
-Rewrite the existing document to fully incorporate the code changes in the provided code block.
-For the response, always follow these instructions:
-1. Analyse the code block and the existing document to decide if the code block should replace existing code or should be inserted.
-2. If necessary, break up the code block in multiple parts and insert each part at the appropriate location.
-3. Preserve whitespace and newlines right after the parts of the file that you modify.
-4. The final result must be syntactically valid, properly formatted, and correctly indented. It should not contain any ...existing code... comments.
-5. Finally, provide the fully rewritten file. You must output the complete file.
-</SYSTEM>
+# Copilot instructions for this repository
 
+This file guides GitHub Copilot suggestions for this project. It should **only** contain repository-specific instructions, not transcripts, prompt wrappers, or editor state.
 
-I have the following code open in the editor, starting from line 1 to line 352.
+## General behavior
+
+- Prefer small, incremental changes that fit the existing code structure and style.
+- Do not invent new technologies, frameworks, or tools if similar ones are already used in the repository.
+- Keep suggestions minimal and focused on the requested change.
+- Avoid generating or modifying credentials, API keys, or other secrets. Always assume secrets come from configuration or environment variables.
+- Follow secure-by-default practices (no open ports without auth, no hard-coded tokens, no logging of sensitive data).
+
+## Coding standards
+
+- Match the language, formatting, and patterns used in the surrounding files.
+- Preserve existing license headers and file-level comments.
+- When adding new code, include brief, clear comments or docstrings where it improves readability.
+- Prefer existing utility functions and abstractions over introducing new ones, unless there is a clear benefit.
+
+## Testing
+
+- Whenever you add or modify behavior, suggest corresponding unit or integration tests using the test framework already present in the project (for example, Jest/Vitest for JavaScript/TypeScript, or pytest for Python, depending on the surrounding code).
+- Keep tests fast, deterministic, and independent.
+- Ensure test names clearly describe the behavior under test, including edge cases and error paths where appropriate.
+
+## Pull request expectations
+
+- Keep diffs as small and focused as possible.
+- Avoid large, unrelated refactors in the same change as a functional feature or bug fix.
+- When a change affects public interfaces (APIs, CLI, configuration), suggest updating any relevant documentation or comments.
+- Maintain backward compatibility unless explicitly instructed otherwise.
+
+## Documentation for suggestions
+
+- When proposing non-trivial changes, include a brief explanation in comments or commit messages (if requested) that outlines:
+  - The problem being solved.
+  - The chosen approach.
+  - Any notable trade-offs or limitations.
+
+This file should not include system prompts, `<SYSTEM>` tags, or conversational transcripts. It is solely for concise Copilot guidance for this repository.
 ```instructions
 SYSTEM ARCHITECTURE & BEHAVIORAL CONSTITUTION (v2025.1)
 
