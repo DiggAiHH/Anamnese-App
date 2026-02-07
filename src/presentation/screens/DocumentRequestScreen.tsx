@@ -9,20 +9,23 @@
 
 import React from 'react';
 import { View, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
+import type { StackScreenProps } from '@react-navigation/stack';
 import { usePatientContext } from '../../application/PatientContext';
 import { useTheme } from '../theme/ThemeContext';
 import { AppText } from '../components/AppText';
 import { DocumentType } from '../../domain/entities/DocumentRequest';
 import { colors, spacing, radius } from '../theme/tokens';
+import type { RootStackParamList } from '../navigation/RootNavigator';
+
+type Props = StackScreenProps<RootStackParamList, 'DocumentRequest'>;
 
 interface DocumentOption {
   type: DocumentType;
   icon: string;
   labelKey: string;
   descKey: string;
-  screen: string;
+  screen: 'PrescriptionRequest' | 'ReferralRequest' | 'SickNoteRequest';
   color: string;
 }
 
@@ -53,13 +56,12 @@ const DOCUMENT_OPTIONS: DocumentOption[] = [
   },
 ];
 
-export const DocumentRequestScreen = () => {
-  const navigation = useNavigation<any>();
+export const DocumentRequestScreen = ({ navigation }: Props): React.JSX.Element => {
   const { t } = useTranslation();
   const { setSelectedConcern, patientStatus } = usePatientContext();
   const { isHighContrast } = useTheme();
 
-  const handleSelectDocument = (option: DocumentOption) => {
+  const handleSelectDocument = (option: DocumentOption): void => {
     setSelectedConcern(option.type);
     navigation.navigate(option.screen);
   };
@@ -78,22 +80,23 @@ export const DocumentRequestScreen = () => {
       </View>
 
       <ScrollView style={styles.optionsScroll} contentContainerStyle={styles.optionsContainer}>
-        {DOCUMENT_OPTIONS.map((option) => (
+        {DOCUMENT_OPTIONS.map(option => (
           <TouchableOpacity
             key={option.type}
             style={[styles.optionCard, isHighContrast && styles.optionCardHighContrast]}
             onPress={() => handleSelectDocument(option)}
             accessibilityRole="button"
-            accessibilityLabel={t(option.labelKey, { defaultValue: option.type })}
-          >
+            accessibilityLabel={t(option.labelKey, { defaultValue: option.type })}>
             <View style={[styles.iconCircle, { backgroundColor: option.color + '20' }]}>
               <AppText style={styles.iconEmoji}>{option.icon}</AppText>
             </View>
             <View style={styles.optionTextContainer}>
-              <AppText style={[styles.optionTitle, isHighContrast && styles.textHighContrastInverse]}>
+              <AppText
+                style={[styles.optionTitle, isHighContrast && styles.textHighContrastInverse]}>
                 {t(option.labelKey, { defaultValue: option.type })}
               </AppText>
-              <AppText style={[styles.optionDesc, isHighContrast && styles.textHighContrastInverse]}>
+              <AppText
+                style={[styles.optionDesc, isHighContrast && styles.textHighContrastInverse]}>
                 {t(option.descKey, { defaultValue: '' })}
               </AppText>
             </View>

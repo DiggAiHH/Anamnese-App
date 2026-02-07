@@ -7,7 +7,7 @@ import { View, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/RootNavigator';
-import { DeleteAllDataUseCase } from '../../domain/usecases/DeleteAllDataUseCase';
+import { DeleteAllDataUseCase } from '../../application/use-cases/DeleteAllDataUseCase';
 import { useQuestionnaireStore } from '../state/useQuestionnaireStore';
 import { colors, spacing, radius } from '../theme/tokens';
 import { AppButton } from '../components/AppButton';
@@ -24,7 +24,7 @@ export const HomeScreen = ({ navigation }: Props): React.JSX.Element => {
   const { t } = useTranslation();
   const [selectedMode, setSelectedMode] = useState<UserMode>(null);
 
-  const handleDeleteAllData = () => {
+  const handleDeleteAllData = (): void => {
     Alert.alert(
       t('settings.deleteTitle', { defaultValue: 'Delete All Data?' }),
       t('settings.deleteMessage', {

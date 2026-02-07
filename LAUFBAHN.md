@@ -57,6 +57,265 @@ It defines the always-on checklist and records what was done, when, and where.
 
 ## AKTUELLER LAUF: 5 Pflichtpunkte (LIVE)
 
+> **Run-ID:** RUN-20250207-code-audit-v1 | **Status:** ✅ COMPLETED
+
+1) **Ziel**
+- Outcome: 4-Phase Code Quality Audit (adapted from Windows/.NET template to RN/TS).
+  1. Phase 1: Deep Code Audit — 4 CRITICAL, 7 HIGH, 10 MEDIUM, 5 LOW findings ✅
+  2. Phase 1 Fixes: C-1 (SQL injection), C-4 (ErrorBoundary), H-2 (useMemo), H-5 (PII doc), H-6 (typed nav), L-1 (log redaction), M-2 (Windows KB), M-5 (interval leak) ✅
+  3. Phase 2: JSON.parse guards (5 locations), Voice! non-null, clipboard timer, TTS listeners ✅
+  4. Phase 3: Git Workflow with 6-commit strategy ✅
+  5. Phase 4: Clean-Build-Test.ps1 PowerShell pipeline ✅
+- DoD:
+  - Type-check: 0 errors (verified 5 iterations — resolved custom types/modules.d.ts shadow issue)
+  - Tests: 521 total, 490 passed, 0 failed, 29 skipped, 2 todo
+  - All CRITICAL + HIGH findings fixed or documented
+  - Build pipeline script created
+
+2) **Methodik**
+- Phase 1: Sub-agent deep scan across 5 categories (compile errors, runtime risks, architecture, Windows, security)
+- Phase 2: Sub-agent Phase 2 audit (error handling, async patterns, resource leaks, null safety, ts-suppressions) → 15 findings → applied fixes for HIGH + MEDIUM
+- Type-check iterations: 5 total —
+  - Iter 1: TS18046 (unknown dispatch) → added type param
+  - Iter 2: TS2315 (NavigationProp not generic) → discovered types/modules.d.ts shadow
+  - Iter 3: TS18046 (still unknown) → types shadow not resolved by RootNavigationProp
+  - Iter 4: TS2724 (StackNavigationProp not exported) → confirmed types override blocks real exports
+  - Iter 5: PASS → added `dispatch` to custom StackScreenProps in modules.d.ts + used RootNavigationProp
+
+3) **Sprachen/Stack**
+- TypeScript/React Native, Jest, PowerShell (build script).
+
+4) **Struktur** — Files modified this session:
+- `src/infrastructure/persistence/DatabaseConnection.ts` — C-1: SQL parameterization
+- `src/infrastructure/persistence/SQLiteAnswerRepository.ts` — JSON.parse guard on audit_log
+- `src/presentation/App.tsx` — C-4: ErrorBoundary wrapper
+- `src/presentation/components/SessionGuard.tsx` — H-6: typed navigation (RootNavigationProp)
+- `src/shared/logger.ts` — L-1: production PII redaction
+- `src/presentation/screens/MasterPasswordScreen.tsx` — M-5: countdownRef + clipboardTimerRef cleanup
+- `src/presentation/screens/QuestionnaireScreen.tsx` — H-2: useMemo use cases
+- `src/presentation/screens/FastTrackScreen.tsx` — H-5: security comment
+- `src/presentation/screens/PrescriptionRequestScreen.tsx` — M-2: Windows keyboard
+- `src/presentation/screens/ReferralRequestScreen.tsx` — M-2: Windows keyboard
+- `src/presentation/screens/SickNoteRequestScreen.tsx` — M-2: Windows keyboard
+- `src/domain/entities/Document.ts` — JSON.parse guards (auditLog + ocrData)
+- `src/domain/value-objects/EncryptedData.ts` — JSON.parse guard with typed error
+- `src/infrastructure/speech/SystemSpeechService.ts` — Voice! → guard check
+- `src/infrastructure/speech/TTSService.ts` — Event subscription cleanup in destroy()
+- `types/modules.d.ts` — Added dispatch() to StackScreenProps navigation type
+- `docs/GIT_WORKFLOW.md` — Phase 3 git commit strategy
+- `scripts/Clean-Build-Test.ps1` — Phase 4 build pipeline
+
+5) **Verifikation**
+- Type-check: `npx tsc --noEmit` → 0 errors (buildLogs/typecheck_phase2.log)
+- Tests: `npx jest --forceExit` → 490/521 pass, 0 fail (buildLogs/jest_phase2.out.log)
+
+---
+
+## VORHERIGER LAUF
+
+> **Run-ID:** RUN-20250207-devops-architect-v1 | **Status:** ✅ COMPLETED
+
+1) **Ziel**
+- Outcome: DevOps-Architect v1.0 — 5-Phase Protocol Execution.
+  1. Phase 1: Deep Code Archaeology & Test Inventory ✅
+  2. Phase 2: Iterative Test-Execute-Refine Cycle (3 iterations → 0 failures) ✅
+  3. Phase 3: Zero-Context Handoff Documentation ✅
+  4. Phase 4: Git Workflow & Commit Strategy ✅
+  5. Phase 5: Strategic Next-Step Recommendations (MoSCoW) ✅
+  6. Clean Build + Manual QA Guide ✅
+- DoD:
+  - **CRITICAL BUG FIX**: i18n duplicate key bug in en.json/de.json — buttons/placeholders silently lost at runtime (JSON last-wins).
+  - **SYNC FIX**: 47 missing i18n keys added to 17 locale files (EN fallback).
+  - Tests: 521 total, 490 passed, 0 failed, 29 pending (by design), 2 todo (ESM blocker).
+  - Type-check: 0 errors.
+  - Documentation: 5 new docs created.
+
+2) **Methodik**
+- Phase 1: Sub-agent deep scan (67 test files, 516 it-blocks, all mocks/dependencies mapped).
+- Phase 2: 3 Jest iterations. Iteration 1 found fr.json mismatch → root cause = duplicate keys in en/de.json.
+  Fixed duplicates → Iteration 2 exposed 17 locales missing keys → bulk-synced all → Iteration 3 = GREEN.
+- Phase 3: Structured documentation from comprehensive codebase research.
+- Phase 4: Atomic commit strategy script with 8 logical groupings.
+- Phase 5: MoSCoW prioritization from codebase analysis.
+
+3) **Sprachen/Stack**
+- TypeScript/React Native, Jest, Node.js (scripts).
+
+4) **Struktur**
+- Critical Fixes:
+  - `src/presentation/i18n/locales/en.json` – removed duplicate buttons/placeholders
+  - `src/presentation/i18n/locales/de.json` – removed duplicate buttons/placeholders
+  - All 19 locale files – synced 5 buttons + 42 placeholders keys
+- Created:
+  - `docs/ARCHITECTURE_HANDOFF.md` – Full architecture documentation
+  - `docs/API_SURFACE.md` – Complete API surface catalog
+  - `docs/TEST_COVERAGE_REPORT.md` – Test results + coverage analysis
+  - `docs/STRATEGIC_ROADMAP.md` – MoSCoW prioritized roadmap
+  - `docs/MANUAL_QA_GUIDE.md` – Manual testing checklist for live QA
+  - `scripts/git-commit-strategy.cjs` – Atomic commit automation
+  - `scripts/jest-run-i3.cjs` – Jest runner with JSON output
+  - `scripts/run-jest-json.cjs` – Jest runner helper
+  - `scripts/parse-jest.cjs` – Jest JSON parser
+
+5) **Qualität**
+- Evidence:
+  - `buildLogs/jest_i3.json` – Full test suite (521 tests, 0 failures) – 198KB
+  - `buildLogs/typecheck_i3.log` – TypeScript clean (empty = 0 errors)
+  - `buildLogs/jest_phase2_i3.json` – Iteration 3 raw output
+
+---
+
+## VORHERIGER LAUF: 5 Pflichtpunkte
+
+> **Run-ID:** RUN-20260206-bsi-compliance | **Status:** ✅ COMPLETED
+
+1) **Ziel**
+- Outcome: BSI IT-Grundschutz / DSGVO / BITV 2.0 Compliance-Transformation.
+- DoD:
+  1. BSI APP.3.1 A.8: Session-Timeout (15 min Inaktivität → Auto-Lock + Key-Wipe). ✅
+  2. BSI ORP.4: Brute-Force-Schutz (3 Freiversuche, Exponential-Backoff, Hard-Lockout). ✅
+  3. BITV 2.0 §3 / WCAG 2.1 AA 1.4.3: High-Contrast-Farbpalette (alle Paare ≥ 4.5:1). ✅
+  4. LogEvents: 4 neue Audit-Events (AUTH_SESSION_EXPIRED, AUTH_LOGIN_SUCCESS, AUTH_LOGIN_FAIL, AUTH_BRUTE_FORCE_LOCKOUT). ✅
+  5. Tests: 5 neue Testdateien (70 Tests) für Security/Entity/Accessibility. ✅
+  6. Docs: DPIA (Art. 35), Verarbeitungsverzeichnis (Art. 30), BSI-Mapping, Compliance-Checklist. ✅
+  7. Verifikation: `tsc --noEmit` = 0 Fehler, `jest` = 521 Tests (488 passed, 29 skipped, 2 todo, 2 pre-existing failures). ✅
+
+2) **Methodik**
+- Ground-Zero-Audit (32 Gaps identifiziert, 8 HIGH), dann priorisierte Implementierung.
+- Stop-and-Fix: 7 Type-Errors gefunden → alle behoben → Re-Verify.
+
+3) **Sprachen/Stack**
+- TypeScript/React Native, Jest, Zod, @react-navigation.
+
+4) **Struktur**
+- Created:
+  - `src/shared/sessionTimeout.ts` – BSI Session-Timeout Manager
+  - `src/shared/bruteForceProtection.ts` – BSI Brute-Force Protection
+  - `src/presentation/hooks/useSessionTimeout.ts` – React Hook
+  - `src/presentation/components/SessionGuard.tsx` – Activity Guard Component
+  - `__tests__/shared/sessionTimeout.test.ts` – 11 Tests
+  - `__tests__/shared/bruteForceProtection.test.ts` – 10 Tests
+  - `__tests__/domain/entities/Patient.test.ts` – 16 Tests
+  - `__tests__/domain/entities/GDPRConsent.test.ts` – 17 Tests
+  - `__tests__/presentation/theme/tokens.test.ts` – 12 Tests
+  - `docs/compliance/DPIA_Datenschutzfolgenabschaetzung.md`
+  - `docs/compliance/Verarbeitungsverzeichnis_Art30.md`
+  - `docs/compliance/BSI_Grundschutz_Mapping.md`
+  - `docs/compliance/COMPLIANCE_CHECKLIST.md`
+- Modified:
+  - `src/shared/LogEvents.ts` – 4 neue LogEventIds + 'session' Entity-Typ
+  - `src/presentation/App.tsx` – SessionGuard Integration
+  - `src/presentation/screens/MasterPasswordScreen.tsx` – Brute-Force Integration
+  - `src/presentation/theme/tokens.ts` – High-Contrast Palette + getActiveColors()
+
+5) **Qualität**
+- Local Evidence (captured):
+  - `buildLogs/typecheck_bsi_v3.log` – TypeScript 0 errors
+  - `buildLogs/jest_bsi_full.log` – Full suite (521 tests)
+  - `buildLogs/jest_bsi_1.log` .. `jest_bsi_7.log` – Individual test runs
+
+---
+
+## VORHERIGER LAUF: RUN-20260206-security-audit-fix
+
+> **Run-ID:** RUN-20260206-security-audit-fix | **Status:** ✅ COMPLETED
+
+1) **Ziel**
+- Outcome: Security/Privacy-Fixes aus Audit umgesetzt (Crypto → Storage → Domain → UI) + Tests.
+- DoD:
+  1. Mailto: AEAD-Payload inkl. Auth-Tag + keine PHI im Subject + kein unverschlüsselter Fallback. ✅
+  2. Export: GDT verschlüsselt gespeichert + anonymer Dateiname + Temp-Directory bevorzugt. ✅
+  3. Session Snapshot: AsyncStorage verschlüsselt (legacy plaintext kompatibel). ✅
+  4. UI: Master-Password Clipboard in Prod deaktiviert (Dev mit Timeout-Clear). ✅
+  5. Android: FLAG_SECURE aktiviert. ✅
+  6. Clean Architecture: DeleteAllDataUseCase im Application Layer (Domain ohne RN/Infra). ✅
+  7. Verifikation: gezielte Jest-Tests mit Evidence-Logs. ✅
+
+2) **Methodik**
+- Minimal-invasive Änderungen + Stop-and-Fix, keine PII in Logs.
+
+3) **Sprachen/Stack**
+- TypeScript/React Native, Jest.
+
+4) **Struktur**
+- Modified/Added:
+  - `src/application/services/DocumentRequestMailService.ts`
+  - `src/domain/services/DocumentRequestMailService.ts`
+  - `src/application/use-cases/ExportGDTUseCase.ts`
+  - `src/shared/sessionPersistence.ts`
+  - `src/presentation/screens/MasterPasswordScreen.tsx`
+  - `android/app/src/main/java/com/helloworld/MainActivity.kt`
+  - `src/application/use-cases/DeleteAllDataUseCase.ts`
+  - `src/domain/usecases/DeleteAllDataUseCase.ts`
+  - `src/presentation/screens/HomeScreen.tsx`
+  - `__tests__/shared/sessionPersistence.test.ts`
+  - `__tests__/application/services/DocumentRequestMailService.test.ts`
+  - `__tests__/application/use-cases/ExportGDTUseCase.test.ts`
+  - `__tests__/integration/DeleteAllData.test.ts`
+
+5) **Qualität**
+- Local Evidence (captured):
+  - `buildLogs/run_20260206_securityfix_jest.out.log`
+  - `buildLogs/run_20260206_securityfix_jest.err.log`
+  - `buildLogs/run_20260206_securityfix_jest.exit.txt`
+  - `buildLogs/run_20260206_securityfix_jest2.out.log`
+  - `buildLogs/run_20260206_securityfix_jest2.err.log`
+  - `buildLogs/run_20260206_securityfix_jest2.exit.txt`
+
+---
+
+## VORHERIGER LAUF: RUN-20260206-diagnostics-cleanup
+
+> **Run-ID:** RUN-20260206-diagnostics-cleanup | **Status:** ✅ COMPLETED
+
+1) **Ziel**
+- Outcome: Workspace wieder "build-clean" machen: TS/ESLint Diagnostics in Navigation/Screens/Tests/i18n/CI eliminieren.
+- DoD:
+  1. Navigation: keine inline Komponenten im Render + typed route/navigate + explizite Return-Types. ✅
+  2. Screens (Document Request Flow): typed navigation props, Syntax/Format-Fixes, kein `any`. ✅
+  3. Tests: `describe.skip` Lint-Blocker entfernt (placeholder via `it.todo`). ✅
+  4. i18n: `fr.json` Duplicate Keys entfernt (valid JSON). ✅
+  5. CI: Codecov step ohne Token-Reference (keine invalid secret diagnostics). ✅
+  6. Verifikation: `lint` + `type-check` + `jest` Exit 0 mit Evidence Logs. ✅
+
+2) **Methodik**
+- Stop-and-Fix: erst Diagnostics sammeln, dann minimal-invasive Fixes pro Datei, danach Verifikation mit Evidence.
+- Privacy: keine PII in Logs/Tests.
+
+3) **Sprachen/Stack**
+- TypeScript/React Native, Jest, ESLint.
+
+4) **Struktur**
+- Modified:
+  - `src/presentation/navigation/RootNavigator.tsx`
+  - `src/presentation/screens/FastTrackScreen.tsx`
+  - `src/presentation/screens/PatientTypeScreen.tsx`
+  - `src/presentation/screens/DocumentRequestScreen.tsx`
+  - `src/presentation/screens/PrescriptionRequestScreen.tsx`
+  - `src/presentation/screens/ReferralRequestScreen.tsx`
+  - `src/presentation/screens/SickNoteRequestScreen.tsx`
+  - `src/presentation/screens/HomeScreen.tsx`
+  - `__tests__/ui/HomeScreen.render.test.tsx`
+  - `__tests__/integration/AnamneseFlow.test.tsx`
+  - `__tests__/infrastructure/data/questionnaireTemplate.test.ts`
+  - `src/domain/services/DocumentRequestMailService.ts`
+  - `src/presentation/App.tsx`
+  - `src/presentation/i18n/locales/fr.json`
+  - `scripts/fix-i18n-voiceRecognition-nesting.cjs`
+  - `.github/workflows/ci.yml`
+
+5) **Qualität**
+- Local Evidence (captured):
+  - `buildLogs/run_20260206_diag_lint.out.log` + `buildLogs/run_20260206_diag_lint.err.log` + `buildLogs/run_20260206_diag_lint.exit.txt`
+  - `buildLogs/run_20260206_diag_typecheck.out.log` + `buildLogs/run_20260206_diag_typecheck.err.log` + `buildLogs/run_20260206_diag_typecheck.exit.txt`
+  - `buildLogs/run_20260206_diag_jest.out.log` + `buildLogs/run_20260206_diag_jest.err.log` + `buildLogs/run_20260206_diag_jest.exit.txt`
+- Notes:
+  - Remaining editor-only diagnostics can appear from scratch buffers like `untitled:Untitled-1` (not part of repo).
+
+---
+
+## VORHERIGER LAUF: RUN-20260206-ci-matrix-hardening
+
 > **Run-ID:** RUN-20260206-ci-matrix-hardening | **Status:** ✅ COMPLETED
 
 1) **Ziel**

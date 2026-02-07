@@ -1,4 +1,4 @@
-import { DeleteAllDataUseCase } from '../../src/domain/usecases/DeleteAllDataUseCase';
+import { DeleteAllDataUseCase } from '../../src/application/use-cases/DeleteAllDataUseCase';
 import { database } from '../../src/infrastructure/persistence/DatabaseConnection';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 

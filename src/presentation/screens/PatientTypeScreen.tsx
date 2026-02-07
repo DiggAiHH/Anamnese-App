@@ -10,27 +10,29 @@
 
 import React from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
+import type { StackScreenProps } from '@react-navigation/stack';
 import { usePatientContext } from '../../application/PatientContext';
 import { useTheme } from '../theme/ThemeContext';
 import { AppText } from '../components/AppText';
 import { colors, spacing, radius } from '../theme/tokens';
+import type { RootStackParamList } from '../navigation/RootNavigator';
 
-export const PatientTypeScreen = () => {
-  const navigation = useNavigation<any>();
+type Props = StackScreenProps<RootStackParamList, 'PatientType'>;
+
+export const PatientTypeScreen = ({ navigation }: Props): React.JSX.Element => {
   const { t } = useTranslation();
   const { setPatientStatus, setSkipFullAnamnesis } = usePatientContext();
   const { isHighContrast } = useTheme();
 
-  const handleNewPatient = () => {
+  const handleNewPatient = (): void => {
     setPatientStatus('new');
     setSkipFullAnamnesis(false);
     // New patients go through full flow: VisitReason → PatientInfo → Questionnaire
     navigation.navigate('VisitReason');
   };
 
-  const handleReturningPatient = () => {
+  const handleReturningPatient = (): void => {
     setPatientStatus('returning');
     setSkipFullAnamnesis(true);
     // Returning patients go to quick document request
@@ -53,8 +55,7 @@ export const PatientTypeScreen = () => {
           style={[styles.optionCard, isHighContrast && styles.optionCardHighContrast]}
           onPress={handleNewPatient}
           accessibilityRole="button"
-          accessibilityLabel={t('patientType.newPatient', { defaultValue: 'Neuer Patient' })}
-        >
+          accessibilityLabel={t('patientType.newPatient', { defaultValue: 'Neuer Patient' })}>
           <View style={[styles.iconCircle, styles.iconNew]}>
             <AppText style={styles.iconEmoji}>👤</AppText>
           </View>
@@ -70,8 +71,9 @@ export const PatientTypeScreen = () => {
           style={[styles.optionCard, isHighContrast && styles.optionCardHighContrast]}
           onPress={handleReturningPatient}
           accessibilityRole="button"
-          accessibilityLabel={t('patientType.returningPatient', { defaultValue: 'Bekannter Patient' })}
-        >
+          accessibilityLabel={t('patientType.returningPatient', {
+            defaultValue: 'Bekannter Patient',
+          })}>
           <View style={[styles.iconCircle, styles.iconReturning]}>
             <AppText style={styles.iconEmoji}>🔄</AppText>
           </View>

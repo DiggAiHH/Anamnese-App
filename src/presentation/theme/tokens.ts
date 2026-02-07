@@ -52,6 +52,77 @@ export const colors = {
   overlay: 'rgba(0, 0, 0, 0.5)',
 };
 
+/**
+ * BITV 2.0 / WCAG 2.1 AA High-Contrast Color Palette
+ *
+ * All foreground/background combinations meet WCAG AA (≥ 4.5:1 for normal text,
+ * ≥ 3:1 for large text and UI components).
+ *
+ * Design: Black background with white/yellow text for maximum contrast.
+ * This palette is applied when ThemeContext.isHighContrast is true.
+ */
+export const highContrastColors: typeof colors = {
+  // Backgrounds – BITV 1.4.3: Pure black for maximum contrast
+  background: '#000000',
+  surface: '#1a1a1a',
+  surfaceAlt: '#0d0d0d',
+
+  // Text – BITV 1.4.3: Pure white on black = 21:1 contrast ratio
+  text: '#ffffff',
+  textPrimary: '#ffffff',
+  textSecondary: '#e0e0e0',
+  textMuted: '#b0b0b0', // ~10:1 on #000
+  mutedText: '#b0b0b0',
+  textInverse: '#000000',
+
+  // Borders – High visibility
+  border: '#ffffff',
+  borderLight: '#cccccc',
+  divider: '#ffffff',
+
+  // Primary – Yellow on black for high visibility (11.5:1)
+  primary: '#ffdd00',
+  primaryLight: '#332b00',
+  primaryDark: '#ffee44',
+  onPrimary: '#000000',
+
+  // Semantic – Using saturated colors on dark backgrounds (all ≥ 4.5:1)
+  infoSurface: '#001a33',
+  infoBorder: '#66b3ff',
+  infoText: '#99ccff',
+
+  successSurface: '#003300',
+  successBorder: '#33cc33',
+  successText: '#66ff66',
+  success: '#33cc33',
+
+  dangerSurface: '#330000',
+  dangerBorder: '#ff3333',
+  dangerText: '#ff6666',
+  danger: '#ff3333',
+  error: '#ff3333',
+
+  warningSurface: '#332200',
+  warningBorder: '#ffaa00',
+  warningText: '#ffcc33',
+  warning: '#ffaa00',
+
+  accentSurface: '#1a0033',
+  accentBorder: '#cc66ff',
+  accentText: '#dd99ff',
+
+  // Overlay
+  overlay: 'rgba(0, 0, 0, 0.8)',
+};
+
+/**
+ * Returns the active color palette based on high-contrast mode.
+ * BITV 2.0 §3 / WCAG 2.1 AA 1.4.3: Minimum contrast ratio enforcement.
+ */
+export function getActiveColors(isHighContrast: boolean): typeof colors {
+  return isHighContrast ? highContrastColors : colors;
+}
+
 export const spacing = {
   xs: 4,
   sm: 8,

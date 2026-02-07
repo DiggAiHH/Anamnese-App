@@ -7,7 +7,7 @@
  * - Key is kept in-memory (Zustand) for the session
  */
 
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { View, StyleSheet, Alert, Switch, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
 import Clipboard from '@react-native-clipboard/clipboard';
 import { useTranslation } from 'react-i18next';
@@ -27,6 +27,7 @@ import {
   setActiveEncryptionKey,
 } from '@shared/keyManager';
 import { colors, spacing } from '../theme/tokens';
+import { bruteForceProtection } from '@shared/bruteForceProtection';
 import { AppButton } from '../components/AppButton';
 import { AppInput } from '../components/AppInput';
 import { IconButton } from '../components/IconButton';
@@ -37,6 +38,8 @@ export const MasterPasswordScreen = ({ navigation, route }: Props): React.JSX.El
   const { t } = useTranslation();
   const mode = route.params?.mode ?? 'setup';
 
+  const isDev = typeof __DEV__ !== 'undefined' && __DEV__;
+
   const { encryptionKey, setEncryptionKey, reset } = useQuestionnaireStore();
   const { userRole } = usePatientContext();
 
@@ -45,17 +48,63 @@ export const MasterPasswordScreen = ({ navigation, route }: Props): React.JSX.El
   const [isWorking, setIsWorking] = useState(false);
   const [rememberKey, setRememberKey] = useState(false);
   const [secureAvailable, setSecureAvailable] = useState(false);
+  const [_lockoutSeconds, setLockoutSeconds] = useState(0);
+
+  // Ref for brute-force countdown interval (cleanup on unmount — M-5 fix)
+  const countdownRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  // Ref for clipboard auto-clear timer (cleanup on unmount — Phase 2 fix)
+  const clipboardTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Cleanup timers on unmount to prevent timer leak
+  React.useEffect(() => {
+    return () => {
+      if (countdownRef.current) {
+        clearInterval(countdownRef.current);
+        countdownRef.current = null;
+      }
+      if (clipboardTimerRef.current) {
+        clearTimeout(clipboardTimerRef.current);
+        clipboardTimerRef.current = null;
+      }
+    };
+  }, []);
+
+  const copyToClipboard = (value: string): void => {
+    Clipboard.setString(value);
+    if (clipboardTimerRef.current) {
+      clearTimeout(clipboardTimerRef.current);
+    }
+    clipboardTimerRef.current = setTimeout(() => Clipboard.setString(''), 30000);
+  };
 
   const handleGenerateAndCopy = (): void => {
+    if (!isDev) {
+      Alert.alert(
+        t('common.error'),
+        t('masterPassword.clipboardDisabled', {
+          defaultValue: 'Clipboard copying is disabled for security reasons.',
+        }),
+      );
+      return;
+    }
     const generated = PasswordGenerator.generate(20);
     setPassword(generated);
-    Clipboard.setString(generated);
+    copyToClipboard(generated);
     Alert.alert(t('masterPassword.generatedTitle'), t('masterPassword.generatedMessage'));
   };
 
   const handleCopy = (): void => {
     if (!password) return;
-    Clipboard.setString(password);
+    if (!isDev) {
+      Alert.alert(
+        t('common.error'),
+        t('masterPassword.clipboardDisabled', {
+          defaultValue: 'Clipboard copying is disabled for security reasons.',
+        }),
+      );
+      return;
+    }
+    copyToClipboard(password);
     Alert.alert(t('masterPassword.copiedTitle'), t('masterPassword.copiedMessage'));
   };
 
@@ -147,6 +196,41 @@ export const MasterPasswordScreen = ({ navigation, route }: Props): React.JSX.El
       return;
     }
 
+    // BSI ORP.4: Brute-force protection check
+    const { allowed, state: bfState } = bruteForceProtection.canAttempt();
+    if (!allowed) {
+      if (bfState.isLocked) {
+        Alert.alert(
+          t('common.error'),
+          t('masterPassword.errorLocked', {
+            defaultValue: 'Zu viele Fehlversuche. Bitte starten Sie die App neu.',
+          }),
+        );
+      } else {
+        const seconds = Math.ceil(bfState.remainingLockoutMs / 1000);
+        setLockoutSeconds(seconds);
+        setError(
+          t('masterPassword.errorBackoff', {
+            defaultValue: `Bitte warten Sie {{seconds}} Sekunden.`,
+            seconds,
+          }),
+        );
+        // Countdown timer (store ref for cleanup on unmount)
+        if (countdownRef.current) clearInterval(countdownRef.current);
+        countdownRef.current = setInterval(() => {
+          const { state: s } = bruteForceProtection.canAttempt();
+          const remaining = Math.ceil(s.remainingLockoutMs / 1000);
+          setLockoutSeconds(remaining);
+          if (remaining <= 0) {
+            if (countdownRef.current) clearInterval(countdownRef.current);
+            countdownRef.current = null;
+            setError(null);
+          }
+        }, 1000);
+      }
+      return;
+    }
+
     setIsWorking(true);
 
     try {
@@ -155,15 +239,40 @@ export const MasterPasswordScreen = ({ navigation, route }: Props): React.JSX.El
       if (mode === 'unlock') {
         const valid = await verifyKeyAgainstExistingData(derived.key);
         if (!valid) {
-          Alert.alert(
-            t('common.error'),
-            t('masterPassword.errorWrongPassword', {
-              defaultValue: 'Wrong password. Please try again.',
-            }),
-          );
+          // BSI ORP.4: Record failed attempt
+          const failState = bruteForceProtection.recordFailure();
+          if (failState.isLocked) {
+            Alert.alert(
+              t('common.error'),
+              t('masterPassword.errorLocked', {
+                defaultValue: 'Zu viele Fehlversuche. Bitte starten Sie die App neu.',
+              }),
+            );
+          } else if (failState.remainingLockoutMs > 0) {
+            const seconds = Math.ceil(failState.remainingLockoutMs / 1000);
+            setLockoutSeconds(seconds);
+            Alert.alert(
+              t('common.error'),
+              t('masterPassword.errorWrongPasswordBackoff', {
+                defaultValue: `Falsches Passwort. Bitte warten Sie {{seconds}} Sekunden.`,
+                seconds,
+              }),
+            );
+          } else {
+            Alert.alert(
+              t('common.error'),
+              t('masterPassword.errorWrongPassword', {
+                defaultValue: 'Wrong password. Please try again.',
+              }),
+            );
+          }
           return;
         }
       }
+
+      // BSI ORP.4: Record successful authentication
+      bruteForceProtection.recordSuccess();
+      setLockoutSeconds(0);
 
       setEncryptionKey(derived.key);
       await setActiveEncryptionKey(derived.key, { persist: rememberKey });

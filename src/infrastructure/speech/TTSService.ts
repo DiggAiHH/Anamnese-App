@@ -125,6 +125,7 @@ export class TTSService implements ITTSService {
   private initialized: boolean = false;
   private currentRate: number = 0.5;
   private currentPitch: number = 1.0;
+  private eventSubscriptions: Array<{ remove: () => void }> = [];
 
   constructor() {
     this.initialize();
@@ -156,21 +157,23 @@ export class TTSService implements ITTSService {
     }
 
     try {
-      // Set up event listeners
-      (Tts.addEventListener as (event: string, callback: () => void) => void)('tts-start', () => {
-        this.speaking = true;
-        this.logDebug('Speech started');
-      });
+      // Set up event listeners (store subscriptions for cleanup)
+      const addListener = Tts.addEventListener as (event: string, callback: () => void) => { remove: () => void };
 
-      (Tts.addEventListener as (event: string, callback: () => void) => void)('tts-finish', () => {
-        this.speaking = false;
-        this.logDebug('Speech finished');
-      });
-
-      (Tts.addEventListener as (event: string, callback: () => void) => void)('tts-cancel', () => {
-        this.speaking = false;
-        this.logDebug('Speech cancelled');
-      });
+      this.eventSubscriptions.push(
+        addListener('tts-start', () => {
+          this.speaking = true;
+          this.logDebug('Speech started');
+        }),
+        addListener('tts-finish', () => {
+          this.speaking = false;
+          this.logDebug('Speech finished');
+        }),
+        addListener('tts-cancel', () => {
+          this.speaking = false;
+          this.logDebug('Speech cancelled');
+        }),
+      );
 
       // Set default rate and pitch
       if (typeof Tts.setDefaultRate === 'function') {
@@ -375,6 +378,11 @@ export class TTSService implements ITTSService {
         }
       }
       // Note: react-native-tts doesn't have removeAllListeners
+      // Remove individual subscriptions registered during initialize()
+      for (const sub of this.eventSubscriptions) {
+        try { sub.remove(); } catch { /* already removed */ }
+      }
+      this.eventSubscriptions = [];
       this.speaking = false;
       this.initialized = false;
       this.logDebug('TTS Service destroyed');

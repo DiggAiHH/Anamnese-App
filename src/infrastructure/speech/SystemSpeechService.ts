@@ -132,7 +132,10 @@ export class SystemSpeechService implements ISpeechService {
       this.results = [];
 
       // Start voice recognition
-      await Voice!.start(this.currentLanguage);
+      if (!Voice) {
+        throw new Error('Voice module unavailable on this platform');
+      }
+      await Voice.start(this.currentLanguage);
       this.isRecording = true;
 
       this.logDebug('[Speech] Recognition started');

@@ -12,16 +12,9 @@
  */
 
 import React, { useState } from 'react';
-import {
-  View,
-  StyleSheet,
-  ScrollView,
-  Alert,
-  KeyboardAvoidingView,
-  Platform,
-} from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { View, StyleSheet, ScrollView, Alert, KeyboardAvoidingView, Platform } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import type { StackScreenProps } from '@react-navigation/stack';
 import { usePatientContext } from '../../application/PatientContext';
 import { useTheme } from '../theme/ThemeContext';
 import { AppText } from '../components/AppText';
@@ -34,9 +27,11 @@ import {
   type ISickNoteRequest,
 } from '../../domain/entities/DocumentRequest';
 import { colors, spacing, radius } from '../theme/tokens';
+import type { RootStackParamList } from '../navigation/RootNavigator';
 
-export const SickNoteRequestScreen = () => {
-  const navigation = useNavigation<any>();
+type Props = StackScreenProps<RootStackParamList, 'SickNoteRequest'>;
+
+export const SickNoteRequestScreen = ({ navigation }: Props): React.JSX.Element => {
   const { t } = useTranslation();
   const { skipFullAnamnesis } = usePatientContext();
   const { isHighContrast } = useTheme();
@@ -72,7 +67,7 @@ export const SickNoteRequestScreen = () => {
     return date;
   }
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (): Promise<void> => {
     const parsedStartDate = parseDate(startDate);
 
     if (!parsedStartDate) {
@@ -144,8 +139,7 @@ export const SickNoteRequestScreen = () => {
   return (
     <KeyboardAvoidingView
       style={styles.keyboardView}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-    >
+      behavior={Platform.OS === 'ios' ? 'padding' : Platform.OS === 'windows' ? 'height' : undefined}>
       <View style={[styles.container, isHighContrast && styles.containerHighContrast]}>
         <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
           <View style={styles.headerSection}>

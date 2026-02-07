@@ -153,7 +153,12 @@ export class EncryptedDataVO {
       json = atob(str);
     }
 
-    const parsed = JSON.parse(json);
+    let parsed: unknown;
+    try {
+      parsed = JSON.parse(json);
+    } catch {
+      throw new Error('EncryptedData.fromString: invalid JSON after base64 decode');
+    }
     return EncryptedDataVO.fromJSON(parsed);
   }
 }

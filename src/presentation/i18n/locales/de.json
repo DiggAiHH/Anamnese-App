@@ -841,12 +841,5 @@
     "errorEndDateInvalid": "Das Enddatum ist ungültig (TT.MM.JJJJ).",
     "errorEndBeforeStart": "Das Enddatum darf nicht vor dem Startdatum liegen.",
     "errorSubmit": "Anfrage konnte nicht erstellt werden."
-  },
-  "buttons": {
-    "submit": "Absenden"
-  },
-  "placeholders": {
-    "vorname": "z.B. Max",
-    "nachname": "z.B. Mustermann"
   }
 }

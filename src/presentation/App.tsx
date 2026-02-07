@@ -5,7 +5,7 @@
  * - Navigation
  * - i18n
  * - Providers
- * 
+ *
  * Performance: Memoized navigation theme to prevent unnecessary re-renders
  */
 
@@ -20,6 +20,8 @@ import { StyleSheet } from 'react-native';
 import { RootNavigator } from './navigation/RootNavigator';
 
 import { ToastProvider } from './components/ToastProvider';
+import { SessionTimeoutGuard } from './components/SessionGuard';
+import { ErrorBoundary } from './components/ErrorBoundary';
 import { PatientProvider } from '../application/PatientContext';
 import { ThemeProvider } from './theme/ThemeContext';
 import { colors } from './theme/tokens';
@@ -50,7 +52,7 @@ const App = (): React.JSX.Element => {
         notification: colors.error,
       },
     }),
-    []
+    [],
   );
 
   useEffect(() => {
@@ -100,9 +102,13 @@ const App = (): React.JSX.Element => {
         <ThemeProvider>
           <ToastProvider>
             <PatientProvider>
-              <NavigationContainer theme={navigationTheme}>
-                <RootNavigator />
-              </NavigationContainer>
+              <ErrorBoundary>
+                <NavigationContainer theme={navigationTheme}>
+                  <SessionTimeoutGuard>
+                    <RootNavigator />
+                  </SessionTimeoutGuard>
+                </NavigationContainer>
+              </ErrorBoundary>
             </PatientProvider>
           </ToastProvider>
         </ThemeProvider>

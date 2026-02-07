@@ -11,10 +11,8 @@
  * The original test code is preserved in version control history.
  */
 
-describe.skip('HomeScreen UI Rendering Tests (ESM pending)', () => {
-  it('placeholder - tests skipped due to ESM module import issue', () => {
-    // HomeScreen imports useQuestionnaireStore which uses zustand/middleware/immer
-    // (ESM only). Jest needs experimental ESM support.
-    expect(true).toBe(true);
-  });
+describe('HomeScreen UI Rendering Tests (ESM pending)', () => {
+  it.todo(
+    'Enable when Jest ESM support is configured for zustand/middleware/immer (currently ESM-only).',
+  );
 });

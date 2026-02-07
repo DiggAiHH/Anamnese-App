@@ -66,6 +66,11 @@ export enum LogEventId {
   AUTH_KEY_INVALID = 'AUTH_KEY_INVALID',
   AUTH_KEYCHAIN_AVAILABLE = 'AUTH_KEYCHAIN_AVAILABLE',
   AUTH_KEYCHAIN_UNAVAILABLE = 'AUTH_KEYCHAIN_UNAVAILABLE',
+  // BSI APP.3.1: Session management events
+  AUTH_SESSION_EXPIRED = 'AUTH_SESSION_EXPIRED',
+  AUTH_LOGIN_SUCCESS = 'AUTH_LOGIN_SUCCESS',
+  AUTH_LOGIN_FAIL = 'AUTH_LOGIN_FAIL',
+  AUTH_BRUTE_FORCE_LOCKOUT = 'AUTH_BRUTE_FORCE_LOCKOUT',
 
   // Validation events (VALIDATION_*)
   VALIDATION_START = 'VALIDATION_START',
@@ -115,7 +120,7 @@ export enum LogEventId {
  */
 export interface LogEventContext {
   /** Entity type being operated on */
-  entity?: 'patient' | 'answer' | 'questionnaire' | 'consent' | 'document' | 'backup';
+  entity?: 'patient' | 'answer' | 'questionnaire' | 'consent' | 'document' | 'backup' | 'session';
   /** Operation type */
   operation?: 'create' | 'read' | 'update' | 'delete' | 'encrypt' | 'decrypt';
   /** Duration in milliseconds */

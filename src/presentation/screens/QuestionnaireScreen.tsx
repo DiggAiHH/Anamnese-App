@@ -23,7 +23,7 @@
  * 9. UI updated automatisch (Zustand)
  */
 
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useMemo, useState, useRef } from 'react';
 import {
   View,
   StyleSheet,
@@ -139,14 +139,21 @@ export const QuestionnaireScreen = ({ route, navigation }: Props): React.JSX.Ele
   const [lastSavedAt, setLastSavedAt] = useState<Date | null>(null);
   const [saveStatusError, setSaveStatusError] = useState<string | null>(null);
 
-  // Use Cases (Dependency Injection)
-  const loadQuestionnaireUseCase = new LoadQuestionnaireUseCase(
-    new SQLiteQuestionnaireRepository(),
-    new SQLiteAnswerRepository(),
-    new SQLitePatientRepository(),
+  // Use Cases — memoized to avoid re-instantiation on every render (H-2 fix)
+  const loadQuestionnaireUseCase = useMemo(
+    () =>
+      new LoadQuestionnaireUseCase(
+        new SQLiteQuestionnaireRepository(),
+        new SQLiteAnswerRepository(),
+        new SQLitePatientRepository(),
+      ),
+    [],
   );
 
-  const saveAnswerUseCase = new SaveAnswerUseCase(new SQLiteAnswerRepository(), encryptionService);
+  const saveAnswerUseCase = useMemo(
+    () => new SaveAnswerUseCase(new SQLiteAnswerRepository(), encryptionService),
+    [],
+  );
 
 
 

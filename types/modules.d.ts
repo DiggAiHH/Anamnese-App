@@ -142,6 +142,7 @@ declare module '@react-navigation/stack' {
       navigate: (...args: unknown[]) => void;
       goBack: () => void;
       addListener: (event: string, callback: () => void) => () => void;
+      dispatch: (action: unknown) => void;
     } & Record<string, unknown>;
     route: { key: string; name: RouteName; params: ParamList[RouteName] };
   };

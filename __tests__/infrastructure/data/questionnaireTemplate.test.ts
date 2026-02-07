@@ -11,7 +11,16 @@ const template = rawTemplate as unknown as {
   }>;
 };
 
-const findQuestion = (sectionId: string, questionId: string) => {
+const findQuestion = (
+  sectionId: string,
+  questionId: string,
+):
+  | {
+      id: string;
+      type?: string;
+      nextMap?: Record<string, string | string[]>;
+    }
+  | undefined => {
   const section = template.sections.find(s => s.id === sectionId);
   if (!section) return undefined;
   return section.questions.find(q => q.id === questionId);

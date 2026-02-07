@@ -116,11 +116,21 @@ export const logEvent = (
       if (isDev) console.log(`${prefix} ${message}${contextStr}`);
       break;
     case LogLevel.WARN:
-      console.warn(`${prefix} ${message}${contextStr}`);
+      // DSGVO: In production, avoid logging message content that callers might
+      // populate with PII. Only emit the structured eventId + context keys.
+      if (isDev) {
+        console.warn(`${prefix} ${message}${contextStr}`);
+      } else {
+        console.warn(`${prefix} [redacted in production]`);
+      }
       break;
     case LogLevel.ERROR:
     case LogLevel.CRITICAL:
-      console.error(`${prefix} ${message}${contextStr}`);
+      if (isDev) {
+        console.error(`${prefix} ${message}${contextStr}`);
+      } else {
+        console.error(`${prefix} [redacted in production]`);
+      }
       break;
   }
 

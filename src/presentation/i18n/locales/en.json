@@ -841,12 +841,5 @@
     "errorEndDateInvalid": "The end date is invalid (DD.MM.YYYY).",
     "errorEndBeforeStart": "End date must not be before start date.",
     "errorSubmit": "Request could not be created."
-  },
-  "buttons": {
-    "submit": "Submit"
-  },
-  "placeholders": {
-    "vorname": "e.g. John",
-    "nachname": "e.g. Doe"
   }
 }

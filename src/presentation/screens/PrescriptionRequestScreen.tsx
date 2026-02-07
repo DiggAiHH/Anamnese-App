@@ -13,8 +13,8 @@
 
 import React, { useState } from 'react';
 import { View, StyleSheet, ScrollView, Alert, KeyboardAvoidingView, Platform } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
+import type { StackScreenProps } from '@react-navigation/stack';
 import { usePatientContext } from '../../application/PatientContext';
 import { useTheme } from '../theme/ThemeContext';
 import { AppText } from '../components/AppText';
@@ -27,9 +27,11 @@ import {
   type IPrescriptionRequest,
 } from '../../domain/entities/DocumentRequest';
 import { colors, spacing, radius } from '../theme/tokens';
+import type { RootStackParamList } from '../navigation/RootNavigator';
 
-export const PrescriptionRequestScreen = () => {
-  const navigation = useNavigation<any>();
+type Props = StackScreenProps<RootStackParamList, 'PrescriptionRequest'>;
+
+export const PrescriptionRequestScreen = ({ navigation }: Props): React.JSX.Element => {
   const { t } = useTranslation();
   const { skipFullAnamnesis } = usePatientContext();
   const { isHighContrast } = useTheme();
@@ -40,11 +42,13 @@ export const PrescriptionRequestScreen = () => {
   const [notes, setNotes] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (): Promise<void> => {
     if (!medicationName.trim()) {
       Alert.alert(
         t('common.error', { defaultValue: 'Fehler' }),
-        t('prescription.errorMedicationRequired', { defaultValue: 'Bitte geben Sie den Medikamentennamen ein.' }),
+        t('prescription.errorMedicationRequired', {
+          defaultValue: 'Bitte geben Sie den Medikamentennamen ein.',
+        }),
       );
       return;
     }
@@ -91,8 +95,7 @@ export const PrescriptionRequestScreen = () => {
   return (
     <KeyboardAvoidingView
       style={styles.keyboardView}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-    >
+      behavior={Platform.OS === 'ios' ? 'padding' : Platform.OS === 'windows' ? 'height' : undefined}>
       <View style={[styles.container, isHighContrast && styles.containerHighContrast]}>
         <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
           <View style={styles.headerSection}>

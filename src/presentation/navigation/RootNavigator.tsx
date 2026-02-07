@@ -89,6 +89,23 @@ const Stack = createStackNavigator<RootStackParamList>();
 
 export type RootNavigationProp = StackScreenProps<RootStackParamList>['navigation'];
 
+const AccessibilityZoomButton: React.FC = () => {
+  const { isZoomed, toggleZoom } = useAccessibilityZoom();
+  const { t: tZoom } = useTranslation();
+
+  return (
+    <TouchableOpacity
+      onPress={toggleZoom}
+      style={styles.zoomButton}
+      accessibilityRole="button"
+      accessibilityLabel={tZoom('accessibility.toggleZoom', 'Zoom umschalten')}
+      accessibilityState={{ checked: isZoomed }}
+      accessibilityHint={tZoom('accessibility.zoomHint', 'Aktiviert größere Schrift und Buttons')}>
+      <AppText style={styles.zoomIcon}>{isZoomed ? '🔍' : '🔎'}</AppText>
+    </TouchableOpacity>
+  );
+};
+
 export const RootNavigator = (): React.JSX.Element => {
   const { t, i18n } = useTranslation();
   const isNavigatingRef = useRef(false);
@@ -111,7 +128,9 @@ export const RootNavigator = (): React.JSX.Element => {
     },
   };
 
-  const renderLanguageButton = (navigation: RootNavigationProp | null | undefined) => {
+  const renderLanguageButton = (
+    navigation: RootNavigationProp | null | undefined,
+  ): React.JSX.Element => {
     // DEV: Log navigation state for debugging (Windows-specific)
     logDebug(
       `[LanguageButton] Render called, Platform.OS=${Platform.OS}, navigation exists: ${!!navigation}`,
@@ -136,7 +155,7 @@ export const RootNavigator = (): React.JSX.Element => {
       }
     };
 
-    const handlePress = () => {
+    const handlePress = (): void => {
       logDebug(`[LanguageButton] Button pressed on ${Platform.OS}`);
 
       // Guard: Check navigation exists before any operation
@@ -202,28 +221,9 @@ export const RootNavigator = (): React.JSX.Element => {
     );
   };
 
-  /**
-   * Global Accessibility Zoom Button
-   * Renders in header on all screens
-   */
-  const AccessibilityZoomButton: React.FC = () => {
-    const { isZoomed, toggleZoom } = useAccessibilityZoom();
-    const { t } = useTranslation();
-
-    return (
-      <TouchableOpacity
-        onPress={toggleZoom}
-        style={styles.zoomButton}
-        accessibilityRole="button"
-        accessibilityLabel={t('accessibility.toggleZoom', 'Zoom umschalten')}
-        accessibilityState={{ checked: isZoomed }}
-        accessibilityHint={t('accessibility.zoomHint', 'Aktiviert größere Schrift und Buttons')}>
-        <AppText style={styles.zoomIcon}>{isZoomed ? '🔍' : '🔎'}</AppText>
-      </TouchableOpacity>
-    );
-  };
-
-  const renderHeaderRight = (navigation: RootNavigationProp | null | undefined) => (
+  const renderHeaderRight = (
+    navigation: RootNavigationProp | null | undefined,
+  ): React.JSX.Element => (
     <View style={styles.headerRight}>
       <AccessibilityZoomButton />
       {renderLanguageButton(navigation)}
@@ -239,8 +239,8 @@ export const RootNavigator = (): React.JSX.Element => {
         gestureEnabled: true,
         transitionSpec: fastTransitionSpec,
         ...(isWindows
-          ? (TransitionPresets?.FadeFromBottomAndroid || {})
-          : (TransitionPresets?.SlideFromRightIOS || {})),
+          ? TransitionPresets?.FadeFromBottomAndroid || {}
+          : TransitionPresets?.SlideFromRightIOS || {}),
         headerStyle: {
           backgroundColor: colors.primary,
         },
@@ -249,7 +249,6 @@ export const RootNavigator = (): React.JSX.Element => {
           fontWeight: 'bold',
         },
       }}>
-
       {/* --- NEW FLOW START --- */}
       <Stack.Screen
         name="RoleSelection"
@@ -325,7 +324,7 @@ export const RootNavigator = (): React.JSX.Element => {
       <Stack.Screen
         name="MasterPassword"
         component={MasterPasswordScreen}
-        options={({ route }: { route: any }) => ({
+        options={({ route }: StackScreenProps<RootStackParamList, 'MasterPassword'>) => ({
           title:
             route.params?.mode === 'setup'
               ? t('masterPassword.setupTitle', { defaultValue: 'Set Master Password' })

@@ -257,8 +257,16 @@ export class DocumentEntity {
     const parseDate = (value: number | string | Date | undefined): Date =>
       value instanceof Date ? value : new Date(value ?? Date.now());
 
-    const rawAuditLog =
-      typeof data.auditLog === 'string' ? JSON.parse(data.auditLog) : data.auditLog;
+    let rawAuditLog: unknown;
+    if (typeof data.auditLog === 'string') {
+      try {
+        rawAuditLog = JSON.parse(data.auditLog);
+      } catch {
+        rawAuditLog = [];
+      }
+    } else {
+      rawAuditLog = data.auditLog;
+    }
     const auditEntries: unknown[] = Array.isArray(rawAuditLog) ? rawAuditLog : [];
 
     return new DocumentEntity({
@@ -272,7 +280,7 @@ export class DocumentEntity {
       encryptedFilePath: data.encryptedFilePath,
       ocrData: data.ocrData
         ? typeof data.ocrData === 'string'
-          ? JSON.parse(data.ocrData)
+          ? (() => { try { return JSON.parse(data.ocrData as string); } catch { return undefined; } })()
           : data.ocrData
         : undefined,
       uploadedAt: parseDate(data.uploadedAt),

@@ -313,11 +313,11 @@ export class DatabaseConnection {
       );
     `);
 
-    // Set DB version
-    await this.db.executeSql(`
-      INSERT OR REPLACE INTO db_metadata (key, value)
-      VALUES ('version', '${DB_VERSION}');
-    `);
+    // Set DB version (parameterized to prevent injection pattern)
+    await this.db.executeSql(
+      'INSERT OR REPLACE INTO db_metadata (key, value) VALUES (?, ?);',
+      ['version', String(DB_VERSION)],
+    );
   }
 
   /**

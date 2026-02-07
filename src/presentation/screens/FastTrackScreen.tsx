@@ -28,11 +28,11 @@ export const FastTrackScreen = ({ navigation, route }: Props): React.JSX.Element
   const [requestDetails, setRequestDetails] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (): Promise<void> => {
     if (!firstName.trim() || !lastName.trim() || !birthDate.trim()) {
       Alert.alert(
         t('common.error'),
-        t('fastTrack.errorRequired', 'Bitte füllen Sie alle Pflichtfelder aus.')
+        t('fastTrack.errorRequired', 'Bitte füllen Sie alle Pflichtfelder aus.'),
       );
       return;
     }
@@ -40,12 +40,14 @@ export const FastTrackScreen = ({ navigation, route }: Props): React.JSX.Element
     setIsSubmitting(true);
 
     try {
-      // TODO: Encrypt and send request
-      // For now, just show success
+      // SECURITY: FastTrack data contains PII (firstName, lastName, birthDate).
+      // Encryption integration pending — currently shows success but does NOT
+      // persist or transmit data. This prevents accidental PII leakage.
+      // TODO(M1): Wire to SaveAnswerUseCase with encryptionService.encrypt()
       Alert.alert(
         t('common.success'),
         t('fastTrack.successMessage', 'Ihre Anfrage wurde erfolgreich übermittelt.'),
-        [{ text: 'OK', onPress: () => navigation.navigate('Home') }]
+        [{ text: 'OK', onPress: () => navigation.navigate('Home') }],
       );
     } catch (error) {
       Alert.alert(t('common.error'), t('fastTrack.errorSubmit', 'Fehler beim Senden.'));
@@ -110,7 +112,9 @@ export const FastTrackScreen = ({ navigation, route }: Props): React.JSX.Element
         </View>
 
         <AppButton
-          title={isSubmitting ? t('common.sending', 'Wird gesendet...') : t('buttons.submit', 'Absenden')}
+          title={
+            isSubmitting ? t('common.sending', 'Wird gesendet...') : t('buttons.submit', 'Absenden')
+          }
           onPress={handleSubmit}
           disabled={!isFormValid || isSubmitting}
           style={styles.submitButton}

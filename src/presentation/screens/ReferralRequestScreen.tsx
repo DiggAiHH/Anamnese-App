@@ -12,9 +12,17 @@
  */
 
 import React, { useState } from 'react';
-import { View, StyleSheet, ScrollView, Alert, KeyboardAvoidingView, Platform, TouchableOpacity } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import {
+  View,
+  StyleSheet,
+  ScrollView,
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  TouchableOpacity,
+} from 'react-native';
 import { useTranslation } from 'react-i18next';
+import type { StackScreenProps } from '@react-navigation/stack';
 import { usePatientContext } from '../../application/PatientContext';
 import { useTheme } from '../theme/ThemeContext';
 import { AppText } from '../components/AppText';
@@ -27,6 +35,9 @@ import {
   type IReferralRequest,
 } from '../../domain/entities/DocumentRequest';
 import { colors, spacing, radius } from '../theme/tokens';
+import type { RootStackParamList } from '../navigation/RootNavigator';
+
+type Props = StackScreenProps<RootStackParamList, 'ReferralRequest'>;
 
 const SPECIALTIES = [
   { key: 'kardiologie', label: 'Kardiologie' },
@@ -45,8 +56,7 @@ const SPECIALTIES = [
   { key: 'sonstige', label: 'Sonstige' },
 ];
 
-export const ReferralRequestScreen = () => {
-  const navigation = useNavigation<any>();
+export const ReferralRequestScreen = ({ navigation }: Props): React.JSX.Element => {
   const { t } = useTranslation();
   const { skipFullAnamnesis } = usePatientContext();
   const { isHighContrast } = useTheme();
@@ -58,11 +68,13 @@ export const ReferralRequestScreen = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSpecialtyPicker, setShowSpecialtyPicker] = useState(false);
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (): Promise<void> => {
     if (!selectedSpecialty) {
       Alert.alert(
         t('common.error', { defaultValue: 'Fehler' }),
-        t('referral.errorSpecialtyRequired', { defaultValue: 'Bitte wählen Sie eine Fachrichtung aus.' }),
+        t('referral.errorSpecialtyRequired', {
+          defaultValue: 'Bitte wählen Sie eine Fachrichtung aus.',
+        }),
       );
       return;
     }
@@ -70,7 +82,8 @@ export const ReferralRequestScreen = () => {
     setIsSubmitting(true);
 
     try {
-      const specialtyLabel = SPECIALTIES.find(s => s.key === selectedSpecialty)?.label || selectedSpecialty;
+      const specialtyLabel =
+        SPECIALTIES.find(s => s.key === selectedSpecialty)?.label || selectedSpecialty;
 
       const baseRequest = createDocumentRequest(
         DocumentType.UEBERWEISUNG,
@@ -102,13 +115,13 @@ export const ReferralRequestScreen = () => {
     }
   };
 
-  const renderSpecialtyPicker = () => {
+  const renderSpecialtyPicker = (): React.JSX.Element | null => {
     if (!showSpecialtyPicker) return null;
 
     return (
       <View style={[styles.pickerOverlay, isHighContrast && styles.pickerOverlayHighContrast]}>
         <ScrollView style={styles.pickerScroll}>
-          {SPECIALTIES.map((specialty) => (
+          {SPECIALTIES.map(specialty => (
             <TouchableOpacity
               key={specialty.key}
               style={[
@@ -121,15 +134,13 @@ export const ReferralRequestScreen = () => {
                 setShowSpecialtyPicker(false);
               }}
               accessibilityRole="button"
-              accessibilityLabel={specialty.label}
-            >
+              accessibilityLabel={specialty.label}>
               <AppText
                 style={[
                   styles.pickerItemText,
                   selectedSpecialty === specialty.key && styles.pickerItemTextSelected,
                   isHighContrast && styles.textHighContrast,
-                ]}
-              >
+                ]}>
                 {specialty.label}
               </AppText>
             </TouchableOpacity>
@@ -146,8 +157,7 @@ export const ReferralRequestScreen = () => {
   return (
     <KeyboardAvoidingView
       style={styles.keyboardView}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-    >
+      behavior={Platform.OS === 'ios' ? 'padding' : Platform.OS === 'windows' ? 'height' : undefined}>
       <View style={[styles.container, isHighContrast && styles.containerHighContrast]}>
         <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
           <View style={styles.headerSection}>
@@ -167,24 +177,23 @@ export const ReferralRequestScreen = () => {
                 {t('referral.specialty', { defaultValue: 'Fachrichtung' })} *
               </AppText>
               <TouchableOpacity
-                style={[
-                  styles.selectButton,
-                  isHighContrast && styles.selectButtonHighContrast,
-                ]}
+                style={[styles.selectButton, isHighContrast && styles.selectButtonHighContrast]}
                 onPress={() => setShowSpecialtyPicker(!showSpecialtyPicker)}
                 accessibilityRole="button"
-                accessibilityLabel={t('referral.selectSpecialty', { defaultValue: 'Fachrichtung auswählen' })}
-                testID="btn-select-specialty"
-              >
+                accessibilityLabel={t('referral.selectSpecialty', {
+                  defaultValue: 'Fachrichtung auswählen',
+                })}
+                testID="btn-select-specialty">
                 <AppText
                   style={[
                     styles.selectButtonText,
                     !selectedSpecialtyLabel && styles.selectButtonPlaceholder,
                     isHighContrast && styles.textHighContrast,
-                  ]}
-                >
+                  ]}>
                   {selectedSpecialtyLabel ||
-                    t('referral.selectSpecialtyPlaceholder', { defaultValue: 'Fachrichtung auswählen...' })}
+                    t('referral.selectSpecialtyPlaceholder', {
+                      defaultValue: 'Fachrichtung auswählen...',
+                    })}
                 </AppText>
               </TouchableOpacity>
               {renderSpecialtyPicker()}

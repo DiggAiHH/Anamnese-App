@@ -20,6 +20,7 @@ import { QuestionnaireEntity } from '@domain/entities/Questionnaire';
 import { AnswerValue } from '@domain/entities/Answer';
 import { GDTExportVO, GDTRecordBuilder } from '@domain/value-objects/GDTExport';
 import { decodeMultiChoiceBitset } from '@domain/value-objects/CompartmentAnswerEncoding';
+import { encryptionService } from '@infrastructure/encryption/encryptionService';
 import { requireRNFS } from '@shared/rnfsSafe';
 import { supportsRNFS } from '@shared/platformCapabilities';
 
@@ -89,7 +90,7 @@ export class ExportGDTUseCase {
       const gdtExport = await this.buildGDTExport(patient, questionnaire, answersMap, input);
 
       // Step 6: Save to File
-      const filePath = await this.saveGDTFile(gdtExport, input.patientId);
+      const filePath = await this.saveGDTFile(gdtExport, input.encryptionKey);
 
       // Step 7: Add Audit Log
       const updatedPatient = patient.addAuditLog(
@@ -227,26 +228,27 @@ export class ExportGDTUseCase {
   /**
    * Save GDT File
    */
-  private async saveGDTFile(gdtExport: GDTExportVO, patientId: string): Promise<string> {
+  private async saveGDTFile(gdtExport: GDTExportVO, encryptionKey: string): Promise<string> {
     if (!supportsRNFS) {
       throw new Error('File system export is not supported on this platform');
     }
     const RNFS = requireRNFS();
 
     // Create exports directory
-    const exportsDir = `${RNFS.DocumentDirectoryPath}/exports`;
+    const exportsDir = RNFS.TemporaryDirectoryPath ?? `${RNFS.DocumentDirectoryPath}/exports`;
     await RNFS.mkdir(exportsDir);
 
-    // Generate filename
+    // Generate filename (no patient identifiers)
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-    const fileName = `anamnese_${patientId.substring(0, 8)}_${timestamp}.gdt`;
+    const fileName = `anamnese_${timestamp}.gdt.enc`;
     const filePath = `${exportsDir}/${fileName}`;
 
     // Convert to GDT string
     const gdtString = gdtExport.toGDTString();
 
-    // Write file (ISO-8859-1 encoding für GDT)
-    await RNFS.writeFile(filePath, gdtString, 'ascii');
+    // Encrypt export before writing to disk
+    const encrypted = await encryptionService.encrypt(gdtString, encryptionKey);
+    await RNFS.writeFile(filePath, encrypted.toString(), 'utf8');
 
     return filePath;
   }

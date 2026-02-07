@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-var-requires, @typescript-eslint/explicit-function-return-type */
+
 /*
   Fixes an i18n regression where new top-level key groups were accidentally inserted
   under `gdpr.consents.voiceRecognition` in multiple locale JSON files.
@@ -29,7 +31,8 @@ function isPlainObject(value) {
 
 function readJson(filePath) {
   let raw = fs.readFileSync(filePath, 'utf8');
-  raw = raw.replace(/^\uFEFF/, '').replace(/\u0000/g, '');
+  raw = raw.replace(/^\uFEFF/, '');
+  raw = raw.split('\u0000').join('');
   return JSON.parse(raw);
 }
 
@@ -43,7 +46,7 @@ function main() {
 
   const localeFiles = fs
     .readdirSync(LOCALES_DIR)
-    .filter((f) => f.endsWith('.json'))
+    .filter(f => f.endsWith('.json'))
     .sort();
 
   const summary = {
@@ -56,7 +59,11 @@ function main() {
 
   for (const fileName of localeFiles) {
     const localePath = path.join(LOCALES_DIR, fileName);
-    const beforeRaw = fs.readFileSync(localePath, 'utf8').replace(/^\uFEFF/, '').replace(/\u0000/g, '');
+    const beforeRaw = fs
+      .readFileSync(localePath, 'utf8')
+      .replace(/^\uFEFF/, '')
+      .split('\u0000')
+      .join('');
     const locale = JSON.parse(beforeRaw);
 
     let changed = false;

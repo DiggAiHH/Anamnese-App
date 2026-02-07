@@ -197,10 +197,19 @@ export class SQLiteAnswerRepository implements IAnswerRepository {
       confidence: (row.confidence as number | null) ?? undefined,
       answeredAt: new Date(row.answered_at as number),
       updatedAt: new Date(row.updated_at as number),
-      auditLog: JSON.parse(row.audit_log as string).map((l: Answer['auditLog'][0]) => ({
-        ...l,
-        timestamp: new Date(l.timestamp),
-      })),
+      auditLog: (() => {
+        try {
+          const parsed = JSON.parse(row.audit_log as string);
+          return Array.isArray(parsed)
+            ? parsed.map((l: Answer['auditLog'][0]) => ({
+                ...l,
+                timestamp: new Date(l.timestamp),
+              }))
+            : [];
+        } catch {
+          return [];
+        }
+      })(),
     };
 
     return AnswerEntity.fromJSON(answerData);
