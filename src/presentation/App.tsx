@@ -37,6 +37,7 @@ import { loadActiveSession } from '@shared/sessionPersistence';
 import { loadPersistedEncryptionKeyIfOptedIn } from '@shared/keyManager';
 import { installGlobalErrorHandlers } from '@shared/globalErrorHandlers';
 import { showUserErrorAlert } from '@shared/userFacingError';
+import { initializeApp as initializeQuestionUniverse } from '../application/services/AppInitializationService';
 
 const App = (): React.JSX.Element => {
   // Memoize navigation theme to prevent unnecessary re-renders (Performance Fix)
@@ -69,6 +70,9 @@ const App = (): React.JSX.Element => {
       try {
         await database.connect();
         logDebug('Database initialized successfully');
+
+        // QuestionUniverse: migrate template → structured entities (version-aware, idempotent)
+        await initializeQuestionUniverse();
 
         const session = await loadActiveSession();
         if (session?.patientId || session?.questionnaireId) {

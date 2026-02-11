@@ -1,3 +1,11 @@
+# ===========================================================================
+# Anamnese-App CI Pipeline — Build Matrix + Smoke Tests
+# ===========================================================================
+# Triggers: push/PR to main
+# Jobs: lint → test → build (web/android/windows/ios/macos) → smoke summary
+# DSGVO/CRA: No PII in logs, secrets via ${{ secrets.* }}, pinned versions
+# ===========================================================================
+
 name: CI
 
 on:
@@ -10,10 +18,18 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  NODE_VERSION: '20'
+  CI: 'true'
+
 jobs:
+  # =========================================================================
+  # JOB 1: Lint + Type Check (gate — blocks all builds)
+  # =========================================================================
   lint-and-typecheck:
     name: Lint & Type Check
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -21,11 +37,11 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --no-audit --no-fund
 
       - name: Run ESLint
         run: npm run lint --if-present
@@ -33,9 +49,13 @@ jobs:
       - name: Run TypeScript type check
         run: npm run type-check
 
+  # =========================================================================
+  # JOB 2: Unit Tests (gate — blocks all builds)
+  # =========================================================================
   test:
     name: Unit Tests
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -43,25 +63,37 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --no-audit --no-fund
 
-      - name: Run tests
-        run: npm test -- --testPathIgnorePatterns="e2e" --coverage --ci
+      - name: Run tests with coverage
+        run: npm test -- --testPathIgnorePatterns="e2e" --coverage --ci --forceExit
 
-      - name: Upload coverage
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coverage-report
+          path: coverage/
+          retention-days: 7
+
+      - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4
         if: always()
         with:
           fail_ci_if_error: false
 
-  web-build:
-    name: Web Build
+  # =========================================================================
+  # JOB 3: Web Build + Smoke Test
+  # =========================================================================
+  build-web:
+    name: Web Build + Smoke
     runs-on: ubuntu-latest
     needs: [lint-and-typecheck, test]
+    timeout-minutes: 10
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -69,19 +101,43 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --no-audit --no-fund
 
       - name: Build web (production)
         run: npm run web:build
 
+      - name: Smoke test — verify bundle exists
+        run: |
+          echo "--- Web Smoke Test ---"
+          test -f web/dist/bundle.js || (echo "FAIL: bundle.js not found" && exit 1)
+          test -f web/dist/index.html || (echo "FAIL: index.html not found" && exit 1)
+          BUNDLE_SIZE=$(stat -c%s web/dist/bundle.js 2>/dev/null || stat -f%z web/dist/bundle.js)
+          echo "bundle.js size: ${BUNDLE_SIZE} bytes"
+          if [ "$BUNDLE_SIZE" -lt 1000 ]; then
+            echo "FAIL: bundle.js is suspiciously small (${BUNDLE_SIZE} bytes)"
+            exit 1
+          fi
+          echo "PASS: Web build artifacts verified"
+
+      - name: Upload web build
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-dist
+          path: web/dist/
+          retention-days: 7
+
+  # =========================================================================
+  # JOB 4: Android Build (Debug APK)
+  # =========================================================================
   build-android:
-    name: Android Build (Assemble Debug)
+    name: Android Build
     runs-on: ubuntu-latest
     needs: [lint-and-typecheck, test]
+    timeout-minutes: 30
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -89,10 +145,10 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
 
-      - name: Setup Java
+      - name: Setup Java 17
         uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -103,18 +159,41 @@ jobs:
         uses: android-actions/setup-android@v3
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --no-audit --no-fund
 
-      - name: Assemble Debug
+      - name: Assemble Debug APK
         run: |
           chmod +x android/gradlew
           cd android
-          ./gradlew assembleDebug
+          ./gradlew assembleDebug --no-daemon
 
+      - name: Smoke test — verify APK exists
+        run: |
+          echo "--- Android Smoke Test ---"
+          APK=$(find android/app/build/outputs/apk/debug -name "*.apk" -type f 2>/dev/null | head -1)
+          if [ -z "$APK" ]; then
+            echo "FAIL: No debug APK found"
+            exit 1
+          fi
+          APK_SIZE=$(stat -c%s "$APK" 2>/dev/null || stat -f%z "$APK")
+          echo "APK: $APK (${APK_SIZE} bytes)"
+          echo "PASS: Android debug APK verified"
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-debug-apk
+          path: android/app/build/outputs/apk/debug/*.apk
+          retention-days: 7
+
+  # =========================================================================
+  # JOB 5: Windows Build (Release x64)
+  # =========================================================================
   build-windows:
     name: Windows Build
     runs-on: windows-latest
     needs: [lint-and-typecheck, test]
+    timeout-minutes: 45
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -122,11 +201,11 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --no-audit --no-fund
 
       - name: Apply patches
         run: npx patch-package
@@ -140,7 +219,7 @@ jobs:
       - name: Restore NuGet packages
         run: nuget restore windows/anamnese-mobile.sln
 
-      - name: Build Windows (Release)
+      - name: Build Windows (Release x64)
         run: |
           msbuild windows/anamnese-mobile.sln `
             /p:Configuration=Release `
@@ -148,6 +227,20 @@ jobs:
             /p:AppxBundle=Never `
             /p:AppxPackageSigningEnabled=false `
             /m
+
+      - name: Smoke test — verify build output
+        shell: pwsh
+        run: |
+          Write-Host "--- Windows Smoke Test ---"
+          $dlls = Get-ChildItem -Path windows -Recurse -Filter "anamnese-mobile.dll" -ErrorAction SilentlyContinue
+          $exes = Get-ChildItem -Path windows -Recurse -Filter "anamnese-mobile.exe" -ErrorAction SilentlyContinue
+          if ($dlls.Count -eq 0 -and $exes.Count -eq 0) {
+            Write-Host "FAIL: No anamnese-mobile.exe or .dll found in windows/"
+            exit 1
+          }
+          $artifact = if ($exes.Count -gt 0) { $exes[0] } else { $dlls[0] }
+          Write-Host "Found: $($artifact.FullName) ($($artifact.Length) bytes)"
+          Write-Host "PASS: Windows build artifacts verified"
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
@@ -157,3 +250,128 @@ jobs:
             windows/x64/Release/anamnese-mobile/
             !windows/x64/Release/**/*.pdb
           retention-days: 7
+
+  # =========================================================================
+  # JOB 6: iOS Build (compile check only — no signing)
+  # =========================================================================
+  build-ios:
+    name: iOS Build (compile check)
+    runs-on: macos-latest
+    needs: [lint-and-typecheck, test]
+    timeout-minutes: 30
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Install CocoaPods
+        run: |
+          if [ -d "ios" ] && [ -f "ios/Podfile" ]; then
+            cd ios && pod install --repo-update
+          else
+            echo "SKIP: No ios/Podfile found — iOS project not fully scaffolded"
+          fi
+
+      - name: Build iOS (Debug, no codesign)
+        run: |
+          if [ -d "ios" ] && [ -f "ios/Podfile" ]; then
+            xcodebuild -workspace ios/AnamneseMobile.xcworkspace \
+              -scheme AnamneseMobile \
+              -configuration Debug \
+              -sdk iphonesimulator \
+              -destination 'generic/platform=iOS Simulator' \
+              CODE_SIGN_IDENTITY="" \
+              CODE_SIGNING_REQUIRED=NO \
+              CODE_SIGNING_ALLOWED=NO \
+              build | tail -20
+          else
+            echo "SKIP: iOS project not fully scaffolded yet"
+          fi
+
+  # =========================================================================
+  # JOB 7: macOS Build (compile check only)
+  # =========================================================================
+  build-macos:
+    name: macOS Build (compile check)
+    runs-on: macos-latest
+    needs: [lint-and-typecheck, test]
+    timeout-minutes: 30
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Install CocoaPods
+        run: |
+          if [ -d "macos" ] && [ -f "macos/Podfile" ]; then
+            cd macos && pod install --repo-update
+          else
+            echo "SKIP: No macos/Podfile found — macOS project not fully scaffolded"
+          fi
+
+      - name: Build macOS (Debug, no codesign)
+        run: |
+          if [ -d "macos" ] && [ -f "macos/Podfile" ]; then
+            xcodebuild -workspace macos/AnamneseMobile.xcworkspace \
+              -scheme AnamneseMobile-macOS \
+              -configuration Debug \
+              CODE_SIGN_IDENTITY="" \
+              CODE_SIGNING_REQUIRED=NO \
+              CODE_SIGNING_ALLOWED=NO \
+              build | tail -20
+          else
+            echo "SKIP: macOS project not fully scaffolded yet"
+          fi
+
+  # =========================================================================
+  # JOB 8: Smoke Test Summary (runs after all builds)
+  # =========================================================================
+  smoke-summary:
+    name: Smoke Test Summary
+    runs-on: ubuntu-latest
+    needs: [build-web, build-android, build-windows]
+    if: always()
+    timeout-minutes: 5
+    steps:
+      - name: Evaluate build results
+        run: |
+          echo "============================================="
+          echo " SMOKE TEST SUMMARY"
+          echo "============================================="
+          echo ""
+          echo " Web Build:     ${{ needs.build-web.result }}"
+          echo " Android Build: ${{ needs.build-android.result }}"
+          echo " Windows Build: ${{ needs.build-windows.result }}"
+          echo ""
+
+          FAILED=0
+          for result in "${{ needs.build-web.result }}" "${{ needs.build-android.result }}" "${{ needs.build-windows.result }}"; do
+            if [ "$result" != "success" ] && [ "$result" != "skipped" ]; then
+              FAILED=1
+            fi
+          done
+
+          if [ "$FAILED" -eq 1 ]; then
+            echo "ONE OR MORE PLATFORM BUILDS FAILED"
+            exit 1
+          else
+            echo "ALL PLATFORM BUILDS PASSED"
+          fi

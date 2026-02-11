@@ -29,7 +29,7 @@ export const EncryptedDataSchema = z.object({
     hash: z.literal('sha256'),
   }),
   // Timestamp
-  encryptedAt: z.date(),
+  encryptedAt: z.coerce.date(),
 });
 
 export type EncryptedData = z.infer<typeof EncryptedDataSchema>;
@@ -121,11 +121,9 @@ export class EncryptedDataVO {
   /**
    * Von JSON deserialisieren
    */
-  static fromJSON(json: EncryptedData): EncryptedDataVO {
-    return new EncryptedDataVO({
-      ...json,
-      encryptedAt: new Date(json.encryptedAt),
-    });
+  static fromJSON(json: unknown): EncryptedDataVO {
+    const parsed = EncryptedDataSchema.parse(json);
+    return new EncryptedDataVO(parsed);
   }
 
   /**

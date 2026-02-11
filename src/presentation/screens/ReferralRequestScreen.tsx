@@ -28,6 +28,7 @@ import { useTheme } from '../theme/ThemeContext';
 import { AppText } from '../components/AppText';
 import { AppInput } from '../components/AppInput';
 import { AppButton } from '../components/AppButton';
+import { ScreenContainer } from '../components/ScreenContainer';
 import {
   DocumentType,
   DocumentRequestPriority,
@@ -58,7 +59,7 @@ const SPECIALTIES = [
 
 export const ReferralRequestScreen = ({ navigation }: Props): React.JSX.Element => {
   const { t } = useTranslation();
-  const { skipFullAnamnesis } = usePatientContext();
+  const { skipFullAnamnesis, setPendingDocumentRequest } = usePatientContext();
   const { isHighContrast } = useTheme();
 
   const [selectedSpecialty, setSelectedSpecialty] = useState<string | null>(null);
@@ -103,6 +104,8 @@ export const ReferralRequestScreen = ({ navigation }: Props): React.JSX.Element 
       if (skipFullAnamnesis) {
         navigation.navigate('RequestSummary', { request: referralRequest });
       } else {
+        // New patient: Store request in context and continue with anamnesis
+        setPendingDocumentRequest(referralRequest);
         navigation.navigate('PatientInfo');
       }
     } catch (error) {
@@ -155,11 +158,12 @@ export const ReferralRequestScreen = ({ navigation }: Props): React.JSX.Element 
     : null;
 
   return (
+    <ScreenContainer testID="referral-request-screen" accessibilityLabel="Referral Request">
     <KeyboardAvoidingView
       style={styles.keyboardView}
-      behavior={Platform.OS === 'ios' ? 'padding' : Platform.OS === 'windows' ? 'height' : undefined}>
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
       <View style={[styles.container, isHighContrast && styles.containerHighContrast]}>
-        <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
+        <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent} keyboardShouldPersistTaps="handled">
           <View style={styles.headerSection}>
             <AppText variant="h2" style={[styles.title, isHighContrast && styles.textHighContrast]}>
               {t('referral.title', { defaultValue: 'Überweisung anfordern' })}
@@ -258,6 +262,7 @@ export const ReferralRequestScreen = ({ navigation }: Props): React.JSX.Element 
         </View>
       </View>
     </KeyboardAvoidingView>
+    </ScreenContainer>
   );
 };
 

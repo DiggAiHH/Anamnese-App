@@ -42,7 +42,7 @@ export class AnalyticsService {
             const stats = groups.get(group)!;
             stats.total++;
 
-            if (answeredIds.has(q.id)) {
+            if (answeredIds.has(q.templateId)) {
                 stats.answered++;
             }
         }

@@ -18,6 +18,7 @@ import {
     Platform,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import i18n from 'i18next';
 
 export interface DatePickerInputProps {
     /** Current value (ISO date string: YYYY-MM-DD) */
@@ -91,7 +92,7 @@ export const DatePickerInput: React.FC<DatePickerInputProps> = ({
         const currentIso = typeof value === 'string' ? value : '';
         const parsed = currentIso ? parseIsoDateParts(currentIso) : null;
         const displayDate = parsed
-            ? new Date(parsed.year, parsed.month - 1, parsed.day).toLocaleDateString()
+            ? new Date(parsed.year, parsed.month - 1, parsed.day).toLocaleDateString(i18n.language || 'de-DE')
             : '';
 
         const years = Array.from({ length: yearMax - minYear + 1 }, (_, i) => yearMax - i);
@@ -196,12 +197,48 @@ export const DatePickerInput: React.FC<DatePickerInputProps> = ({
     }
 
     // ================== Non-Windows Fallback ==================
+    const handleTextDateChange = (text: string) => {
+        // Allow partial input while typing (digits and dashes only)
+        const cleaned = text.replace(/[^0-9-]/g, '');
+
+        // Auto-format: insert dashes after YYYY and MM
+        let formatted = cleaned;
+        if (cleaned.length >= 5 && cleaned[4] !== '-') {
+            formatted = cleaned.slice(0, 4) + '-' + cleaned.slice(4);
+        }
+        if (formatted.length >= 8 && formatted[7] !== '-') {
+            formatted = formatted.slice(0, 7) + '-' + formatted.slice(7);
+        }
+
+        // Cap at 10 chars (YYYY-MM-DD)
+        formatted = formatted.slice(0, 10);
+
+        // Validate complete date before emitting
+        if (formatted.length === 10) {
+            const parsed = parseIsoDateParts(formatted);
+            if (parsed) {
+                // Check actual day validity for the given month/year
+                const maxDay = new Date(parsed.year, parsed.month, 0).getDate();
+                if (parsed.day <= maxDay) {
+                    onValueChange(formatted);
+                    return;
+                }
+            }
+        }
+
+        // For partial input, still update the display
+        onValueChange(formatted);
+    };
+
     return (
         <TextInput
             style={[styles.textInput, hasError && styles.inputError]}
             value={(value as string) ?? ''}
-            onChangeText={onValueChange}
+            onChangeText={handleTextDateChange}
             placeholder={placeholder || t('patientInfo.birthDatePlaceholder')}
+            keyboardType="numeric"
+            maxLength={10}
+            autoCorrect={false}
         />
     );
 };

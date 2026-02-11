@@ -16,7 +16,6 @@ import { AppText } from '../components/AppText';
 import {
   createStackNavigator,
   StackScreenProps,
-  // @ts-expect-error - TransitionPresets exists but moduleResolution: node16 can't find it
   TransitionPresets,
 } from '@react-navigation/stack';
 import { useTranslation } from 'react-i18next';
@@ -36,6 +35,7 @@ import { SavedAnamnesesScreen } from '../screens/SavedAnamnesesScreen';
 import { FeedbackScreen } from '../screens/FeedbackScreen';
 import { VoiceScreen } from '../screens/VoiceScreen';
 import { CalculatorScreen } from '../screens/CalculatorScreen';
+import { LabUploadScreen } from '../screens/LabUploadScreen';
 import { DataManagementScreen } from '../screens/DataManagementScreen';
 import { DashboardScreen } from '../screens/DashboardScreen';
 import { FastTrackScreen } from '../screens/FastTrackScreen';
@@ -53,6 +53,15 @@ import { DocumentRequestScreen } from '../screens/DocumentRequestScreen';
 import { PrescriptionRequestScreen } from '../screens/PrescriptionRequestScreen';
 import { ReferralRequestScreen } from '../screens/ReferralRequestScreen';
 import { SickNoteRequestScreen } from '../screens/SickNoteRequestScreen';
+import { RequestSummaryScreen } from '../screens/RequestSummaryScreen';
+
+// Auth & Therapist Screens
+import { LoginScreen } from '../screens/LoginScreen';
+import { TwoFactorScreen } from '../screens/TwoFactorScreen';
+import { TherapistDashboardScreen } from '../screens/TherapistDashboardScreen';
+import { AppointmentCalendarScreen } from '../screens/AppointmentCalendarScreen';
+import { VideoSessionScreen } from '../screens/VideoSessionScreen';
+import { SessionNotesScreen } from '../screens/SessionNotesScreen';
 
 // Document request type for navigation
 import type { IDocumentRequest } from '../../domain/entities/DocumentRequest';
@@ -79,10 +88,18 @@ export type RootStackParamList = {
   SavedAnamneses: undefined;
   Feedback: undefined;
   Voice: undefined;
-  Calculator: undefined;
+  Calculator: { labValues?: Record<string, string> } | undefined;
+  LabUpload: undefined;
   DataManagement: undefined;
   Dashboard: undefined;
   FastTrack: { type: 'prescription' | 'referral' };
+  // Auth & Therapist Screens
+  Login: undefined;
+  TwoFactor: { userId: string };
+  TherapistDashboard: undefined;
+  AppointmentCalendar: undefined;
+  VideoSession: { appointmentId: string };
+  SessionNotes: { patientId: string; appointmentId?: string };
 };
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -237,10 +254,10 @@ export const RootNavigator = (): React.JSX.Element => {
         animationEnabled: true,
         animationTypeForReplace: 'push',
         gestureEnabled: true,
-        transitionSpec: fastTransitionSpec,
         ...(isWindows
           ? TransitionPresets?.FadeFromBottomAndroid || {}
           : TransitionPresets?.SlideFromRightIOS || {}),
+        transitionSpec: fastTransitionSpec,
         headerStyle: {
           backgroundColor: colors.primary,
         },
@@ -297,6 +314,11 @@ export const RootNavigator = (): React.JSX.Element => {
         name="SickNoteRequest"
         component={SickNoteRequestScreen}
         options={{ title: 'Krankschreibung' }}
+      />
+      <Stack.Screen
+        name="RequestSummary"
+        component={RequestSummaryScreen}
+        options={{ title: t('requestSummary.title', { defaultValue: 'Zusammenfassung' }) }}
       />
       {/* ---------------------- */}
 
@@ -405,6 +427,14 @@ export const RootNavigator = (): React.JSX.Element => {
         })}
       />
       <Stack.Screen
+        name="LabUpload"
+        component={LabUploadScreen}
+        options={({ navigation }: { navigation: RootNavigationProp }) => ({
+          title: t('labUpload.title', { defaultValue: 'Laborbericht hochladen' }),
+          headerRight: () => renderLanguageButton(navigation),
+        })}
+      />
+      <Stack.Screen
         name="DataManagement"
         component={DataManagementScreen}
         options={({ navigation }: { navigation: RootNavigationProp }) => ({
@@ -419,6 +449,37 @@ export const RootNavigator = (): React.JSX.Element => {
           title: t('dashboard.title', { defaultValue: 'Analysis' }),
           headerRight: () => renderLanguageButton(navigation),
         })}
+      />
+      {/* Auth & Therapist Screens */}
+      <Stack.Screen
+        name="Login"
+        component={LoginScreen}
+        options={{ title: t('auth.loginTitle', { defaultValue: 'Anmelden' }), headerShown: false }}
+      />
+      <Stack.Screen
+        name="TwoFactor"
+        component={TwoFactorScreen}
+        options={{ title: t('auth.twoFactorTitle', { defaultValue: '2FA Verifizierung' }) }}
+      />
+      <Stack.Screen
+        name="TherapistDashboard"
+        component={TherapistDashboardScreen}
+        options={{ title: t('therapistDashboard.title', { defaultValue: 'Dashboard' }), headerShown: false }}
+      />
+      <Stack.Screen
+        name="AppointmentCalendar"
+        component={AppointmentCalendarScreen}
+        options={{ title: t('appointments.calendarTitle', { defaultValue: 'Terminkalender' }) }}
+      />
+      <Stack.Screen
+        name="VideoSession"
+        component={VideoSessionScreen}
+        options={{ title: t('video.title', { defaultValue: 'Video-Sitzung' }) }}
+      />
+      <Stack.Screen
+        name="SessionNotes"
+        component={SessionNotesScreen}
+        options={{ title: t('notes.title', { defaultValue: 'Sitzungsnotizen' }) }}
       />
     </Stack.Navigator>
   );

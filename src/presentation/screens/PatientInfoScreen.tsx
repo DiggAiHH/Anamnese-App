@@ -13,19 +13,22 @@ import { useTranslation } from 'react-i18next';
 // import DatePicker from 'react-native-date-picker';
 import { useQuestionnaireStore } from '../state/useQuestionnaireStore';
 import { Patient } from '@domain/entities/Patient';
-import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import type { StackScreenProps } from '@react-navigation/stack';
 import type { RootStackParamList } from '../navigation/RootNavigator';
 import { SUPPORTED_LANGUAGES } from '../i18n/config';
 import { AppButton } from '../components/AppButton';
 import { AppInput } from '../components/AppInput';
+import { FieldExplanation } from '../components/FieldExplanation';
+import { ScreenContainer } from '../components/ScreenContainer';
 import { colors, spacing, radius } from '../theme/tokens';
 import { usePatientContext } from '../../application/PatientContext';
 import { CreatePatientUseCase, CreatePatientInput } from '../../application/use-cases/CreatePatientUseCase';
 import { SQLitePatientRepository } from '../../infrastructure/persistence/SQLitePatientRepository';
 import { SQLiteGDPRConsentRepository } from '../../infrastructure/persistence/SQLiteGDPRConsentRepository';
 import { database } from '../../infrastructure/persistence/DatabaseConnection';
+import { useUnsavedChangesGuard } from '../hooks/useUnsavedChangesGuard';
 
-type Props = NativeStackScreenProps<RootStackParamList, 'PatientInfo'>;
+type Props = StackScreenProps<RootStackParamList, 'PatientInfo'>;
 
 export const PatientInfoScreen: React.FC<Props> = ({ navigation }) => {
   const { t, i18n } = useTranslation();
@@ -67,6 +70,9 @@ export const PatientInfoScreen: React.FC<Props> = ({ navigation }) => {
 
   const [errors, setErrors] = useState<Record<string, string>>({});
 
+  // Unsaved changes guard
+  const isDirty = Boolean(firstName || lastName || email || phone || street || houseNumber || zip || city || insuranceNumber);
+  useUnsavedChangesGuard(navigation, isDirty);
   // Sync context birthdate to local Date object (legacy compat)
   // useEffect(() => {
   //   if (ctxBirthDate.year && ctxBirthDate.month && ctxBirthDate.day) {
@@ -90,35 +96,46 @@ export const PatientInfoScreen: React.FC<Props> = ({ navigation }) => {
       }
     } else {
       // New Patient (or Returning + Changed) Validation
-      const nameRegex = /^[a-zA-ZäöüÄÖÜß\s-]{3,}$/; // Min 3 chars, no numbers
+      // Unicode-aware name regex: allows Latin, accented, Cyrillic, Arabic, CJK, etc.
+      // Min 2 chars (some names like "Li" are valid), no digits
+      const nameRegex = /^[\p{L}\p{M}\s'-]{2,}$/u;
 
       if (!firstName.trim()) newErrors.firstName = t('validation.required');
-      else if (!nameRegex.test(firstName.trim())) newErrors.firstName = t('validation.nameInvalid', { defaultValue: 'Min. 3 letters, no numbers' });
+      else if (!nameRegex.test(firstName.trim())) newErrors.firstName = t('validation.nameInvalid', { defaultValue: 'Min. 2 Buchstaben, keine Zahlen' });
 
       if (!lastName.trim()) newErrors.lastName = t('validation.required');
       else if (!nameRegex.test(lastName.trim())) newErrors.lastName = t('validation.nameInvalid');
 
       if (!gender) newErrors.gender = t('validation.required');
-      // Insurance Type is only for NEW, not necessarily update? Let's assume update validates it too if shown.
       if (!isReturning && !insuranceType) newErrors.insuranceType = t('validation.required');
 
       if (!insuranceNumber.trim()) newErrors.insuranceNumber = t('validation.required');
+
+      // Email validation (optional but must be valid if provided)
+      if (email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+        newErrors.email = t('validation.emailInvalid', { defaultValue: 'Ungültige E-Mail-Adresse' });
+      }
 
       // Age Check > 3
       if (ctxBirthDate.year) {
         const birthYear = parseInt(ctxBirthDate.year);
         const currentYear = new Date().getFullYear();
         if (currentYear - birthYear < 3) {
-          newErrors.birthDate = t('validation.tooYoung', { defaultValue: 'Patient must be at least 3 years old' });
+          newErrors.birthDate = t('validation.tooYoung', { defaultValue: 'Patient muss mindestens 3 Jahre alt sein' });
         }
       }
 
       // Address Validation
       if (!street.trim()) newErrors.street = t('validation.required');
       if (!houseNumber.trim()) newErrors.houseNumber = t('validation.required');
-      else if (!/^\d+\w?$/.test(houseNumber.trim())) newErrors.houseNumber = t('validation.numberOnly', { defaultValue: 'Number (e.g. 12, 12a)' });
+      // Accepts: "12", "12a", "12-14", "12/3", "12 A"
+      else if (!/^[\d]+[\w\s\-\/]*$/.test(houseNumber.trim())) newErrors.houseNumber = t('validation.houseNumberInvalid', { defaultValue: 'z.B. 12, 12a, 12-14' });
 
       if (!zip.trim()) newErrors.zip = t('validation.required');
+      // German PLZ: exactly 5 digits
+      else if (country === 'DE' && !/^\d{5}$/.test(zip.trim())) {
+        newErrors.zip = t('validation.plzInvalid', { defaultValue: 'PLZ muss 5 Ziffern haben' });
+      }
       if (!city.trim()) newErrors.city = t('validation.required');
     }
 
@@ -204,9 +221,19 @@ export const PatientInfoScreen: React.FC<Props> = ({ navigation }) => {
     }
   };
 
-  // Helper for Date Dropdowns
+  // Helper for Date Dropdowns (with day-clamping when month/year changes)
   const updateDatePart = (part: 'day' | 'month' | 'year', val: string) => {
-    setCtxBirthDate({ ...ctxBirthDate, [part]: val });
+    const updated = { ...ctxBirthDate, [part]: val };
+
+    // Auto-clamp day if month or year changed and current day exceeds new month's max
+    if ((part === 'month' || part === 'year') && updated.day && updated.month && updated.year) {
+      const maxDay = new Date(parseInt(updated.year), parseInt(updated.month), 0).getDate();
+      if (parseInt(updated.day) > maxDay) {
+        updated.day = String(maxDay);
+      }
+    }
+
+    setCtxBirthDate(updated);
   };
 
   const today = new Date();
@@ -223,9 +250,9 @@ export const PatientInfoScreen: React.FC<Props> = ({ navigation }) => {
     <View style={styles.datePickerRow}>
       {/* Day */}
       <View style={[styles.dateDropdownCell, openDateDropdown === 'day' && styles.dateDropdownCellActive]}>
-        <AppText style={styles.dropdownLabel}>Tag</AppText>
+        <AppText style={styles.dropdownLabel}>{t('patientInfo.dayLabel', { defaultValue: 'Tag' })}</AppText>
         <TouchableOpacity style={styles.dateDropdownButton} onPress={() => setOpenDateDropdown(openDateDropdown === 'day' ? null : 'day')}>
-          <AppText style={styles.dateDropdownText}>{ctxBirthDate.day || 'TT'}</AppText>
+          <AppText style={styles.dateDropdownText}>{ctxBirthDate.day || t('patientInfo.dayPlaceholder', { defaultValue: 'TT' })}</AppText>
         </TouchableOpacity>
         {openDateDropdown === 'day' && (
           <View style={styles.dateDropdownMenu}>
@@ -242,9 +269,9 @@ export const PatientInfoScreen: React.FC<Props> = ({ navigation }) => {
 
       {/* Month */}
       <View style={[styles.dateDropdownCell, openDateDropdown === 'month' && styles.dateDropdownCellActive]}>
-        <AppText style={styles.dropdownLabel}>Monat</AppText>
+        <AppText style={styles.dropdownLabel}>{t('patientInfo.monthLabel', { defaultValue: 'Monat' })}</AppText>
         <TouchableOpacity style={styles.dateDropdownButton} onPress={() => setOpenDateDropdown(openDateDropdown === 'month' ? null : 'month')}>
-          <AppText style={styles.dateDropdownText}>{ctxBirthDate.month || 'MM'}</AppText>
+          <AppText style={styles.dateDropdownText}>{ctxBirthDate.month || t('patientInfo.monthPlaceholder', { defaultValue: 'MM' })}</AppText>
         </TouchableOpacity>
         {openDateDropdown === 'month' && (
           <View style={styles.dateDropdownMenu}>
@@ -261,9 +288,9 @@ export const PatientInfoScreen: React.FC<Props> = ({ navigation }) => {
 
       {/* Year */}
       <View style={[styles.dateDropdownCell, openDateDropdown === 'year' && styles.dateDropdownCellActive]}>
-        <AppText style={styles.dropdownLabel}>Jahr</AppText>
+        <AppText style={styles.dropdownLabel}>{t('patientInfo.yearLabel', { defaultValue: 'Jahr' })}</AppText>
         <TouchableOpacity style={styles.dateDropdownButton} onPress={() => setOpenDateDropdown(openDateDropdown === 'year' ? null : 'year')}>
-          <AppText style={styles.dateDropdownText}>{ctxBirthDate.year || 'JJJJ'}</AppText>
+          <AppText style={styles.dateDropdownText}>{ctxBirthDate.year || t('patientInfo.yearPlaceholder', { defaultValue: 'JJJJ' })}</AppText>
         </TouchableOpacity>
         {openDateDropdown === 'year' && (
           <View style={styles.dateDropdownMenu}>
@@ -281,10 +308,11 @@ export const PatientInfoScreen: React.FC<Props> = ({ navigation }) => {
   );
 
   return (
-    <ScrollView style={styles.container} testID="patient-info-screen" nestedScrollEnabled>
+    <ScreenContainer testID="patient-info-screen" accessibilityLabel="Patient Information">
+    <ScrollView style={styles.container} testID="patient-info-screen" nestedScrollEnabled keyboardShouldPersistTaps="handled">
       <View style={styles.header}>
-        <AppText style={styles.title}>{isReturning ? 'Willkommen zurück' : 'Neue Patientenaufnahme'}</AppText>
-        <AppText style={styles.subtitle}>{isReturning ? 'Bitte identifizieren Sie sich.' : 'Bitte geben Sie Ihre Daten ein.'}</AppText>
+        <AppText style={styles.title}>{isReturning ? t('patientInfo.titleReturning', { defaultValue: 'Willkommen zurück' }) : t('patientInfo.titleNew', { defaultValue: 'Neue Patientenaufnahme' })}</AppText>
+        <AppText style={styles.subtitle}>{isReturning ? t('patientInfo.subtitleReturning', { defaultValue: 'Bitte identifizieren Sie sich.' }) : t('patientInfo.subtitleNew', { defaultValue: 'Bitte geben Sie Ihre Daten ein.' })}</AppText>
       </View>
 
       <View style={styles.form}>
@@ -292,15 +320,15 @@ export const PatientInfoScreen: React.FC<Props> = ({ navigation }) => {
         {/* NEW PATIENT: Insurance Type */}
         {!isReturning && (
           <View style={styles.inputGroup}>
-            <AppText style={styles.label}>Versicherungsart <AppText style={styles.required}>*</AppText></AppText>
+            <AppText style={styles.label}>{t('patientInfo.insuranceType', { defaultValue: 'Versicherungsart' })} <AppText style={styles.required}>*</AppText></AppText>
             <View style={styles.radioGroup}>
               <TouchableOpacity style={[styles.radioButton, insuranceType === 'public' && styles.radioButtonSelected]} onPress={() => setInsuranceType('public')}>
                 <View style={styles.radio}>{insuranceType === 'public' && <View style={styles.radioSelected} />}</View>
-                <AppText style={styles.radioLabel}>Gesetzlich</AppText>
+                <AppText style={styles.radioLabel}>{t('patientInfo.insurancePublic', { defaultValue: 'Gesetzlich' })}</AppText>
               </TouchableOpacity>
               <TouchableOpacity style={[styles.radioButton, insuranceType === 'private' && styles.radioButtonSelected]} onPress={() => setInsuranceType('private')}>
                 <View style={styles.radio}>{insuranceType === 'private' && <View style={styles.radioSelected} />}</View>
-                <AppText style={styles.radioLabel}>Privat</AppText>
+                <AppText style={styles.radioLabel}>{t('patientInfo.insurancePrivate', { defaultValue: 'Privat' })}</AppText>
               </TouchableOpacity>
             </View>
             {errors.insuranceType && <AppText style={styles.errorText}>{errors.insuranceType}</AppText>}
@@ -313,7 +341,7 @@ export const PatientInfoScreen: React.FC<Props> = ({ navigation }) => {
           required
           value={insuranceNumber}
           onChangeText={setInsuranceNumber}
-          placeholder="z.B. A123456789"
+          placeholder={t('patientInfo.insuranceNumberPlaceholder', { defaultValue: 'z.B. A123456789' })}
           error={errors.insuranceNumber}
         />
 
@@ -327,10 +355,17 @@ export const PatientInfoScreen: React.FC<Props> = ({ navigation }) => {
 
         {/* Returning Patient: Data Changed Toggle */}
         {isReturning && (
-          <TouchableOpacity style={styles.toggleContainer} onPress={() => setHasDataChanged(!hasDataChanged)}>
-            <View style={[styles.checkbox, hasDataChanged && styles.checkboxChecked]} />
-            <AppText style={styles.toggleLabel}>{t('patientInfo.dataChanged', { defaultValue: 'Meine persönlichen Daten haben sich geändert' })}</AppText>
-          </TouchableOpacity>
+          <View style={styles.toggleSection}>
+            <TouchableOpacity style={styles.toggleContainer} onPress={() => setHasDataChanged(!hasDataChanged)}>
+              <View style={[styles.checkbox, hasDataChanged && styles.checkboxChecked]} />
+              <AppText style={styles.toggleLabel}>{t('patientInfo.dataChanged', { defaultValue: 'Meine persönlichen Daten haben sich geändert' })}</AppText>
+            </TouchableOpacity>
+            <AppText style={styles.toggleHint}>
+              {t('patientInfo.dataChangedHint', {
+                defaultValue: 'Aktivieren Sie diese Option, wenn sich Ihre Adresse, Telefonnummer oder andere persönliche Daten seit dem letzten Besuch geändert haben.',
+              })}
+            </AppText>
+          </View>
         )}
 
         {/* DETAILS: Show if New Patient OR (Returning AND Data Changed) */}
@@ -342,7 +377,7 @@ export const PatientInfoScreen: React.FC<Props> = ({ navigation }) => {
               value={firstName}
               onChangeText={setFirstName}
               error={errors.firstName}
-              placeholder="Min. 3 letters"
+              placeholder={t('patientInfo.namePlaceholder', { defaultValue: 'Min. 3 Buchstaben' })}
             />
             <AppInput
               label={t('patientInfo.lastName')}
@@ -357,15 +392,15 @@ export const PatientInfoScreen: React.FC<Props> = ({ navigation }) => {
               <View style={styles.radioGroup}>
                 <TouchableOpacity style={[styles.radioButton, gender === 'male' && styles.radioButtonSelected]} onPress={() => setGender('male')}>
                   <View style={styles.radio}>{gender === 'male' && <View style={styles.radioSelected} />}</View>
-                  <AppText>Männlich</AppText>
+                  <AppText>{t('patientInfo.male', { defaultValue: 'Männlich' })}</AppText>
                 </TouchableOpacity>
                 <TouchableOpacity style={[styles.radioButton, gender === 'female' && styles.radioButtonSelected]} onPress={() => setGender('female')}>
                   <View style={styles.radio}>{gender === 'female' && <View style={styles.radioSelected} />}</View>
-                  <AppText>Weiblich</AppText>
+                  <AppText>{t('patientInfo.female', { defaultValue: 'Weiblich' })}</AppText>
                 </TouchableOpacity>
                 <TouchableOpacity style={[styles.radioButton, gender === 'other' && styles.radioButtonSelected]} onPress={() => setGender('other')}>
                   <View style={styles.radio}>{gender === 'other' && <View style={styles.radioSelected} />}</View>
-                  <AppText>Divers</AppText>
+                  <AppText>{t('patientInfo.other', { defaultValue: 'Divers' })}</AppText>
                 </TouchableOpacity>
               </View>
               {errors.gender && <AppText style={styles.errorText}>{errors.gender}</AppText>}
@@ -374,7 +409,7 @@ export const PatientInfoScreen: React.FC<Props> = ({ navigation }) => {
             {/* ADDRESS SECTION */}
             <AppText style={styles.sectionHeader}>{t('patientInfo.address', { defaultValue: 'Adresse' })}</AppText>
 
-            <AppInput label={t('patientInfo.country')} value={country} onChangeText={setCountry} placeholder="Land (z.B. DE)" />
+            <AppInput label={t('patientInfo.country')} value={country} onChangeText={setCountry} placeholder={t('patientInfo.countryPlaceholder', { defaultValue: 'Land (z.B. DE)' })} />
 
             <View style={styles.row}>
               <View style={{ flex: 3, marginRight: 10 }}>
@@ -395,7 +430,19 @@ export const PatientInfoScreen: React.FC<Props> = ({ navigation }) => {
             </View>
 
             <AppInput label={t('patientInfo.email')} value={email} onChangeText={setEmail} keyboardType="email-address" />
+            <FieldExplanation
+              hint={t('patientInfo.emailWhy', { defaultValue: 'Für Terminbestätigungen und Befundmitteilungen.' })}
+              consequence={t('patientInfo.emailWithout', { defaultValue: 'Ohne E-Mail erhalten Sie keine digitalen Benachrichtigungen.' })}
+              variant="info"
+              testID="hint-email"
+            />
             <AppInput label={t('patientInfo.phone')} value={phone} onChangeText={setPhone} keyboardType="phone-pad" />
+            <FieldExplanation
+              hint={t('patientInfo.phoneWhy', { defaultValue: 'Für dringende Rückfragen zu Ihrer Behandlung.' })}
+              consequence={t('patientInfo.phoneWithout', { defaultValue: 'Ohne Telefonnummer können wir Sie nicht kurzfristig erreichen.' })}
+              variant="info"
+              testID="hint-phone"
+            />
           </>
         )}
 
@@ -409,6 +456,7 @@ export const PatientInfoScreen: React.FC<Props> = ({ navigation }) => {
 
       <View style={{ height: 100 }} />
     </ScrollView>
+    </ScreenContainer>
   );
 };
 
@@ -468,7 +516,9 @@ const styles = StyleSheet.create({
   // New Styles
   row: { flexDirection: 'row' },
   sectionHeader: { marginTop: spacing.lg, marginBottom: spacing.md, color: colors.textPrimary },
-  toggleContainer: { flexDirection: 'row', alignItems: 'center', marginBottom: spacing.lg, padding: spacing.sm },
+  toggleSection: { marginBottom: spacing.lg },
+  toggleContainer: { flexDirection: 'row', alignItems: 'center', padding: spacing.sm },
+  toggleHint: { fontSize: 12, color: colors.textMuted, marginLeft: 40, marginTop: 4, lineHeight: 16 },
   checkbox: { width: 24, height: 24, borderWidth: 2, borderColor: colors.primary, borderRadius: 4, marginRight: spacing.md },
   checkboxChecked: { backgroundColor: colors.primary },
   toggleLabel: { color: colors.textPrimary },

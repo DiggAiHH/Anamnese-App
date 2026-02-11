@@ -54,6 +54,11 @@ export interface IDocumentRequest {
 }
 
 /**
+ * Prescription type (follow-up vs new prescription).
+ */
+export type PrescriptionType = 'follow_up' | 'new';
+
+/**
  * Prescription (Rezept) request specific fields.
  */
 export interface IPrescriptionRequest extends IDocumentRequest {
@@ -61,6 +66,12 @@ export interface IPrescriptionRequest extends IDocumentRequest {
   medicationName: string;
   medicationDosage?: string;
   medicationQuantity?: number;
+  /** Folgerezept or Neuverordnung */
+  prescriptionType?: PrescriptionType;
+  /** Urgent flag ("Eilt") */
+  isUrgent?: boolean;
+  /** Package size (e.g. "N1", "N2", "N3") */
+  packageSize?: string;
 }
 
 /**
@@ -74,6 +85,11 @@ export interface IReferralRequest extends IDocumentRequest {
 }
 
 /**
+ * Sick note sub-type.
+ */
+export type SickNoteSubType = 'standard' | 'attest' | 'befundbericht';
+
+/**
  * Sick note (AU-Bescheinigung) request specific fields.
  */
 export interface ISickNoteRequest extends IDocumentRequest {
@@ -83,6 +99,8 @@ export interface ISickNoteRequest extends IDocumentRequest {
   /** End date in TT.MM.JJJJ format (optional) */
   auEndDate?: string;
   auReason?: string;
+  /** Sub-type: standard AU, Attest, or Befundbericht */
+  documentSubType?: SickNoteSubType;
 }
 
 /**

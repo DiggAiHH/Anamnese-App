@@ -36,7 +36,8 @@
     "continue": "Fortfahren",
     "close": "Schließen",
     "featureUnavailableTitle": "Funktion nicht verf?gbar",
-    "featureUnavailableMessage": "{{feature}} ist auf dieser Plattform nicht verf?gbar."
+    "featureUnavailableMessage": "{{feature}} ist auf dieser Plattform nicht verf?gbar.",
+    "datePlaceholder": "TT.MM.JJJJ"
   },
   "settings": {
     "deleteTitle": "Alle Daten löschen?",
@@ -65,7 +66,18 @@
       "title": "Wo findet die Anamnese statt?",
       "practice": "In der Praxis",
       "private": "Privat (Zu Hause)",
-      "admin": "Admin / Dashboard"
+      "admin": "Admin / Dashboard",
+      "therapistLogin": "Therapeuten-Login",
+      "switchConfirmTitle": "Rolle wechseln?",
+      "switchConfirmMessage": "Wenn Sie die Rolle wechseln, werden laufende Eingaben zurückgesetzt.",
+      "switchConfirm": "Wechseln"
+    },
+    "role": {
+      "doctor": "Arzt",
+      "patient": "Patient"
+    },
+    "savedAnamneses": {
+      "patientOnlyHint": "Sie sehen Ihre eigenen Anamnesen."
     },
     "accessibility": {
       "fontScale": "Schriftgröße",
@@ -116,7 +128,29 @@
     "emailPlaceholder": "max.mustermann@example.com",
     "phone": "Telefon (optional)",
     "phonePlaceholder": "+49 ...",
-    "toConsents": "Weiter zu Einwilligungen"
+    "toConsents": "Weiter zu Einwilligungen",
+    "titleReturning": "Willkommen zurück",
+    "titleNew": "Neue Patientenaufnahme",
+    "subtitleReturning": "Bitte identifizieren Sie sich.",
+    "subtitleNew": "Bitte geben Sie Ihre Daten ein.",
+    "insuranceType": "Versicherungsart",
+    "insurancePublic": "Gesetzlich",
+    "insurancePrivate": "Privat",
+    "dayLabel": "Tag",
+    "monthLabel": "Monat",
+    "yearLabel": "Jahr",
+    "dayPlaceholder": "TT",
+    "monthPlaceholder": "MM",
+    "yearPlaceholder": "JJJJ",
+    "dataChanged": "Meine persönlichen Daten haben sich geändert",
+    "dataChangedHint": "Aktivieren Sie diese Option, wenn sich Ihre Adresse, Telefonnummer oder andere persönliche Daten seit dem letzten Besuch geändert haben.",
+    "emailWhy": "Für Terminbestätigungen und Befundmitteilungen.",
+    "emailWithout": "Ohne E-Mail erhalten Sie keine digitalen Benachrichtigungen.",
+    "phoneWhy": "Für dringende Rückfragen zu Ihrer Behandlung.",
+    "phoneWithout": "Ohne Telefonnummer können wir Sie nicht kurzfristig erreichen.",
+    "insuranceNumberPlaceholder": "z.B. A123456789",
+    "namePlaceholder": "Min. 3 Buchstaben",
+    "countryPlaceholder": "Land (z.B. DE)"
   },
   "validation": {
     "required": "Dieses Feld ist erforderlich",
@@ -171,23 +205,33 @@
     "consents": {
       "dataProcessing": {
         "title": "Datenverarbeitung (Pflicht)",
-        "description": "Verarbeitung personenbezogener Gesundheitsdaten"
+        "description": "Verarbeitung personenbezogener Gesundheitsdaten",
+        "why": "Ihre Gesundheitsdaten müssen verarbeitet werden, um den Anamnesebogen auszuwerten und dem Arzt bereitzustellen.",
+        "without": "Ohne diese Einwilligung kann die App nicht genutzt werden."
       },
       "dataStorage": {
         "title": "Datenspeicherung (Pflicht)",
-        "description": "Lokale Speicherung der Anamnese"
+        "description": "Lokale Speicherung der Anamnese",
+        "why": "Ihre Antworten werden lokal und AES-256-verschlüsselt gespeichert, damit sie bei Ihrem Arztbesuch verfügbar sind.",
+        "without": "Ohne Speicherung gehen alle eingegebenen Daten nach dem Schließen verloren."
       },
       "gdtExport": {
         "title": "GDT Export (optional)",
-        "description": "Export für Praxissysteme"
+        "description": "Export für Praxissysteme",
+        "why": "Ermöglicht den automatischen Import Ihrer Anamnese in das Praxisverwaltungssystem des Arztes.",
+        "without": "Ohne GDT-Export muss die Praxis Ihre Daten manuell übertragen."
       },
       "ocrProcessing": {
         "title": "OCR (optional)",
-        "description": "Texterkennung aus Dokumenten"
+        "description": "Texterkennung aus Dokumenten",
+        "why": "Ermöglicht das automatische Einlesen von Dokumenten (z.B. Versicherungskarte) per Kamera.",
+        "without": "Ohne OCR müssen Sie alle Daten manuell eingeben."
       },
       "voiceRecognition": {
         "title": "Spracherkennung (optional)",
-        "description": "Sprachbasierte Eingabe"
+        "description": "Sprachbasierte Eingabe",
+        "why": "Ermöglicht die Eingabe von Antworten per Sprache statt Tippen.",
+        "without": "Ohne Spracherkennung erfolgt die Eingabe ausschließlich über die Tastatur."
       }
     }
   },
@@ -586,7 +630,11 @@
         "obese_class_i": "Adipositas Grad I",
         "obese_class_ii": "Adipositas Grad II",
         "obese_class_iii": "Adipositas Grad III"
-      }
+      },
+      "weightWithUnit": "Gewicht (kg)",
+      "heightWithUnit": "Größe (cm)",
+      "weightPlaceholder": "70",
+      "heightPlaceholder": "175"
     },
     "cardio": {
       "title": "Kardiovaskuläres Risiko",
@@ -606,7 +654,14 @@
         "moderate": "Mittleres Risiko",
         "high": "Hohes Risiko",
         "very_high": "Sehr hohes Risiko"
-      }
+      },
+      "agePlaceholder": "50",
+      "systolicPlaceholder": "120",
+      "cholPlaceholder": "200",
+      "hdlPlaceholder": "50",
+      "systolicBPWithUnit": "Systolischer Blutdruck (mmHg)",
+      "totalCholesterolWithUnit": "Gesamtcholesterin (mg/dL)",
+      "hdlCholesterolWithUnit": "HDL-Cholesterin (mg/dL)"
     },
     "egfr": {
       "title": "eGFR (Nierenfunktion)",
@@ -625,7 +680,10 @@
         "stage3b": "Stadium 3b: Mäßig-schwer (30-44)",
         "stage4": "Stadium 4: Schwer (15-29)",
         "stage5": "Stadium 5: Nierenversagen (<15)"
-      }
+      },
+      "creatininePlaceholder": "1.0",
+      "agePlaceholder": "50",
+      "creatinineWithUnit": "Kreatinin (mg/dL)"
     },
     "ibw": {
       "title": "Idealgewicht (IBW)",
@@ -634,7 +692,9 @@
       "male": "Männlich",
       "female": "Weiblich",
       "result": "Idealgewicht: {{value}} kg",
-      "invalidInput": "Bitte gültige Werte eingeben"
+      "invalidInput": "Bitte gültige Werte eingeben",
+      "heightPlaceholder": "175",
+      "heightWithUnit": "Größe (cm)"
     },
     "bmr": {
       "title": "Grundumsatz (BMR)",
@@ -645,7 +705,12 @@
       "male": "Männlich",
       "female": "Weiblich",
       "result": "Grundumsatz: {{value}} kcal/Tag",
-      "invalidInput": "Bitte gültige Werte eingeben"
+      "invalidInput": "Bitte gültige Werte eingeben",
+      "weightPlaceholder": "70",
+      "heightPlaceholder": "175",
+      "agePlaceholder": "30",
+      "weightWithUnit": "Gewicht (kg)",
+      "heightWithUnit": "Größe (cm)"
     }
   },
   "dataManagement": {
@@ -794,9 +859,16 @@
     "medicationName": "Medikament",
     "medicationPlaceholder": "z.B. Ibuprofen 400mg",
     "dosage": "Dosierung (optional)",
-    "dosagePlaceholder": "z.B. 3x täglich",
+    "dosagePlaceholder": "z.B. 1-0-1 oder 3x täglich",
+    "dosageHint": "Format: Morgens-Mittags-Abends (z.B. 1-0-1)",
     "quantity": "Menge (optional)",
     "quantityPlaceholder": "z.B. 2 Packungen",
+    "packageSize": "Packungsgröße (optional)",
+    "packageSizePlaceholder": "z.B. N1, N2, N3",
+    "prescriptionType": "Rezeptart",
+    "followUp": "Folgerezept",
+    "newPrescription": "Neuverordnung",
+    "urgentLabel": "⚡ Eilt (dringend benötigt)",
     "notes": "Anmerkungen (optional)",
     "notesPlaceholder": "Weitere Informationen...",
     "infoText": "Ihre Anfrage wird verschlüsselt an die Praxis übermittelt. Sie erhalten eine Benachrichtigung, sobald das Rezept abholbereit ist.",
@@ -832,6 +904,10 @@
     "reasonPlaceholder": "z.B. Erkältung, Rückenschmerzen",
     "notes": "Anmerkungen (optional)",
     "notesPlaceholder": "Weitere Informationen...",
+    "documentSubType": "Art des Dokuments",
+    "subTypeStandard": "AU-Bescheinigung",
+    "subTypeAttest": "Attest",
+    "subTypeBefund": "Befundbericht",
     "infoText": "Die AU-Bescheinigung wird nach ärztlicher Prüfung ausgestellt. Bei längerer Krankheit ist ein Arztbesuch erforderlich.",
     "warningTitle": "⚠️ Wichtiger Hinweis",
     "warningText": "Eine Arbeitsunfähigkeitsbescheinigung kann nur nach Rücksprache mit einem Arzt ausgestellt werden. Diese Anfrage dient der Terminvereinbarung.",
@@ -841,5 +917,188 @@
     "errorEndDateInvalid": "Das Enddatum ist ungültig (TT.MM.JJJJ).",
     "errorEndBeforeStart": "Das Enddatum darf nicht vor dem Startdatum liegen.",
     "errorSubmit": "Anfrage konnte nicht erstellt werden."
+  },
+  "requestSummary": {
+    "title": "Zusammenfassung",
+    "subtitle": "Bitte überprüfen Sie Ihre Angaben.",
+    "type": "Art",
+    "priority": "Priorität",
+    "urgent": "⚡ Eilt",
+    "notes": "Anmerkungen",
+    "encryptionInfo": "🔒 Ihre Daten werden mit AES-256 verschlüsselt übertragen. Nur Ihre Praxis kann die Nachricht entschlüsseln.",
+    "send": "Verschlüsselt absenden",
+    "successTitle": "Anfrage gesendet",
+    "successMessage": "Ihre Anfrage wurde in Ihrem E-Mail-Programm geöffnet.",
+    "noEmailClient": "Kein E-Mail-Programm gefunden. Bitte installieren Sie eines.",
+    "errorSend": "Anfrage konnte nicht gesendet werden."
+  },
+  "auth": {
+    "loginTitle": "Anmelden",
+    "loginSubtitle": "Melden Sie sich sicher an.",
+    "registerTitle": "Konto erstellen",
+    "registerSubtitle": "Erstellen Sie Ihr Therapeuten-Konto.",
+    "email": "E-Mail",
+    "password": "Passwort",
+    "displayName": "Anzeigename",
+    "displayNamePlaceholder": "Dr. Max Mustermann",
+    "login": "Anmelden",
+    "register": "Registrieren",
+    "logout": "Abmelden",
+    "switchToLogin": "Bereits registriert? Anmelden",
+    "switchToRegister": "Neues Konto erstellen",
+    "continueAsPatient": "Als Patient fortfahren",
+    "fillAllFields": "Bitte füllen Sie alle Felder aus.",
+    "invalidCredentials": "E-Mail oder Passwort ungültig.",
+    "accountLocked": "Konto gesperrt wegen zu vieler Fehlversuche. Bitte warten.",
+    "emailExists": "Diese E-Mail ist bereits registriert.",
+    "passwordTooShort": "Passwort muss mindestens 8 Zeichen lang sein.",
+    "registrationSuccess": "Registrierung erfolgreich",
+    "registrationSuccessMessage": "Sie können sich jetzt einloggen. Richten Sie 2FA in den Einstellungen ein.",
+    "registrationFailed": "Registrierung fehlgeschlagen.",
+    "loginFailed": "Anmeldung fehlgeschlagen.",
+    "twoFactorTitle": "Zwei-Faktor-Authentifizierung",
+    "twoFactorSubtitle": "Geben Sie den 6-stelligen Code aus Ihrer Authenticator-App ein.",
+    "verificationCode": "Verifizierungscode",
+    "verify": "Verifizieren",
+    "invalid2FACode": "Ungültiger Code. Bitte erneut versuchen.",
+    "invalidCodeLength": "Bitte geben Sie den 6-stelligen Code ein.",
+    "verificationFailed": "Verifizierung fehlgeschlagen.",
+    "twoFactorHelp": "Öffnen Sie Ihre Authenticator-App (z.B. Google Authenticator) und geben Sie den aktuellen Code ein.",
+    "securityInfo": "Ihre Zugangsdaten werden mit PBKDF2 verschlüsselt. Aktivieren Sie 2FA für zusätzliche Sicherheit.",
+    "therapist": "Therapeut",
+    "codePlaceholder": "000000"
+  },
+  "therapistDashboard": {
+    "title": "Dashboard",
+    "greeting": "Willkommen, {{name}}",
+    "calendar": "Kalender",
+    "videoSession": "Video-Sitzung",
+    "notes": "Notizen",
+    "todaySchedule": "Heutige Termine",
+    "noAppointments": "Keine Termine für heute.",
+    "encryptionActive": "End-to-End-Verschlüsselung aktiv. Alle Patientendaten sind mit AES-256-GCM geschützt."
+  },
+  "appointments": {
+    "calendarTitle": "Terminkalender",
+    "weekOf": "Woche ab",
+    "newAppointment": "Neuer Termin",
+    "patientId": "Patienten-ID",
+    "patientRequired": "Bitte Patienten-ID eingeben.",
+    "time": "Uhrzeit",
+    "duration": "Dauer (Minuten)",
+    "book": "Termin buchen",
+    "booked": "Termin wurde gebucht.",
+    "conflict": "Terminkonflikt: Dieser Zeitraum ist bereits belegt.",
+    "pastDate": "Termine in der Vergangenheit sind nicht möglich.",
+    "bookingFailed": "Termin konnte nicht gebucht werden.",
+    "cancelTitle": "Termin absagen?",
+    "cancelConfirm": "Soll dieser Termin wirklich abgesagt werden?",
+    "notFound": "Termin nicht gefunden.",
+    "cannotReschedule": "Abgesagte oder abgeschlossene Termine können nicht verschoben werden.",
+    "type_initial_session": "Erstgespräch",
+    "type_follow_up": "Folgesitzung",
+    "type_online": "Online-Sitzung",
+    "type_crisis": "Krisenintervention",
+    "type_group": "Gruppentherapie",
+    "status_scheduled": "Geplant",
+    "status_confirmed": "Bestätigt",
+    "status_cancelled": "Abgesagt",
+    "status_completed": "Abgeschlossen",
+    "status_no_show": "Nicht erschienen"
+  },
+  "video": {
+    "title": "Video-Sitzung",
+    "subtitle": "Sichere, verschlüsselte Videokommunikation (WebRTC/DTLS-SRTP)",
+    "roomId": "Raum-ID",
+    "startSession": "📹 Sitzung starten",
+    "endSession": "⏹ Sitzung beenden",
+    "copyInvite": "📋 Einladungslink kopieren",
+    "inviteCopied": "Link kopiert",
+    "inviteCopiedMessage": "Senden Sie diesen Link an Ihren Patienten für die Online-Sitzung.",
+    "sessionEnded": "Sitzung beendet",
+    "sessionEndedMessage": "Möchten Sie Notizen zu dieser Sitzung erstellen?",
+    "browserRequired": "Bitte öffnen Sie einen Browser für die Videositzung.",
+    "startFailed": "Videositzung konnte nicht gestartet werden.",
+    "securityTitle": "Sicherheitshinweise",
+    "securityInfo": "• Video-Streams sind mit DTLS-SRTP verschlüsselt\n• Keine Aufzeichnung der Sitzung\n• Raum-ID ist einmalig und nicht erratbar\n• DSGVO-konform: Keine Speicherung von Video-/Audiodaten",
+    "compatNote": "Unterstützt: Chrome, Firefox, Safari, Edge. Für mobile Geräte wird die Jitsi Meet App empfohlen."
+  },
+  "notes": {
+    "title": "Sitzungsnotizen",
+    "subtitle": "Verschlüsselte Notizen — nur für Sie sichtbar.",
+    "newNote": "✏️ Neue Notiz",
+    "content": "Notiz",
+    "contentPlaceholder": "Sitzungsnotiz eingeben...",
+    "tags": "Tags",
+    "save": "🔒 Verschlüsselt speichern",
+    "saved": "Notiz verschlüsselt gespeichert.",
+    "history": "Verlauf",
+    "noNotes": "Noch keine Notizen vorhanden.",
+    "emptyContent": "Bitte Notiz eingeben.",
+    "encryptionRequired": "Verschlüsselungsschlüssel erforderlich. Bitte zuerst Passwort eingeben.",
+    "deleteTitle": "Notiz löschen?",
+    "deleteConfirm": "Diese Aktion kann nicht rückgängig gemacht werden.",
+    "gdprInfo": "Alle Notizen sind mit AES-256-GCM verschlüsselt. Nur Sie als Therapeut können diese entschlüsseln. DSGVO Art. 9: Gesundheitsdaten werden ausschließlich lokal und verschlüsselt gespeichert.",
+    "tag_progress": "Fortschritt",
+    "tag_anxiety": "Angst",
+    "tag_depression": "Depression",
+    "tag_medication": "Medikation",
+    "tag_crisis": "Krise",
+    "tag_homework": "Hausaufgabe",
+    "tag_goals": "Ziele"
+  },
+  "outputBox": {
+    "title": "Ihre Antworten",
+    "empty": "Noch keine Antworten",
+    "jumpTo": "Zur Frage springen",
+    "continueFrom": "Von hier fortfahren",
+    "backToSummary": "Zurück zur Übersicht",
+    "answerCount": "{{count}} Antworten"
+  },
+  "labUpload": {
+    "title": "Laborbericht hochladen",
+    "selectFile": "Datei auswählen",
+    "processing": "Wird analysiert...",
+    "valuesFound": "{{count}} Werte erkannt",
+    "importValues": "Werte übernehmen ({{count}})",
+    "noValues": "Keine Werte erkannt",
+    "ocrRequired": "OCR-Zustimmung erforderlich",
+    "ocrNotAvailable": "OCR ist auf diesem Gerät nicht verfügbar.",
+    "notSupported": "Laborbericht-Upload ist auf dieser Plattform nicht verfügbar.",
+    "mobilOnly": "Diese Funktion ist nur auf iOS und Android verfügbar.",
+    "description": "Laden Sie einen Laborbericht hoch (Bild oder PDF). Die Werte werden lokal per OCR erkannt und können in den Rechner übernommen werden.",
+    "confidence": "OCR-Konfidenz: {{percent}}%",
+    "noValuesHint": "Versuchen Sie ein schärferes Bild oder einen anderen Laborbericht.",
+    "importHint": "{{count}} Werte können in den Rechner übernommen werden.",
+    "noImportableHint": "Keine der erkannten Werte kann automatisch in den Rechner übernommen werden.",
+    "noImportableValues": "Keine importierbaren Werte ausgewählt.",
+    "importSuccess": "{{count}} Laborwerte wurden übernommen.",
+    "processingError": "Fehler bei der Verarbeitung des Laborberichts.",
+    "refRange": "Ref: {{range}}",
+    "importFromLab": "Laborwerte importieren",
+    "valueLabel": {
+      "creatinine": "Kreatinin",
+      "totalCholesterol": "Gesamtcholesterin",
+      "hdlCholesterol": "HDL-Cholesterin",
+      "ldlCholesterol": "LDL-Cholesterin",
+      "triglycerides": "Triglyceride",
+      "glucose": "Glukose",
+      "hba1c": "HbA1c",
+      "hemoglobin": "Hämoglobin",
+      "leukocytes": "Leukozyten",
+      "thrombocytes": "Thrombozyten",
+      "got": "GOT (AST)",
+      "gpt": "GPT (ALT)",
+      "ggt": "GGT",
+      "tsh": "TSH",
+      "uricAcid": "Harnsäure",
+      "potassium": "Kalium",
+      "sodium": "Natrium",
+      "crp": "CRP",
+      "systolicBP": "Systolischer Blutdruck",
+      "weight": "Gewicht",
+      "height": "Größe",
+      "age": "Alter"
+    }
   }
 }

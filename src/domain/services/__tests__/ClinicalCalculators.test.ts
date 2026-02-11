@@ -332,5 +332,67 @@ describe('ClinicalCalculators', () => {
       expect(ClinicalCalculators.calculateBMI(70, Infinity)).toBeNull();
       expect(ClinicalCalculators.calculateEGFR(Infinity, 50, 'male')).toBeNull();
     });
+
+    it('should ignore cholesterol when hdlCholesterol is zero (division by zero guard)', () => {
+      const baseInput = {
+        age: 55,
+        gender: 'male' as const,
+        systolicBP: 140,
+        isSmoker: false,
+        hasDiabetes: false,
+      };
+      const withZeroHdl = ClinicalCalculators.calculateCardiovascularRisk({
+        ...baseInput,
+        totalCholesterol: 250,
+        hdlCholesterol: 0,
+      });
+      const withoutCholesterol = ClinicalCalculators.calculateCardiovascularRisk(baseInput);
+      // hdl===0 should be ignored, so risk equals no-cholesterol baseline
+      expect(withZeroHdl).not.toBeNull();
+      expect(withZeroHdl!.riskPercentage).toBe(withoutCholesterol!.riskPercentage);
+    });
+
+    it('should ignore cholesterol when values are NaN', () => {
+      const result = ClinicalCalculators.calculateCardiovascularRisk({
+        age: 50,
+        gender: 'male',
+        systolicBP: 120,
+        isSmoker: false,
+        hasDiabetes: false,
+        totalCholesterol: NaN,
+        hdlCholesterol: 40,
+      });
+      expect(result).not.toBeNull();
+    });
+
+    it('should ignore cholesterol when values are negative', () => {
+      const baseInput = {
+        age: 50,
+        gender: 'male' as const,
+        systolicBP: 120,
+        isSmoker: false,
+        hasDiabetes: false,
+      };
+      const withNegative = ClinicalCalculators.calculateCardiovascularRisk({
+        ...baseInput,
+        totalCholesterol: -100,
+        hdlCholesterol: 40,
+      });
+      const withoutCholesterol = ClinicalCalculators.calculateCardiovascularRisk(baseInput);
+      expect(withNegative!.riskPercentage).toBe(withoutCholesterol!.riskPercentage);
+    });
+
+    it('should ignore cholesterol when values are Infinity', () => {
+      const result = ClinicalCalculators.calculateCardiovascularRisk({
+        age: 50,
+        gender: 'male',
+        systolicBP: 120,
+        isSmoker: false,
+        hasDiabetes: false,
+        totalCholesterol: Infinity,
+        hdlCholesterol: 40,
+      });
+      expect(result).not.toBeNull();
+    });
   });
 });

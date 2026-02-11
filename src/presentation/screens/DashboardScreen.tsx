@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { colors, spacing, typography, radius } from '../theme/tokens';
 import { AnalyticsService, GroupStatistics } from '../../application/services/AnalyticsService';
 import { AppButton } from '../components/AppButton';
+import { ScreenContainer } from '../components/ScreenContainer';
 import { useQuestionnaireStore } from '../state/useQuestionnaireStore';
 import { logError } from '@shared/logger';
 
@@ -38,13 +39,16 @@ export const DashboardScreen = ({ navigation }: { navigation: RootNavigationProp
 
     if (loading) {
         return (
+            <ScreenContainer testID="dashboard-screen" accessibilityLabel="Dashboard">
             <View style={styles.center}>
                 <ActivityIndicator size="large" color={colors.primary} />
             </View>
+            </ScreenContainer>
         );
     }
 
     return (
+        <ScreenContainer testID="dashboard-screen" accessibilityLabel="Dashboard">
         <ScrollView style={styles.container} contentContainerStyle={styles.content}>
             <AppText style={[typography.h2, styles.title]}>{t('dashboard.title', 'Analysis Dashboard')}</AppText>
 
@@ -83,6 +87,7 @@ export const DashboardScreen = ({ navigation }: { navigation: RootNavigationProp
                 style={{ marginTop: spacing.xl }}
             />
         </ScrollView>
+        </ScreenContainer>
     );
 };
 

@@ -7,19 +7,23 @@
  *   → Check GDPR Consent
  *   → Load Patient + Questionnaire + Answers
  *   → Decrypt Answers
- *   → Build GDT Export
+ *   → Build GDT Export (with QuestionUniverse gdtFieldId mapping when available)
  *   → Save File
+ *
+ * @security PII is encrypted at rest. GDT file is encrypted before saving.
  */
 
 import { IPatientRepository } from '@domain/repositories/IPatientRepository';
 import { IQuestionnaireRepository } from '@domain/repositories/IQuestionnaireRepository';
 import { IAnswerRepository } from '@domain/repositories/IAnswerRepository';
 import { IGDPRConsentRepository } from '@domain/repositories/IGDPRConsentRepository';
+import { IQuestionUniverseRepository } from '@domain/repositories/IQuestionUniverseRepository';
 import { PatientEntity } from '@domain/entities/Patient';
 import { QuestionnaireEntity } from '@domain/entities/Questionnaire';
 import { AnswerValue } from '@domain/entities/Answer';
 import { GDTExportVO, GDTRecordBuilder } from '@domain/value-objects/GDTExport';
 import { decodeMultiChoiceBitset } from '@domain/value-objects/CompartmentAnswerEncoding';
+import { QuestionUniverseLookupService } from '../services/QuestionUniverseLookupService';
 import { encryptionService } from '@infrastructure/encryption/encryptionService';
 import { requireRNFS } from '@shared/rnfsSafe';
 import { supportsRNFS } from '@shared/platformCapabilities';
@@ -43,12 +47,19 @@ export interface ExportGDTOutput {
  * ExportGDT Use Case
  */
 export class ExportGDTUseCase {
+  private readonly lookupService: QuestionUniverseLookupService | null;
+
   constructor(
     private readonly patientRepository: IPatientRepository,
     private readonly questionnaireRepository: IQuestionnaireRepository,
     private readonly answerRepository: IAnswerRepository,
     private readonly gdprRepository: IGDPRConsentRepository,
-  ) { }
+    questionUniverseRepository?: IQuestionUniverseRepository,
+  ) {
+    this.lookupService = questionUniverseRepository
+      ? new QuestionUniverseLookupService(questionUniverseRepository)
+      : null;
+  }
 
   async execute(input: ExportGDTInput): Promise<ExportGDTOutput> {
     try {
@@ -85,6 +96,15 @@ export class ExportGDTUseCase {
         input.questionnaireId,
         input.encryptionKey,
       );
+
+      // Step 4b: Initialize QuestionUniverse lookup for gdtFieldId mapping (best-effort)
+      if (this.lookupService) {
+        try {
+          await this.lookupService.initialize();
+        } catch {
+          // Non-fatal: GDT export works without structured field IDs.
+        }
+      }
 
       // Step 5: Build GDT Export
       const gdtExport = await this.buildGDTExport(patient, questionnaire, answersMap, input);
@@ -148,6 +168,22 @@ export class ExportGDTUseCase {
     // Anamnese Text (alle Antworten als Text)
     const anamnesisText = this.buildAnamnesisText(questionnaire, answersMap);
     builder.addAnamnesisText(anamnesisText);
+
+    // Structured GDT field records (QuestionUniverse gdtFieldId mapping)
+    if (this.lookupService?.isInitialized) {
+      for (const section of questionnaire.sections) {
+        for (const question of section.questions) {
+          const answer = answersMap.get(question.id);
+          if (answer === undefined || answer === null) continue;
+
+          const gdtFieldId = this.lookupService.getGdtFieldId(question.id);
+          if (gdtFieldId) {
+            const formatted = this.formatAnswer(question, answer);
+            builder.addRecord(gdtFieldId, formatted);
+          }
+        }
+      }
+    }
 
     // Build GDT Export
     return builder.build({

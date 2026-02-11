@@ -13,8 +13,9 @@ import Clipboard from '@react-native-clipboard/clipboard';
 import { useTranslation } from 'react-i18next';
 import { PasswordGenerator } from '../../domain/services/PasswordGenerator';
 import { usePatientContext } from '../../application/PatientContext';
+import { UserRole } from '../../domain/entities/UserRole';
 import { AppText } from '../components/AppText';
-import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import type { StackScreenProps } from '@react-navigation/stack';
 import type { RootStackParamList } from '../navigation/RootNavigator';
 import { useQuestionnaireStore } from '../state/useQuestionnaireStore';
 import { encryptionService } from '@infrastructure/encryption/encryptionService';
@@ -31,8 +32,9 @@ import { bruteForceProtection } from '@shared/bruteForceProtection';
 import { AppButton } from '../components/AppButton';
 import { AppInput } from '../components/AppInput';
 import { IconButton } from '../components/IconButton';
+import { ScreenContainer } from '../components/ScreenContainer';
 
-type Props = NativeStackScreenProps<RootStackParamList, 'MasterPassword'>;
+type Props = StackScreenProps<RootStackParamList, 'MasterPassword'>;
 
 export const MasterPasswordScreen = ({ navigation, route }: Props): React.JSX.Element => {
   const { t } = useTranslation();
@@ -50,6 +52,8 @@ export const MasterPasswordScreen = ({ navigation, route }: Props): React.JSX.El
   const [secureAvailable, setSecureAvailable] = useState(false);
   const [_lockoutSeconds, setLockoutSeconds] = useState(0);
 
+  // Ref guard to prevent double-tap race condition (state update is async)
+  const isSubmittingRef = useRef(false);
   // Ref for brute-force countdown interval (cleanup on unmount — M-5 fix)
   const countdownRef = useRef<ReturnType<typeof setInterval> | null>(null);
   // Ref for clipboard auto-clear timer (cleanup on unmount — Phase 2 fix)
@@ -191,8 +195,13 @@ export const MasterPasswordScreen = ({ navigation, route }: Props): React.JSX.El
   }, []);
 
   const handleContinue = async (): Promise<void> => {
+    // Double-tap guard: ref is synchronous, prevents race condition
+    if (isSubmittingRef.current) return;
+    isSubmittingRef.current = true;
+
     if (!password.trim()) {
       setError(t('masterPassword.errorEmpty'));
+      isSubmittingRef.current = false;
       return;
     }
 
@@ -228,6 +237,7 @@ export const MasterPasswordScreen = ({ navigation, route }: Props): React.JSX.El
           }
         }, 1000);
       }
+      isSubmittingRef.current = false;
       return;
     }
 
@@ -266,6 +276,7 @@ export const MasterPasswordScreen = ({ navigation, route }: Props): React.JSX.El
               }),
             );
           }
+          isSubmittingRef.current = false;
           return;
         }
       }
@@ -277,7 +288,7 @@ export const MasterPasswordScreen = ({ navigation, route }: Props): React.JSX.El
       setEncryptionKey(derived.key);
       await setActiveEncryptionKey(derived.key, { persist: rememberKey });
       if (mode === 'unlock') {
-        if (userRole === 'doctor') {
+        if (userRole === UserRole.DOCTOR) {
           navigation.navigate('PatientStatus');
         } else {
           navigation.goBack();
@@ -293,11 +304,13 @@ export const MasterPasswordScreen = ({ navigation, route }: Props): React.JSX.El
       );
     } finally {
       setIsWorking(false);
+      isSubmittingRef.current = false;
     }
   };
 
   if (Platform.OS === 'windows') {
     return (
+      <ScreenContainer testID="master-password-screen" accessibilityLabel="Master Password">
       <View style={styles.container}>
         <ScrollView
           style={styles.container}
@@ -389,10 +402,12 @@ export const MasterPasswordScreen = ({ navigation, route }: Props): React.JSX.El
           </View>
         </ScrollView>
       </View>
+      </ScreenContainer>
     );
   }
 
   return (
+    <ScreenContainer testID="master-password-screen" accessibilityLabel="Master Password">
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={styles.keyboardAvoidingView}>
@@ -486,6 +501,7 @@ export const MasterPasswordScreen = ({ navigation, route }: Props): React.JSX.El
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
+    </ScreenContainer>
   );
 };
 

@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { usePatientContext } from '../../application/PatientContext';
 import { useTheme } from '../theme/ThemeContext';
 import { AppText } from '../components/AppText';
+import { ScreenContainer } from '../components/ScreenContainer';
 
 export const PatientStatusScreen = () => {
     const navigation = useNavigation<any>();
@@ -18,6 +19,7 @@ export const PatientStatusScreen = () => {
     };
 
     return (
+        <ScreenContainer testID="patient-status-screen" accessibilityLabel="Patient Status">
         <View style={[styles.container, isHighContrast && styles.containerHighContrast]}>
             <AppText variant="h1" style={[styles.title, isHighContrast && styles.textHighContrast]}>
                 {t('patientStatus.title', { defaultValue: 'Waren Sie schon einmal bei uns?' })}
@@ -45,6 +47,7 @@ export const PatientStatusScreen = () => {
                 </AppText>
             </TouchableOpacity>
         </View>
+        </ScreenContainer>
     );
 };
 

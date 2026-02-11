@@ -23,7 +23,7 @@
  * 9. UI updated automatisch (Zustand)
  */
 
-import React, { useEffect, useMemo, useState, useRef } from 'react';
+import React, { useEffect, useMemo, useState, useRef, useCallback } from 'react';
 import {
   View,
   StyleSheet,
@@ -38,13 +38,15 @@ import {
 } from 'react-native';
 
 import { AppText } from '../components/AppText';
+import { ScreenContainer } from '../components/ScreenContainer';
+import { OutputBox, resolveAnswerItems } from '../components/OutputBox';
+import { useOutputBoxStore } from '../state/useOutputBoxStore';
 import { useTranslation } from 'react-i18next';
-import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import type { StackScreenProps } from '@react-navigation/stack';
 import type { RootStackParamList } from '../navigation/RootNavigator';
 import { QuestionCard } from '../components/QuestionCard';
 import { AppButton } from '../components/AppButton';
 import { LinkedItemsBox } from '../components/LinkedItemsBox';
-import { TemplateMigrationService } from '../../infrastructure/services/TemplateMigrationService';
 import {
   useQuestionnaireStore,
   selectCurrentSection,
@@ -54,7 +56,7 @@ import {
 import { AnswerValue } from '@domain/entities/Answer';
 import type { Question } from '@domain/entities/Questionnaire';
 import { colors, spacing, radius } from '../theme/tokens';
-import { logWarn, logError } from '../../shared/logger';
+import { logWarn } from '../../shared/logger';
 import { isMissingRequiredAnswer } from '../../shared/questionnaireValidation';
 
 // Use Cases
@@ -67,7 +69,7 @@ import { SQLiteAnswerRepository } from '@infrastructure/persistence/SQLiteAnswer
 import { SQLitePatientRepository } from '@infrastructure/persistence/SQLitePatientRepository';
 import { encryptionService } from '@infrastructure/encryption/encryptionService';
 
-type Props = NativeStackScreenProps<RootStackParamList, 'Questionnaire'>;
+type Props = StackScreenProps<RootStackParamList, 'Questionnaire'>;
 
 export const QuestionnaireScreen = ({ route, navigation }: Props): React.JSX.Element => {
   const { t } = useTranslation();
@@ -102,6 +104,16 @@ export const QuestionnaireScreen = ({ route, navigation }: Props): React.JSX.Ele
   // Selectors (reactive - subscribe to store changes)
   const currentSection = useQuestionnaireStore(selectCurrentSection);
   const visibleQuestions = useQuestionnaireStore(selectVisibleQuestions);
+
+  // OutputBox state
+  const { expanded: outputBoxExpanded, toggle: toggleOutputBox, loadPersistedState: loadOutputBoxState } = useOutputBoxStore();
+  useEffect(() => { loadOutputBoxState(); }, []);
+
+  // Resolve answered items for OutputBox
+  const resolvedAnswerItems = useMemo(
+    () => questionnaire ? resolveAnswerItems(questionnaire.sections, answers) : [],
+    [questionnaire, answers],
+  );
 
   // Reset/Update question index when section changes
   useEffect(() => {
@@ -163,17 +175,8 @@ export const QuestionnaireScreen = ({ route, navigation }: Props): React.JSX.Ele
    * Load Questionnaire on Mount
    */
   useEffect(() => {
-    const init = async () => {
-      // Run migration (idempotent)
-      try {
-        const migration = new TemplateMigrationService();
-        await migration.migrate();
-      } catch (e) {
-        logError('Migration failed', e);
-      }
-      loadQuestionnaire();
-    };
-    init();
+    // Migration now runs centrally in App.tsx via AppInitializationService.
+    loadQuestionnaire();
   }, []);
 
   /**
@@ -576,6 +579,18 @@ export const QuestionnaireScreen = ({ route, navigation }: Props): React.JSX.Ele
   };
 
   /**
+   * OutputBox: Navigate to a question by ID and section index.
+   */
+  const handleOutputBoxNavigate = useCallback(
+    (questionId: string, sectionIndex: number) => {
+      handleGoToSection(sectionIndex);
+      handleNavigateToQuestion(questionId);
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [questionnaire, currentSectionIndex, visibleQuestions],
+  );
+
+  /**
    * Calculate section completion status
    */
   const getSectionCompletion = (
@@ -734,6 +749,7 @@ export const QuestionnaireScreen = ({ route, navigation }: Props): React.JSX.Ele
    */
   if (isLoading) {
     return (
+      <ScreenContainer testID="questionnaire-screen" accessibilityLabel="Questionnaire">
       <View
         style={styles.centerContainer}
         accessibilityRole="progressbar"
@@ -741,6 +757,7 @@ export const QuestionnaireScreen = ({ route, navigation }: Props): React.JSX.Ele
         <ActivityIndicator size="large" color={colors.primary} />
         <AppText style={styles.loadingText}>{t('questionnaire.loading')}</AppText>
       </View>
+      </ScreenContainer>
     );
   }
 
@@ -749,6 +766,7 @@ export const QuestionnaireScreen = ({ route, navigation }: Props): React.JSX.Ele
    */
   if (error) {
     return (
+      <ScreenContainer testID="questionnaire-screen" accessibilityLabel="Questionnaire">
       <View style={styles.centerContainer}>
         <AppText style={styles.errorText}>{error}</AppText>
         <AppButton
@@ -757,6 +775,7 @@ export const QuestionnaireScreen = ({ route, navigation }: Props): React.JSX.Ele
           style={styles.retryButton}
         />
       </View>
+      </ScreenContainer>
     );
   }
 
@@ -765,9 +784,11 @@ export const QuestionnaireScreen = ({ route, navigation }: Props): React.JSX.Ele
    */
   if (!currentSection || !questionnaire) {
     return (
+      <ScreenContainer testID="questionnaire-screen" accessibilityLabel="Questionnaire">
       <View style={styles.centerContainer}>
         <AppText>{t('questionnaire.noneLoaded')}</AppText>
       </View>
+      </ScreenContainer>
     );
   }
 
@@ -775,9 +796,10 @@ export const QuestionnaireScreen = ({ route, navigation }: Props): React.JSX.Ele
    * Main Render
    */
   return (
+    <ScreenContainer testID="questionnaire-screen" accessibilityLabel="Questionnaire">
     <KeyboardAvoidingView
       style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}>
       <View style={styles.innerContainer}>
         {/* Section Navigation Modal */}
@@ -863,6 +885,15 @@ export const QuestionnaireScreen = ({ route, navigation }: Props): React.JSX.Ele
           </View>
         </TouchableOpacity>
 
+        {/* Answer Summary (OutputBox) */}
+        <OutputBox
+          items={resolvedAnswerItems}
+          expanded={outputBoxExpanded}
+          onToggle={toggleOutputBox}
+          onNavigateToQuestion={handleOutputBoxNavigate}
+          testID="questionnaire-output-box"
+        />
+
         {/* Main Scrollable Content */}
         <View style={styles.scrollContainer}>
           <ScrollView
@@ -938,6 +969,7 @@ export const QuestionnaireScreen = ({ route, navigation }: Props): React.JSX.Ele
         </View>
       </View>
     </KeyboardAvoidingView>
+    </ScreenContainer>
   );
 };
 

@@ -14,6 +14,7 @@ import { enableMapSet } from 'immer';
 import { QuestionnaireEntity, Section, Question } from '@domain/entities/Questionnaire';
 import { PatientEntity } from '@domain/entities/Patient';
 import { AnswerValue } from '@domain/entities/Answer';
+import { type UserRoleOrNull } from '@domain/entities/UserRole';
 import { saveActiveSession, clearActiveSession } from '@shared/sessionPersistence';
 
 enableMapSet();
@@ -34,9 +35,9 @@ function findNextVisibleSectionIndex(
 }
 
 /**
- * User Mode Type
+ * User Mode Type — re-exported for backward compatibility
  */
-export type UserMode = 'doctor' | 'patient' | null;
+export type UserMode = UserRoleOrNull;
 
 /**
  * State Interface

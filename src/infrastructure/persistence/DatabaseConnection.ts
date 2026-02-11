@@ -8,6 +8,8 @@
 import { isRNFSAvailable, requireRNFS } from '@shared/rnfsSafe';
 import { logWarn } from '@shared/logger';
 import { canUseSQLite, platformOS, supportsSQLite } from '@shared/platformCapabilities';
+import type { IDatabaseAdapter } from './adapters/IDatabaseAdapter';
+import { createDatabaseAdapter } from './adapters/createDatabaseAdapter';
 
 // Type imports only (no runtime evaluation)
 import type { SQLiteDatabase, SQLiteTransaction } from 'react-native-sqlite-storage';
@@ -54,10 +56,18 @@ export const DB_NAME = 'anamnese.db';
  */
 export class DatabaseConnection {
   private db: SQLiteDatabase | null = null;
+  private adapter: IDatabaseAdapter | null = null;
   private readonly dbName: string;
 
   constructor(dbName = DB_NAME) {
     this.dbName = dbName;
+  }
+
+  /**
+   * Check if this connection is using a non-SQLite adapter (IndexedDB, AsyncStorage).
+   */
+  get isUsingAdapter(): boolean {
+    return this.adapter !== null;
   }
 
   /**
@@ -69,34 +79,26 @@ export class DatabaseConnection {
     }
 
     if (!supportsSQLite || !canUseSQLite()) {
-      logWarn(`[Database] SQLite is not supported on ${platformOS}. Using Mock DB.`);
-      // Return a skeletal mock that satisfies the minimal interface used here
-      // casting to unknown as SQLiteDatabase to satisfy TS
-      this.db = {
-        transaction: (_scope: (tx: SQLiteTransaction) => void) => {
-          logWarn('[Database] transaction called on Mock DB');
-          return Promise.resolve({
-            executeSql: (_sql: string, _params?: unknown[]) => { },
-          } as unknown as SQLiteTransaction);
-        },
-        readTransaction: (_scope: (tx: SQLiteTransaction) => void) =>
-          Promise.resolve({
-            executeSql: (_sql: string, _params?: unknown[]) => { },
-          } as unknown as SQLiteTransaction),
-        executeSql: (_stat: string, _params?: unknown[]) => {
-          logWarn('[Database] executeSql called on Mock DB');
-          return Promise.resolve([
-            {
-              rows: { length: 0, item: (_i: number) => null, raw: () => [] },
-              rowsAffected: 0,
-              insertId: 0,
-            } as unknown as SQLiteExecuteResult,
-          ]);
-        },
-        attach: () => Promise.resolve(),
-        detach: () => Promise.resolve(),
-        close: () => Promise.resolve(),
-      } as unknown as SQLiteDatabase;
+      // Try to create a platform-specific adapter (IndexedDB for web, AsyncStorage for macOS, etc.)
+      const adapterInstance = createDatabaseAdapter();
+
+      if (adapterInstance) {
+        logWarn(`[Database] SQLite not available on ${platformOS}. Using ${adapterInstance.name} adapter.`);
+        this.adapter = adapterInstance;
+        await this.adapter.connect();
+
+        // Run table initialisation through the adapter (CREATE TABLE IF NOT EXISTS are no-ops
+        // for KV adapters, but INSERT OR REPLACE for db_metadata version still works)
+        await this.initializeTablesViaAdapter();
+
+        // Return a proxy SQLiteDatabase that delegates to the adapter
+        this.db = this.createAdapterProxy();
+        return this.db;
+      }
+
+      // No adapter available — fall back to skeletal mock (last resort)
+      logWarn(`[Database] No persistence available on ${platformOS}. Using non-persistent Mock DB.`);
+      this.db = this.createMockDb();
       return this.db;
     }
 
@@ -123,6 +125,13 @@ export class DatabaseConnection {
    * SQL Helper that ensures connection and returns first result set
    */
   async executeSql(statement: string, params: unknown[] = []): Promise<SQLiteExecuteResult> {
+    // Delegate to adapter if available
+    if (this.adapter) {
+      await this.connect(); // ensure connected
+      const result = await this.adapter.executeSql(statement, params);
+      return result as SQLiteExecuteResult;
+    }
+
     const database = await this.connect();
     const [result] = await database.executeSql(statement, params);
     // Ensure result conforms to our local interface
@@ -137,6 +146,18 @@ export class DatabaseConnection {
    * Run a transactional function if supported
    */
   async transaction<T>(fn: (tx: SQLiteTransaction) => Promise<T> | T): Promise<T> {
+    // Delegate to adapter if available
+    if (this.adapter) {
+      await this.connect();
+      return this.adapter.transaction(async (adapterTx) => {
+        // Wrap adapter tx as SQLiteTransaction shape
+        const wrappedTx = {
+          executeSql: (sql: string, p?: unknown[]) => adapterTx.executeSql(sql, p),
+        } as unknown as SQLiteTransaction;
+        return fn(wrappedTx);
+      });
+    }
+
     const database = await this.connect();
 
     let result: T | undefined;
@@ -151,6 +172,12 @@ export class DatabaseConnection {
    * Schließt Datenbankverbindung
    */
   async close(): Promise<void> {
+    if (this.adapter) {
+      await this.adapter.close();
+      this.adapter = null;
+      this.db = null;
+      return;
+    }
     if (this.db) {
       await this.db.close();
       this.db = null;
@@ -337,6 +364,11 @@ export class DatabaseConnection {
    * Löscht alle Daten (für DSGVO Recht auf Löschung)
    */
   async deleteAllData(): Promise<void> {
+    if (this.adapter) {
+      await this.adapter.deleteAllData();
+      return;
+    }
+
     if (!this.db) throw new Error('Database not connected');
 
     await this.db.executeSql('DELETE FROM gdpr_consents;');
@@ -356,6 +388,27 @@ export class DatabaseConnection {
     documents: number;
     dbSize: number; // in bytes
   }> {
+    // Adapter path: use executeSql which already delegates
+    if (this.adapter) {
+      const safeAdapterCount = async (table: string): Promise<number> => {
+        try {
+          const result = await this.adapter!.executeSql(`SELECT COUNT(*) as count FROM ${table};`);
+          if (result.rows.length === 0) return 0;
+          const row = result.rows.item(0) as { count?: number } | null;
+          return Number(row?.count ?? 0);
+        } catch {
+          return 0;
+        }
+      };
+      return {
+        patients: await safeAdapterCount('patients'),
+        questionnaires: await safeAdapterCount('questionnaires'),
+        answers: await safeAdapterCount('answers'),
+        documents: await safeAdapterCount('documents'),
+        dbSize: 0, // No file-based size for adapter stores
+      };
+    }
+
     if (!this.db) throw new Error('Database not connected');
 
     const [patientsResult] = await this.db.executeSql('SELECT COUNT(*) as count FROM patients;');
@@ -392,6 +445,87 @@ export class DatabaseConnection {
       documents: safeCount(documentsResult as SQLiteExecuteResult),
       dbSize,
     };
+  }
+
+  /**
+   * Initialise tables via the adapter (runs the same DDL + metadata INSERT).
+   * CREATE TABLE/INDEX are no-ops for KV adapters, but the db_metadata
+   * INSERT OR REPLACE ensures version tracking works.
+   */
+  private async initializeTablesViaAdapter(): Promise<void> {
+    if (!this.adapter) return;
+
+    // DDL statements are no-ops in KV adapters — but we run them for consistency
+    // Only the db_metadata insert actually matters
+    await this.adapter.executeSql(
+      'INSERT OR REPLACE INTO db_metadata (key, value) VALUES (?, ?);',
+      ['version', String(DB_VERSION)],
+    );
+  }
+
+  /**
+   * Create a proxy SQLiteDatabase that delegates to the adapter.
+   * This allows existing repositories (which call db.executeSql) to work unchanged.
+   */
+  private createAdapterProxy(): SQLiteDatabase {
+    const adapter = this.adapter!;
+    return {
+      transaction: async (scope: (tx: SQLiteTransaction) => void) => {
+        await adapter.transaction(async (adapterTx) => {
+          const wrappedTx = {
+            executeSql: (sql: string, p?: unknown[]) => adapterTx.executeSql(sql, p),
+          } as unknown as SQLiteTransaction;
+          scope(wrappedTx);
+        });
+      },
+      readTransaction: async (scope: (tx: SQLiteTransaction) => void) => {
+        // Delegate read transactions to normal transactions
+        await adapter.transaction(async (adapterTx) => {
+          const wrappedTx = {
+            executeSql: (sql: string, p?: unknown[]) => adapterTx.executeSql(sql, p),
+          } as unknown as SQLiteTransaction;
+          scope(wrappedTx);
+        });
+      },
+      executeSql: async (stat: string, params?: unknown[]) => {
+        const result = await adapter.executeSql(stat, params ?? []);
+        return [result] as unknown as [SQLiteExecuteResult];
+      },
+      attach: () => Promise.resolve(),
+      detach: () => Promise.resolve(),
+      close: () => adapter.close(),
+    } as unknown as SQLiteDatabase;
+  }
+
+  /**
+   * Create a skeletal mock DB with no-op operations (last-resort fallback).
+   */
+  private createMockDb(): SQLiteDatabase {
+    return {
+      transaction: (_scope: (tx: SQLiteTransaction) => void) => {
+        logWarn('[Database] transaction called on Mock DB');
+        return Promise.resolve({
+          executeSql: (_sql: string, _params?: unknown[]) => { },
+        } as unknown as SQLiteTransaction);
+      },
+      readTransaction: (_scope: (tx: SQLiteTransaction) => void) =>
+        Promise.resolve({
+          executeSql: (_sql: string, _params?: unknown[]) => { },
+        } as unknown as SQLiteTransaction),
+      executeSql: (_stat: string, _params?: unknown[]) => {
+        logWarn('[Database] executeSql called on Mock DB');
+        return Promise.resolve([
+          {
+            rows: { length: 0, item: (_i: number) => null, raw: () => [] },
+            rowsAffected: 0,
+            insertId: 0,
+          } as unknown as SQLiteExecuteResult,
+        ]);
+      },
+      attach: () => Promise.resolve(),
+      detach: () => Promise.resolve(),
+      close: () => Promise.resolve(),
+    } as unknown as SQLiteDatabase;
   }
 }
 

@@ -3,19 +3,28 @@ import { View, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import { usePatientContext, VisitReason } from '../../application/PatientContext';
+import { UserRole } from '../../domain/entities/UserRole';
 import { useTheme } from '../theme/ThemeContext';
 import { AppText } from '../components/AppText';
+import { ScreenContainer } from '../components/ScreenContainer';
+import { useQuestionnaireStore } from '../state/useQuestionnaireStore';
 
 export const VisitReasonScreen = () => {
     const navigation = useNavigation<any>();
     const { t } = useTranslation();
     const { setVisitReason, userRole } = usePatientContext();
     const { isHighContrast } = useTheme();
+    const encryptionKey = useQuestionnaireStore(s => s.encryptionKey);
 
     const handleReason = (reason: VisitReason) => {
         setVisitReason(reason);
-        if (userRole === 'doctor') {
-            navigation.navigate('MasterPassword', { mode: 'unlock' });
+        if (userRole === UserRole.DOCTOR) {
+            // Skip MasterPassword if key already derived this session
+            if (encryptionKey) {
+                navigation.navigate('PatientStatus');
+            } else {
+                navigation.navigate('MasterPassword', { mode: 'unlock' });
+            }
         } else {
             navigation.navigate('PatientStatus');
         }
@@ -30,6 +39,7 @@ export const VisitReasonScreen = () => {
     ];
 
     return (
+        <ScreenContainer testID="visit-reason-screen" accessibilityLabel="Visit Reason">
         <View style={[styles.container, isHighContrast && styles.containerHighContrast]}>
             <AppText variant="h1" style={[styles.title, isHighContrast && styles.textHighContrast]}>
                 {t('visitReason.title', { defaultValue: 'Was ist der Grund Ihres Besuchs?' })}
@@ -55,6 +65,7 @@ export const VisitReasonScreen = () => {
                 {t('visitReason.note', { defaultValue: 'Hinweis: AU, Rezepte und Überweisungen können erst nach ärztlichem Gespräch erstellt werden.' })}
             </AppText>
         </View>
+        </ScreenContainer>
     );
 };
 

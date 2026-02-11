@@ -63,4 +63,15 @@ jest.mock('react-native-keychain', () => ({
   ACCESSIBLE: { WHEN_UNLOCKED_THIS_DEVICE_ONLY: 'DEVICE_ONLY' },
 }));
 
+// Mock react-native-safe-area-context for ScreenContainer
+jest.mock('react-native-safe-area-context', () => {
+  const { View } = require('react-native');
+  const React = require('react');
+  return {
+    SafeAreaView: (props) => React.createElement(View, props),
+    SafeAreaProvider: (props) => React.createElement(View, props),
+    useSafeAreaInsets: () => ({ top: 0, bottom: 0, left: 0, right: 0 }),
+  };
+});
+
 global.__reanimatedWorkletInit = () => {};

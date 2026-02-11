@@ -194,12 +194,12 @@ This file is the authoritative execution plan to make the app **more user-friend
 - [x] Add fallback UX states when features are unavailable on a platform.
 
 ## Phase C - Storage and crypto parity
-- [ ] Provide persistence implementations for web/macos/windows (SQLite or IndexedDB/Filesystem).
+- [x] Provide persistence implementations for web/macos/windows (SQLite or IndexedDB/Filesystem). (RUN-20250107: IDatabaseAdapter + SqlParser + KVExecutor + IndexedDBAdapter + AsyncStorageAdapter + factory + 66 tests)
 - [x] Ensure encryption provider selection works across all platforms.
 
 ## Phase D - Platform scaffolding
 - [x] Add ios/android/macos/web project scaffolds and build scripts.
-- [ ] Add CI build matrix and smoke tests.
+- [x] Add CI build matrix and smoke tests. (RUN-20260208-phaseD: 8-job CI pipeline + local smoke-test.ps1)
 
 ## Phase E - Verification
 - [x] Run type-check + unit tests + per-platform smoke builds. (RUN-20260129 completed)

@@ -36,7 +36,8 @@
     "continue": "Continue",
     "close": "Close",
     "featureUnavailableTitle": "??????? ??????????",
-    "featureUnavailableMessage": "{{feature}} ?????????? ?? ???? ?????????."
+    "featureUnavailableMessage": "{{feature}} ?????????? ?? ???? ?????????.",
+    "datePlaceholder": "ДД.ММ.ГГГГ"
   },
   "settings": {
     "deleteTitle": "Delete All Data?",
@@ -65,7 +66,18 @@
       "title": "Где проводится анамнез?",
       "practice": "В клинике",
       "private": "Дома (частно)",
-      "admin": "Админ / Панель"
+      "admin": "Админ / Панель",
+      "therapistLogin": "Вход терапевта",
+      "switchConfirmTitle": "Сменить роль?",
+      "switchConfirmMessage": "При смене роли текущие данные будут сброшены.",
+      "switchConfirm": "Сменить"
+    },
+    "role": {
+      "doctor": "Врач",
+      "patient": "Пациент"
+    },
+    "savedAnamneses": {
+      "patientOnlyHint": "Вы просматриваете свои анамнезы."
     },
     "accessibility": {
       "fontScale": "Размер шрифта",
@@ -116,7 +128,29 @@
     "emailPlaceholder": "max.mustermann@example.com",
     "phone": "Телефон (необязательно)",
     "phonePlaceholder": "+7 ...",
-    "toConsents": "Далее к согласиям"
+    "toConsents": "Далее к согласиям",
+    "titleReturning": "Welcome back",
+    "titleNew": "New patient registration",
+    "subtitleReturning": "Please identify yourself.",
+    "subtitleNew": "Please enter your details.",
+    "insuranceType": "Insurance type",
+    "insurancePublic": "Public",
+    "insurancePrivate": "Private",
+    "dayLabel": "Day",
+    "monthLabel": "Month",
+    "yearLabel": "Year",
+    "dayPlaceholder": "ДД",
+    "monthPlaceholder": "ММ",
+    "yearPlaceholder": "ГГГГ",
+    "dataChanged": "My personal data has changed",
+    "dataChangedHint": "Enable this option if your address, phone number or other personal data has changed since your last visit.",
+    "emailWhy": "Для подтверждения записи на приём и уведомлений о результатах анализов.",
+    "emailWithout": "Без электронной почты вы не будете получать цифровые уведомления.",
+    "phoneWhy": "Для срочных уточняющих вопросов по вашему лечению.",
+    "phoneWithout": "Без номера телефона мы не сможем связаться с вами в короткие сроки.",
+    "insuranceNumberPlaceholder": "напр. A123456789",
+    "namePlaceholder": "Мин. 3 буквы",
+    "countryPlaceholder": "(RU)"
   },
   "validation": {
     "required": "Это поле обязательно",
@@ -171,23 +205,33 @@
     "consents": {
       "dataProcessing": {
         "title": "Обработка данных (обязательно)",
-        "description": "Обработка персональных медицинских данных"
+        "description": "Обработка персональных медицинских данных",
+        "why": "Ваши данные о здоровье должны быть обработаны для оценки формы анамнеза и предоставления её врачу.",
+        "without": "Без этого согласия приложение не может быть использовано."
       },
       "dataStorage": {
         "title": "Хранение данных (обязательно)",
-        "description": "Локальное хранение анамнеза"
+        "description": "Локальное хранение анамнеза",
+        "why": "Ваши ответы хранятся локально с шифрованием AES-256, чтобы быть доступными при вашем визите к врачу.",
+        "without": "Без хранения все введённые данные будут потеряны после закрытия."
       },
       "gdtExport": {
         "title": "Экспорт GDT (необязательно)",
-        "description": "Экспорт для систем клиники"
+        "description": "Экспорт для систем клиники",
+        "why": "Позволяет автоматически импортировать ваш анамнез в систему управления клиникой.",
+        "without": "Без экспорта GDT клиника должна переносить ваши данные вручную."
       },
       "ocrProcessing": {
         "title": "OCR (необязательно)",
-        "description": "Распознавание текста из документов"
+        "description": "Распознавание текста из документов",
+        "why": "Позволяет автоматически считывать документы (напр. страховой полис) через камеру.",
+        "without": "Без OCR вам необходимо вводить все данные вручную."
       },
       "voiceRecognition": {
         "title": "Распознавание речи (необязательно)",
-        "description": "Ввод голосом"
+        "description": "Ввод голосом",
+        "why": "Позволяет вводить ответы голосом вместо набора на клавиатуре.",
+        "without": "Без распознавания речи ввод возможен только через клавиатуру."
       }
     }
   },
@@ -586,7 +630,11 @@
         "obese_class_i": "Obesity Class I",
         "obese_class_ii": "Obesity Class II",
         "obese_class_iii": "Obesity Class III"
-      }
+      },
+      "weightWithUnit": "Вес (кг)",
+      "heightWithUnit": "Рост (см)",
+      "weightPlaceholder": "70",
+      "heightPlaceholder": "175"
     },
     "cardio": {
       "title": "Cardiovascular Risk",
@@ -606,7 +654,14 @@
         "moderate": "Moderate Risk",
         "high": "High Risk",
         "very_high": "Very High Risk"
-      }
+      },
+      "agePlaceholder": "50",
+      "systolicPlaceholder": "120",
+      "cholPlaceholder": "200",
+      "hdlPlaceholder": "50",
+      "systolicBPWithUnit": "Систолическое давление (мм рт. ст.)",
+      "totalCholesterolWithUnit": "Общий холестерин (мг/дл)",
+      "hdlCholesterolWithUnit": "Холестерин ЛПВП (мг/дл)"
     },
     "egfr": {
       "title": "eGFR (Kidney Function)",
@@ -625,7 +680,10 @@
         "stage3b": "Stage 3b: Moderate-severe (30-44)",
         "stage4": "Stage 4: Severely decreased (15-29)",
         "stage5": "Stage 5: Kidney failure (<15)"
-      }
+      },
+      "creatininePlaceholder": "1,0",
+      "agePlaceholder": "50",
+      "creatinineWithUnit": "Креатинин (мг/дл)"
     },
     "ibw": {
       "title": "Ideal Body Weight (IBW)",
@@ -634,7 +692,9 @@
       "male": "Male",
       "female": "Female",
       "result": "Ideal Weight: {{value}} kg",
-      "invalidInput": "Please enter valid values"
+      "invalidInput": "Please enter valid values",
+      "heightPlaceholder": "175",
+      "heightWithUnit": "Рост (см)"
     },
     "bmr": {
       "title": "Basal Metabolic Rate (BMR)",
@@ -645,7 +705,12 @@
       "male": "Male",
       "female": "Female",
       "result": "BMR: {{value}} kcal/day",
-      "invalidInput": "Please enter valid values"
+      "invalidInput": "Please enter valid values",
+      "weightPlaceholder": "70",
+      "heightPlaceholder": "175",
+      "agePlaceholder": "30",
+      "weightWithUnit": "Вес (кг)",
+      "heightWithUnit": "Рост (см)"
     }
   },
   "dataManagement": {
@@ -803,7 +868,14 @@
     "submit": "Send request",
     "continue": "Continue to anamnesis",
     "errorMedicationRequired": "Please enter the medication name.",
-    "errorSubmit": "Request could not be created."
+    "errorSubmit": "Request could not be created.",
+    "dosageHint": "Format: Morning-Noon-Evening (e.g. 1-0-1)",
+    "packageSize": "Package size (optional)",
+    "packageSizePlaceholder": "e.g. N1, N2, N3",
+    "prescriptionType": "Prescription type",
+    "followUp": "Repeat prescription",
+    "newPrescription": "New prescription",
+    "urgentLabel": "⚡ Urgent (needed immediately)"
   },
   "referral": {
     "title": "Request referral",
@@ -840,6 +912,193 @@
     "errorStartDateRequired": "Please enter a valid start date (DD.MM.YYYY).",
     "errorEndDateInvalid": "The end date is invalid (DD.MM.YYYY).",
     "errorEndBeforeStart": "End date must not be before start date.",
-    "errorSubmit": "Request could not be created."
+    "errorSubmit": "Request could not be created.",
+    "documentSubType": "Document type",
+    "subTypeStandard": "Sick note",
+    "subTypeAttest": "Medical certificate",
+    "subTypeBefund": "Medical report"
+  },
+  "requestSummary": {
+    "title": "Summary",
+    "subtitle": "Please review your information.",
+    "type": "Type",
+    "priority": "Priority",
+    "urgent": "⚡ Urgent",
+    "notes": "Notes",
+    "encryptionInfo": "🔒 Your data is encrypted with AES-256. Only your practice can decrypt it.",
+    "send": "Send encrypted",
+    "successTitle": "Request sent",
+    "successMessage": "Your request has been opened in your email client.",
+    "noEmailClient": "No email client found. Please install one.",
+    "errorSend": "Request could not be sent."
+  },
+  "auth": {
+    "loginTitle": "Sign In",
+    "loginSubtitle": "Sign in securely.",
+    "registerTitle": "Create Account",
+    "registerSubtitle": "Create your therapist account.",
+    "email": "Email",
+    "password": "Password",
+    "displayName": "Display Name",
+    "displayNamePlaceholder": "Dr. Jane Smith",
+    "login": "Sign In",
+    "register": "Register",
+    "logout": "Sign Out",
+    "switchToLogin": "Already registered? Sign in",
+    "switchToRegister": "Create new account",
+    "continueAsPatient": "Continue as patient",
+    "fillAllFields": "Please fill in all fields.",
+    "invalidCredentials": "Invalid email or password.",
+    "accountLocked": "Account locked due to too many failed attempts. Please wait.",
+    "emailExists": "This email is already registered.",
+    "passwordTooShort": "Password must be at least 8 characters.",
+    "registrationSuccess": "Registration successful",
+    "registrationSuccessMessage": "You can now log in. Set up 2FA in settings for extra security.",
+    "registrationFailed": "Registration failed.",
+    "loginFailed": "Sign in failed.",
+    "twoFactorTitle": "Two-Factor Authentication",
+    "twoFactorSubtitle": "Enter the 6-digit code from your authenticator app.",
+    "verificationCode": "Verification Code",
+    "verify": "Verify",
+    "invalid2FACode": "Invalid code. Please try again.",
+    "invalidCodeLength": "Please enter the 6-digit code.",
+    "verificationFailed": "Verification failed.",
+    "twoFactorHelp": "Open your authenticator app (e.g. Google Authenticator) and enter the current code.",
+    "securityInfo": "Your credentials are encrypted with PBKDF2. Enable 2FA for additional security.",
+    "therapist": "Therapist",
+    "codePlaceholder": "000000"
+  },
+  "therapistDashboard": {
+    "title": "Dashboard",
+    "greeting": "Welcome, {{name}}",
+    "calendar": "Calendar",
+    "videoSession": "Video Session",
+    "notes": "Notes",
+    "todaySchedule": "Today's Schedule",
+    "noAppointments": "No appointments for today.",
+    "encryptionActive": "End-to-end encryption active. All patient data protected with AES-256-GCM."
+  },
+  "appointments": {
+    "calendarTitle": "Appointment Calendar",
+    "weekOf": "Week of",
+    "newAppointment": "New Appointment",
+    "patientId": "Patient ID",
+    "patientRequired": "Please enter patient ID.",
+    "time": "Time",
+    "duration": "Duration (minutes)",
+    "book": "Book Appointment",
+    "booked": "Appointment has been booked.",
+    "conflict": "Schedule conflict: This time slot is already taken.",
+    "pastDate": "Cannot schedule appointments in the past.",
+    "bookingFailed": "Could not book appointment.",
+    "cancelTitle": "Cancel Appointment?",
+    "cancelConfirm": "Do you really want to cancel this appointment?",
+    "notFound": "Appointment not found.",
+    "cannotReschedule": "Cancelled or completed appointments cannot be rescheduled.",
+    "type_initial_session": "Initial Session",
+    "type_follow_up": "Follow-up",
+    "type_online": "Online Session",
+    "type_crisis": "Crisis Intervention",
+    "type_group": "Group Therapy",
+    "status_scheduled": "Scheduled",
+    "status_confirmed": "Confirmed",
+    "status_cancelled": "Cancelled",
+    "status_completed": "Completed",
+    "status_no_show": "No Show"
+  },
+  "video": {
+    "title": "Video Session",
+    "subtitle": "Secure, encrypted video communication (WebRTC/DTLS-SRTP)",
+    "roomId": "Room ID",
+    "startSession": "📹 Start Session",
+    "endSession": "⏹ End Session",
+    "copyInvite": "📋 Copy Invite Link",
+    "inviteCopied": "Link Copied",
+    "inviteCopiedMessage": "Send this link to your patient for the online session.",
+    "sessionEnded": "Session Ended",
+    "sessionEndedMessage": "Would you like to create notes for this session?",
+    "browserRequired": "Please open a browser for the video session.",
+    "startFailed": "Could not start video session.",
+    "securityTitle": "Security Notes",
+    "securityInfo": "• Video streams encrypted with DTLS-SRTP\n• No session recording\n• Room ID is unique and non-guessable\n• GDPR compliant: No video/audio data stored",
+    "compatNote": "Supported: Chrome, Firefox, Safari, Edge. For mobile devices, the Jitsi Meet app is recommended."
+  },
+  "notes": {
+    "title": "Session Notes",
+    "subtitle": "Encrypted notes — visible only to you.",
+    "newNote": "✏️ New Note",
+    "content": "Note",
+    "contentPlaceholder": "Enter session note...",
+    "tags": "Tags",
+    "save": "🔒 Save Encrypted",
+    "saved": "Note saved encrypted.",
+    "history": "History",
+    "noNotes": "No notes yet.",
+    "emptyContent": "Please enter a note.",
+    "encryptionRequired": "Encryption key required. Please enter password first.",
+    "deleteTitle": "Delete Note?",
+    "deleteConfirm": "This action cannot be undone.",
+    "gdprInfo": "All notes are encrypted with AES-256-GCM. Only you as therapist can decrypt them. GDPR Art. 9: Health data is stored exclusively locally and encrypted.",
+    "tag_progress": "Progress",
+    "tag_anxiety": "Anxiety",
+    "tag_depression": "Depression",
+    "tag_medication": "Medication",
+    "tag_crisis": "Crisis",
+    "tag_homework": "Homework",
+    "tag_goals": "Goals"
+  },
+  "outputBox": {
+    "title": "Ваши ответы",
+    "empty": "Ответов пока нет",
+    "jumpTo": "Перейти к вопросу",
+    "continueFrom": "Продолжить отсюда",
+    "backToSummary": "Вернуться к обзору",
+    "answerCount": "{{count}} ответов"
+  },
+  "labUpload": {
+    "title": "Загрузить лабораторный отчёт",
+    "selectFile": "Выбрать файл",
+    "processing": "Анализ...",
+    "valuesFound": "Обнаружено {{count}} значений",
+    "importValues": "Импортировать значения ({{count}})",
+    "noValues": "Значения не обнаружены",
+    "ocrRequired": "Требуется согласие на OCR",
+    "ocrNotAvailable": "OCR недоступен на этом устройстве.",
+    "notSupported": "Загрузка лабораторных отчётов недоступна на этой платформе.",
+    "mobilOnly": "Эта функция доступна только на iOS и Android.",
+    "description": "Загрузите лабораторный отчёт (изображение или PDF). Значения будут извлечены локально через OCR и могут быть импортированы в калькулятор.",
+    "confidence": "OCR-достоверность: {{percent}}%",
+    "noValuesHint": "Попробуйте более чёткое изображение или другой отчёт.",
+    "importHint": "{{count}} значений могут быть импортированы в калькулятор.",
+    "noImportableHint": "Ни одно из обнаруженных значений не может быть автоматически импортировано.",
+    "noImportableValues": "Не выбраны значения для импорта.",
+    "importSuccess": "Импортировано {{count}} лабораторных значений.",
+    "processingError": "Ошибка при обработке лабораторного отчёта.",
+    "refRange": "Реф: {{range}}",
+    "importFromLab": "Импортировать лабораторные значения",
+    "valueLabel": {
+      "creatinine": "Креатинин",
+      "totalCholesterol": "Общий холестерин",
+      "hdlCholesterol": "Холестерин ЛПВП",
+      "ldlCholesterol": "Холестерин ЛПНП",
+      "triglycerides": "Триглицериды",
+      "glucose": "Глюкоза",
+      "hba1c": "HbA1c",
+      "hemoglobin": "Гемоглобин",
+      "leukocytes": "Лейкоциты",
+      "thrombocytes": "Тромбоциты",
+      "got": "ГОТ (АСТ)",
+      "gpt": "ГПТ (АЛТ)",
+      "ggt": "ГГТ",
+      "tsh": "ТТГ",
+      "uricAcid": "Мочевая кислота",
+      "potassium": "Калий",
+      "sodium": "Натрий",
+      "crp": "СРБ",
+      "systolicBP": "Систолическое давление",
+      "weight": "Вес",
+      "height": "Рост",
+      "age": "Возраст"
+    }
   }
 }

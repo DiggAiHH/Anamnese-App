@@ -36,7 +36,8 @@
     "continue": "Continue",
     "close": "Close",
     "featureUnavailableTitle": "Funci?n no disponible",
-    "featureUnavailableMessage": "{{feature}} no est? disponible en esta plataforma."
+    "featureUnavailableMessage": "{{feature}} no est? disponible en esta plataforma.",
+    "datePlaceholder": "DD/MM/AAAA"
   },
   "settings": {
     "deleteTitle": "Delete All Data?",
@@ -65,7 +66,18 @@
       "title": "¿Dónde se realiza la anamnesis?",
       "practice": "En la consulta",
       "private": "Privado (en casa)",
-      "admin": "Admin / Panel"
+      "admin": "Admin / Panel",
+      "therapistLogin": "Acceso terapeuta",
+      "switchConfirmTitle": "¿Cambiar rol?",
+      "switchConfirmMessage": "Cambiar de rol reiniciará los datos actuales.",
+      "switchConfirm": "Cambiar"
+    },
+    "role": {
+      "doctor": "Médico",
+      "patient": "Paciente"
+    },
+    "savedAnamneses": {
+      "patientOnlyHint": "Está viendo sus propias anamnesis."
     },
     "accessibility": {
       "fontScale": "Tamaño de fuente",
@@ -116,7 +128,29 @@
     "emailPlaceholder": "max.mustermann@example.com",
     "phone": "Teléfono (opcional)",
     "phonePlaceholder": "+34 ...",
-    "toConsents": "Continuar a consentimientos"
+    "toConsents": "Continuar a consentimientos",
+    "titleReturning": "Welcome back",
+    "titleNew": "New patient registration",
+    "subtitleReturning": "Please identify yourself.",
+    "subtitleNew": "Please enter your details.",
+    "insuranceType": "Insurance type",
+    "insurancePublic": "Public",
+    "insurancePrivate": "Private",
+    "dayLabel": "Day",
+    "monthLabel": "Month",
+    "yearLabel": "Year",
+    "dayPlaceholder": "DD",
+    "monthPlaceholder": "MM",
+    "yearPlaceholder": "AAAA",
+    "dataChanged": "My personal data has changed",
+    "dataChangedHint": "Enable this option if your address, phone number or other personal data has changed since your last visit.",
+    "emailWhy": "Para confirmaciones de citas y notificaciones de resultados de análisis.",
+    "emailWithout": "Sin correo electrónico, no recibirá notificaciones digitales.",
+    "phoneWhy": "Para consultas urgentes de seguimiento sobre su tratamiento.",
+    "phoneWithout": "Sin número de teléfono, no podemos contactarle con poca antelación.",
+    "insuranceNumberPlaceholder": "ej. A123456789",
+    "namePlaceholder": "Mín. 3 letras",
+    "countryPlaceholder": "País (ej. ES)"
   },
   "validation": {
     "required": "Este campo es obligatorio",
@@ -171,23 +205,33 @@
     "consents": {
       "dataProcessing": {
         "title": "Tratamiento de datos (obligatorio)",
-        "description": "Tratamiento de datos personales de salud"
+        "description": "Tratamiento de datos personales de salud",
+        "why": "Sus datos de salud deben ser procesados para evaluar el formulario de anamnesis y proporcionarlo al médico.",
+        "without": "Sin este consentimiento, la aplicación no puede utilizarse."
       },
       "dataStorage": {
         "title": "Almacenamiento de datos (obligatorio)",
-        "description": "Almacenamiento local de la anamnesis"
+        "description": "Almacenamiento local de la anamnesis",
+        "why": "Sus respuestas se almacenan localmente con cifrado AES-256 para que estén disponibles en su visita médica.",
+        "without": "Sin almacenamiento, todos los datos introducidos se perderán al cerrar."
       },
       "gdtExport": {
         "title": "Exportación GDT (opcional)",
-        "description": "Exportación para sistemas de consulta"
+        "description": "Exportación para sistemas de consulta",
+        "why": "Permite la importación automática de su anamnesis en el sistema de gestión de la consulta médica.",
+        "without": "Sin exportación GDT, la consulta debe transferir sus datos manualmente."
       },
       "ocrProcessing": {
         "title": "OCR (opcional)",
-        "description": "Reconocimiento de texto a partir de documentos"
+        "description": "Reconocimiento de texto a partir de documentos",
+        "why": "Permite la lectura automática de documentos (p. ej. tarjeta de seguro) mediante la cámara.",
+        "without": "Sin OCR, debe introducir todos los datos manualmente."
       },
       "voiceRecognition": {
         "title": "Reconocimiento de voz (opcional)",
-        "description": "Entrada por voz"
+        "description": "Entrada por voz",
+        "why": "Permite introducir respuestas por voz en lugar de escribir.",
+        "without": "Sin reconocimiento de voz, la entrada solo es posible mediante el teclado."
       }
     }
   },
@@ -586,7 +630,11 @@
         "obese_class_i": "Obesity Class I",
         "obese_class_ii": "Obesity Class II",
         "obese_class_iii": "Obesity Class III"
-      }
+      },
+      "weightWithUnit": "Peso (kg)",
+      "heightWithUnit": "Altura (cm)",
+      "weightPlaceholder": "70",
+      "heightPlaceholder": "175"
     },
     "cardio": {
       "title": "Cardiovascular Risk",
@@ -606,7 +654,14 @@
         "moderate": "Moderate Risk",
         "high": "High Risk",
         "very_high": "Very High Risk"
-      }
+      },
+      "agePlaceholder": "50",
+      "systolicPlaceholder": "120",
+      "cholPlaceholder": "200",
+      "hdlPlaceholder": "50",
+      "systolicBPWithUnit": "Presión arterial sistólica (mmHg)",
+      "totalCholesterolWithUnit": "Colesterol total (mg/dL)",
+      "hdlCholesterolWithUnit": "Colesterol HDL (mg/dL)"
     },
     "egfr": {
       "title": "eGFR (Kidney Function)",
@@ -625,7 +680,10 @@
         "stage3b": "Stage 3b: Moderate-severe (30-44)",
         "stage4": "Stage 4: Severely decreased (15-29)",
         "stage5": "Stage 5: Kidney failure (<15)"
-      }
+      },
+      "creatininePlaceholder": "1,0",
+      "agePlaceholder": "50",
+      "creatinineWithUnit": "Creatinina (mg/dL)"
     },
     "ibw": {
       "title": "Ideal Body Weight (IBW)",
@@ -634,7 +692,9 @@
       "male": "Male",
       "female": "Female",
       "result": "Ideal Weight: {{value}} kg",
-      "invalidInput": "Please enter valid values"
+      "invalidInput": "Please enter valid values",
+      "heightPlaceholder": "175",
+      "heightWithUnit": "Altura (cm)"
     },
     "bmr": {
       "title": "Basal Metabolic Rate (BMR)",
@@ -645,7 +705,12 @@
       "male": "Male",
       "female": "Female",
       "result": "BMR: {{value}} kcal/day",
-      "invalidInput": "Please enter valid values"
+      "invalidInput": "Please enter valid values",
+      "weightPlaceholder": "70",
+      "heightPlaceholder": "175",
+      "agePlaceholder": "30",
+      "weightWithUnit": "Peso (kg)",
+      "heightWithUnit": "Altura (cm)"
     }
   },
   "dataManagement": {
@@ -803,7 +868,14 @@
     "submit": "Send request",
     "continue": "Continue to anamnesis",
     "errorMedicationRequired": "Please enter the medication name.",
-    "errorSubmit": "Request could not be created."
+    "errorSubmit": "Request could not be created.",
+    "dosageHint": "Format: Morning-Noon-Evening (e.g. 1-0-1)",
+    "packageSize": "Package size (optional)",
+    "packageSizePlaceholder": "e.g. N1, N2, N3",
+    "prescriptionType": "Prescription type",
+    "followUp": "Repeat prescription",
+    "newPrescription": "New prescription",
+    "urgentLabel": "⚡ Urgent (needed immediately)"
   },
   "referral": {
     "title": "Request referral",
@@ -840,6 +912,193 @@
     "errorStartDateRequired": "Please enter a valid start date (DD.MM.YYYY).",
     "errorEndDateInvalid": "The end date is invalid (DD.MM.YYYY).",
     "errorEndBeforeStart": "End date must not be before start date.",
-    "errorSubmit": "Request could not be created."
+    "errorSubmit": "Request could not be created.",
+    "documentSubType": "Document type",
+    "subTypeStandard": "Sick note",
+    "subTypeAttest": "Medical certificate",
+    "subTypeBefund": "Medical report"
+  },
+  "requestSummary": {
+    "title": "Summary",
+    "subtitle": "Please review your information.",
+    "type": "Type",
+    "priority": "Priority",
+    "urgent": "⚡ Urgent",
+    "notes": "Notes",
+    "encryptionInfo": "🔒 Your data is encrypted with AES-256. Only your practice can decrypt it.",
+    "send": "Send encrypted",
+    "successTitle": "Request sent",
+    "successMessage": "Your request has been opened in your email client.",
+    "noEmailClient": "No email client found. Please install one.",
+    "errorSend": "Request could not be sent."
+  },
+  "auth": {
+    "loginTitle": "Sign In",
+    "loginSubtitle": "Sign in securely.",
+    "registerTitle": "Create Account",
+    "registerSubtitle": "Create your therapist account.",
+    "email": "Email",
+    "password": "Password",
+    "displayName": "Display Name",
+    "displayNamePlaceholder": "Dr. Jane Smith",
+    "login": "Sign In",
+    "register": "Register",
+    "logout": "Sign Out",
+    "switchToLogin": "Already registered? Sign in",
+    "switchToRegister": "Create new account",
+    "continueAsPatient": "Continue as patient",
+    "fillAllFields": "Please fill in all fields.",
+    "invalidCredentials": "Invalid email or password.",
+    "accountLocked": "Account locked due to too many failed attempts. Please wait.",
+    "emailExists": "This email is already registered.",
+    "passwordTooShort": "Password must be at least 8 characters.",
+    "registrationSuccess": "Registration successful",
+    "registrationSuccessMessage": "You can now log in. Set up 2FA in settings for extra security.",
+    "registrationFailed": "Registration failed.",
+    "loginFailed": "Sign in failed.",
+    "twoFactorTitle": "Two-Factor Authentication",
+    "twoFactorSubtitle": "Enter the 6-digit code from your authenticator app.",
+    "verificationCode": "Verification Code",
+    "verify": "Verify",
+    "invalid2FACode": "Invalid code. Please try again.",
+    "invalidCodeLength": "Please enter the 6-digit code.",
+    "verificationFailed": "Verification failed.",
+    "twoFactorHelp": "Open your authenticator app (e.g. Google Authenticator) and enter the current code.",
+    "securityInfo": "Your credentials are encrypted with PBKDF2. Enable 2FA for additional security.",
+    "therapist": "Therapist",
+    "codePlaceholder": "000000"
+  },
+  "therapistDashboard": {
+    "title": "Dashboard",
+    "greeting": "Welcome, {{name}}",
+    "calendar": "Calendar",
+    "videoSession": "Video Session",
+    "notes": "Notes",
+    "todaySchedule": "Today's Schedule",
+    "noAppointments": "No appointments for today.",
+    "encryptionActive": "End-to-end encryption active. All patient data protected with AES-256-GCM."
+  },
+  "appointments": {
+    "calendarTitle": "Appointment Calendar",
+    "weekOf": "Week of",
+    "newAppointment": "New Appointment",
+    "patientId": "Patient ID",
+    "patientRequired": "Please enter patient ID.",
+    "time": "Time",
+    "duration": "Duration (minutes)",
+    "book": "Book Appointment",
+    "booked": "Appointment has been booked.",
+    "conflict": "Schedule conflict: This time slot is already taken.",
+    "pastDate": "Cannot schedule appointments in the past.",
+    "bookingFailed": "Could not book appointment.",
+    "cancelTitle": "Cancel Appointment?",
+    "cancelConfirm": "Do you really want to cancel this appointment?",
+    "notFound": "Appointment not found.",
+    "cannotReschedule": "Cancelled or completed appointments cannot be rescheduled.",
+    "type_initial_session": "Initial Session",
+    "type_follow_up": "Follow-up",
+    "type_online": "Online Session",
+    "type_crisis": "Crisis Intervention",
+    "type_group": "Group Therapy",
+    "status_scheduled": "Scheduled",
+    "status_confirmed": "Confirmed",
+    "status_cancelled": "Cancelled",
+    "status_completed": "Completed",
+    "status_no_show": "No Show"
+  },
+  "video": {
+    "title": "Video Session",
+    "subtitle": "Secure, encrypted video communication (WebRTC/DTLS-SRTP)",
+    "roomId": "Room ID",
+    "startSession": "📹 Start Session",
+    "endSession": "⏹ End Session",
+    "copyInvite": "📋 Copy Invite Link",
+    "inviteCopied": "Link Copied",
+    "inviteCopiedMessage": "Send this link to your patient for the online session.",
+    "sessionEnded": "Session Ended",
+    "sessionEndedMessage": "Would you like to create notes for this session?",
+    "browserRequired": "Please open a browser for the video session.",
+    "startFailed": "Could not start video session.",
+    "securityTitle": "Security Notes",
+    "securityInfo": "• Video streams encrypted with DTLS-SRTP\n• No session recording\n• Room ID is unique and non-guessable\n• GDPR compliant: No video/audio data stored",
+    "compatNote": "Supported: Chrome, Firefox, Safari, Edge. For mobile devices, the Jitsi Meet app is recommended."
+  },
+  "notes": {
+    "title": "Session Notes",
+    "subtitle": "Encrypted notes — visible only to you.",
+    "newNote": "✏️ New Note",
+    "content": "Note",
+    "contentPlaceholder": "Enter session note...",
+    "tags": "Tags",
+    "save": "🔒 Save Encrypted",
+    "saved": "Note saved encrypted.",
+    "history": "History",
+    "noNotes": "No notes yet.",
+    "emptyContent": "Please enter a note.",
+    "encryptionRequired": "Encryption key required. Please enter password first.",
+    "deleteTitle": "Delete Note?",
+    "deleteConfirm": "This action cannot be undone.",
+    "gdprInfo": "All notes are encrypted with AES-256-GCM. Only you as therapist can decrypt them. GDPR Art. 9: Health data is stored exclusively locally and encrypted.",
+    "tag_progress": "Progress",
+    "tag_anxiety": "Anxiety",
+    "tag_depression": "Depression",
+    "tag_medication": "Medication",
+    "tag_crisis": "Crisis",
+    "tag_homework": "Homework",
+    "tag_goals": "Goals"
+  },
+  "outputBox": {
+    "title": "Sus respuestas",
+    "empty": "Aún sin respuestas",
+    "jumpTo": "Ir a la pregunta",
+    "continueFrom": "Continuar desde aquí",
+    "backToSummary": "Volver al resumen",
+    "answerCount": "{{count}} respuestas"
+  },
+  "labUpload": {
+    "title": "Subir informe de laboratorio",
+    "selectFile": "Seleccionar archivo",
+    "processing": "Analizando...",
+    "valuesFound": "{{count}} valores detectados",
+    "importValues": "Importar valores ({{count}})",
+    "noValues": "No se detectaron valores",
+    "ocrRequired": "Se requiere consentimiento OCR",
+    "ocrNotAvailable": "OCR no está disponible en este dispositivo.",
+    "notSupported": "La carga de informes de laboratorio no está disponible en esta plataforma.",
+    "mobilOnly": "Esta función solo está disponible en iOS y Android.",
+    "description": "Suba un informe de laboratorio (imagen o PDF). Los valores se extraerán localmente mediante OCR y se pueden importar al calculador.",
+    "confidence": "Confianza OCR: {{percent}}%",
+    "noValuesHint": "Intente con una imagen más nítida u otro informe.",
+    "importHint": "{{count}} valores se pueden importar al calculador.",
+    "noImportableHint": "Ninguno de los valores detectados se puede importar automáticamente.",
+    "noImportableValues": "No se seleccionaron valores importables.",
+    "importSuccess": "{{count}} valores de laboratorio fueron importados.",
+    "processingError": "Error al procesar el informe de laboratorio.",
+    "refRange": "Ref: {{range}}",
+    "importFromLab": "Importar valores de laboratorio",
+    "valueLabel": {
+      "creatinine": "Creatinina",
+      "totalCholesterol": "Colesterol total",
+      "hdlCholesterol": "Colesterol HDL",
+      "ldlCholesterol": "Colesterol LDL",
+      "triglycerides": "Triglicéridos",
+      "glucose": "Glucosa",
+      "hba1c": "HbA1c",
+      "hemoglobin": "Hemoglobina",
+      "leukocytes": "Leucocitos",
+      "thrombocytes": "Trombocitos",
+      "got": "GOT (AST)",
+      "gpt": "GPT (ALT)",
+      "ggt": "GGT",
+      "tsh": "TSH",
+      "uricAcid": "Ácido úrico",
+      "potassium": "Potasio",
+      "sodium": "Sodio",
+      "crp": "PCR",
+      "systolicBP": "Presión arterial sistólica",
+      "weight": "Peso",
+      "height": "Estatura",
+      "age": "Edad"
+    }
   }
 }

@@ -4,6 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../theme/ThemeContext';
 import { AppText } from '../components/AppText';
+import { ScreenContainer } from '../components/ScreenContainer';
 
 /**
  * PrivacyScreen - Displays privacy policy and obtains user consent
@@ -28,6 +29,7 @@ export const PrivacyScreen = () => {
     };
 
     return (
+        <ScreenContainer testID="privacy-screen" accessibilityLabel="Privacy Policy">
         <View style={[styles.container, isHighContrast && styles.containerHighContrast]}>
             <AppText variant="h1" style={[styles.title, isHighContrast && styles.textHighContrast]}>{t('privacy.title', { defaultValue: 'Datenschutzerklärung' })}</AppText>
 
@@ -65,6 +67,7 @@ export const PrivacyScreen = () => {
                 </TouchableOpacity>
             </View>
         </View>
+        </ScreenContainer>
     );
 };
 

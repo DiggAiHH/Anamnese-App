@@ -36,7 +36,8 @@
     "continue": "Continue",
     "close": "Close",
     "featureUnavailableTitle": "?????? ??? ?????",
-    "featureUnavailableMessage": "{{feature}} ??? ????? ??? ??? ??????."
+    "featureUnavailableMessage": "{{feature}} ??? ????? ??? ??? ??????.",
+    "datePlaceholder": "يوم/شهر/سنة"
   },
   "settings": {
     "deleteTitle": "Delete All Data?",
@@ -65,7 +66,18 @@
       "title": "أين يتم أخذ التاريخ المرضي؟",
       "practice": "في العيادة",
       "private": "خاص (في المنزل)",
-      "admin": "المسؤول / لوحة التحكم"
+      "admin": "المسؤول / لوحة التحكم",
+      "therapistLogin": "دخول المعالج",
+      "switchConfirmTitle": "تغيير الدور؟",
+      "switchConfirmMessage": "سيؤدي تغيير الدور إلى إعادة تعيين البيانات الحالية.",
+      "switchConfirm": "تغيير"
+    },
+    "role": {
+      "doctor": "طبيب",
+      "patient": "مريض"
+    },
+    "savedAnamneses": {
+      "patientOnlyHint": "أنت تعرض سجلاتك الخاصة."
     },
     "accessibility": {
       "fontScale": "حجم الخط",
@@ -116,7 +128,29 @@
     "emailPlaceholder": "max.mustermann@example.com",
     "phone": "الهاتف (اختياري)",
     "phonePlaceholder": "+966 ...",
-    "toConsents": "متابعة إلى الموافقات"
+    "toConsents": "متابعة إلى الموافقات",
+    "titleReturning": "Welcome back",
+    "titleNew": "New patient registration",
+    "subtitleReturning": "Please identify yourself.",
+    "subtitleNew": "Please enter your details.",
+    "insuranceType": "Insurance type",
+    "insurancePublic": "Public",
+    "insurancePrivate": "Private",
+    "dayLabel": "Day",
+    "monthLabel": "Month",
+    "yearLabel": "Year",
+    "dayPlaceholder": "يوم",
+    "monthPlaceholder": "شهر",
+    "yearPlaceholder": "سنة",
+    "dataChanged": "My personal data has changed",
+    "dataChangedHint": "Enable this option if your address, phone number or other personal data has changed since your last visit.",
+    "emailWhy": "لتأكيدات المواعيد وإشعارات نتائج الفحوصات.",
+    "emailWithout": "بدون البريد الإلكتروني، لن تتلقى إشعارات رقمية.",
+    "phoneWhy": "للأسئلة العاجلة للمتابعة بشأن علاجك.",
+    "phoneWithout": "بدون رقم هاتف، لا يمكننا التواصل معك في وقت قصير.",
+    "insuranceNumberPlaceholder": "مثال A123456789",
+    "namePlaceholder": "3 أحرف على الأقل",
+    "countryPlaceholder": "SA"
   },
   "validation": {
     "required": "هذا الحقل مطلوب",
@@ -171,23 +205,33 @@
     "consents": {
       "dataProcessing": {
         "title": "معالجة البيانات (مطلوب)",
-        "description": "معالجة بيانات صحية شخصية"
+        "description": "معالجة بيانات صحية شخصية",
+        "why": "يجب معالجة بياناتك الصحية لتقييم نموذج التاريخ المرضي وتقديمه للطبيب.",
+        "without": "بدون هذه الموافقة، لا يمكن استخدام التطبيق."
       },
       "dataStorage": {
         "title": "تخزين البيانات (مطلوب)",
-        "description": "تخزين محلي لأخذ التاريخ المرضي"
+        "description": "تخزين محلي لأخذ التاريخ المرضي",
+        "why": "يتم تخزين إجاباتك محلياً بتشفير AES-256 لتكون متاحة عند زيارتك للطبيب.",
+        "without": "بدون التخزين، ستُفقد جميع البيانات المُدخلة بعد الإغلاق."
       },
       "gdtExport": {
         "title": "تصدير GDT (اختياري)",
-        "description": "تصدير لأنظمة العيادة"
+        "description": "تصدير لأنظمة العيادة",
+        "why": "يتيح الاستيراد التلقائي لتاريخك المرضي في نظام إدارة العيادة.",
+        "without": "بدون تصدير GDT، يجب على العيادة نقل بياناتك يدوياً."
       },
       "ocrProcessing": {
         "title": "OCR (اختياري)",
-        "description": "التعرّف على النص من المستندات"
+        "description": "التعرّف على النص من المستندات",
+        "why": "يتيح قراءة المستندات تلقائياً (مثل بطاقة التأمين) عبر الكاميرا.",
+        "without": "بدون OCR، يجب إدخال جميع البيانات يدوياً."
       },
       "voiceRecognition": {
         "title": "التعرّف على الصوت (اختياري)",
-        "description": "إدخال عبر الكلام"
+        "description": "إدخال عبر الكلام",
+        "why": "يتيح إدخال الإجابات بالصوت بدلاً من الكتابة.",
+        "without": "بدون التعرّف على الصوت، الإدخال ممكن فقط عبر لوحة المفاتيح."
       }
     }
   },
@@ -586,7 +630,11 @@
         "obese_class_i": "Obesity Class I",
         "obese_class_ii": "Obesity Class II",
         "obese_class_iii": "Obesity Class III"
-      }
+      },
+      "weightWithUnit": "الوزن (كغ)",
+      "heightWithUnit": "الطول (سم)",
+      "weightPlaceholder": "70",
+      "heightPlaceholder": "175"
     },
     "cardio": {
       "title": "Cardiovascular Risk",
@@ -606,7 +654,14 @@
         "moderate": "Moderate Risk",
         "high": "High Risk",
         "very_high": "Very High Risk"
-      }
+      },
+      "agePlaceholder": "50",
+      "systolicPlaceholder": "120",
+      "cholPlaceholder": "200",
+      "hdlPlaceholder": "50",
+      "systolicBPWithUnit": "ضغط الدم الانقباضي (ملم زئبقي)",
+      "totalCholesterolWithUnit": "الكوليسترول الكلي (مغ/دل)",
+      "hdlCholesterolWithUnit": "كوليسترول HDL (مغ/دل)"
     },
     "egfr": {
       "title": "eGFR (Kidney Function)",
@@ -625,7 +680,10 @@
         "stage3b": "Stage 3b: Moderate-severe (30-44)",
         "stage4": "Stage 4: Severely decreased (15-29)",
         "stage5": "Stage 5: Kidney failure (<15)"
-      }
+      },
+      "creatininePlaceholder": "1.0",
+      "agePlaceholder": "50",
+      "creatinineWithUnit": "الكرياتينين (مغ/دل)"
     },
     "ibw": {
       "title": "Ideal Body Weight (IBW)",
@@ -634,7 +692,9 @@
       "male": "Male",
       "female": "Female",
       "result": "Ideal Weight: {{value}} kg",
-      "invalidInput": "Please enter valid values"
+      "invalidInput": "Please enter valid values",
+      "heightPlaceholder": "175",
+      "heightWithUnit": "الطول (سم)"
     },
     "bmr": {
       "title": "Basal Metabolic Rate (BMR)",
@@ -645,7 +705,12 @@
       "male": "Male",
       "female": "Female",
       "result": "BMR: {{value}} kcal/day",
-      "invalidInput": "Please enter valid values"
+      "invalidInput": "Please enter valid values",
+      "weightPlaceholder": "70",
+      "heightPlaceholder": "175",
+      "agePlaceholder": "30",
+      "weightWithUnit": "الوزن (كغ)",
+      "heightWithUnit": "الطول (سم)"
     }
   },
   "dataManagement": {
@@ -803,7 +868,14 @@
     "submit": "Send request",
     "continue": "Continue to anamnesis",
     "errorMedicationRequired": "Please enter the medication name.",
-    "errorSubmit": "Request could not be created."
+    "errorSubmit": "Request could not be created.",
+    "dosageHint": "Format: Morning-Noon-Evening (e.g. 1-0-1)",
+    "packageSize": "Package size (optional)",
+    "packageSizePlaceholder": "e.g. N1, N2, N3",
+    "prescriptionType": "Prescription type",
+    "followUp": "Repeat prescription",
+    "newPrescription": "New prescription",
+    "urgentLabel": "⚡ Urgent (needed immediately)"
   },
   "referral": {
     "title": "Request referral",
@@ -840,6 +912,193 @@
     "errorStartDateRequired": "Please enter a valid start date (DD.MM.YYYY).",
     "errorEndDateInvalid": "The end date is invalid (DD.MM.YYYY).",
     "errorEndBeforeStart": "End date must not be before start date.",
-    "errorSubmit": "Request could not be created."
+    "errorSubmit": "Request could not be created.",
+    "documentSubType": "Document type",
+    "subTypeStandard": "Sick note",
+    "subTypeAttest": "Medical certificate",
+    "subTypeBefund": "Medical report"
+  },
+  "requestSummary": {
+    "title": "Summary",
+    "subtitle": "Please review your information.",
+    "type": "Type",
+    "priority": "Priority",
+    "urgent": "⚡ Urgent",
+    "notes": "Notes",
+    "encryptionInfo": "🔒 Your data is encrypted with AES-256. Only your practice can decrypt it.",
+    "send": "Send encrypted",
+    "successTitle": "Request sent",
+    "successMessage": "Your request has been opened in your email client.",
+    "noEmailClient": "No email client found. Please install one.",
+    "errorSend": "Request could not be sent."
+  },
+  "auth": {
+    "loginTitle": "Sign In",
+    "loginSubtitle": "Sign in securely.",
+    "registerTitle": "Create Account",
+    "registerSubtitle": "Create your therapist account.",
+    "email": "Email",
+    "password": "Password",
+    "displayName": "Display Name",
+    "displayNamePlaceholder": "Dr. Jane Smith",
+    "login": "Sign In",
+    "register": "Register",
+    "logout": "Sign Out",
+    "switchToLogin": "Already registered? Sign in",
+    "switchToRegister": "Create new account",
+    "continueAsPatient": "Continue as patient",
+    "fillAllFields": "Please fill in all fields.",
+    "invalidCredentials": "Invalid email or password.",
+    "accountLocked": "Account locked due to too many failed attempts. Please wait.",
+    "emailExists": "This email is already registered.",
+    "passwordTooShort": "Password must be at least 8 characters.",
+    "registrationSuccess": "Registration successful",
+    "registrationSuccessMessage": "You can now log in. Set up 2FA in settings for extra security.",
+    "registrationFailed": "Registration failed.",
+    "loginFailed": "Sign in failed.",
+    "twoFactorTitle": "Two-Factor Authentication",
+    "twoFactorSubtitle": "Enter the 6-digit code from your authenticator app.",
+    "verificationCode": "Verification Code",
+    "verify": "Verify",
+    "invalid2FACode": "Invalid code. Please try again.",
+    "invalidCodeLength": "Please enter the 6-digit code.",
+    "verificationFailed": "Verification failed.",
+    "twoFactorHelp": "Open your authenticator app (e.g. Google Authenticator) and enter the current code.",
+    "securityInfo": "Your credentials are encrypted with PBKDF2. Enable 2FA for additional security.",
+    "therapist": "Therapist",
+    "codePlaceholder": "000000"
+  },
+  "therapistDashboard": {
+    "title": "Dashboard",
+    "greeting": "Welcome, {{name}}",
+    "calendar": "Calendar",
+    "videoSession": "Video Session",
+    "notes": "Notes",
+    "todaySchedule": "Today's Schedule",
+    "noAppointments": "No appointments for today.",
+    "encryptionActive": "End-to-end encryption active. All patient data protected with AES-256-GCM."
+  },
+  "appointments": {
+    "calendarTitle": "Appointment Calendar",
+    "weekOf": "Week of",
+    "newAppointment": "New Appointment",
+    "patientId": "Patient ID",
+    "patientRequired": "Please enter patient ID.",
+    "time": "Time",
+    "duration": "Duration (minutes)",
+    "book": "Book Appointment",
+    "booked": "Appointment has been booked.",
+    "conflict": "Schedule conflict: This time slot is already taken.",
+    "pastDate": "Cannot schedule appointments in the past.",
+    "bookingFailed": "Could not book appointment.",
+    "cancelTitle": "Cancel Appointment?",
+    "cancelConfirm": "Do you really want to cancel this appointment?",
+    "notFound": "Appointment not found.",
+    "cannotReschedule": "Cancelled or completed appointments cannot be rescheduled.",
+    "type_initial_session": "Initial Session",
+    "type_follow_up": "Follow-up",
+    "type_online": "Online Session",
+    "type_crisis": "Crisis Intervention",
+    "type_group": "Group Therapy",
+    "status_scheduled": "Scheduled",
+    "status_confirmed": "Confirmed",
+    "status_cancelled": "Cancelled",
+    "status_completed": "Completed",
+    "status_no_show": "No Show"
+  },
+  "video": {
+    "title": "Video Session",
+    "subtitle": "Secure, encrypted video communication (WebRTC/DTLS-SRTP)",
+    "roomId": "Room ID",
+    "startSession": "📹 Start Session",
+    "endSession": "⏹ End Session",
+    "copyInvite": "📋 Copy Invite Link",
+    "inviteCopied": "Link Copied",
+    "inviteCopiedMessage": "Send this link to your patient for the online session.",
+    "sessionEnded": "Session Ended",
+    "sessionEndedMessage": "Would you like to create notes for this session?",
+    "browserRequired": "Please open a browser for the video session.",
+    "startFailed": "Could not start video session.",
+    "securityTitle": "Security Notes",
+    "securityInfo": "• Video streams encrypted with DTLS-SRTP\n• No session recording\n• Room ID is unique and non-guessable\n• GDPR compliant: No video/audio data stored",
+    "compatNote": "Supported: Chrome, Firefox, Safari, Edge. For mobile devices, the Jitsi Meet app is recommended."
+  },
+  "notes": {
+    "title": "Session Notes",
+    "subtitle": "Encrypted notes — visible only to you.",
+    "newNote": "✏️ New Note",
+    "content": "Note",
+    "contentPlaceholder": "Enter session note...",
+    "tags": "Tags",
+    "save": "🔒 Save Encrypted",
+    "saved": "Note saved encrypted.",
+    "history": "History",
+    "noNotes": "No notes yet.",
+    "emptyContent": "Please enter a note.",
+    "encryptionRequired": "Encryption key required. Please enter password first.",
+    "deleteTitle": "Delete Note?",
+    "deleteConfirm": "This action cannot be undone.",
+    "gdprInfo": "All notes are encrypted with AES-256-GCM. Only you as therapist can decrypt them. GDPR Art. 9: Health data is stored exclusively locally and encrypted.",
+    "tag_progress": "Progress",
+    "tag_anxiety": "Anxiety",
+    "tag_depression": "Depression",
+    "tag_medication": "Medication",
+    "tag_crisis": "Crisis",
+    "tag_homework": "Homework",
+    "tag_goals": "Goals"
+  },
+  "outputBox": {
+    "title": "إجاباتك",
+    "empty": "لا توجد إجابات بعد",
+    "jumpTo": "انتقل إلى السؤال",
+    "continueFrom": "تابع من هنا",
+    "backToSummary": "العودة إلى النظرة العامة",
+    "answerCount": "{{count}} إجابات"
+  },
+  "labUpload": {
+    "title": "تحميل تقرير مخبري",
+    "selectFile": "اختيار ملف",
+    "processing": "جارٍ التحليل...",
+    "valuesFound": "تم اكتشاف {{count}} قيم",
+    "importValues": "استيراد القيم ({{count}})",
+    "noValues": "لم يتم اكتشاف أي قيم",
+    "ocrRequired": "مطلوب موافقة OCR",
+    "ocrNotAvailable": "OCR غير متوفر على هذا الجهاز.",
+    "notSupported": "تحميل التقارير المخبرية غير متوفر على هذه المنصة.",
+    "mobilOnly": "هذه الميزة متوفرة فقط على iOS و Android.",
+    "description": "قم بتحميل تقرير مخبري (صورة أو PDF). سيتم استخراج القيم محلياً عبر OCR ويمكن استيرادها في الآلة الحاسبة.",
+    "confidence": "موثوقية OCR: {{percent}}%",
+    "noValuesHint": "جرّب صورة أوضح أو تقريراً آخر.",
+    "importHint": "يمكن استيراد {{count}} قيم في الآلة الحاسبة.",
+    "noImportableHint": "لا يمكن استيراد أي من القيم المكتشفة تلقائياً.",
+    "noImportableValues": "لم يتم تحديد قيم قابلة للاستيراد.",
+    "importSuccess": "تم استيراد {{count}} قيم مخبرية.",
+    "processingError": "خطأ أثناء معالجة التقرير المخبري.",
+    "refRange": "المرجع: {{range}}",
+    "importFromLab": "استيراد القيم المخبرية",
+    "valueLabel": {
+      "creatinine": "كرياتينين",
+      "totalCholesterol": "كولسترول كلي",
+      "hdlCholesterol": "كولسترول HDL",
+      "ldlCholesterol": "كولسترول LDL",
+      "triglycerides": "ثلاثي الغليسريد",
+      "glucose": "غلوكوز",
+      "hba1c": "HbA1c",
+      "hemoglobin": "هيموغلوبين",
+      "leukocytes": "كريات بيضاء",
+      "thrombocytes": "صفيحات دموية",
+      "got": "GOT (AST)",
+      "gpt": "GPT (ALT)",
+      "ggt": "GGT",
+      "tsh": "TSH",
+      "uricAcid": "حمض البول",
+      "potassium": "بوتاسيوم",
+      "sodium": "صوديوم",
+      "crp": "CRP",
+      "systolicBP": "ضغط الدم الانقباضي",
+      "weight": "الوزن",
+      "height": "الطول",
+      "age": "العمر"
+    }
   }
 }

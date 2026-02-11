@@ -323,13 +323,13 @@ export class AnswerValidator {
           if (question.validation?.minDate) {
             const minDate = new Date(question.validation.minDate);
             if (dateValue < minDate) {
-              errors.push(`Date must be after ${minDate.toLocaleDateString()}`);
+              errors.push(`Date must be after ${minDate.toISOString().split('T')[0]}`);
             }
           }
           if (question.validation?.maxDate) {
             const maxDate = new Date(question.validation.maxDate);
             if (dateValue > maxDate) {
-              errors.push(`Date must be before ${maxDate.toLocaleDateString()}`);
+              errors.push(`Date must be before ${maxDate.toISOString().split('T')[0]}`);
             }
           }
         }

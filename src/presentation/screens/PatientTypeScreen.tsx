@@ -15,6 +15,7 @@ import type { StackScreenProps } from '@react-navigation/stack';
 import { usePatientContext } from '../../application/PatientContext';
 import { useTheme } from '../theme/ThemeContext';
 import { AppText } from '../components/AppText';
+import { ScreenContainer } from '../components/ScreenContainer';
 import { colors, spacing, radius } from '../theme/tokens';
 import type { RootStackParamList } from '../navigation/RootNavigator';
 
@@ -40,6 +41,7 @@ export const PatientTypeScreen = ({ navigation }: Props): React.JSX.Element => {
   };
 
   return (
+    <ScreenContainer testID="patient-type-screen" accessibilityLabel="Patient Type Selection">
     <View style={[styles.container, isHighContrast && styles.containerHighContrast]}>
       <View style={styles.headerSection}>
         <AppText variant="h1" style={[styles.title, isHighContrast && styles.textHighContrast]}>
@@ -95,6 +97,7 @@ export const PatientTypeScreen = ({ navigation }: Props): React.JSX.Element => {
         </AppText>
       </View>
     </View>
+    </ScreenContainer>
   );
 };
 

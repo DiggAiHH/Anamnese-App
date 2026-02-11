@@ -1,0 +1,247 @@
+{
+  "$schema": "https://openclaw.ai/schema/config.json",
+  "version": "2026.2",
+  "agent": {
+    "name": "anamnese-devsecops",
+    "capabilities": {
+      "filesystem": "read_write",
+      "shell": "unrestricted",
+      "network": "unrestricted",
+      "browser": "full",
+      "vision": "enabled",
+      "clipboard": "read_write",
+      "process_management": "full",
+      "cron": "enabled"
+    },
+    "security": {
+      "exec_approval": false,
+      "dangerous_tools_allowed": true,
+      "sandbox": {
+        "enabled": false
+      },
+      "auto_retry_on_failure": true,
+      "max_retries": 3,
+      "deny_paths": [
+        "/mnt/c/Windows/",
+        "C:\\Windows\\",
+        "~/.ssh/id_*",
+        "%USERPROFILE%\\.ssh\\id_*",
+        ".git/objects/",
+        "*.sqlite",
+        "*.keychain-db"
+      ],
+      "allow_sudo": false,
+      "require_evidence": true
+    },
+    "gateway": {
+      "bind": "127.0.0.1",
+      "port": 18789,
+      "auth": {
+        "enabled": true,
+        "token_env": "OPENCLAW_AUTH_TOKEN"
+      },
+      "cors_origins": ["http://localhost:*", "https://localhost:*"],
+      "rate_limit": {
+        "requests_per_minute": 120,
+        "burst": 30
+      }
+    },
+    "memory": {
+      "enabled": true,
+      "ground_of_truth": "./MEMORY.md",
+      "auto_index_paths": [
+        "./MEMORY.md",
+        "./.github/copilot-instructions.md",
+        "./LAUFBAHN.md",
+        "./CURRENT_TASKS.md",
+        "./docs/",
+        "./src/domain/",
+        "./src/application/"
+      ],
+      "session_log_format": "jsonl",
+      "session_log_path": "./buildLogs/openclaw/",
+      "vector_db": "sqlite-vec",
+      "embedding_model": "copilot",
+      "max_context_tokens": 128000,
+      "chunk_size": 1500,
+      "chunk_overlap": 200
+    },
+    "skills": [
+      "gitclaw",
+      "github-pr",
+      "buildlog",
+      "security-audit",
+      "claude-optimised"
+    ],
+    "custom_skills_path": "./.openclaw/skills/"
+  },
+  "models": {
+    "router": {
+      "strategy": "task-based",
+      "fallback_chain": ["copilot-gpt4o", "copilot-claude-sonnet", "copilot-claude-haiku"]
+    },
+    "providers": {
+      "github-copilot": {
+        "enabled": true,
+        "type": "copilot",
+        "auth": {
+          "method": "github-token",
+          "token_env": "GITHUB_TOKEN",
+          "copilot_token_env": "GITHUB_COPILOT_TOKEN"
+        },
+        "endpoint": "https://api.githubcopilot.com",
+        "models": {
+          "copilot-gpt4o": {
+            "id": "gpt-4o",
+            "context_window": 128000,
+            "max_output": 16384,
+            "supports_vision": true,
+            "supports_tools": true,
+            "cost_tier": "medium",
+            "tasks": ["code-generation", "code-review", "refactoring", "debugging"]
+          },
+          "copilot-claude-sonnet": {
+            "id": "claude-3.5-sonnet",
+            "context_window": 200000,
+            "max_output": 8192,
+            "supports_vision": true,
+            "supports_tools": true,
+            "cost_tier": "medium",
+            "tasks": ["architecture", "research", "complex-reasoning", "security-audit"]
+          },
+          "copilot-claude-haiku": {
+            "id": "claude-3.5-haiku",
+            "context_window": 200000,
+            "max_output": 8192,
+            "supports_vision": false,
+            "supports_tools": true,
+            "cost_tier": "low",
+            "tasks": ["quick-tasks", "formatting", "i18n-translation", "log-analysis"]
+          },
+          "copilot-o1": {
+            "id": "o1",
+            "context_window": 200000,
+            "max_output": 100000,
+            "supports_vision": false,
+            "supports_tools": false,
+            "cost_tier": "high",
+            "tasks": ["complex-debugging", "architecture-review", "security-deep-analysis"]
+          },
+          "copilot-o3-mini": {
+            "id": "o3-mini",
+            "context_window": 200000,
+            "max_output": 100000,
+            "supports_vision": false,
+            "supports_tools": false,
+            "cost_tier": "medium",
+            "tasks": ["code-review", "test-generation", "dependency-analysis"]
+          }
+        }
+      },
+      "anthropic-direct": {
+        "enabled": false,
+        "type": "anthropic",
+        "auth": {
+          "method": "api-key",
+          "key_env": "ANTHROPIC_API_KEY"
+        },
+        "models": {
+          "claude-opus": {
+            "id": "claude-3-opus-20240229",
+            "context_window": 200000,
+            "tasks": ["deep-research", "architecture"]
+          }
+        }
+      }
+    },
+    "task_routing": {
+      "code-generation":       { "primary": "copilot-gpt4o",        "fallback": "copilot-claude-sonnet" },
+      "code-review":           { "primary": "copilot-claude-sonnet", "fallback": "copilot-o3-mini" },
+      "refactoring":           { "primary": "copilot-gpt4o",        "fallback": "copilot-claude-sonnet" },
+      "debugging":             { "primary": "copilot-gpt4o",        "fallback": "copilot-o1" },
+      "complex-debugging":     { "primary": "copilot-o1",           "fallback": "copilot-claude-sonnet" },
+      "architecture":          { "primary": "copilot-claude-sonnet", "fallback": "copilot-o1" },
+      "architecture-review":   { "primary": "copilot-o1",           "fallback": "copilot-claude-sonnet" },
+      "research":              { "primary": "copilot-claude-sonnet", "fallback": "copilot-gpt4o" },
+      "security-audit":        { "primary": "copilot-claude-sonnet", "fallback": "copilot-o1" },
+      "security-deep-analysis":{ "primary": "copilot-o1",           "fallback": "copilot-claude-sonnet" },
+      "test-generation":       { "primary": "copilot-o3-mini",      "fallback": "copilot-gpt4o" },
+      "i18n-translation":      { "primary": "copilot-claude-haiku", "fallback": "copilot-gpt4o" },
+      "quick-tasks":           { "primary": "copilot-claude-haiku", "fallback": "copilot-gpt4o" },
+      "log-analysis":          { "primary": "copilot-claude-haiku", "fallback": "copilot-claude-sonnet" },
+      "formatting":            { "primary": "copilot-claude-haiku", "fallback": "copilot-gpt4o" },
+      "dependency-analysis":   { "primary": "copilot-o3-mini",      "fallback": "copilot-claude-sonnet" },
+      "complex-reasoning":     { "primary": "copilot-claude-sonnet", "fallback": "copilot-o1" },
+      "default":               { "primary": "copilot-gpt4o",        "fallback": "copilot-claude-sonnet" }
+    }
+  },
+  "automation": {
+    "auto_heal": {
+      "enabled": true,
+      "max_attempts": 3,
+      "on_build_fail": "analyze-fix-retry",
+      "on_test_fail": "isolate-fix-rerun",
+      "on_lint_fail": "auto-fix-commit"
+    },
+    "watchers": {
+      "file_change": {
+        "enabled": true,
+        "patterns": ["src/**/*.ts", "src/**/*.tsx"],
+        "debounce_ms": 2000,
+        "action": "type-check"
+      },
+      "i18n_change": {
+        "enabled": true,
+        "patterns": ["src/presentation/i18n/locales/*.json"],
+        "debounce_ms": 5000,
+        "action": "i18n-audit"
+      }
+    },
+    "scheduled": {
+      "daily_smoke": {
+        "cron": "0 8 * * 1-5",
+        "command": "npm run smoke-test:quick",
+        "evidence": "buildLogs/daily_smoke_{{date}}.log"
+      },
+      "weekly_pentest": {
+        "cron": "0 6 * * 1",
+        "command": "node scripts/openclaw-pentest.cjs --phase=all",
+        "evidence": "buildLogs/pentest_report_{{date}}.md"
+      },
+      "weekly_dep_audit": {
+        "cron": "0 7 * * 1",
+        "command": "npm audit --json > buildLogs/npm_audit_{{date}}.json",
+        "evidence": "buildLogs/npm_audit_{{date}}.json"
+      }
+    }
+  },
+  "workspace": {
+    "root": ".",
+    "build_logs": "./buildLogs/",
+    "laufbahn": "./LAUFBAHN.md",
+    "tasks": "./CURRENT_TASKS.md",
+    "memory_file": "./MEMORY.md",
+    "platforms": ["android", "ios", "macos", "windows", "web"],
+    "copilot_instructions": "./.github/copilot-instructions.md"
+  },
+  "logging": {
+    "level": "info",
+    "pii_mask": true,
+    "mask_patterns": [
+      "email",
+      "password",
+      "token",
+      "secret",
+      "ip_address",
+      "name",
+      "patient",
+      "geburtsdatum",
+      "versichertennummer"
+    ],
+    "output_dir": "./buildLogs/openclaw/",
+    "rotate": {
+      "max_size_mb": 50,
+      "max_files": 10
+    }
+  }
+}

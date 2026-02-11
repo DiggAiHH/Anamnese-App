@@ -2,27 +2,36 @@
  * Home Screen - App Entry Point
  */
 
-import React, { useState } from 'react';
+import React from 'react';
 import { View, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import type { StackScreenProps } from '@react-navigation/stack';
 import type { RootStackParamList } from '../navigation/RootNavigator';
 import { DeleteAllDataUseCase } from '../../application/use-cases/DeleteAllDataUseCase';
 import { useQuestionnaireStore } from '../state/useQuestionnaireStore';
+import { usePatientContext } from '../../application/PatientContext';
+import { UserRole } from '../../domain/entities/UserRole';
+import { getRoleCapabilities } from '../../domain/entities/UserRole';
 import { colors, spacing, radius } from '../theme/tokens';
 import { AppButton } from '../components/AppButton';
 import { Container } from '../components/Container';
 import { AppText } from '../components/AppText';
+import { ScreenContainer } from '../components/ScreenContainer';
 
 // FIXED: Removed duplicate __DEV__ declaration (global from webpack.config.js)
 
-type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
-
-type UserMode = 'doctor' | 'patient' | null;
+type Props = StackScreenProps<RootStackParamList, 'Home'>;
 
 export const HomeScreen = ({ navigation }: Props): React.JSX.Element => {
   const { t } = useTranslation();
-  const [selectedMode, setSelectedMode] = useState<UserMode>(null);
+  const { userRole, setUserRole } = usePatientContext();
+  const capabilities = getRoleCapabilities(userRole);
+
+  /**
+   * Local mode selection on HomeScreen syncs with PatientContext.userRole.
+   * The mode card lets user re-confirm or switch within the session.
+   */
+  const selectedMode = userRole;
 
   const handleDeleteAllData = (): void => {
     Alert.alert(
@@ -57,6 +66,7 @@ export const HomeScreen = ({ navigation }: Props): React.JSX.Element => {
   };
 
   return (
+    <ScreenContainer testID="home-screen" accessibilityLabel="Home">
     <Container scroll>
       <View style={styles.content}>
         <AppText style={styles.title}>{t('home.title')}</AppText>
@@ -73,14 +83,14 @@ export const HomeScreen = ({ navigation }: Props): React.JSX.Element => {
 
           <View style={styles.modeButtons}>
             <TouchableOpacity
-              style={[styles.modeButton, selectedMode === 'doctor' && styles.modeButtonSelected]}
-              onPress={() => setSelectedMode('doctor')}
+              style={[styles.modeButton, selectedMode === UserRole.DOCTOR && styles.modeButtonSelected]}
+              onPress={() => setUserRole(UserRole.DOCTOR)}
               testID="btn-mode-doctor">
               <AppText style={styles.modeIcon}>🩺</AppText>
               <AppText
                 style={[
                   styles.modeButtonTitle,
-                  selectedMode === 'doctor' && styles.modeButtonTitleSelected,
+                  selectedMode === UserRole.DOCTOR && styles.modeButtonTitleSelected,
                 ]}>
                 {t('home.modeSelection.doctor', { defaultValue: 'Arzt/Praxis' })}
               </AppText>
@@ -92,14 +102,14 @@ export const HomeScreen = ({ navigation }: Props): React.JSX.Element => {
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={[styles.modeButton, selectedMode === 'patient' && styles.modeButtonSelected]}
-              onPress={() => setSelectedMode('patient')}
+              style={[styles.modeButton, selectedMode === UserRole.PATIENT && styles.modeButtonSelected]}
+              onPress={() => setUserRole(UserRole.PATIENT)}
               testID="btn-mode-patient">
               <AppText style={styles.modeIcon}>👤</AppText>
               <AppText
                 style={[
                   styles.modeButtonTitle,
-                  selectedMode === 'patient' && styles.modeButtonTitleSelected,
+                  selectedMode === UserRole.PATIENT && styles.modeButtonTitleSelected,
                 ]}>
                 {t('home.modeSelection.patient', { defaultValue: 'Patient' })}
               </AppText>
@@ -233,7 +243,8 @@ export const HomeScreen = ({ navigation }: Props): React.JSX.Element => {
           />
         </View>
 
-        {/* Calculator Section */}
+        {/* Calculator Section - Doctor only */}
+        {capabilities.canAccessCalculators && (
         <View style={styles.calculatorSection}>
           <AppButton
             title={t('calculator.homeButton', { defaultValue: 'Clinical Calculators' })}
@@ -243,8 +254,10 @@ export const HomeScreen = ({ navigation }: Props): React.JSX.Element => {
             accessibilityLabel={t('calculator.title', { defaultValue: 'Clinical Calculators' })}
           />
         </View>
+        )}
 
-        {/* Data Management Section */}
+        {/* Data Management Section - Doctor only */}
+        {capabilities.canManageData && (
         <View style={styles.dataManagementSection}>
           <AppButton
             title={t('dataManagement.homeButton', { defaultValue: 'Backup & Restore' })}
@@ -254,6 +267,7 @@ export const HomeScreen = ({ navigation }: Props): React.JSX.Element => {
             accessibilityLabel={t('dataManagement.title', { defaultValue: 'Data Management' })}
           />
         </View>
+        )}
 
         {/* Analytics Dashboard - accessible via DataManagement for production users */}
         {__DEV__ && (
@@ -268,6 +282,7 @@ export const HomeScreen = ({ navigation }: Props): React.JSX.Element => {
         )}
       </View>
     </Container>
+    </ScreenContainer>
   );
 };
 
