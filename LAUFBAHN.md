@@ -3,7 +3,58 @@
 This is the **agent's navigation file** to prevent drifting/hallucinations.
 It defines the always-on checklist and records what was done, when, and where.
 
-## Latest Session — OpenClaw Final Preparation (Complete Setup)
+## Latest Session — Windows Auto-Startup for OpenClaw
+
+**Date**: 2026-02-11
+**Status**: ✅ COMPLETED
+**Agent**: copilot
+
+### Scope
+- Added Windows automatic startup functionality for OpenClaw
+- Created Task Scheduler installer and startup scripts
+- Updated documentation with Windows auto-startup instructions
+- Added npm convenience scripts for installation/uninstallation
+
+### Files Created
+- `scripts/openclaw-windows-startup.ps1` — Startup script called by Task Scheduler
+- `scripts/install-openclaw-startup.ps1` — Task Scheduler installer (requires Admin)
+
+### Files Modified
+- `docs/OPENCLAW_GUIDE.md` — Added "Windows Automatic Startup" section with install/uninstall instructions
+- `README.md` — Added Windows auto-startup option to Quick Start section
+- `package.json` — Added openclaw:install-startup and openclaw:uninstall-startup scripts
+
+### Features Implemented
+**Windows Task Scheduler Integration:**
+- Automatically starts OpenClaw (Bridge + Agent) 1 minute after Windows boots
+- Waits for network availability before starting
+- Runs in background (hidden window)
+- Auto-restart on failure (up to 3 attempts)
+- Logs to `buildLogs/openclaw/startup_*.log`
+
+**Installation:**
+```powershell
+# As Administrator
+npm run openclaw:install-startup
+```
+
+**Uninstallation:**
+```powershell
+# As Administrator
+npm run openclaw:uninstall-startup
+```
+
+### Verification
+- All scripts created and tested for syntax
+- Documentation updated in 2 files
+- Package.json scripts added for convenience
+- Clear instructions for Admin requirements
+
+### User Request
+User requested (in German): "Make a file ready that ensures OpenClaw is started with Windows startup."
+This has been implemented via Windows Task Scheduler integration with proper error handling and logging.
+
+## Previous Session — OpenClaw Final Preparation (Complete Setup)
 
 **Date**: 2026-02-11
 **Status**: ✅ COMPLETED

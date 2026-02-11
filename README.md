@@ -133,6 +133,15 @@ npm run openclaw:start
 npm run openclaw:start:win
 ```
 
+**Windows Auto-Startup (Optional):**
+```powershell
+# Run as Administrator to enable OpenClaw on Windows boot
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts\install-openclaw-startup.ps1
+
+# To uninstall
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts\install-openclaw-startup.ps1 -Uninstall
+```
+
 **Verify Setup:**
 ```bash
 node scripts/verify-openclaw-setup.cjs

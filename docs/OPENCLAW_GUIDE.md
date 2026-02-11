@@ -85,6 +85,40 @@ curl http://127.0.0.1:18790/v1/models
 curl http://127.0.0.1:18790/metrics
 ```
 
+### Windows Automatic Startup
+
+To have OpenClaw start automatically when Windows boots:
+
+**Install (requires Administrator):**
+```powershell
+# Run PowerShell as Administrator
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts\install-openclaw-startup.ps1
+```
+
+This creates a Windows Task Scheduler task that:
+- Starts OpenClaw 1 minute after Windows boots
+- Waits for network availability
+- Runs in the background
+- Automatically restarts on failure (up to 3 times)
+
+**Test the task:**
+```powershell
+Start-ScheduledTask -TaskName "OpenClaw Startup"
+```
+
+**Uninstall:**
+```powershell
+# Run PowerShell as Administrator
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts\install-openclaw-startup.ps1 -Uninstall
+```
+
+**View task in Task Scheduler:**
+1. Open Task Scheduler (Win+R → `taskschd.msc`)
+2. Navigate to "Task Scheduler Library"
+3. Find "OpenClaw Startup"
+
+**Logs:** Check `buildLogs/openclaw/startup_*.log` for startup execution logs.
+
 ## Common Tasks
 
 ### Security & Compliance
