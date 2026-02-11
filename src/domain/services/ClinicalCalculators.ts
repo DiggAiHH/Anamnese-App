@@ -190,8 +190,15 @@ export class ClinicalCalculators {
       riskScore += 3;
     }
 
-    // Cholesterol (if provided)
-    if (input.totalCholesterol !== undefined && input.hdlCholesterol !== undefined) {
+    // Cholesterol (if provided) - with NaN/Infinity/zero guards
+    if (
+      input.totalCholesterol !== undefined &&
+      input.hdlCholesterol !== undefined &&
+      Number.isFinite(input.totalCholesterol) &&
+      Number.isFinite(input.hdlCholesterol) &&
+      input.totalCholesterol > 0 &&
+      input.hdlCholesterol > 0
+    ) {
       const ratio = input.totalCholesterol / input.hdlCholesterol;
       if (ratio > 6) {
         riskScore += 2;

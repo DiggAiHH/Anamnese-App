@@ -80,13 +80,40 @@ function Stop-PortListener([int]$port) {
   try {
     $listeners = Get-NetTCPConnection -LocalPort $port -State Listen -ErrorAction SilentlyContinue
     if (-not $listeners) { return }
-    $pids = $listeners | Select-Object -ExpandProperty OwningProcess -Unique
-    foreach ($pid in $pids) {
+    $listenerProcessIds = $listeners | Select-Object -ExpandProperty OwningProcess -Unique
+    foreach ($processId in $listenerProcessIds) {
       try {
-        Stop-Process -Id $pid -Force -ErrorAction SilentlyContinue
+        Stop-Process -Id $processId -Force -ErrorAction SilentlyContinue
       } catch {
         # ignore
       }
+    }
+  } catch {
+    # ignore
+  }
+}
+
+function Stop-StrayCmdProcesses {
+  param(
+    [Parameter(Mandatory = $true)]
+    [string[]]$Patterns
+  )
+
+  try {
+    $cmdProcs = Get-CimInstance Win32_Process -Filter "Name='cmd.exe'" -ErrorAction SilentlyContinue
+    if (-not $cmdProcs) { return }
+
+    foreach ($p in $cmdProcs) {
+      $cl = [string]$p.CommandLine
+      if ([string]::IsNullOrWhiteSpace($cl)) { continue }
+
+      $matches = $false
+      foreach ($pattern in $Patterns) {
+        if ($cl -match $pattern) { $matches = $true; break }
+      }
+      if (-not $matches) { continue }
+
+      try { Stop-Process -Id $p.ProcessId -Force -ErrorAction SilentlyContinue } catch { }
     }
   } catch {
     # ignore
@@ -104,7 +131,20 @@ function Rename-DirBestEffort([string]$path) {
   try {
     Rename-Item -LiteralPath $path -NewName (Split-Path -Leaf $renamed) -ErrorAction Stop
   } catch {
-    Write-Host "WARNING: Could not rename: $path ($($_.Exception.Message))" -ForegroundColor Yellow
+    $msg = [string]$_.Exception.Message
+
+    # If this is an access/ACL issue, try a best-effort permission repair and retry once.
+    if ($msg -match '(?i)zugriff.*verweigert|access.*denied') {
+      Repair-DirAccessBestEffort -path $path
+      try {
+        Rename-Item -LiteralPath $path -NewName (Split-Path -Leaf $renamed) -ErrorAction Stop
+        return
+      } catch {
+        $msg = [string]$_.Exception.Message
+      }
+    }
+
+    Write-Host "WARNING: Could not rename: $path ($msg)" -ForegroundColor Yellow
   }
 }
 
@@ -195,6 +235,15 @@ $skipNpmCiEffective = [bool]$SkipNpmCi
 $nodeModulesLocked = $false
 
 Write-Step 'Stopping Metro (port 8081) + app process'
+# Cleanup long-lived cmd windows from previous runs that can restart Metro/build
+# or keep handles open. We intentionally match only common RN/RNW invocations.
+Stop-StrayCmdProcesses -Patterns @(
+  '(?i)\breact-native\b\s+start\b',
+  '(?i)\breact-native\b\s+run-windows\b',
+  '(?i)\bnpm\.cmd\b\s+start\b',
+  '(?i)\bnpm\.cmd\b\s+run\s+windows\b',
+  '(?i)\bnpm\.cmd\b\s+run\s+windows:rnw\b'
+)
 Stop-PortListener -port 8081
 Get-Process -Name 'anamnese-mobile' -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue
 
@@ -335,7 +384,7 @@ try {
 
   & powershell.exe -NoProfile -ExecutionPolicy Bypass -File $devRun -Configuration $Configuration -Platform $Platform
 } finally {
-  if ($__prevTreatCtrlCAsInput -ne $null) {
+  if ($null -ne $__prevTreatCtrlCAsInput) {
     try { [Console]::TreatControlCAsInput = $__prevTreatCtrlCAsInput } catch { }
   }
   try { Stop-Transcript | Out-Null } catch { }

@@ -23,15 +23,16 @@ import {
   Platform,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import type { StackScreenProps } from '@react-navigation/stack';
 import type { RootStackParamList } from '../navigation/RootNavigator';
 import { SystemSpeechService, SpeechError } from '../../infrastructure/speech/SystemSpeechService';
 import { TTSService, getTTSService } from '../../infrastructure/speech/TTSService';
 import { colors, spacing, radius } from '../theme/tokens';
 import { AppText } from '../components/AppText';
+import { ScreenContainer } from '../components/ScreenContainer';
 import { FeatureBanner } from '../components/FeatureBanner';
 
-type Props = NativeStackScreenProps<RootStackParamList, 'Voice'>;
+type Props = StackScreenProps<RootStackParamList, 'Voice'>;
 
 export const VoiceScreen = ({ navigation: _navigation }: Props): React.JSX.Element => {
   const { t, i18n } = useTranslation();
@@ -175,6 +176,7 @@ export const VoiceScreen = ({ navigation: _navigation }: Props): React.JSX.Eleme
   }, [recognizedText]);
 
   return (
+    <ScreenContainer testID="voice-screen" accessibilityLabel="Voice Assistant">
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       {/* Header */}
       <View style={styles.header}>
@@ -318,6 +320,7 @@ export const VoiceScreen = ({ navigation: _navigation }: Props): React.JSX.Eleme
         </AppText>
       </View>
     </ScrollView>
+    </ScreenContainer>
   );
 };
 

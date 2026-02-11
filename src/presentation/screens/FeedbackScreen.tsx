@@ -18,16 +18,16 @@ import {
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import Clipboard from '@react-native-clipboard/clipboard';
-import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import type { StackScreenProps } from '@react-navigation/stack';
 import type { RootStackParamList } from '../navigation/RootNavigator';
 import { FeedbackTextBuilder, FeedbackCategory } from '../../domain/services/FeedbackTextBuilder';
 import { colors, spacing, radius } from '../theme/tokens';
 import { AppButton } from '../components/AppButton';
 import { AppText } from '../components/AppText';
+import { ScreenContainer } from '../components/ScreenContainer';
+import { SUPPORT_EMAIL } from '@shared/appConfig';
 
-type Props = NativeStackScreenProps<RootStackParamList, 'Feedback'>;
-
-const DEVELOPER_EMAIL = 'laith.alshdaifat@hotmail.com';
+type Props = StackScreenProps<RootStackParamList, 'Feedback'>;
 
 const CATEGORIES: { key: FeedbackCategory; labelKey: string }[] = [
   { key: 'bug', labelKey: 'feedback.categoryBug' },
@@ -60,7 +60,7 @@ export const FeedbackScreen = (_props: Props): React.JSX.Element => {
         locale: i18n.language,
       };
 
-      const mailtoUri = FeedbackTextBuilder.buildMailtoUri(DEVELOPER_EMAIL, input);
+      const mailtoUri = FeedbackTextBuilder.buildMailtoUri(SUPPORT_EMAIL, input);
       const canOpen = await Linking.canOpenURL(mailtoUri);
 
       if (canOpen) {
@@ -77,7 +77,7 @@ export const FeedbackScreen = (_props: Props): React.JSX.Element => {
           t('feedback.copiedTitle', { defaultValue: 'Copied to Clipboard' }),
           t('feedback.copiedMessage', {
             defaultValue:
-              'Feedback text copied. Please paste it into an email to: ' + DEVELOPER_EMAIL,
+              'Feedback text copied. Please paste it into an email to: ' + SUPPORT_EMAIL,
           }),
         );
       }
@@ -98,7 +98,7 @@ export const FeedbackScreen = (_props: Props): React.JSX.Element => {
           t('feedback.copiedTitle', { defaultValue: 'Copied to Clipboard' }),
           t('feedback.copiedMessage', {
             defaultValue:
-              'Feedback text copied. Please paste it into an email to: ' + DEVELOPER_EMAIL,
+              'Feedback text copied. Please paste it into an email to: ' + SUPPORT_EMAIL,
           }),
         );
         setDescription('');
@@ -136,7 +136,8 @@ export const FeedbackScreen = (_props: Props): React.JSX.Element => {
   };
 
   return (
-    <ScrollView style={styles.container} testID="feedback-screen">
+    <ScreenContainer testID="feedback-screen" accessibilityLabel="Feedback">
+    <ScrollView style={styles.container} testID="feedback-screen" keyboardShouldPersistTaps="handled">
       <View style={styles.content}>
         <AppText style={styles.title}>{t('feedback.title', { defaultValue: 'Send Feedback' })}</AppText>
         <AppText style={styles.subtitle}>
@@ -224,6 +225,7 @@ export const FeedbackScreen = (_props: Props): React.JSX.Element => {
         </View>
       </View>
     </ScrollView>
+    </ScreenContainer>
   );
 };
 

@@ -15,7 +15,7 @@ module.exports = {
         'metro.config.js',
         'babel.config.js',
         'webpack.config.js',
-        'scripts/**/*.{js,jsx,ts,tsx}',
+        'scripts/**/*.{js,jsx,ts,tsx,cjs,mjs}',
         '**/__mocks__/**/*.{js,jsx,ts,tsx}',
         '**/__tests__/**/*.{js,jsx,ts,tsx}',
         'e2e/**/*.{js,jsx,ts,tsx}',
@@ -27,6 +27,7 @@ module.exports = {
       },
       rules: {
         '@typescript-eslint/no-var-requires': 'off',
+        'no-console': 'off',
       },
     },
     {

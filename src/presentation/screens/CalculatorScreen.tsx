@@ -4,28 +4,36 @@
  * ISO/WCAG: Token-based design system
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
-  TextInput,
   StyleSheet,
   ScrollView,
   TouchableOpacity,
   Alert,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import { useRoute, useNavigation } from '@react-navigation/native';
+import type { RouteProp } from '@react-navigation/native';
+import type { StackNavigationProp } from '@react-navigation/stack';
 import { ClinicalCalculators } from '../../domain/services/ClinicalCalculators';
 import { colors, spacing, radius } from '../theme/tokens';
 import { AppButton } from '../components/AppButton';
 import { AppText } from '../components/AppText';
+import { AppInput } from '../components/AppInput';
+import { ScreenContainer } from '../components/ScreenContainer';
+import { supportsOCR } from '../../shared/platformCapabilities';
+import type { RootStackParamList } from '../navigation/RootNavigator';
 
-// Navigation Props type (kept for future use)
-// type Props = NativeStackScreenProps<RootStackParamList, 'Calculator'>;
+type CalculatorRouteProp = RouteProp<RootStackParamList, 'Calculator'>;
+type CalculatorNavProp = StackNavigationProp<RootStackParamList, 'Calculator'>;
 
 type CalculatorTab = 'bmi' | 'cardio' | 'egfr' | 'ibw' | 'bmr';
 
 export const CalculatorScreen = (): React.JSX.Element => {
   const { t } = useTranslation();
+  const route = useRoute<CalculatorRouteProp>();
+  const navigation = useNavigation<CalculatorNavProp>();
   const [activeTab, setActiveTab] = useState<CalculatorTab>('bmi');
 
   // BMI State
@@ -59,6 +67,50 @@ export const CalculatorScreen = (): React.JSX.Element => {
   const [bmrAge, setBmrAge] = useState('');
   const [bmrGender, setBmrGender] = useState<'male' | 'female'>('male');
   const [bmrResult, setBmrResult] = useState<string | null>(null);
+
+  // Apply lab values from LabUpload navigation params
+  useEffect(() => {
+    const labValues = route.params?.labValues;
+    if (!labValues) return;
+
+    const setters: Record<string, (v: string) => void> = {
+      bmiWeight: setBmiWeight,
+      bmiHeight: setBmiHeight,
+      cardioAge: setCardioAge,
+      cardioSystolic: setCardioSystolic,
+      cardioTotalChol: setCardioTotalChol,
+      cardioHdl: setCardioHdl,
+      egfrCreatinine: setEgfrCreatinine,
+      egfrAge: setEgfrAge,
+      ibwHeight: setIbwHeight,
+      bmrWeight: setBmrWeight,
+      bmrHeight: setBmrHeight,
+      bmrAge: setBmrAge,
+    };
+
+    let importedCount = 0;
+    for (const [key, value] of Object.entries(labValues)) {
+      const setter = setters[key];
+      if (setter && value) {
+        setter(value);
+        importedCount++;
+      }
+    }
+
+    if (importedCount > 0) {
+      Alert.alert(
+        t('common.success', { defaultValue: 'Erfolg' }),
+        t('labUpload.importSuccess', {
+          defaultValue: '{{count}} Laborwerte wurden übernommen.',
+          count: importedCount,
+        }),
+      );
+    }
+  }, [route.params?.labValues, t]);
+
+  const handleNavigateToLabUpload = () => {
+    navigation.navigate('LabUpload');
+  };
 
   const calculateBMI = () => {
     try {
@@ -259,29 +311,23 @@ export const CalculatorScreen = (): React.JSX.Element => {
 
   const renderBMICalculator = () => (
     <View style={styles.calculatorContent}>
-      <AppText style={styles.label} nativeID="bmi-weight-label">
-        {t('calculator.bmi.weight')} (kg)
-      </AppText>
-      <TextInput
+      <AppInput
+        label={t('calculator.bmi.weightWithUnit', { defaultValue: 'Gewicht (kg)' })}
         style={styles.input}
         keyboardType="numeric"
         value={bmiWeight}
         onChangeText={setBmiWeight}
-        placeholder="70"
+        placeholder={t('calculator.bmi.weightPlaceholder', { defaultValue: '70' })}
         accessibilityLabel={t('calculator.bmi.weight')}
-        accessibilityLabelledBy="bmi-weight-label"
       />
-      <AppText style={styles.label} nativeID="bmi-height-label">
-        {t('calculator.bmi.height')} (cm)
-      </AppText>
-      <TextInput
+      <AppInput
+        label={t('calculator.bmi.heightWithUnit', { defaultValue: 'Größe (cm)' })}
         style={styles.input}
         keyboardType="numeric"
         value={bmiHeight}
         onChangeText={setBmiHeight}
-        placeholder="175"
+        placeholder={t('calculator.bmi.heightPlaceholder', { defaultValue: '175' })}
         accessibilityLabel={t('calculator.bmi.height')}
-        accessibilityLabelledBy="bmi-height-label"
       />
       <AppButton
         title={t('calculator.calculate')}
@@ -298,17 +344,14 @@ export const CalculatorScreen = (): React.JSX.Element => {
 
   const renderCardioCalculator = () => (
     <View style={styles.calculatorContent}>
-      <AppText style={styles.label} nativeID="cardio-age-label">
-        {t('calculator.cardio.age')}
-      </AppText>
-      <TextInput
+      <AppInput
+        label={t('calculator.cardio.age')}
         style={styles.input}
         keyboardType="numeric"
         value={cardioAge}
         onChangeText={setCardioAge}
-        placeholder="50"
+        placeholder={t('calculator.cardio.agePlaceholder', { defaultValue: '50' })}
         accessibilityLabel={t('calculator.cardio.age')}
-        accessibilityLabelledBy="cardio-age-label"
       />
       <AppText style={styles.label}>{t('calculator.cardio.gender')}</AppText>
       <View style={styles.genderContainer} accessibilityRole="radiogroup">
@@ -327,41 +370,32 @@ export const CalculatorScreen = (): React.JSX.Element => {
           <AppText style={styles.genderButtonText}>{t('patientInfo.female')}</AppText>
         </TouchableOpacity>
       </View>
-      <AppText style={styles.label} nativeID="cardio-systolic-label">
-        {t('calculator.cardio.systolicBP')} (mmHg)
-      </AppText>
-      <TextInput
+      <AppInput
+        label={t('calculator.cardio.systolicBPWithUnit', { defaultValue: 'Systolischer Blutdruck (mmHg)' })}
         style={styles.input}
         keyboardType="numeric"
         value={cardioSystolic}
         onChangeText={setCardioSystolic}
-        placeholder="120"
+        placeholder={t('calculator.cardio.systolicPlaceholder', { defaultValue: '120' })}
         accessibilityLabel={t('calculator.cardio.systolicBP')}
-        accessibilityLabelledBy="cardio-systolic-label"
       />
-      <AppText style={styles.label} nativeID="cardio-chol-label">
-        {t('calculator.cardio.totalCholesterol')} (mg/dL)
-      </AppText>
-      <TextInput
+      <AppInput
+        label={t('calculator.cardio.totalCholesterolWithUnit', { defaultValue: 'Gesamtcholesterin (mg/dL)' })}
         style={styles.input}
         keyboardType="numeric"
         value={cardioTotalChol}
         onChangeText={setCardioTotalChol}
-        placeholder="200"
+        placeholder={t('calculator.cardio.cholPlaceholder', { defaultValue: '200' })}
         accessibilityLabel={t('calculator.cardio.totalCholesterol')}
-        accessibilityLabelledBy="cardio-chol-label"
       />
-      <AppText style={styles.label} nativeID="cardio-hdl-label">
-        {t('calculator.cardio.hdlCholesterol')} (mg/dL)
-      </AppText>
-      <TextInput
+      <AppInput
+        label={t('calculator.cardio.hdlCholesterolWithUnit', { defaultValue: 'HDL-Cholesterin (mg/dL)' })}
         style={styles.input}
         keyboardType="numeric"
         value={cardioHdl}
         onChangeText={setCardioHdl}
-        placeholder="50"
+        placeholder={t('calculator.cardio.hdlPlaceholder', { defaultValue: '50' })}
         accessibilityLabel={t('calculator.cardio.hdlCholesterol')}
-        accessibilityLabelledBy="cardio-hdl-label"
       />
       <TouchableOpacity
         style={styles.checkboxContainer}
@@ -386,29 +420,23 @@ export const CalculatorScreen = (): React.JSX.Element => {
 
   const renderEGFRCalculator = () => (
     <View style={styles.calculatorContent}>
-      <AppText style={styles.label} nativeID="egfr-creatinine-label">
-        {t('calculator.egfr.creatinine')} (mg/dL)
-      </AppText>
-      <TextInput
+      <AppInput
+        label={t('calculator.egfr.creatinineWithUnit', { defaultValue: 'Kreatinin (mg/dL)' })}
         style={styles.input}
         keyboardType="numeric"
         value={egfrCreatinine}
         onChangeText={setEgfrCreatinine}
-        placeholder="1.0"
+        placeholder={t('calculator.egfr.creatininePlaceholder', { defaultValue: '1.0' })}
         accessibilityLabel={t('calculator.egfr.creatinine')}
-        accessibilityLabelledBy="egfr-creatinine-label"
       />
-      <AppText style={styles.label} nativeID="egfr-age-label">
-        {t('calculator.egfr.age')}
-      </AppText>
-      <TextInput
+      <AppInput
+        label={t('calculator.egfr.age')}
         style={styles.input}
         keyboardType="numeric"
         value={egfrAge}
         onChangeText={setEgfrAge}
-        placeholder="50"
+        placeholder={t('calculator.egfr.agePlaceholder', { defaultValue: '50' })}
         accessibilityLabel={t('calculator.egfr.age')}
-        accessibilityLabelledBy="egfr-age-label"
       />
       <AppText style={styles.label}>{t('calculator.egfr.gender')}</AppText>
       <View style={styles.genderContainer} accessibilityRole="radiogroup">
@@ -442,17 +470,14 @@ export const CalculatorScreen = (): React.JSX.Element => {
 
   const renderIBWCalculator = () => (
     <View style={styles.calculatorContent}>
-      <AppText style={styles.label} nativeID="ibw-height-label">
-        {t('calculator.ibw.height')} (cm)
-      </AppText>
-      <TextInput
+      <AppInput
+        label={t('calculator.ibw.heightWithUnit', { defaultValue: 'Größe (cm)' })}
         style={styles.input}
         keyboardType="numeric"
         value={ibwHeight}
         onChangeText={setIbwHeight}
-        placeholder="175"
+        placeholder={t('calculator.ibw.heightPlaceholder', { defaultValue: '175' })}
         accessibilityLabel={t('calculator.ibw.height')}
-        accessibilityLabelledBy="ibw-height-label"
       />
       <AppText style={styles.label}>{t('calculator.ibw.gender')}</AppText>
       <View style={styles.genderContainer} accessibilityRole="radiogroup">
@@ -486,41 +511,32 @@ export const CalculatorScreen = (): React.JSX.Element => {
 
   const renderBMRCalculator = () => (
     <View style={styles.calculatorContent}>
-      <AppText style={styles.label} nativeID="bmr-weight-label">
-        {t('calculator.bmr.weight')} (kg)
-      </AppText>
-      <TextInput
+      <AppInput
+        label={t('calculator.bmr.weightWithUnit', { defaultValue: 'Gewicht (kg)' })}
         style={styles.input}
         keyboardType="numeric"
         value={bmrWeight}
         onChangeText={setBmrWeight}
-        placeholder="70"
+        placeholder={t('calculator.bmr.weightPlaceholder', { defaultValue: '70' })}
         accessibilityLabel={t('calculator.bmr.weight')}
-        accessibilityLabelledBy="bmr-weight-label"
       />
-      <AppText style={styles.label} nativeID="bmr-height-label">
-        {t('calculator.bmr.height')} (cm)
-      </AppText>
-      <TextInput
+      <AppInput
+        label={t('calculator.bmr.heightWithUnit', { defaultValue: 'Größe (cm)' })}
         style={styles.input}
         keyboardType="numeric"
         value={bmrHeight}
         onChangeText={setBmrHeight}
-        placeholder="175"
+        placeholder={t('calculator.bmr.heightPlaceholder', { defaultValue: '175' })}
         accessibilityLabel={t('calculator.bmr.height')}
-        accessibilityLabelledBy="bmr-height-label"
       />
-      <AppText style={styles.label} nativeID="bmr-age-label">
-        {t('calculator.bmr.age')}
-      </AppText>
-      <TextInput
+      <AppInput
+        label={t('calculator.bmr.age')}
         style={styles.input}
         keyboardType="numeric"
         value={bmrAge}
         onChangeText={setBmrAge}
-        placeholder="30"
+        placeholder={t('calculator.bmr.agePlaceholder', { defaultValue: '30' })}
         accessibilityLabel={t('calculator.bmr.age')}
-        accessibilityLabelledBy="bmr-age-label"
       />
       <AppText style={styles.label}>{t('calculator.bmr.gender')}</AppText>
       <View style={styles.genderContainer} accessibilityRole="radiogroup">
@@ -553,7 +569,19 @@ export const CalculatorScreen = (): React.JSX.Element => {
   );
 
   return (
+    <ScreenContainer testID="calculator-screen" accessibilityLabel="Clinical Calculator">
     <ScrollView style={styles.container}>
+      {/* Lab Upload Button (mobile only) */}
+      {supportsOCR && (
+        <View style={styles.labUploadBar}>
+          <AppButton
+            title={t('labUpload.importFromLab', { defaultValue: 'Laborwerte importieren' })}
+            onPress={handleNavigateToLabUpload}
+            style={styles.labUploadButton}
+            testID="calculator-lab-upload-button"
+          />
+        </View>
+      )}
       {renderTabButtons()}
       {activeTab === 'bmi' && renderBMICalculator()}
       {activeTab === 'cardio' && renderCardioCalculator()}
@@ -561,6 +589,7 @@ export const CalculatorScreen = (): React.JSX.Element => {
       {activeTab === 'ibw' && renderIBWCalculator()}
       {activeTab === 'bmr' && renderBMRCalculator()}
     </ScrollView>
+    </ScreenContainer>
   );
 };
 
@@ -568,6 +597,16 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,
+  },
+  labUploadBar: {
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
+    backgroundColor: colors.surface,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border,
+  },
+  labUploadButton: {
+    backgroundColor: colors.infoSurface,
   },
   tabContainer: {
     flexDirection: 'row',

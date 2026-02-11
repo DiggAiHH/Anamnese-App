@@ -13,12 +13,13 @@ import {
   ScrollView,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import type { StackScreenProps } from '@react-navigation/stack';
 import type { RootStackParamList } from '../navigation/RootNavigator';
 import { colors, spacing, radius } from '../theme/tokens';
 import { Card } from '../components/Card';
 import { AppButton } from '../components/AppButton';
 import { AppText } from '../components/AppText';
+import { ScreenContainer } from '../components/ScreenContainer';
 
 import { ExportGDTUseCase } from '@application/use-cases/ExportGDTUseCase';
 import { ExportAnonymizedUseCase } from '@application/use-cases/ExportAnonymizedUseCase';
@@ -26,12 +27,13 @@ import { SQLitePatientRepository } from '@infrastructure/persistence/SQLitePatie
 import { SQLiteQuestionnaireRepository } from '@infrastructure/persistence/SQLiteQuestionnaireRepository';
 import { SQLiteAnswerRepository } from '@infrastructure/persistence/SQLiteAnswerRepository';
 import { SQLiteGDPRConsentRepository } from '@infrastructure/persistence/SQLiteGDPRConsentRepository';
+import { SQLiteQuestionUniverseRepository } from '@infrastructure/persistence/SQLiteQuestionUniverseRepository';
 import { database } from '@infrastructure/persistence/DatabaseConnection';
 import { useQuestionnaireStore } from '../state/useQuestionnaireStore';
 import { reportUserError } from '../../shared/userFacingError';
 import { supportsShare } from '@shared/platformCapabilities';
 
-type Props = NativeStackScreenProps<RootStackParamList, 'Export'>;
+type Props = StackScreenProps<RootStackParamList, 'Export'>;
 
 export const ExportScreen = ({ route, navigation }: Props): React.JSX.Element => {
   const { t } = useTranslation();
@@ -69,6 +71,7 @@ export const ExportScreen = ({ route, navigation }: Props): React.JSX.Element =>
         new SQLiteQuestionnaireRepository(),
         new SQLiteAnswerRepository(),
         new SQLiteGDPRConsentRepository(database),
+        new SQLiteQuestionUniverseRepository(),
       );
 
       const result = await useCase.execute({
@@ -149,7 +152,8 @@ export const ExportScreen = ({ route, navigation }: Props): React.JSX.Element =>
       const useCase = new ExportAnonymizedUseCase(
         new SQLitePatientRepository(),
         new SQLiteQuestionnaireRepository(),
-        new SQLiteAnswerRepository()
+        new SQLiteAnswerRepository(),
+        new SQLiteQuestionUniverseRepository(),
       );
 
       const result = await useCase.execute({
@@ -189,16 +193,15 @@ export const ExportScreen = ({ route, navigation }: Props): React.JSX.Element =>
   };
 
   return (
-    <ScrollView
-      style={styles.container}
-      contentContainerStyle={styles.content}
-      testID="export-screen"
-      accessibilityRole="scrollbar"
-      accessibilityLabel={t('export.title')}>
-      <AppText style={styles.title} accessibilityRole="header">
-        {t('export.title')}
-      </AppText>
-      <AppText style={styles.subtitle}>{t('export.subtitle', { id: questionnaireId })}</AppText>
+    <ScreenContainer testID="export-screen" accessibilityLabel="Export">
+      <ScrollView
+        style={styles.container}
+        contentContainerStyle={styles.content}
+        keyboardShouldPersistTaps="handled">
+        <AppText style={styles.title} accessibilityRole="header">
+          {t('export.title')}
+        </AppText>
+        <AppText style={styles.subtitle}>{t('export.subtitle', { id: questionnaireId })}</AppText>
 
       <Card>
         <AppText style={styles.label}>{t('export.senderIdLabel')}</AppText>
@@ -256,15 +259,6 @@ export const ExportScreen = ({ route, navigation }: Props): React.JSX.Element =>
         loading={isWorking}
       />
 
-      <AppButton
-        variant="primary"
-        title={isWorking ? '' : t('export.run', { defaultValue: 'Export GDT (Practice)' })}
-        onPress={handleExport}
-        disabled={!canExport || isWorking}
-        testID="btn-run-export"
-        loading={isWorking && gdtVersion !== '3.0'} // Just a visual hack, better to track separate loading states
-      />
-
       <View style={styles.divider} />
 
       <AppText style={styles.sectionHeader}>{t('export.otherOptions', { defaultValue: 'Other Formats' })}</AppText>
@@ -284,7 +278,8 @@ export const ExportScreen = ({ route, navigation }: Props): React.JSX.Element =>
       />
 
       <AppText style={styles.hint}>{t('export.hint')}</AppText>
-    </ScrollView>
+      </ScrollView>
+    </ScreenContainer>
   );
 };
 

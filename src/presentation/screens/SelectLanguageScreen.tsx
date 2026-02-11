@@ -6,14 +6,15 @@
 import React, { useMemo } from 'react';
 import { View, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { AppText } from '../components/AppText';
+import { ScreenContainer } from '../components/ScreenContainer';
 import { useTranslation } from 'react-i18next';
 import { logDebug } from '@shared/logger';
 import i18n, { setAppLanguage, SUPPORTED_LANGUAGES, SupportedLanguage } from '../i18n/config';
-import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import type { StackScreenProps } from '@react-navigation/stack';
 import type { RootStackParamList } from '../navigation/RootNavigator';
 import { colors, spacing, radius } from '../theme/tokens';
 
-type Props = NativeStackScreenProps<RootStackParamList, 'SelectLanguage'>;
+type Props = StackScreenProps<RootStackParamList, 'SelectLanguage'>;
 
 const LABELS: Record<SupportedLanguage, { nativeName: string }> = {
   de: { nativeName: 'Deutsch' },
@@ -52,6 +53,7 @@ export const SelectLanguageScreen = ({ navigation }: Props): React.JSX.Element =
   };
 
   return (
+    <ScreenContainer testID="select-language-screen" accessibilityLabel="Select Language">
     <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer} testID="select-language-screen">
       <AppText style={styles.title} accessibilityRole="header">
         {t('selectLanguage.title')}
@@ -79,6 +81,7 @@ export const SelectLanguageScreen = ({ navigation }: Props): React.JSX.Element =
         })}
       </View>
     </ScrollView>
+    </ScreenContainer>
   );
 };
 

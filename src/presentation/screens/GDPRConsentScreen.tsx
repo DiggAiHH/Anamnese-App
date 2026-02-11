@@ -13,11 +13,12 @@ import {
   Platform,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import type { StackScreenProps } from '@react-navigation/stack';
 import type { RootStackParamList } from '../navigation/RootNavigator';
 import { useQuestionnaireStore } from '../state/useQuestionnaireStore';
 import { Card } from '../components/Card';
 import { AppButton } from '../components/AppButton';
+import { ConsentTooltip } from '../components/ConsentTooltip';
 import { colors, spacing, radius } from '../theme/tokens';
 import { logError, logDebug } from '@shared/logger';
 import { SQLitePatientRepository } from '@infrastructure/persistence/SQLitePatientRepository';
@@ -25,7 +26,7 @@ import { SQLiteGDPRConsentRepository } from '@infrastructure/persistence/SQLiteG
 import { database } from '@infrastructure/persistence/DatabaseConnection';
 import { GDPRConsentEntity } from '@domain/entities/GDPRConsent';
 
-type Props = NativeStackScreenProps<RootStackParamList, 'GDPRConsent'>;
+type Props = StackScreenProps<RootStackParamList, 'GDPRConsent'>;
 
 /**
  * @security DSGVO Art. 13/14 compliant privacy policy text
@@ -73,6 +74,7 @@ type ConsentState = {
 };
 
 import { AppText } from '../components/AppText';
+import { ScreenContainer } from '../components/ScreenContainer';
 import { useTheme } from '../theme/ThemeContext';
 
 export const GDPRConsentScreen = ({ navigation }: Props): React.JSX.Element => {
@@ -205,10 +207,12 @@ export const GDPRConsentScreen = ({ navigation }: Props): React.JSX.Element => {
   };
 
   return (
+    <ScreenContainer testID="gdpr-consent-screen" accessibilityLabel="GDPR Consent">
     <ScrollView
       style={styles.container}
       contentContainerStyle={styles.content}
-      testID="gdpr-consent-screen">
+      testID="gdpr-consent-screen"
+      keyboardShouldPersistTaps="handled">
       <AppText variant="h1" style={styles.title}>{t('gdpr.title')}</AppText>
       <AppText style={styles.subtitle}>{t('gdpr.subtitle')}</AppText>
 
@@ -268,6 +272,8 @@ export const GDPRConsentScreen = ({ navigation }: Props): React.JSX.Element => {
           value={consents.dataProcessing}
           onToggle={() => toggle('dataProcessing')}
           required={true}
+          whyText={t('gdpr.consents.dataProcessing.why', { defaultValue: '' })}
+          withoutText={t('gdpr.consents.dataProcessing.without', { defaultValue: '' })}
         />
         <ConsentRow
           title={t('gdpr.consents.dataStorage.title')}
@@ -275,6 +281,8 @@ export const GDPRConsentScreen = ({ navigation }: Props): React.JSX.Element => {
           value={consents.dataStorage}
           onToggle={() => toggle('dataStorage')}
           required={true}
+          whyText={t('gdpr.consents.dataStorage.why', { defaultValue: '' })}
+          withoutText={t('gdpr.consents.dataStorage.without', { defaultValue: '' })}
         />
 
         <View style={styles.divider} />
@@ -285,6 +293,8 @@ export const GDPRConsentScreen = ({ navigation }: Props): React.JSX.Element => {
           value={consents.gdtExport}
           onToggle={() => toggle('gdtExport')}
           required={false}
+          whyText={t('gdpr.consents.gdtExport.why', { defaultValue: '' })}
+          withoutText={t('gdpr.consents.gdtExport.without', { defaultValue: '' })}
         />
         <ConsentRow
           title={t('gdpr.consents.ocrProcessing.title')}
@@ -292,6 +302,8 @@ export const GDPRConsentScreen = ({ navigation }: Props): React.JSX.Element => {
           value={consents.ocrProcessing}
           onToggle={() => toggle('ocrProcessing')}
           required={false}
+          whyText={t('gdpr.consents.ocrProcessing.why', { defaultValue: '' })}
+          withoutText={t('gdpr.consents.ocrProcessing.without', { defaultValue: '' })}
         />
         <ConsentRow
           title={t('gdpr.consents.voiceRecognition.title')}
@@ -299,6 +311,8 @@ export const GDPRConsentScreen = ({ navigation }: Props): React.JSX.Element => {
           value={consents.voiceRecognition}
           onToggle={() => toggle('voiceRecognition')}
           required={false}
+          whyText={t('gdpr.consents.voiceRecognition.why', { defaultValue: '' })}
+          withoutText={t('gdpr.consents.voiceRecognition.without', { defaultValue: '' })}
         />
 
         <AppButton
@@ -369,6 +383,7 @@ export const GDPRConsentScreen = ({ navigation }: Props): React.JSX.Element => {
         </Modal>
       )}
     </ScrollView>
+    </ScreenContainer>
   );
 };
 
@@ -378,6 +393,8 @@ const ConsentRow = (props: {
   value: boolean;
   onToggle: () => void;
   required: boolean;
+  whyText?: string;
+  withoutText?: string;
 }): React.JSX.Element => {
   const { isHighContrast } = useTheme();
   const textColor = isHighContrast ? '#000000' : colors.textPrimary;
@@ -411,6 +428,14 @@ const ConsentRow = (props: {
           )}
         </View>
         <AppText style={[styles.consentDescription, { color: descColor }]}>{props.description}</AppText>
+        {props.whyText && props.withoutText ? (
+          <ConsentTooltip
+            whyText={props.whyText}
+            withoutText={props.withoutText}
+            testID={`tooltip-${props.title}`}
+            accessibilityLabel={`${props.title} info`}
+          />
+        ) : null}
       </View>
     </TouchableOpacity>
   );

@@ -14,6 +14,7 @@ import type { StackScreenProps } from '@react-navigation/stack';
 import { usePatientContext } from '../../application/PatientContext';
 import { useTheme } from '../theme/ThemeContext';
 import { AppText } from '../components/AppText';
+import { ScreenContainer } from '../components/ScreenContainer';
 import { DocumentType } from '../../domain/entities/DocumentRequest';
 import { colors, spacing, radius } from '../theme/tokens';
 import type { RootStackParamList } from '../navigation/RootNavigator';
@@ -67,6 +68,7 @@ export const DocumentRequestScreen = ({ navigation }: Props): React.JSX.Element 
   };
 
   return (
+    <ScreenContainer testID="document-request-screen" accessibilityLabel="Document Request">
     <View style={[styles.container, isHighContrast && styles.containerHighContrast]}>
       <View style={styles.headerSection}>
         <AppText variant="h1" style={[styles.title, isHighContrast && styles.textHighContrast]}>
@@ -116,6 +118,7 @@ export const DocumentRequestScreen = ({ navigation }: Props): React.JSX.Element 
         </View>
       )}
     </View>
+    </ScreenContainer>
   );
 };
 

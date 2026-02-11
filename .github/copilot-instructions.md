@@ -284,3 +284,35 @@ Wenn wiederholte Abbrüche/Instabilität auftreten, zuerst das Minimum-Diagnose-
 - Keine Halluzinationen: Nur dokumentierte Fakten verwenden.
 - Fragen minimieren; wenn gefragt wird, immer Empfehlung + bevorzugte Option geben.
 - Wenn Nutzer Terminal-Aktionen braucht: Hinweis im USER ACTION REQUIRED Format.
+
+17. OPENCLAW KOEXISTENZ (MULTI-AGENT PROTOCOL)
+
+17.1 Domänentrennung
+- **GitHub Copilot**: Code-Editing, Intellisense, In-Editor Refactoring, Unit-Tests schreiben
+- **OpenClaw**: Shell-Autonomie, Build/Test Pipeline, Git Ops, Deep Research, Pentest, i18n Audit
+- Beide Agenten teilen den gleichen Ground of Truth: `MEMORY.md` + `LAUFBAHN.md`
+- NIEMALS doppelte Writes auf gleiche Dateien gleichzeitig
+
+17.2 Shared State
+- `MEMORY.md` (Root): Kanonische Wahrheitsbasis (Tech Stack, Architektur, DSGVO-Regeln)
+- `LAUFBAHN.md`: Cross-Agent Log — jeder Session-Entry MUSS `Agent: copilot | openclaw` enthalten
+- `CURRENT_TASKS.md`: Gemeinsame Task-Queue
+- `.openclaw/`: OpenClaw-spezifische Config (openclaw.json, Skills, Prompts)
+
+17.3 OpenClaw Configuration
+- Config: `.openclaw/openclaw.json` (workspace-level) + `~/.openclaw/openclaw.json` (global)
+- Skills: `.openclaw/skills/` (custom) + ClawHub (community)
+- Prompts: `.openclaw/prompts/` (6 Workflow-Templates)
+- God Mode: `exec_approval: false`, `sandbox: false`, `bind: 127.0.0.1`
+- Security: Pfad-Deny-Liste, PII-Maskierung, wöchentlicher Security-Audit
+
+17.4 Penetration Testing
+- Script: `scripts/openclaw-pentest.cjs` — DSGVO + Supply Chain Scans
+- Frequenz: wöchentlich (Phase 1+3), pre-release (alle Phasen)
+- Reports: `buildLogs/pentest_report_*.md` — VERTRAULICH, nicht committen
+- Scope: Nur lokale Analyse, keine echten Patientendaten
+
+17.5 Pre-Push Hook
+- Git Hook: `scripts/git-pre-push-hook.sh` → `.git/hooks/pre-push`
+- Prüft: TypeScript, Jest, Secrets Scan
+- Evidence: `buildLogs/prepush_*.log`

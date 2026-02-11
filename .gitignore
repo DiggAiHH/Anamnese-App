@@ -80,5 +80,10 @@ react-native-share-*.tgz
 patches/*.broken
 windows/**/obj.__old_*/
 
+# OpenClaw (sensitive runtime data — config/prompts/skills ARE committed)
+buildLogs/pentest_report_*.md
+buildLogs/pentest_npm_audit_*.json
+buildLogs/openclaw/
+
 # Local run notes
 CURRENT_TASKS.md

@@ -185,7 +185,7 @@ if (-not $SkipBuild) {
       throw 'npm.cmd not found in PATH. Install Node.js or add it to PATH.'
     }
 
-    $rnwArgs = @('run','windows','--','--no-telemetry','--logging','--arch', $Platform)
+    $rnwArgs = @('run','windows:rnw','--','--no-telemetry','--logging','--arch', $Platform)
     & $npm @rnwArgs
     if ($LASTEXITCODE -ne 0) {
       Write-Host "\nNOTE: 'react-native run-windows' returned exit code $LASTEXITCODE (often deploy-only failure). Continuing with manual install..." -ForegroundColor Yellow

@@ -36,7 +36,8 @@
     "continue": "Continue",
     "close": "Close",
     "featureUnavailableTitle": "Func?ionalitate indisponibil?",
-    "featureUnavailableMessage": "{{feature}} nu este disponibil? pe aceast? platform?."
+    "featureUnavailableMessage": "{{feature}} nu este disponibil? pe aceast? platform?.",
+    "datePlaceholder": "ZZ/LL/AAAA"
   },
   "settings": {
     "deleteTitle": "Delete All Data?",
@@ -65,7 +66,18 @@
       "title": "Unde are loc anamneza?",
       "practice": "La cabinet",
       "private": "Privat (acasă)",
-      "admin": "Admin / Panou"
+      "admin": "Admin / Panou",
+      "therapistLogin": "Conectare terapeut",
+      "switchConfirmTitle": "Schimbați rolul?",
+      "switchConfirmMessage": "Schimbarea rolului va reseta datele curente.",
+      "switchConfirm": "Schimbă"
+    },
+    "role": {
+      "doctor": "Medic",
+      "patient": "Pacient"
+    },
+    "savedAnamneses": {
+      "patientOnlyHint": "Vizualizați propriile anamneze."
     },
     "accessibility": {
       "fontScale": "Mărimea fontului",
@@ -116,7 +128,29 @@
     "emailPlaceholder": "max.mustermann@example.com",
     "phone": "Telefon (opțional)",
     "phonePlaceholder": "+40 ...",
-    "toConsents": "Continuă la consimțăminte"
+    "toConsents": "Continuă la consimțăminte",
+    "titleReturning": "Welcome back",
+    "titleNew": "New patient registration",
+    "subtitleReturning": "Please identify yourself.",
+    "subtitleNew": "Please enter your details.",
+    "insuranceType": "Insurance type",
+    "insurancePublic": "Public",
+    "insurancePrivate": "Private",
+    "dayLabel": "Day",
+    "monthLabel": "Month",
+    "yearLabel": "Year",
+    "dayPlaceholder": "ZZ",
+    "monthPlaceholder": "LL",
+    "yearPlaceholder": "AAAA",
+    "dataChanged": "My personal data has changed",
+    "dataChangedHint": "Enable this option if your address, phone number or other personal data has changed since your last visit.",
+    "emailWhy": "Pentru confirmări de programare și notificări privind rezultatele analizelor.",
+    "emailWithout": "Fără e-mail, nu veți primi notificări digitale.",
+    "phoneWhy": "Pentru întrebări urgente de urmărire privind tratamentul dumneavoastră.",
+    "phoneWithout": "Fără număr de telefon, nu vă putem contacta pe termen scurt.",
+    "insuranceNumberPlaceholder": "ex. A123456789",
+    "namePlaceholder": "Min. 3 litere",
+    "countryPlaceholder": "(RO)"
   },
   "validation": {
     "required": "Acest câmp este obligatoriu",
@@ -171,23 +205,33 @@
     "consents": {
       "dataProcessing": {
         "title": "Procesare date (obligatoriu)",
-        "description": "Procesarea datelor personale de sănătate"
+        "description": "Procesarea datelor personale de sănătate",
+        "why": "Datele dumneavoastră de sănătate trebuie procesate pentru a evalua formularul de anamneză și a-l furniza medicului.",
+        "without": "Fără acest consimțământ, aplicația nu poate fi utilizată."
       },
       "dataStorage": {
         "title": "Stocare date (obligatoriu)",
-        "description": "Stocare locală a anamnezei"
+        "description": "Stocare locală a anamnezei",
+        "why": "Răspunsurile dumneavoastră sunt stocate local cu criptare AES-256 pentru a fi disponibile la vizita medicală.",
+        "without": "Fără stocare, toate datele introduse se vor pierde după închidere."
       },
       "gdtExport": {
         "title": "Export GDT (opțional)",
-        "description": "Export pentru sisteme de cabinet"
+        "description": "Export pentru sisteme de cabinet",
+        "why": "Permite importul automat al anamnezei dumneavoastră în sistemul de management al cabinetului medical.",
+        "without": "Fără export GDT, cabinetul trebuie să transfere datele manual."
       },
       "ocrProcessing": {
         "title": "OCR (opțional)",
-        "description": "Recunoaștere text din documente"
+        "description": "Recunoaștere text din documente",
+        "why": "Permite citirea automată a documentelor (de ex. cardul de asigurare) prin cameră.",
+        "without": "Fără OCR, trebuie să introduceți toate datele manual."
       },
       "voiceRecognition": {
         "title": "Recunoaștere vocală (opțional)",
-        "description": "Introducere prin voce"
+        "description": "Introducere prin voce",
+        "why": "Permite introducerea răspunsurilor prin voce în loc de tastare.",
+        "without": "Fără recunoaștere vocală, introducerea este posibilă doar prin tastatură."
       }
     }
   },
@@ -586,7 +630,11 @@
         "obese_class_i": "Obesity Class I",
         "obese_class_ii": "Obesity Class II",
         "obese_class_iii": "Obesity Class III"
-      }
+      },
+      "weightWithUnit": "Greutate (kg)",
+      "heightWithUnit": "Înălțime (cm)",
+      "weightPlaceholder": "70",
+      "heightPlaceholder": "175"
     },
     "cardio": {
       "title": "Cardiovascular Risk",
@@ -606,7 +654,14 @@
         "moderate": "Moderate Risk",
         "high": "High Risk",
         "very_high": "Very High Risk"
-      }
+      },
+      "agePlaceholder": "50",
+      "systolicPlaceholder": "120",
+      "cholPlaceholder": "200",
+      "hdlPlaceholder": "50",
+      "systolicBPWithUnit": "Tensiunea arterială sistolică (mmHg)",
+      "totalCholesterolWithUnit": "Colesterol total (mg/dL)",
+      "hdlCholesterolWithUnit": "Colesterol HDL (mg/dL)"
     },
     "egfr": {
       "title": "eGFR (Kidney Function)",
@@ -625,7 +680,10 @@
         "stage3b": "Stage 3b: Moderate-severe (30-44)",
         "stage4": "Stage 4: Severely decreased (15-29)",
         "stage5": "Stage 5: Kidney failure (<15)"
-      }
+      },
+      "creatininePlaceholder": "1,0",
+      "agePlaceholder": "50",
+      "creatinineWithUnit": "Creatinină (mg/dL)"
     },
     "ibw": {
       "title": "Ideal Body Weight (IBW)",
@@ -634,7 +692,9 @@
       "male": "Male",
       "female": "Female",
       "result": "Ideal Weight: {{value}} kg",
-      "invalidInput": "Please enter valid values"
+      "invalidInput": "Please enter valid values",
+      "heightPlaceholder": "175",
+      "heightWithUnit": "Înălțime (cm)"
     },
     "bmr": {
       "title": "Basal Metabolic Rate (BMR)",
@@ -645,7 +705,12 @@
       "male": "Male",
       "female": "Female",
       "result": "BMR: {{value}} kcal/day",
-      "invalidInput": "Please enter valid values"
+      "invalidInput": "Please enter valid values",
+      "weightPlaceholder": "70",
+      "heightPlaceholder": "175",
+      "agePlaceholder": "30",
+      "weightWithUnit": "Greutate (kg)",
+      "heightWithUnit": "Înălțime (cm)"
     }
   },
   "dataManagement": {
@@ -803,7 +868,14 @@
     "submit": "Send request",
     "continue": "Continue to anamnesis",
     "errorMedicationRequired": "Please enter the medication name.",
-    "errorSubmit": "Request could not be created."
+    "errorSubmit": "Request could not be created.",
+    "dosageHint": "Format: Morning-Noon-Evening (e.g. 1-0-1)",
+    "packageSize": "Package size (optional)",
+    "packageSizePlaceholder": "e.g. N1, N2, N3",
+    "prescriptionType": "Prescription type",
+    "followUp": "Repeat prescription",
+    "newPrescription": "New prescription",
+    "urgentLabel": "⚡ Urgent (needed immediately)"
   },
   "referral": {
     "title": "Request referral",
@@ -840,6 +912,193 @@
     "errorStartDateRequired": "Please enter a valid start date (DD.MM.YYYY).",
     "errorEndDateInvalid": "The end date is invalid (DD.MM.YYYY).",
     "errorEndBeforeStart": "End date must not be before start date.",
-    "errorSubmit": "Request could not be created."
+    "errorSubmit": "Request could not be created.",
+    "documentSubType": "Document type",
+    "subTypeStandard": "Sick note",
+    "subTypeAttest": "Medical certificate",
+    "subTypeBefund": "Medical report"
+  },
+  "requestSummary": {
+    "title": "Summary",
+    "subtitle": "Please review your information.",
+    "type": "Type",
+    "priority": "Priority",
+    "urgent": "⚡ Urgent",
+    "notes": "Notes",
+    "encryptionInfo": "🔒 Your data is encrypted with AES-256. Only your practice can decrypt it.",
+    "send": "Send encrypted",
+    "successTitle": "Request sent",
+    "successMessage": "Your request has been opened in your email client.",
+    "noEmailClient": "No email client found. Please install one.",
+    "errorSend": "Request could not be sent."
+  },
+  "auth": {
+    "loginTitle": "Sign In",
+    "loginSubtitle": "Sign in securely.",
+    "registerTitle": "Create Account",
+    "registerSubtitle": "Create your therapist account.",
+    "email": "Email",
+    "password": "Password",
+    "displayName": "Display Name",
+    "displayNamePlaceholder": "Dr. Jane Smith",
+    "login": "Sign In",
+    "register": "Register",
+    "logout": "Sign Out",
+    "switchToLogin": "Already registered? Sign in",
+    "switchToRegister": "Create new account",
+    "continueAsPatient": "Continue as patient",
+    "fillAllFields": "Please fill in all fields.",
+    "invalidCredentials": "Invalid email or password.",
+    "accountLocked": "Account locked due to too many failed attempts. Please wait.",
+    "emailExists": "This email is already registered.",
+    "passwordTooShort": "Password must be at least 8 characters.",
+    "registrationSuccess": "Registration successful",
+    "registrationSuccessMessage": "You can now log in. Set up 2FA in settings for extra security.",
+    "registrationFailed": "Registration failed.",
+    "loginFailed": "Sign in failed.",
+    "twoFactorTitle": "Two-Factor Authentication",
+    "twoFactorSubtitle": "Enter the 6-digit code from your authenticator app.",
+    "verificationCode": "Verification Code",
+    "verify": "Verify",
+    "invalid2FACode": "Invalid code. Please try again.",
+    "invalidCodeLength": "Please enter the 6-digit code.",
+    "verificationFailed": "Verification failed.",
+    "twoFactorHelp": "Open your authenticator app (e.g. Google Authenticator) and enter the current code.",
+    "securityInfo": "Your credentials are encrypted with PBKDF2. Enable 2FA for additional security.",
+    "therapist": "Therapist",
+    "codePlaceholder": "000000"
+  },
+  "therapistDashboard": {
+    "title": "Dashboard",
+    "greeting": "Welcome, {{name}}",
+    "calendar": "Calendar",
+    "videoSession": "Video Session",
+    "notes": "Notes",
+    "todaySchedule": "Today's Schedule",
+    "noAppointments": "No appointments for today.",
+    "encryptionActive": "End-to-end encryption active. All patient data protected with AES-256-GCM."
+  },
+  "appointments": {
+    "calendarTitle": "Appointment Calendar",
+    "weekOf": "Week of",
+    "newAppointment": "New Appointment",
+    "patientId": "Patient ID",
+    "patientRequired": "Please enter patient ID.",
+    "time": "Time",
+    "duration": "Duration (minutes)",
+    "book": "Book Appointment",
+    "booked": "Appointment has been booked.",
+    "conflict": "Schedule conflict: This time slot is already taken.",
+    "pastDate": "Cannot schedule appointments in the past.",
+    "bookingFailed": "Could not book appointment.",
+    "cancelTitle": "Cancel Appointment?",
+    "cancelConfirm": "Do you really want to cancel this appointment?",
+    "notFound": "Appointment not found.",
+    "cannotReschedule": "Cancelled or completed appointments cannot be rescheduled.",
+    "type_initial_session": "Initial Session",
+    "type_follow_up": "Follow-up",
+    "type_online": "Online Session",
+    "type_crisis": "Crisis Intervention",
+    "type_group": "Group Therapy",
+    "status_scheduled": "Scheduled",
+    "status_confirmed": "Confirmed",
+    "status_cancelled": "Cancelled",
+    "status_completed": "Completed",
+    "status_no_show": "No Show"
+  },
+  "video": {
+    "title": "Video Session",
+    "subtitle": "Secure, encrypted video communication (WebRTC/DTLS-SRTP)",
+    "roomId": "Room ID",
+    "startSession": "📹 Start Session",
+    "endSession": "⏹ End Session",
+    "copyInvite": "📋 Copy Invite Link",
+    "inviteCopied": "Link Copied",
+    "inviteCopiedMessage": "Send this link to your patient for the online session.",
+    "sessionEnded": "Session Ended",
+    "sessionEndedMessage": "Would you like to create notes for this session?",
+    "browserRequired": "Please open a browser for the video session.",
+    "startFailed": "Could not start video session.",
+    "securityTitle": "Security Notes",
+    "securityInfo": "• Video streams encrypted with DTLS-SRTP\n• No session recording\n• Room ID is unique and non-guessable\n• GDPR compliant: No video/audio data stored",
+    "compatNote": "Supported: Chrome, Firefox, Safari, Edge. For mobile devices, the Jitsi Meet app is recommended."
+  },
+  "notes": {
+    "title": "Session Notes",
+    "subtitle": "Encrypted notes — visible only to you.",
+    "newNote": "✏️ New Note",
+    "content": "Note",
+    "contentPlaceholder": "Enter session note...",
+    "tags": "Tags",
+    "save": "🔒 Save Encrypted",
+    "saved": "Note saved encrypted.",
+    "history": "History",
+    "noNotes": "No notes yet.",
+    "emptyContent": "Please enter a note.",
+    "encryptionRequired": "Encryption key required. Please enter password first.",
+    "deleteTitle": "Delete Note?",
+    "deleteConfirm": "This action cannot be undone.",
+    "gdprInfo": "All notes are encrypted with AES-256-GCM. Only you as therapist can decrypt them. GDPR Art. 9: Health data is stored exclusively locally and encrypted.",
+    "tag_progress": "Progress",
+    "tag_anxiety": "Anxiety",
+    "tag_depression": "Depression",
+    "tag_medication": "Medication",
+    "tag_crisis": "Crisis",
+    "tag_homework": "Homework",
+    "tag_goals": "Goals"
+  },
+  "outputBox": {
+    "title": "Răspunsurile dvs.",
+    "empty": "Încă nu există răspunsuri",
+    "jumpTo": "Mergi la întrebare",
+    "continueFrom": "Continuă de aici",
+    "backToSummary": "Înapoi la prezentare generală",
+    "answerCount": "{{count}} răspunsuri"
+  },
+  "labUpload": {
+    "title": "Încărcați raport de laborator",
+    "selectFile": "Selectați fișier",
+    "processing": "Se analizează...",
+    "valuesFound": "{{count}} valori detectate",
+    "importValues": "Importă valori ({{count}})",
+    "noValues": "Nicio valoare detectată",
+    "ocrRequired": "Consimțământ OCR necesar",
+    "ocrNotAvailable": "OCR nu este disponibil pe acest dispozitiv.",
+    "notSupported": "Încărcarea rapoartelor de laborator nu este disponibilă pe această platformă.",
+    "mobilOnly": "Această funcție este disponibilă doar pe iOS și Android.",
+    "description": "Încărcați un raport de laborator (imagine sau PDF). Valorile vor fi extrase local prin OCR și pot fi importate în calculator.",
+    "confidence": "Încredere OCR: {{percent}}%",
+    "noValuesHint": "Încercați o imagine mai clară sau un alt raport.",
+    "importHint": "{{count}} valori pot fi importate în calculator.",
+    "noImportableHint": "Niciuna dintre valorile detectate nu poate fi importată automat.",
+    "noImportableValues": "Nicio valoare importabilă selectată.",
+    "importSuccess": "{{count}} valori de laborator au fost importate.",
+    "processingError": "Eroare la procesarea raportului de laborator.",
+    "refRange": "Ref: {{range}}",
+    "importFromLab": "Importă valori de laborator",
+    "valueLabel": {
+      "creatinine": "Creatinină",
+      "totalCholesterol": "Colesterol total",
+      "hdlCholesterol": "Colesterol HDL",
+      "ldlCholesterol": "Colesterol LDL",
+      "triglycerides": "Trigliceride",
+      "glucose": "Glucoză",
+      "hba1c": "HbA1c",
+      "hemoglobin": "Hemoglobină",
+      "leukocytes": "Leucocite",
+      "thrombocytes": "Trombocite",
+      "got": "GOT (AST)",
+      "gpt": "GPT (ALT)",
+      "ggt": "GGT",
+      "tsh": "TSH",
+      "uricAcid": "Acid uric",
+      "potassium": "Potasiu",
+      "sodium": "Sodiu",
+      "crp": "PCR",
+      "systolicBP": "Tensiune arterială sistolică",
+      "weight": "Greutate",
+      "height": "Înălțime",
+      "age": "Vârstă"
+    }
   }
 }

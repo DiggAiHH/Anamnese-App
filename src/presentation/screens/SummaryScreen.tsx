@@ -6,22 +6,49 @@
 import React, { useMemo } from 'react';
 import { View, StyleSheet, ScrollView, TouchableOpacity, Platform, Alert } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import type { StackScreenProps } from '@react-navigation/stack';
 import type { RootStackParamList } from '../navigation/RootNavigator';
 import { useQuestionnaireStore, selectProgress } from '../state/useQuestionnaireStore';
+import { usePatientContext } from '../../application/PatientContext';
+import { DocumentType } from '../../domain/entities/DocumentRequest';
 import { colors, spacing, radius } from '../theme/tokens';
 import { Card } from '../components/Card';
 import { AppButton } from '../components/AppButton';
 import { AppText } from '../components/AppText';
+import { ScreenContainer } from '../components/ScreenContainer';
+import { DeleteAllDataUseCase } from '@application/use-cases/DeleteAllDataUseCase';
 
-type Props = NativeStackScreenProps<RootStackParamList, 'Summary'>;
+type Props = StackScreenProps<RootStackParamList, 'Summary'>;
 
 export const SummaryScreen = ({ navigation, route }: Props): React.JSX.Element => {
   const { t } = useTranslation();
   const { questionnaireId } = route.params;
   const { reset, questionnaire, answers, patient } = useQuestionnaireStore();
+  const { pendingDocumentRequest } = usePatientContext();
   const progress = selectProgress(useQuestionnaireStore.getState());
   const safeProgress = Number.isFinite(progress) ? progress : 0;
+
+  // Get label for pending document request type
+  const getPendingRequestLabel = (): string => {
+    if (!pendingDocumentRequest) return '';
+    switch (pendingDocumentRequest.documentType) {
+      case DocumentType.REZEPT:
+        return t('documentRequest.prescription', { defaultValue: 'Rezept' });
+      case DocumentType.UEBERWEISUNG:
+        return t('documentRequest.referral', { defaultValue: 'Überweisung' });
+      case DocumentType.AU_BESCHEINIGUNG:
+        return t('documentRequest.sickNote', { defaultValue: 'Krankschreibung' });
+      default:
+        return t('documentRequest.title', { defaultValue: 'Anfrage' });
+    }
+  };
+
+  // Handle continuing to RequestSummary with pending request
+  const handleContinueToRequest = (): void => {
+    if (pendingDocumentRequest) {
+      navigation.navigate('RequestSummary', { request: pendingDocumentRequest });
+    }
+  };
 
   // Build structured summary of all answers
   const answerSummary = useMemo(() => {
@@ -147,6 +174,7 @@ export const SummaryScreen = ({ navigation, route }: Props): React.JSX.Element =
 
   if (!questionnaire) {
     return (
+      <ScreenContainer testID="summary-screen" accessibilityLabel="Summary">
       <ScrollView
         style={styles.container}
         contentContainerStyle={styles.content}
@@ -165,10 +193,12 @@ export const SummaryScreen = ({ navigation, route }: Props): React.JSX.Element =
           onPress={() => navigation.goBack()}
         />
       </ScrollView>
+      </ScreenContainer>
     );
   }
 
   return (
+    <ScreenContainer testID="summary-screen" accessibilityLabel="Summary">
     <ScrollView
       style={styles.container}
       contentContainerStyle={styles.content}
@@ -195,6 +225,31 @@ export const SummaryScreen = ({ navigation, route }: Props): React.JSX.Element =
           })}
         </AppText>
       </Card>
+
+      {/* Pending Document Request Card - shown when patient came from document request flow */}
+      {pendingDocumentRequest && (
+        <Card style={styles.pendingRequestCard}>
+          <AppText style={styles.pendingRequestTitle} accessibilityRole="header">
+            📋 {t('summary.pendingRequest', { defaultValue: 'Ihre Anfrage' })}
+          </AppText>
+          <AppText style={styles.pendingRequestText}>
+            {t('summary.pendingRequestInfo', {
+              type: getPendingRequestLabel(),
+              defaultValue: 'Sie haben eine {{type}}-Anfrage gestartet. Jetzt können Sie diese mit Ihren Anamnese-Daten absenden.',
+            })}
+          </AppText>
+          <AppButton
+            variant="primary"
+            title={t('summary.continueToRequest', {
+              type: getPendingRequestLabel(),
+              defaultValue: '{{type}} jetzt absenden',
+            })}
+            onPress={handleContinueToRequest}
+            testID="btn-continue-request"
+            style={styles.pendingRequestButton}
+          />
+        </Card>
+      )}
 
       {/* Output Box - Answer Summary */}
       <View style={styles.outputBox}>
@@ -325,9 +380,15 @@ export const SummaryScreen = ({ navigation, route }: Props): React.JSX.Element =
               {
                 text: t('common.delete', { defaultValue: 'Löschen' }),
                 style: 'destructive',
-                onPress: () => {
+                onPress: async () => {
+                  try {
+                    // GDPR Art. 17: Delete ALL persistent data (SQLite + AsyncStorage)
+                    await new DeleteAllDataUseCase().execute();
+                  } catch {
+                    // Best-effort: even if DB deletion fails, clear in-memory state
+                  }
                   reset();
-                  navigation.popToTop(); // Or navigate to a "Goodbye" screen
+                  navigation.popToTop();
                 }
               }
             ]
@@ -337,6 +398,7 @@ export const SummaryScreen = ({ navigation, route }: Props): React.JSX.Element =
         <AppText style={styles.nuclearButtonText}>⚠️ {t('summary.nuclearOption', { defaultValue: 'Daten vollständig vernichten (Nuclear Option)' })}</AppText>
       </TouchableOpacity>
     </ScrollView>
+    </ScreenContainer>
   );
 };
 
@@ -358,6 +420,26 @@ const styles = StyleSheet.create({
   },
   progressCard: {
     marginBottom: spacing.lg,
+  },
+  pendingRequestCard: {
+    marginBottom: spacing.lg,
+    backgroundColor: colors.warningSurface ?? '#FFF3E0',
+    borderColor: colors.warning ?? '#FF9800',
+    borderWidth: 2,
+  },
+  pendingRequestTitle: {
+    fontWeight: '700',
+    fontSize: 18,
+    color: colors.text,
+    marginBottom: spacing.sm,
+  },
+  pendingRequestText: {
+    color: colors.textSecondary,
+    marginBottom: spacing.md,
+    lineHeight: 22,
+  },
+  pendingRequestButton: {
+    marginTop: spacing.sm,
   },
   cardTitle: {
     fontWeight: '700',

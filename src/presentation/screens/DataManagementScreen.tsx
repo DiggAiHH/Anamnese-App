@@ -15,7 +15,9 @@ import { colors, spacing, radius } from '../theme/tokens';
 import { FeatureBanner } from '../components/FeatureBanner';
 import { reportUserError } from '../../shared/userFacingError';
 import { AppButton } from '../components/AppButton';
+import { ScreenContainer } from '../components/ScreenContainer';
 import { useQuestionnaireStore } from '../state/useQuestionnaireStore';
+import { RootNavigationProp } from '../navigation/RootNavigator';
 import {
   supportsDocumentPicker,
   supportsRNFS,
@@ -50,8 +52,6 @@ const getShareModule = (): ShareModule | null => {
 
 // Navigation Props type (kept for future use)
 // type Props = NativeStackScreenProps<RootStackParamList, 'DataManagement'>;
-
-import { RootNavigationProp } from '../navigation/RootNavigator';
 
 export const DataManagementScreen = ({ navigation }: { navigation: RootNavigationProp }): React.JSX.Element => {
   const { t } = useTranslation();
@@ -187,8 +187,9 @@ export const DataManagementScreen = ({ navigation }: { navigation: RootNavigatio
   };
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.content}>
+    <ScreenContainer testID="data-management-screen" accessibilityLabel="Data Management">
+      <ScrollView style={styles.container} keyboardShouldPersistTaps="handled">
+        <View style={styles.content}>
         {(!canBackup || !canRestore) && (
           <FeatureBanner
             title={t('common.featureUnavailableTitle')}
@@ -264,8 +265,9 @@ export const DataManagementScreen = ({ navigation }: { navigation: RootNavigatio
             {'\n'}• {t('dataManagement.info.gdprCompliant')}
           </AppText>
         </View>
-      </View>
-    </ScrollView>
+        </View>
+      </ScrollView>
+    </ScreenContainer>
   );
 };
 
@@ -329,9 +331,4 @@ const styles = StyleSheet.create({
     color: colors.primaryDark,
     lineHeight: 22,
   },
-  // High Contrast
-  textHighContrast: { color: '#ffffff' },
-  textHighContrastInverse: { color: '#000000' },
-  bgHighContrast: { backgroundColor: '#000000' },
-  surfaceHighContrast: { backgroundColor: '#ffffff' },
 });

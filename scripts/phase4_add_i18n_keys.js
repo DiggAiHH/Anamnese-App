@@ -1,0 +1,266 @@
+/**
+ * Phase 4: Add missing i18n keys across all 19 locales.
+ * Run: node scripts/phase4_add_i18n_keys.js
+ */
+const fs = require('fs');
+const path = require('path');
+
+const dir = path.join(__dirname, '..', 'src', 'presentation', 'i18n', 'locales');
+
+// Keys per language
+const keys = {
+  de: {
+    "patientInfo.insuranceNumberPlaceholder": "z.B. A123456789",
+    "patientInfo.namePlaceholder": "Min. 3 Buchstaben",
+    "patientInfo.countryPlaceholder": "Land (z.B. DE)",
+    "calculator.bmi.weightWithUnit": "Gewicht (kg)",
+    "calculator.bmi.heightWithUnit": "Größe (cm)",
+    "calculator.bmi.weightPlaceholder": "70",
+    "calculator.bmi.heightPlaceholder": "175",
+    "calculator.cardio.agePlaceholder": "50",
+    "calculator.cardio.systolicPlaceholder": "120",
+    "calculator.cardio.cholPlaceholder": "200",
+    "calculator.cardio.hdlPlaceholder": "50",
+    "calculator.cardio.systolicBPWithUnit": "Systolischer Blutdruck (mmHg)",
+    "calculator.cardio.totalCholesterolWithUnit": "Gesamtcholesterin (mg/dL)",
+    "calculator.cardio.hdlCholesterolWithUnit": "HDL-Cholesterin (mg/dL)",
+    "calculator.egfr.creatininePlaceholder": "1.0",
+    "calculator.egfr.agePlaceholder": "50",
+    "calculator.egfr.creatinineWithUnit": "Kreatinin (mg/dL)",
+    "calculator.ibw.heightPlaceholder": "175",
+    "calculator.ibw.heightWithUnit": "Größe (cm)",
+    "calculator.bmr.weightPlaceholder": "70",
+    "calculator.bmr.heightPlaceholder": "175",
+    "calculator.bmr.agePlaceholder": "30",
+    "calculator.bmr.weightWithUnit": "Gewicht (kg)",
+    "calculator.bmr.heightWithUnit": "Größe (cm)",
+    "auth.codePlaceholder": "000000",
+    "common.datePlaceholder": "TT.MM.JJJJ",
+  },
+  en: {
+    "patientInfo.insuranceNumberPlaceholder": "e.g. A123456789",
+    "patientInfo.namePlaceholder": "Min. 3 letters",
+    "patientInfo.countryPlaceholder": "Country (e.g. US)",
+    "calculator.bmi.weightWithUnit": "Weight (kg)",
+    "calculator.bmi.heightWithUnit": "Height (cm)",
+    "calculator.bmi.weightPlaceholder": "70",
+    "calculator.bmi.heightPlaceholder": "175",
+    "calculator.cardio.agePlaceholder": "50",
+    "calculator.cardio.systolicPlaceholder": "120",
+    "calculator.cardio.cholPlaceholder": "200",
+    "calculator.cardio.hdlPlaceholder": "50",
+    "calculator.cardio.systolicBPWithUnit": "Systolic Blood Pressure (mmHg)",
+    "calculator.cardio.totalCholesterolWithUnit": "Total Cholesterol (mg/dL)",
+    "calculator.cardio.hdlCholesterolWithUnit": "HDL Cholesterol (mg/dL)",
+    "calculator.egfr.creatininePlaceholder": "1.0",
+    "calculator.egfr.agePlaceholder": "50",
+    "calculator.egfr.creatinineWithUnit": "Creatinine (mg/dL)",
+    "calculator.ibw.heightPlaceholder": "175",
+    "calculator.ibw.heightWithUnit": "Height (cm)",
+    "calculator.bmr.weightPlaceholder": "70",
+    "calculator.bmr.heightPlaceholder": "175",
+    "calculator.bmr.agePlaceholder": "30",
+    "calculator.bmr.weightWithUnit": "Weight (kg)",
+    "calculator.bmr.heightWithUnit": "Height (cm)",
+    "auth.codePlaceholder": "000000",
+    "common.datePlaceholder": "DD/MM/YYYY",
+  },
+  fr: {
+    "patientInfo.insuranceNumberPlaceholder": "ex. A123456789",
+    "patientInfo.namePlaceholder": "Min. 3 lettres",
+    "patientInfo.countryPlaceholder": "Pays (ex. FR)",
+    "calculator.bmi.weightWithUnit": "Poids (kg)",
+    "calculator.bmi.heightWithUnit": "Taille (cm)",
+    "calculator.bmi.weightPlaceholder": "70",
+    "calculator.bmi.heightPlaceholder": "175",
+    "calculator.cardio.agePlaceholder": "50",
+    "calculator.cardio.systolicPlaceholder": "120",
+    "calculator.cardio.cholPlaceholder": "200",
+    "calculator.cardio.hdlPlaceholder": "50",
+    "calculator.cardio.systolicBPWithUnit": "Pression artérielle systolique (mmHg)",
+    "calculator.cardio.totalCholesterolWithUnit": "Cholestérol total (mg/dL)",
+    "calculator.cardio.hdlCholesterolWithUnit": "Cholestérol HDL (mg/dL)",
+    "calculator.egfr.creatininePlaceholder": "1,0",
+    "calculator.egfr.agePlaceholder": "50",
+    "calculator.egfr.creatinineWithUnit": "Créatinine (mg/dL)",
+    "calculator.ibw.heightPlaceholder": "175",
+    "calculator.ibw.heightWithUnit": "Taille (cm)",
+    "calculator.bmr.weightPlaceholder": "70",
+    "calculator.bmr.heightPlaceholder": "175",
+    "calculator.bmr.agePlaceholder": "30",
+    "calculator.bmr.weightWithUnit": "Poids (kg)",
+    "calculator.bmr.heightWithUnit": "Taille (cm)",
+    "auth.codePlaceholder": "000000",
+    "common.datePlaceholder": "JJ/MM/AAAA",
+  },
+  es: {
+    "patientInfo.insuranceNumberPlaceholder": "ej. A123456789",
+    "patientInfo.namePlaceholder": "Mín. 3 letras",
+    "patientInfo.countryPlaceholder": "País (ej. ES)",
+    "calculator.bmi.weightWithUnit": "Peso (kg)",
+    "calculator.bmi.heightWithUnit": "Altura (cm)",
+    "calculator.bmi.weightPlaceholder": "70",
+    "calculator.bmi.heightPlaceholder": "175",
+    "calculator.cardio.agePlaceholder": "50",
+    "calculator.cardio.systolicPlaceholder": "120",
+    "calculator.cardio.cholPlaceholder": "200",
+    "calculator.cardio.hdlPlaceholder": "50",
+    "calculator.cardio.systolicBPWithUnit": "Presión arterial sistólica (mmHg)",
+    "calculator.cardio.totalCholesterolWithUnit": "Colesterol total (mg/dL)",
+    "calculator.cardio.hdlCholesterolWithUnit": "Colesterol HDL (mg/dL)",
+    "calculator.egfr.creatininePlaceholder": "1,0",
+    "calculator.egfr.agePlaceholder": "50",
+    "calculator.egfr.creatinineWithUnit": "Creatinina (mg/dL)",
+    "calculator.ibw.heightPlaceholder": "175",
+    "calculator.ibw.heightWithUnit": "Altura (cm)",
+    "calculator.bmr.weightPlaceholder": "70",
+    "calculator.bmr.heightPlaceholder": "175",
+    "calculator.bmr.agePlaceholder": "30",
+    "calculator.bmr.weightWithUnit": "Peso (kg)",
+    "calculator.bmr.heightWithUnit": "Altura (cm)",
+    "auth.codePlaceholder": "000000",
+    "common.datePlaceholder": "DD/MM/AAAA",
+  },
+  it: {
+    "patientInfo.insuranceNumberPlaceholder": "es. A123456789",
+    "patientInfo.namePlaceholder": "Min. 3 lettere",
+    "patientInfo.countryPlaceholder": "Paese (es. IT)",
+    "calculator.bmi.weightWithUnit": "Peso (kg)",
+    "calculator.bmi.heightWithUnit": "Altezza (cm)",
+    "calculator.bmi.weightPlaceholder": "70",
+    "calculator.bmi.heightPlaceholder": "175",
+    "calculator.cardio.agePlaceholder": "50",
+    "calculator.cardio.systolicPlaceholder": "120",
+    "calculator.cardio.cholPlaceholder": "200",
+    "calculator.cardio.hdlPlaceholder": "50",
+    "calculator.cardio.systolicBPWithUnit": "Pressione arteriosa sistolica (mmHg)",
+    "calculator.cardio.totalCholesterolWithUnit": "Colesterolo totale (mg/dL)",
+    "calculator.cardio.hdlCholesterolWithUnit": "Colesterolo HDL (mg/dL)",
+    "calculator.egfr.creatininePlaceholder": "1,0",
+    "calculator.egfr.agePlaceholder": "50",
+    "calculator.egfr.creatinineWithUnit": "Creatinina (mg/dL)",
+    "calculator.ibw.heightPlaceholder": "175",
+    "calculator.ibw.heightWithUnit": "Altezza (cm)",
+    "calculator.bmr.weightPlaceholder": "70",
+    "calculator.bmr.heightPlaceholder": "175",
+    "calculator.bmr.agePlaceholder": "30",
+    "calculator.bmr.weightWithUnit": "Peso (kg)",
+    "calculator.bmr.heightWithUnit": "Altezza (cm)",
+    "auth.codePlaceholder": "000000",
+    "common.datePlaceholder": "GG/MM/AAAA",
+  },
+  pt: {
+    "patientInfo.insuranceNumberPlaceholder": "ex. A123456789",
+    "patientInfo.namePlaceholder": "Mín. 3 letras",
+    "patientInfo.countryPlaceholder": "País (ex. PT)",
+    "calculator.bmi.weightWithUnit": "Peso (kg)",
+    "calculator.bmi.heightWithUnit": "Altura (cm)",
+    "calculator.bmi.weightPlaceholder": "70",
+    "calculator.bmi.heightPlaceholder": "175",
+    "calculator.cardio.agePlaceholder": "50",
+    "calculator.cardio.systolicPlaceholder": "120",
+    "calculator.cardio.cholPlaceholder": "200",
+    "calculator.cardio.hdlPlaceholder": "50",
+    "calculator.cardio.systolicBPWithUnit": "Pressão arterial sistólica (mmHg)",
+    "calculator.cardio.totalCholesterolWithUnit": "Colesterol total (mg/dL)",
+    "calculator.cardio.hdlCholesterolWithUnit": "Colesterol HDL (mg/dL)",
+    "calculator.egfr.creatininePlaceholder": "1,0",
+    "calculator.egfr.agePlaceholder": "50",
+    "calculator.egfr.creatinineWithUnit": "Creatinina (mg/dL)",
+    "calculator.ibw.heightPlaceholder": "175",
+    "calculator.ibw.heightWithUnit": "Altura (cm)",
+    "calculator.bmr.weightPlaceholder": "70",
+    "calculator.bmr.heightPlaceholder": "175",
+    "calculator.bmr.agePlaceholder": "30",
+    "calculator.bmr.weightWithUnit": "Peso (kg)",
+    "calculator.bmr.heightWithUnit": "Altura (cm)",
+    "auth.codePlaceholder": "000000",
+    "common.datePlaceholder": "DD/MM/AAAA",
+  },
+};
+
+// For remaining locales, use English as base with localized date placeholders
+const remainingLocales = {
+  nl: { datePlaceholder: "DD/MM/JJJJ", countryEx: "NL", nameMin: "Min. 3 letters", insEx: "bv. A123456789",
+    weight: "Gewicht (kg)", height: "Lengte (cm)", systolic: "Systolische bloeddruk (mmHg)", totalChol: "Totaal cholesterol (mg/dL)", hdlChol: "HDL-cholesterol (mg/dL)", creatinine: "Creatinine (mg/dL)", creatPlaceholder: "1,0" },
+  pl: { datePlaceholder: "DD.MM.RRRR", countryEx: "PL", nameMin: "Min. 3 litery", insEx: "np. A123456789",
+    weight: "Waga (kg)", height: "Wzrost (cm)", systolic: "Skurczowe ciśnienie krwi (mmHg)", totalChol: "Cholesterol całkowity (mg/dL)", hdlChol: "Cholesterol HDL (mg/dL)", creatinine: "Kreatynina (mg/dL)", creatPlaceholder: "1,0" },
+  tr: { datePlaceholder: "GG.AA.YYYY", countryEx: "TR", nameMin: "Min. 3 harf", insEx: "örn. A123456789",
+    weight: "Ağırlık (kg)", height: "Boy (cm)", systolic: "Sistolik kan basıncı (mmHg)", totalChol: "Toplam kolesterol (mg/dL)", hdlChol: "HDL kolesterol (mg/dL)", creatinine: "Kreatinin (mg/dL)", creatPlaceholder: "1,0" },
+  ru: { datePlaceholder: "ДД.ММ.ГГГГ", countryEx: "RU", nameMin: "Мин. 3 буквы", insEx: "напр. A123456789",
+    weight: "Вес (кг)", height: "Рост (см)", systolic: "Систолическое давление (мм рт. ст.)", totalChol: "Общий холестерин (мг/дл)", hdlChol: "Холестерин ЛПВП (мг/дл)", creatinine: "Креатинин (мг/дл)", creatPlaceholder: "1,0" },
+  ar: { datePlaceholder: "يوم/شهر/سنة", countryEx: "SA", nameMin: "3 أحرف على الأقل", insEx: "مثال A123456789",
+    weight: "الوزن (كغ)", height: "الطول (سم)", systolic: "ضغط الدم الانقباضي (ملم زئبقي)", totalChol: "الكوليسترول الكلي (مغ/دل)", hdlChol: "كوليسترول HDL (مغ/دل)", creatinine: "الكرياتينين (مغ/دل)", creatPlaceholder: "1.0" },
+  fa: { datePlaceholder: "روز/ماه/سال", countryEx: "IR", nameMin: "حداقل ۳ حرف", insEx: "مثلاً A123456789",
+    weight: "وزن (کیلوگرم)", height: "قد (سانتی‌متر)", systolic: "فشار خون سیستولیک (میلی‌متر جیوه)", totalChol: "کلسترول کل (میلی‌گرم/دسی‌لیتر)", hdlChol: "کلسترول HDL (میلی‌گرم/دسی‌لیتر)", creatinine: "کراتینین (میلی‌گرم/دسی‌لیتر)", creatPlaceholder: "۱٫۰" },
+  zh: { datePlaceholder: "年/月/日", countryEx: "CN", nameMin: "至少3个字符", insEx: "例如 A123456789",
+    weight: "体重 (kg)", height: "身高 (cm)", systolic: "收缩压 (mmHg)", totalChol: "总胆固醇 (mg/dL)", hdlChol: "HDL胆固醇 (mg/dL)", creatinine: "肌酐 (mg/dL)", creatPlaceholder: "1.0" },
+  ja: { datePlaceholder: "年/月/日", countryEx: "JP", nameMin: "3文字以上", insEx: "例: A123456789",
+    weight: "体重 (kg)", height: "身長 (cm)", systolic: "収縮期血圧 (mmHg)", totalChol: "総コレステロール (mg/dL)", hdlChol: "HDLコレステロール (mg/dL)", creatinine: "クレアチニン (mg/dL)", creatPlaceholder: "1.0" },
+  ko: { datePlaceholder: "년/월/일", countryEx: "KR", nameMin: "최소 3글자", insEx: "예: A123456789",
+    weight: "체중 (kg)", height: "신장 (cm)", systolic: "수축기 혈압 (mmHg)", totalChol: "총 콜레스테롤 (mg/dL)", hdlChol: "HDL 콜레스테롤 (mg/dL)", creatinine: "크레아티닌 (mg/dL)", creatPlaceholder: "1.0" },
+  vi: { datePlaceholder: "NN/TT/NNNN", countryEx: "VN", nameMin: "Tối thiểu 3 ký tự", insEx: "VD: A123456789",
+    weight: "Cân nặng (kg)", height: "Chiều cao (cm)", systolic: "Huyết áp tâm thu (mmHg)", totalChol: "Cholesterol toàn phần (mg/dL)", hdlChol: "Cholesterol HDL (mg/dL)", creatinine: "Creatinine (mg/dL)", creatPlaceholder: "1,0" },
+  uk: { datePlaceholder: "ДД.ММ.РРРР", countryEx: "UA", nameMin: "Мін. 3 літери", insEx: "напр. A123456789",
+    weight: "Вага (кг)", height: "Зріст (см)", systolic: "Систолічний тиск (мм рт. ст.)", totalChol: "Загальний холестерин (мг/дл)", hdlChol: "Холестерин ЛПВЩ (мг/дл)", creatinine: "Креатинін (мг/дл)", creatPlaceholder: "1,0" },
+  ro: { datePlaceholder: "ZZ/LL/AAAA", countryEx: "RO", nameMin: "Min. 3 litere", insEx: "ex. A123456789",
+    weight: "Greutate (kg)", height: "Înălțime (cm)", systolic: "Tensiunea arterială sistolică (mmHg)", totalChol: "Colesterol total (mg/dL)", hdlChol: "Colesterol HDL (mg/dL)", creatinine: "Creatinină (mg/dL)", creatPlaceholder: "1,0" },
+  el: { datePlaceholder: "ΗΗ/ΜΜ/ΕΕΕΕ", countryEx: "GR", nameMin: "Ελάχ. 3 γράμματα", insEx: "π.χ. A123456789",
+    weight: "Βάρος (kg)", height: "Ύψος (cm)", systolic: "Συστολική πίεση (mmHg)", totalChol: "Ολική χοληστερόλη (mg/dL)", hdlChol: "Χοληστερόλη HDL (mg/dL)", creatinine: "Κρεατινίνη (mg/dL)", creatPlaceholder: "1,0" },
+};
+
+// Build full key sets for remaining locales from their specific data
+for (const [lang, data] of Object.entries(remainingLocales)) {
+  keys[lang] = {
+    "patientInfo.insuranceNumberPlaceholder": data.insEx,
+    "patientInfo.namePlaceholder": data.nameMin,
+    "patientInfo.countryPlaceholder": `${lang === 'ar' || lang === 'fa' ? data.countryEx : `(${data.countryEx})`}`,
+    "calculator.bmi.weightWithUnit": data.weight,
+    "calculator.bmi.heightWithUnit": data.height,
+    "calculator.bmi.weightPlaceholder": "70",
+    "calculator.bmi.heightPlaceholder": "175",
+    "calculator.cardio.agePlaceholder": "50",
+    "calculator.cardio.systolicPlaceholder": "120",
+    "calculator.cardio.cholPlaceholder": "200",
+    "calculator.cardio.hdlPlaceholder": "50",
+    "calculator.cardio.systolicBPWithUnit": data.systolic,
+    "calculator.cardio.totalCholesterolWithUnit": data.totalChol,
+    "calculator.cardio.hdlCholesterolWithUnit": data.hdlChol,
+    "calculator.egfr.creatininePlaceholder": data.creatPlaceholder,
+    "calculator.egfr.agePlaceholder": "50",
+    "calculator.egfr.creatinineWithUnit": data.creatinine,
+    "calculator.ibw.heightPlaceholder": "175",
+    "calculator.ibw.heightWithUnit": data.height,
+    "calculator.bmr.weightPlaceholder": "70",
+    "calculator.bmr.heightPlaceholder": "175",
+    "calculator.bmr.agePlaceholder": "30",
+    "calculator.bmr.weightWithUnit": data.weight,
+    "calculator.bmr.heightWithUnit": data.height,
+    "auth.codePlaceholder": "000000",
+    "common.datePlaceholder": data.datePlaceholder,
+  };
+}
+
+// Apply keys to locale files
+let updated = 0;
+for (const [lang, newKeys] of Object.entries(keys)) {
+  const fp = path.join(dir, lang + '.json');
+  if (!fs.existsSync(fp)) { console.log('SKIP ' + lang); continue; }
+  
+  const data = JSON.parse(fs.readFileSync(fp, 'utf8'));
+  
+  for (const [dotKey, value] of Object.entries(newKeys)) {
+    const parts = dotKey.split('.');
+    let obj = data;
+    for (let i = 0; i < parts.length - 1; i++) {
+      if (!obj[parts[i]]) obj[parts[i]] = {};
+      obj = obj[parts[i]];
+    }
+    obj[parts[parts.length - 1]] = value;
+  }
+  
+  fs.writeFileSync(fp, JSON.stringify(data, null, 2) + '\n', 'utf8');
+  updated++;
+}
+
+console.log('Updated: ' + updated + '/19');

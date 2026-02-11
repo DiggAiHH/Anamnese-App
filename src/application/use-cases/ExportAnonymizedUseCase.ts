@@ -1,15 +1,20 @@
 /**
  * ExportAnonymized Use Case
- * 
+ *
  * Exports data in a neutral, anonymized JSON format.
  * - PII (Names, Address, Exact DoB) are removed.
  * - Year of Birth and Gender are kept for demographics.
  * - Choice answers are represented as Integers (Indices/Values) where possible.
+ * - QuestionUniverse metadata (statisticGroup, icd10Codes, researchTags) attached per answer.
+ *
+ * @security No PII in export. Year-of-birth and gender are demographic aggregates.
  */
 
 import { IPatientRepository } from '@domain/repositories/IPatientRepository';
 import { IQuestionnaireRepository } from '@domain/repositories/IQuestionnaireRepository';
 import { IAnswerRepository } from '@domain/repositories/IAnswerRepository';
+import { IQuestionUniverseRepository } from '@domain/repositories/IQuestionUniverseRepository';
+import { QuestionUniverseLookupService } from '../services/QuestionUniverseLookupService';
 import { requireRNFS } from '@shared/rnfsSafe';
 import { supportsRNFS } from '@shared/platformCapabilities';
 
@@ -25,12 +30,29 @@ export interface ExportAnonymizedOutput {
     error?: string;
 }
 
+/** Shape of a single enriched answer entry in the export. */
+interface EnrichedAnswer {
+    value: unknown;
+    statisticGroup?: string;
+    icd10Codes?: string[];
+    researchTags?: string[];
+}
+
 export class ExportAnonymizedUseCase {
+    private readonly lookupService: QuestionUniverseLookupService;
+
     constructor(
         private readonly patientRepository: IPatientRepository,
         private readonly questionnaireRepository: IQuestionnaireRepository,
         private readonly answerRepository: IAnswerRepository,
-    ) { }
+        questionUniverseRepository?: IQuestionUniverseRepository,
+    ) {
+        // LookupService is optional — export still works without QuestionUniverse metadata.
+        // If no repository is provided, metadata fields will simply be omitted.
+        this.lookupService = questionUniverseRepository
+            ? new QuestionUniverseLookupService(questionUniverseRepository)
+            : (null as unknown as QuestionUniverseLookupService);
+    }
 
     async execute(input: ExportAnonymizedInput): Promise<ExportAnonymizedOutput> {
         try {
@@ -48,59 +70,74 @@ export class ExportAnonymizedUseCase {
 
             const answersMap = await this.answerRepository.getAnswersMap(
                 input.questionnaireId,
-                input.encryptionKey
+                input.encryptionKey,
             );
+
+            // 1b. Initialize QuestionUniverse lookup (best-effort)
+            if (this.lookupService) {
+                try {
+                    await this.lookupService.initialize();
+                } catch {
+                    // Non-fatal: export works without metadata.
+                }
+            }
 
             // 2. Anonymize Patient Data
             const demographics = {
-                yearOfBirth: patient.encryptedData.birthDate ? parseInt(patient.encryptedData.birthDate.substring(0, 4)) : undefined,
-                gender: patient.encryptedData.gender, // 'male' | 'female' | 'other' - sufficiently anonymous usually, or map to int
+                yearOfBirth: patient.encryptedData.birthDate
+                    ? parseInt(patient.encryptedData.birthDate.substring(0, 4))
+                    : undefined,
+                gender: patient.encryptedData.gender,
                 language: patient.language,
             };
 
             // 3. Process Answers (Map to Integer/Sequence where applicable)
-            const processedAnswers: Record<string, any> = {};
+            //    Enriched with QuestionUniverse metadata when available.
+            const processedAnswers: Record<string, EnrichedAnswer> = {};
 
             for (const section of questionnaire.sections) {
                 for (const question of section.questions) {
                     const val = answersMap.get(question.id);
                     if (val === undefined || val === null) continue;
 
-                    // logic to prefer integer representation
+                    // Resolve value (prefer integer representation for choice questions)
+                    let resolvedValue: unknown = val;
+
                     if (question.options && question.options.length > 0) {
-                        // Choice Question
-                        if (typeof val === 'number') {
-                            // Already a number (Bitset or Index)
-                            processedAnswers[question.id] = val;
-                        } else if (Array.isArray(val)) {
-                            // Map string array to bitset or array of indices?
-                            // Let's stick to the value if it's numeric, or map to indices if strings
-                            // Assuming options have numeric values as per `Master.tsv` logic usually assigning 1, 2, 4...
-                            // If not, we just store the array.
-                            processedAnswers[question.id] = val;
+                        if (typeof val === 'number' || Array.isArray(val)) {
+                            resolvedValue = val;
                         } else {
-                            // String value -> Find index or value in options
                             const opt = question.options.find(o => String(o.value) === String(val));
-                            if (opt && typeof opt.value === 'number') {
-                                processedAnswers[question.id] = opt.value;
-                            } else {
-                                processedAnswers[question.id] = val; // Fallback to string
+                            resolvedValue =
+                                opt && typeof opt.value === 'number' ? opt.value : val;
+                        }
+                    }
+
+                    // Build enriched entry
+                    const entry: EnrichedAnswer = { value: resolvedValue };
+
+                    // Attach QuestionUniverse metadata (if available)
+                    if (this.lookupService?.isInitialized) {
+                        const meta = this.lookupService.getMetadata(question.id);
+                        if (meta) {
+                            if (meta.statisticGroup) entry.statisticGroup = meta.statisticGroup;
+                            if (meta.icd10Codes && meta.icd10Codes.length > 0) {
+                                entry.icd10Codes = meta.icd10Codes;
+                            }
+                            if (meta.researchTags && meta.researchTags.length > 0) {
+                                entry.researchTags = meta.researchTags;
                             }
                         }
-                    } else {
-                        // Text / Free Form
-                        // User asked for "Anonymized". Strict anonymization would require scrubbing names from text.
-                        // For now, we include it but it's "Pseudonymized" by removing the Patient Link.
-                        // A full PII scrubber is out of scope unless using an AI service.
-                        processedAnswers[question.id] = val;
                     }
+
+                    processedAnswers[question.id] = entry;
                 }
             }
 
             // 4. Construct Export Object
             const exportData = {
                 exportType: 'ANONYMIZED_ANAMNESE',
-                version: '1.0',
+                version: '2.0',
                 timestamp: new Date().toISOString(),
                 demographics,
                 answers: processedAnswers,
@@ -115,9 +152,11 @@ export class ExportAnonymizedUseCase {
             await RNFS.writeFile(filePath, JSON.stringify(exportData, null, 2), 'utf8');
 
             return { success: true, filePath };
-
         } catch (error) {
-            return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
+            return {
+                success: false,
+                error: error instanceof Error ? error.message : 'Unknown error',
+            };
         }
     }
 }

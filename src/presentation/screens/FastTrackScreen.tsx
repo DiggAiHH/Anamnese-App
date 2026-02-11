@@ -2,21 +2,26 @@
  * FastTrackScreen - Quick prescription/referral request
  * Bypasses full anamnesis for simple requests
  *
- * @security Minimal PII collected (name, DOB, request type only)
+ * @security Minimal PII collected (name, DOB, request type only).
+ *           PII is encrypted with AES-256-GCM before persistence (GDPR Art. 25).
  */
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { View, StyleSheet, ScrollView, Alert } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import type { StackScreenProps } from '@react-navigation/stack';
 import type { RootStackParamList } from '../navigation/RootNavigator';
 import { colors, spacing } from '../theme/tokens';
 import { AppText } from '../components/AppText';
 import { AppInput } from '../components/AppInput';
 import { AppButton } from '../components/AppButton';
 import { Card } from '../components/Card';
+import { ScreenContainer } from '../components/ScreenContainer';
+import { SaveFastTrackRequestUseCase } from '@application/use-cases/SaveFastTrackRequestUseCase';
+import { encryptionService } from '@infrastructure/encryption/encryptionService';
+import { useUnsavedChangesGuard } from '../hooks/useUnsavedChangesGuard';
 
-type Props = NativeStackScreenProps<RootStackParamList, 'FastTrack'>;
+type Props = StackScreenProps<RootStackParamList, 'FastTrack'>;
 
 export const FastTrackScreen = ({ navigation, route }: Props): React.JSX.Element => {
   const { t } = useTranslation();
@@ -27,6 +32,14 @@ export const FastTrackScreen = ({ navigation, route }: Props): React.JSX.Element
   const [birthDate, setBirthDate] = useState('');
   const [requestDetails, setRequestDetails] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const isDirty = Boolean(firstName || lastName || birthDate || requestDetails);
+  useUnsavedChangesGuard(navigation, isDirty);
+
+  const saveFastTrackUseCase = useMemo(
+    () => new SaveFastTrackRequestUseCase(encryptionService),
+    [],
+  );
 
   const handleSubmit = async (): Promise<void> => {
     if (!firstName.trim() || !lastName.trim() || !birthDate.trim()) {
@@ -40,16 +53,32 @@ export const FastTrackScreen = ({ navigation, route }: Props): React.JSX.Element
     setIsSubmitting(true);
 
     try {
-      // SECURITY: FastTrack data contains PII (firstName, lastName, birthDate).
-      // Encryption integration pending — currently shows success but does NOT
-      // persist or transmit data. This prevents accidental PII leakage.
-      // TODO(M1): Wire to SaveAnswerUseCase with encryptionService.encrypt()
+      // Derive a temporary encryption key for this request
+      const { key } = await encryptionService.deriveKey(
+        `fasttrack_${Date.now()}`,
+      );
+
+      const result = await saveFastTrackUseCase.execute(
+        {
+          firstName,
+          lastName,
+          birthDate,
+          requestType: requestType as 'prescription' | 'referral',
+          requestDetails,
+        },
+        key,
+      );
+
+      if (!result.success) {
+        throw new Error(result.error ?? 'Unknown error');
+      }
+
       Alert.alert(
         t('common.success'),
         t('fastTrack.successMessage', 'Ihre Anfrage wurde erfolgreich übermittelt.'),
         [{ text: 'OK', onPress: () => navigation.navigate('Home') }],
       );
-    } catch (error) {
+    } catch {
       Alert.alert(t('common.error'), t('fastTrack.errorSubmit', 'Fehler beim Senden.'));
     } finally {
       setIsSubmitting(false);
@@ -59,7 +88,8 @@ export const FastTrackScreen = ({ navigation, route }: Props): React.JSX.Element
   const isFormValid = firstName.trim() && lastName.trim() && birthDate.trim();
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+    <ScreenContainer testID="fast-track-screen" accessibilityLabel="Fast Track Request">
+    <ScrollView style={styles.container} contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
       <Card style={styles.card}>
         <AppText variant="h2" style={styles.title}>
           {requestType === 'prescription'
@@ -128,6 +158,7 @@ export const FastTrackScreen = ({ navigation, route }: Props): React.JSX.Element
         />
       </Card>
     </ScrollView>
+    </ScreenContainer>
   );
 };
 

@@ -27,12 +27,15 @@ import type { RootStackParamList } from '../navigation/RootNavigator';
 import { colors, spacing, radius } from '../theme/tokens';
 import { Card } from '../components/Card';
 import { AppText } from '../components/AppText';
+import { ScreenContainer } from '../components/ScreenContainer';
 
 import { SQLitePatientRepository } from '@infrastructure/persistence/SQLitePatientRepository';
 import { SQLiteQuestionnaireRepository } from '@infrastructure/persistence/SQLiteQuestionnaireRepository';
 import { PatientEntity } from '@domain/entities/Patient';
 import { QuestionnaireEntity } from '@domain/entities/Questionnaire';
+import { getRoleCapabilities } from '@domain/entities/UserRole';
 import { useQuestionnaireStore } from '../state/useQuestionnaireStore';
+import { usePatientContext } from '../../application/PatientContext';
 
 type Props = StackScreenProps<RootStackParamList, 'SavedAnamneses'>;
 
@@ -100,6 +103,8 @@ const PatientRow = memo(
 export const SavedAnamnesesScreen = ({ navigation }: Props): React.JSX.Element => {
   const { t } = useTranslation();
   const { encryptionKey, setPatient } = useQuestionnaireStore();
+  const { userRole } = usePatientContext();
+  const capabilities = getRoleCapabilities(userRole);
 
   const [rows, setRows] = useState<Row[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -261,6 +266,17 @@ export const SavedAnamnesesScreen = ({ navigation }: Props): React.JSX.Element =
         </AppText>
         <AppText style={styles.subtitle}>{subtitle}</AppText>
 
+        {/* Role-based context banner */}
+        {!capabilities.canViewAllAnamneses && (
+          <View style={styles.roleBanner}>
+            <AppText style={styles.roleBannerText}>
+              {t('savedAnamneses.patientOnlyHint', {
+                defaultValue: 'Sie sehen Ihre eigenen Anamnesen.',
+              })}
+            </AppText>
+          </View>
+        )}
+
         <View style={styles.searchContainer}>
           <TextInput
             style={styles.searchInput}
@@ -366,13 +382,16 @@ export const SavedAnamnesesScreen = ({ navigation }: Props): React.JSX.Element =
 
   if (isLoading) {
     return (
+      <ScreenContainer testID="saved-anamneses-screen" accessibilityLabel="Saved Anamneses">
       <View style={[styles.container, styles.center]}>
         <ActivityIndicator size="large" color={colors.primary} />
       </View>
+      </ScreenContainer>
     );
   }
 
   return (
+    <ScreenContainer testID="saved-anamneses-screen" accessibilityLabel="Saved Anamneses">
     <FlatList
       style={styles.container}
       contentContainerStyle={styles.content}
@@ -390,6 +409,7 @@ export const SavedAnamnesesScreen = ({ navigation }: Props): React.JSX.Element =
       accessibilityRole="list"
       accessibilityLabel={t('home.saved')}
     />
+    </ScreenContainer>
   );
 };
 
@@ -415,6 +435,18 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: colors.textMuted,
     marginBottom: spacing.md,
+  },
+  roleBanner: {
+    backgroundColor: colors.infoSurface ?? '#e0f2fe',
+    borderRadius: radius.sm,
+    padding: spacing.sm,
+    marginBottom: spacing.md,
+    borderLeftWidth: 3,
+    borderLeftColor: colors.primary,
+  },
+  roleBannerText: {
+    fontSize: 13,
+    color: colors.primaryDark ?? colors.primary,
   },
   // Search styles
   searchContainer: {

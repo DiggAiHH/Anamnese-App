@@ -21,6 +21,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import i18n from 'i18next';
 import { colors, spacing, radius } from '../theme/tokens';
 import { AppButton } from './AppButton';
 import { RestoreStrategy, RestoreConflict } from '@application/use-cases/RestoreUseCase';
@@ -251,9 +252,9 @@ export const BackupRestoreDialog = ({
               {conflict.type === 'patient' ? '👤' : '📋'} {conflict.id.substring(0, 8)}
             </Text>
             <Text style={styles.conflictDates}>
-              {t('backup.localDate')}: {new Date(conflict.localUpdatedAt).toLocaleDateString()}
+              {t('backup.localDate')}: {new Date(conflict.localUpdatedAt).toLocaleDateString(i18n.language || 'de-DE')}
               {'\n'}
-              {t('backup.backupDate')}: {new Date(conflict.backupUpdatedAt).toLocaleDateString()}
+              {t('backup.backupDate')}: {new Date(conflict.backupUpdatedAt).toLocaleDateString(i18n.language || 'de-DE')}
             </Text>
             <View style={styles.conflictActions}>
               <TouchableOpacity
