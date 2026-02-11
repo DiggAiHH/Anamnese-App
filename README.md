@@ -109,6 +109,76 @@ npm run test:e2e:build
 npm run test:e2e
 ```
 
+## 🤖 OpenClaw AI Agent Integration
+
+This repository is configured for OpenClaw - a multi-agent DevSecOps framework that works alongside GitHub Copilot.
+
+### Quick Start
+
+**Setup (One-time):**
+```bash
+# WSL2/Linux
+npm run openclaw:setup:wsl
+
+# Windows (PowerShell)
+npm run openclaw:setup:win
+```
+
+**Start OpenClaw Stack:**
+```bash
+# WSL2/Linux
+npm run openclaw:start
+
+# Windows (PowerShell)
+npm run openclaw:start:win
+```
+
+**Verify Setup:**
+```bash
+node scripts/verify-openclaw-setup.cjs
+```
+
+### Available Commands
+
+```bash
+# Security & Compliance
+npm run openclaw:pentest              # Quick DSGVO scan
+npm run openclaw:pentest:full         # Full pentest (all phases)
+
+# Copilot Bridge (for model routing)
+npm run openclaw:bridge               # Start Copilot API bridge
+
+# Setup Scripts
+npm run openclaw:setup:wsl            # WSL2 setup
+npm run openclaw:setup:win            # Windows setup
+```
+
+### Configuration
+
+- **Config**: `.openclaw/openclaw.json` - Main configuration
+- **Skills**: `.openclaw/skills/` - Custom automation skills
+- **Prompts**: `.openclaw/prompts/` - Workflow templates
+- **Logs**: `buildLogs/openclaw/` - Execution logs (gitignored)
+
+### Features
+
+- ✅ **God Mode**: Full system access for builds, tests, security scans
+- ✅ **Multi-Model Routing**: 5 Copilot models (GPT-4o, Claude Sonnet/Haiku, O1, O3-mini)
+- ✅ **Auto-Heal**: Self-repairing build pipeline
+- ✅ **Security**: Weekly pentest, DSGVO compliance checks
+- ✅ **i18n Management**: 19-language audit and sync
+- ✅ **Cross-Platform**: Android, iOS, macOS, Windows, Web builds
+
+### Agent Collaboration
+
+OpenClaw and GitHub Copilot share the same ground truth:
+
+- **MEMORY.md** - Long-term knowledge base
+- **LAUFBAHN.md** - Execution log and runbook
+- **CURRENT_TASKS.md** - Shared task queue (gitignored)
+
+Both agents follow the same conventions defined in `.github/copilot-instructions.md`.
+
 ## 📚 Dokumentation
 
 - [Architecture](docs/03_ARCHITECTURE.md) - Clean Architecture & DDD

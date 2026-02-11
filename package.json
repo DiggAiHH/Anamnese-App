@@ -45,6 +45,8 @@
     "smoke-test:full": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts\\smoke-test.ps1 -IncludeWindowsBuild",
     "openclaw:setup:wsl": "bash scripts/openclaw-setup-wsl2.sh",
     "openclaw:setup:win": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts\\openclaw-setup-windows.ps1",
+    "openclaw:verify": "node scripts/verify-openclaw-setup.cjs",
+    "openclaw:status": "node scripts/openclaw-status.cjs",
     "openclaw:pentest": "node scripts/openclaw-pentest.cjs",
     "openclaw:pentest:full": "node scripts/openclaw-pentest.cjs --phase=all",
     "openclaw:pentest:dsgvo": "node scripts/openclaw-pentest.cjs --phase=1",
